@@ -2768,23 +2768,27 @@ void __stdcall vector_ctor_iterator_helper(char* t, unsigned int s, int n,
 }
 
 // scr_animscript_t (g.o 0x4ABF00 / 0x4ABF20)
+// ea: 0x004ABF00
 scr_animscript_t::scr_animscript_t()
     : bro_func(nullptr), bro_cleanup_func(nullptr),
       debug((Broc::string::Block*)nullptr)
 {
 }
+// ea: 0x004ABF20
 scr_animscript_t::~scr_animscript_t()
 {
     debug.~string();
 }
 
 // vehSqr (g.o 0x4ABF60)
+// ea: 0x004ABF60
 float vehSqr(float x)
 {
     return x * x;
 }
 
 // vehicle_node_t (g.o 0x4ABF80 / 0x4AC1C0 / 0x4AC310)
+// ea: 0x004ABF80
 vehicle_node_t::vehicle_node_t()
 {
     new (&mName) Broc::string((Broc::string::Block*)nullptr);
@@ -2962,6 +2966,7 @@ class vehicle_physic_t {
 public:
     vehicle_physic_t();
 };
+// ea: 0x004ABF70
 vehicle_physic_t::vehicle_physic_t()
 {
 }

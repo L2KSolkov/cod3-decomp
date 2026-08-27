@@ -2452,6 +2452,7 @@ void* PadAliasMgr::operator new(size_t size, void* p)
     return p;
 }
 
+// ea: 0x004ABF30
 PadAliasMgr* PadAliasMgr::Inst()
 {
     return PadAliasMgr::sInst;
@@ -2482,6 +2483,7 @@ PadAliasMgr* PadAliasMgr::CreateInst()
     PadAliasMgr_sInst = sInst;
     return sInst;
 }
+// ea: 0x004ABF40
 PadAliasMgr::Context& PadAliasMgr::GetCtx(EPadAliasContext ctxIndex)
 {
     return mCtx[ctxIndex];

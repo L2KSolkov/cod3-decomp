@@ -533,3 +533,23 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A9FB0	??0turretInfo_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9FB0	Release initializes overheatEffect.mVal to zero, matching the source Handle default construction.
 0x004A9FC0	??0hash_const_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_local.h:1045	Source hash_const_t is composed entirely of HashString fields, each defaulting to zero.
 0x004A9FC0	??0hash_const_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9FC0	Release zeroes every hash field in the declared order, matching the compiler-generated aggregate constructor.
+0x004AA460	??0str_const_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_local.h:885	Source str_const_t is composed of Broc::string fields, each initialized with the null Block constructor.
+0x004AA460	??0str_const_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AA460	Release constructs every str_const_t string field with a null block in declaration order, matching source member construction.
+0x004AB280	??1str_const_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_local.h:885	Source str_const_t's implicit destructor destroys all Broc::string members in reverse order.
+0x004AB280	??1str_const_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AB280	Release destroys all str_const_t strings in reverse declaration order, matching the implicit destructor.
+0x004ABF00	??0scr_animscript_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2772	Source initializes callback pointers to null and constructs debug with a null Broc block.
+0x004ABF00	??0scr_animscript_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF00	Release constructs debug with a null block; callback fields remain null, matching source.
+0x004ABF20	??1scr_animscript_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2778	Source destroys the debug Broc::string member.
+0x004ABF20	??1scr_animscript_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF20	Release destroys debug, matching source.
+0x004ABF30	?Inst@PadAliasMgr@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_cmd.cpp:2456	Source returns PadAliasMgr::sInst.
+0x004ABF30	?Inst@PadAliasMgr@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF30	Release returns PadAliasMgr::sInst, matching source.
+0x004ABF40	?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_cmd.cpp:2487	Source indexes mCtx by the requested context.
+0x004ABF40	?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF40	Release returns this + 328*ctxIndex, matching the 0x148-byte Context layout.
+0x004ABF60	?vehSqr@@YAMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2785	Source returns x multiplied by itself.
+0x004ABF60	?vehSqr@@YAMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF60	Release returns x*x, matching source.
+0x004ABF70	??0vehicle_physic_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2970	Source constructor intentionally has no body for the empty vehicle_physic_t aggregate.
+0x004ABF70	??0vehicle_physic_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF70	Release constructor returns immediately, matching source.
+0x004ABF80	??0vehicle_node_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2792	Source constructs mName, mTarget, and script_noteworthy with null Broc blocks.
+0x004ABF80	??0vehicle_node_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABF80	Release constructs the same three strings in the same order, matching source.
+0x004ABFF0	??1vehicle_node_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_local.h:3520	Source's implicit destructor destroys the three Broc::string members in reverse order.
+0x004ABFF0	??1vehicle_node_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004ABFF0	Release destroys script_noteworthy, mTarget, and mName, matching the implicit destructor.
