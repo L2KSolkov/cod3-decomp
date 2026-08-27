@@ -485,3 +485,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005C6150	?ObjectiveDeleteChildren@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C6150	Release bounds branch, warning metadata, and delete-all call match source.
 0x005C61D0	?ObjectiveDelete@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10028	Source preserves objective/client validation, per-client clear helper, and global raw-field clearing.
 0x005C61D0	?ObjectiveDelete@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C61D0	Release validation branches, _objectiveInfo_t::Clear path, and raw global objective field stores match source.
+0x005C4A80	?GetPak@BrocSys@@YA?AW4TPakInfo@@ABVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9496	Source preserves nullable pak-name resolution, unknown-pak assertion metadata/message, and pointer return ABI.
+0x005C4A80	?GetPak@BrocSys@@YA?AW4TPakInfo@@ABVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C4A80	Release GetPakInfo lookup, ARO/line 3043 result assertion, formatted unknown-pak message, and return match source.
