@@ -14,11 +14,13 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // apsSimpleMeshNode.o inline/COMDAT entries, matched to the IDA C dump.
 apsSphere::apsSphere() = default;
 
+// apsSphere::Set - ea: 0x00812C50
 void apsSphere::Set(const math::Dir3::Packed& center, float radius)
 {
     mSphere.v = _mm_setr_ps(center.x, center.y, center.z, radius);
 }
 
+// apsSphere::apsSphere - ea: 0x00812CB0
 apsSphere::apsSphere(const math::Dir3::Packed& center, float radius)
 {
     Set(center, radius);
@@ -30,11 +32,13 @@ math::Dir3::Packed& apsSphere::Center()
     return *reinterpret_cast<math::Dir3::Packed*>(&mSphere.v.m128_f32[0]);
 }
 
+// apsRenderNode::Matrix - ea: 0x00812CD0
 const math::Mat43& apsRenderNode::Matrix() const
 {
     return mLocalToWorld;
 }
 
+// apsSimpleMeshNode::Renderer - ea: 0x00812CE0
 apsSimpleMeshRenderer& apsSimpleMeshNode::Renderer()
 {
     if (mRenderer == nullptr &&
@@ -44,11 +48,13 @@ apsSimpleMeshRenderer& apsSimpleMeshNode::Renderer()
     return *mRenderer;
 }
 
+// apsSimpleMeshRenderer::Texture - ea: 0x00812D20
 nglTexture* apsSimpleMeshRenderer::Texture() const
 {
     return mTexture;
 }
 
+// apsSimpleMeshRenderer::Mesh - ea: 0x00812D30
 nglMesh* apsSimpleMeshRenderer::Mesh() const
 {
     return mMesh;
@@ -66,6 +72,7 @@ unsigned long* apsSimpleMeshRenderPixel::GetPShader()
     return reinterpret_cast<unsigned long*>(PS[0]);
 }
 
+// MeshParticleContext::MeshParticleContext - ea: 0x00812D60
 MeshParticleContext::MeshParticleContext()
 {
 }
@@ -113,6 +120,7 @@ static void BuildLocalToScreen(const math::Mat43& localToWorld,
     out.w.v = _mm_shuffle_ps(x23, y23, 221);
 }
 
+// apsSimpleMeshNode::Render - ea: 0x00812530
 void apsSimpleMeshNode::Render() {
     if (mRenderer == 0 &&
         _tlAssert("c:/cod/code/tl/aeps/include\\apsSimpleMeshNode.h", 16,
@@ -170,25 +178,21 @@ void apsSimpleMeshNode::Render() {
 
     nglDxState.PrevBM = static_cast<unsigned int>(-1);
     nglDxInitShaders(false);
-    if (apsSimpleMeshRender::VS != nullptr) {
-        const unsigned int vertexShader = apsSimpleMeshRender::VS[0];
-        if (vertexShader != gpuHashVertexShader) {
-            gpuHashVertexShader = vertexShader;
-            D3DDevice_LoadVertexShaderProgram(
-                reinterpret_cast<const unsigned int*>(apsSimpleMeshRender::VS), 0);
-            D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
-        }
+    const unsigned int vertexShader = apsSimpleMeshRender::VS[0];
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>(apsSimpleMeshRender::VS), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
     }
-    if (apsSimpleMeshRenderPixel::PS != nullptr) {
-        const unsigned int* pixelShader = reinterpret_cast<const unsigned int*>(
-            apsSimpleMeshRenderPixel::PS[0]);
-        const unsigned int pixelShaderHash =
-            static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
-        if (pixelShaderHash != gpuHashPixelShader) {
-            gpuHashPixelShader = pixelShaderHash;
-            D3DDevice_SetPixelShaderProgram(
-                reinterpret_cast<const _D3DPixelShaderDef*>(pixelShader));
-        }
+    const unsigned int* pixelShader = reinterpret_cast<const unsigned int*>(
+        apsSimpleMeshRenderPixel::PS[0]);
+    const unsigned int pixelShaderHash =
+        static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
+    if (pixelShaderHash != gpuHashPixelShader) {
+        gpuHashPixelShader = pixelShaderHash;
+        D3DDevice_SetPixelShaderProgram(
+            reinterpret_cast<const _D3DPixelShaderDef*>(pixelShader));
     }
     if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 0u) == 0) {
         D3D__DirtyFlags |= 0x2000u;

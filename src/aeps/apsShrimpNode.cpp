@@ -29,6 +29,7 @@ unsigned long* apsShrimpRenderPixel::GetPShader()
     return reinterpret_cast<unsigned long*>(PS[0]);
 }
 
+// apsShrimpNode::Render - ea: 0x00812D90
 void apsShrimpNode::Render() {
     if (mRenderer == 0 &&
         _tlAssert("c:/cod/code/tl/aeps/include\\apsShrimpNode.h", 14,
@@ -55,21 +56,17 @@ void apsShrimpNode::Render() {
     D3DDevice_SetVertexShaderConstantNotInlineFast(6, worldToScreen, 0x10);
 
     nglDxInitShaders(false);
-    if (apsShrimpRender::VS != nullptr) {
-        const unsigned int vertexShader = apsShrimpRender::VS[0];
-        if (vertexShader != gpuHashVertexShader) {
-            gpuHashVertexShader = vertexShader;
-            D3DDevice_LoadVertexShaderProgram(apsShrimpRender::VS, 0);
-            D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
-        }
+    const unsigned int vertexShader = apsShrimpRender::VS[0];
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(apsShrimpRender::VS, 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
     }
-    if (apsShrimpRenderPixel::PS != nullptr) {
-        const unsigned int* pixelShader = apsShrimpRenderPixel::PS[0];
-        if (pixelShader != reinterpret_cast<const unsigned int*>(gpuHashPixelShader)) {
-            gpuHashPixelShader = static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
-            D3DDevice_SetPixelShaderProgram(
-                reinterpret_cast<const _D3DPixelShaderDef*>(pixelShader));
-        }
+    const unsigned int* pixelShader = apsShrimpRenderPixel::PS[0];
+    if (pixelShader != reinterpret_cast<const unsigned int*>(gpuHashPixelShader)) {
+        gpuHashPixelShader = static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
+        D3DDevice_SetPixelShaderProgram(
+            reinterpret_cast<const _D3DPixelShaderDef*>(pixelShader));
     }
 
     const int count = mNumParticles;

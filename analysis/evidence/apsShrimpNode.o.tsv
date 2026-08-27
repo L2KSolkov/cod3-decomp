@@ -3,3 +3,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008139D0	?GetVShader@apsShrimpRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008139D0;src/aeps/apsShrimpNode.cpp:15	Release and source both return VS[0].
 0x008139E0	?GetPShader@apsShrimpRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:22	Emitted getter body returns the registered pixel shader handle.
 0x008139E0	?GetPShader@apsShrimpRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008139E0;src/aeps/apsShrimpNode.cpp:22	Release and source both return PS[0].
+0x00812D90	?Render@apsShrimpNode@@UAEXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:33	Real shrimp-particle render body with shader setup, atlas addressing, billboard geometry, vertex emission, and draw.
+0x00812D90	?Render@apsShrimpNode@@UAEXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D90;src/aeps/apsShrimpNode.cpp:33	Release decompile and source agree on assertions, blend/texture setup, world-to-screen constants, shader cache loads, atlas frame/rotation math, per-particle billboard vertices, and ReleaseAndDraw.

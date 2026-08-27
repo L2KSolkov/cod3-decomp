@@ -3,3 +3,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00812D40	?GetVShader@apsSimpleMeshRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D40;src/aeps/apsSimpleMeshNode.cpp:58	Release and source both return VS[0].
 0x00812D50	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:65	Existing getter body is non-empty and returns the pixel shader handle.
 0x00812D50	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D50;src/aeps/apsSimpleMeshNode.cpp:65	Release and source both return PS[0].
+0x00812530	?Render@apsSimpleMeshNode@@UAEXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:124	Real mesh-particle render body with state setup, particle transform, lighting, draw, and state restore.
+0x00812530	?Render@apsSimpleMeshNode@@UAEXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812530;src/aeps/apsSimpleMeshNode.cpp:124	Release decompile and source agree on texture/state setup, shader selection, mesh validation, per-particle quaternion/world-to-screen/light matrices, section draw, and z-write restoration.
+0x00812C50	?Set@apsSphere@@QAEXABUPacked@Dir3@math@@M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:18	Real setter writes packed center xyz and radius into the sphere vector.
+0x00812C50	?Set@apsSphere@@QAEXABUPacked@Dir3@math@@M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812C50;src/aeps/apsSimpleMeshNode.cpp:18	Release SIMD stores and source _mm_setr_ps produce center x/y/z plus radius.
+0x00812CB0	??0apsSphere@@QAE@ABUPacked@Dir3@math@@M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:24	Real constructor delegates to the sphere setter.
+0x00812CB0	??0apsSphere@@QAE@ABUPacked@Dir3@math@@M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812CB0;src/aeps/apsSimpleMeshNode.cpp:24	Release calls apsSphere::Set and returns this; source delegates to Set.
+0x00812CD0	?Matrix@apsRenderNode@@QBEABVMat43@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:36	Real const accessor returns the local-to-world matrix.
+0x00812CD0	?Matrix@apsRenderNode@@QBEABVMat43@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812CD0;src/aeps/apsSimpleMeshNode.cpp:36	Release returns &mLocalToWorld; source returns the same const reference.
+0x00812CE0	?Renderer@apsSimpleMeshNode@@QAEAAVapsSimpleMeshRenderer@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:42	Real renderer accessor includes the release null-renderer assertion path.
+0x00812CE0	?Renderer@apsSimpleMeshNode@@QAEAAVapsSimpleMeshRenderer@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812CE0;src/aeps/apsSimpleMeshNode.cpp:42	Release and source return mRenderer and invoke the same null-renderer assertion/debugbreak path.
+0x00812D20	?Texture@apsSimpleMeshRenderer@@QBEPAUnglTexture@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:52	Real texture accessor returns mTexture.
+0x00812D20	?Texture@apsSimpleMeshRenderer@@QBEPAUnglTexture@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D20;src/aeps/apsSimpleMeshNode.cpp:52	Release and source both return mTexture.
+0x00812D30	?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:58	Real mesh accessor returns mMesh.
+0x00812D30	?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D30;src/aeps/apsSimpleMeshNode.cpp:58	Release and source both return mMesh.
+0x00812D60	??0MeshParticleContext@@QAE@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:76	Explicit empty constructor body is a real release no-op.
+0x00812D60	??0MeshParticleContext@@QAE@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D60;src/aeps/apsSimpleMeshNode.cpp:76	Release constructor only returns this; source constructor is intentionally empty.
