@@ -315,7 +315,8 @@ extern refexport_t re;
 // ============================================================================
 
 // ea: 0x52DAB0
-void SCR_DrawNamedPic()
+void SCR_DrawNamedPic(float /*x*/, float /*y*/, float /*width*/, float /*height*/,
+                      const char* /*picname*/, int /*imagetype*/)
 {
 }
 
@@ -560,7 +561,7 @@ void SCR_DrawConsoleString(int x, int y, const short* string, int limit,
 }
 
 // ea: 0x52DED0
-void SCR_DebugGraph()
+void SCR_DebugGraph(float /*value*/, int /*color*/)
 {
 }
 
