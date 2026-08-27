@@ -1,3 +1,11 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x004835F0	?TossClientItems@@YAXPAVEntity@@@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_main.cpp:2630	Body is non-empty and uses the returned dropped-item handle.
 0x004835F0	?TossClientItems@@YAXPAVEntity@@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1003102	Release call sequence matches, including the three-argument RegisterDroppedItem return overload and handle value passed to DropWeapon.
+0x005BC810	?SquareRootX@BrocSys@@YAMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3426	Non-empty body returns the square root of its input.
+0x005BC810	?SquareRootX@BrocSys@@YAMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177582	Release and source have the same single square-root operation and return; the decompiler emits a wider floating return while the map/source ABI is float.
+0x005BC820	?ModXY@BrocSys@@YAHHH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3079	Non-empty body returns integer remainder.
+0x005BC820	?ModXY@BrocSys@@YAHHH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177588	Release and source both return x modulo y with no additional control flow.
+0x005BC830	?FModXY@BrocSys@@YAMMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3085	Non-empty body returns floating-point remainder.
+0x005BC830	?FModXY@BrocSys@@YAMMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177594	Release and source both perform the floating modulo operation and return; the decompiler emits a wider floating return while the map/source ABI is float.
+0x005BC840	?atoff@BrocSys@@YAMPBD@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:2289	Non-empty body converts the supplied string to a float.
+0x005BC840	?atoff@BrocSys@@YAMPBD@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177600	Release and source both call the C string-to-floating conversion and return the float result.
