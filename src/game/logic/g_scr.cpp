@@ -101,7 +101,7 @@ unsigned int (__cdecl* GetBroFuncByName(const char* name,
                                         bool enforceExists))(void*);
 void SetLoadedTrees(int num);  // ?SetLoadedTrees@BrocHelper@@YAXH@Z
 int  GetLoadedTrees();         // ?GetLoadedTrees@BrocHelper@@YAHXZ
-void Init();                   // ?Init@BrocHelper@@YAXXZ (scr.o 0x5BE180)
+int Init();                    // ?Init@BrocHelper@@YAHXZ (scr.o 0x5BE180)
 void AnimationToBroLookup(const tlFixedString& tree_name, int tree_index,
                           const tlFixedString& animation_name,
                           int animation_index);  // ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z
@@ -23453,11 +23453,12 @@ void AeThreadEntityNotifyMatchState::GetDebugTxt(
 
 // BrocHelper::Init - ea: 0x005BE180 (rep stosd 0x8C dwords = 0x230 bytes = 70 entries)
 BrocHelper::brocFunctionLookup BrocHelper::broFuncLookupTable[70];
-void BrocHelper::Init()
+int BrocHelper::Init()
 {
     memset(BrocHelper::broFuncLookupTable, 0,
            sizeof(BrocHelper::broFuncLookupTable));
     BrocHelper::m_treeCount = 0;
+    return 0;
 }
 
 // ea: 0x005BE210

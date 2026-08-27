@@ -24,7 +24,7 @@ extern BrocAPI* gpBrocAPI;
 extern BrocExports gBrocExports;
 
 namespace BrocHelper {
-void Init();
+int Init();
 void RegisterBroFunc(char* name, unsigned int (__cdecl* func)(void*));
 }
 

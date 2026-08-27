@@ -4214,7 +4214,7 @@ static_assert(sizeof(ae_heap) == 0x4A0, "ae_heap size mismatch");
 extern BrocExports gBrocExports;  // scr.o @ 0xF3A7B0
 
 namespace BrocHelper {
-void Init();
+int Init();
 void RegisterBroFunc(char* name, unsigned int (__cdecl* func)(void*));
 }
 
@@ -4355,7 +4355,8 @@ void LoadScript()
     {
         BrocExportsLoadScriptView* exports =
             reinterpret_cast<BrocExportsLoadScriptView*>(&gBrocExports);
-        exports->mInit = BrocHelper::Init;
+        exports->mInit = reinterpret_cast<decltype(exports->mInit)>(
+            BrocHelper::Init);
         exports->mRegisterFunction =
             reinterpret_cast<decltype(exports->mRegisterFunction)>(
                 BrocHelper::RegisterBroFunc);
