@@ -3148,6 +3148,15 @@ static_assert(offsetof(weaponFileInfo_t, iDamageOuterRadius) == 0x5E4, "weaponFi
 static_assert(offsetof(weaponFileInfo_t, weapClass) == 0xB0, "weaponFileInfo_t::weapClass offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, stance) == 0xBC, "weaponFileInfo_t::stance offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, turnSpeed) == 0x880, "weaponFileInfo_t::turnSpeed offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKOffsetTime) == 0x8C8, "weaponFileInfo_t::fAnimIKOffsetTime offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKOffsetForce) == 0x8CC, "weaponFileInfo_t::fAnimIKOffsetForce offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKOffsetDist) == 0x8D0, "weaponFileInfo_t::fAnimIKOffsetDist offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKPitchTime) == 0x8D4, "weaponFileInfo_t::fAnimIKPitchTime offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKPitchForce) == 0x8D8, "weaponFileInfo_t::fAnimIKPitchForce offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKPitchAngle) == 0x8DC, "weaponFileInfo_t::fAnimIKPitchAngle offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKTorsoRecoilPitchTime) == 0x8E0, "weaponFileInfo_t::fAnimIKTorsoRecoilPitchTime offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKTorsoRecoilPitchForce) == 0x8E4, "weaponFileInfo_t::fAnimIKTorsoRecoilPitchForce offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, fAnimIKTorsoRecoilPitchAngle) == 0x8E8, "weaponFileInfo_t::fAnimIKTorsoRecoilPitchAngle offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, szScript) == 0x8BC, "weaponFileInfo_t::szScript offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, slot) == 0xB4, "weaponFileInfo_t::slot offset mismatch");
 
