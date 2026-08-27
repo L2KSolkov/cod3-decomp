@@ -89,6 +89,15 @@ const math::Dir3& math::Dir3::operator*=(const math::Mat33& m) {
     return *this;
 }
 
+// math::Dir3::operator*=(Mat43) - ea: 0x008139F0
+const math::Dir3& math::Dir3::operator*=(const math::Mat43& m) {
+    this->v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(this->v, this->v, 0), m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(this->v, this->v, 85), m.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(this->v, this->v, 170), m.z.v));
+    return *this;
+}
+
 } // namespace math
 
 namespace apsMath {

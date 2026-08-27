@@ -41,7 +41,24 @@ struct MeshParticle {
 };
 static_assert(sizeof(MeshParticle) == 0x20, "MeshParticle size mismatch");
 
-struct BillboardParticle {};
+struct BillboardParticle {
+    math::Dir3::Packed mPos; // +0x00
+    float mRadius;            // +0x0C
+    float mAlpha;             // +0x10
+    float mAngle;             // +0x14
+    float mAge;               // +0x18
+    float mMaxAge;            // +0x1C
+    math::Vector4 mVelocity;  // +0x20
+
+    math::Dir3::Packed& GetPos();
+    math::Vector4 GetColor();
+    float GetWidth();
+    float GetHeight();
+    float GetAngle();
+    float GetFrame();
+    math::Vector4& GetVelocity();
+};
+static_assert(sizeof(BillboardParticle) == 0x30, "BillboardParticle size mismatch");
 struct RectangleParticle {};
 struct ColorBillboardParticle {};
 struct ColorRectangleParticle {};

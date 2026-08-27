@@ -45,6 +45,7 @@ public:
     SortedParticleIterator();
     ~SortedParticleIterator();
     unsigned char* GetNextParticle() override;
+    void Init(unsigned char** buffer, unsigned int numParticles); // ea: 0x813CB0
 };
 
 class UnsortedParticleIterator : public ParticleIterator {
@@ -56,6 +57,8 @@ public:
     UnsortedParticleIterator();
     ~UnsortedParticleIterator();
     unsigned char* GetNextParticle() override;
+    void Init(unsigned char* firstParticle, unsigned int numParticles,
+              unsigned int stride); // ea: 0x813CD0
 };
 
 static_assert(sizeof(ParticleIterator) == 0x04,
@@ -75,6 +78,7 @@ public:
     class apsBillboardRenderer* Renderer() { return mRenderer; }  // ea: 0x8048B0
     void SetRenderer(class apsBillboardRenderer* r) { mRenderer = r; }  // ea: 0x804890
     void SetRenderSortBuffer(apsRenderSort::Buffer* b) { mRenderSortBuffer = b; }  // ea: 0x8048D0
+    apsRenderSort::Buffer* GetRenderSortBuffer(); // ea: 0x813DC0
     virtual void GetDesc(char* buf);              // ea: 0x8048E0
     virtual void Render() override;               // ea: 0x813C90 (apsBillboardNode.o)
 };
@@ -135,6 +139,14 @@ public:
     static void Init();                                    // @0x805D50
     bool UsesAmbientLighting() const;                      // @0x805C50
     bool UsesDiffuseLighting() const;                      // @0x805CD0
+    nglTexture* Texture() const;                           // @0x813D40
+    const math::Dir3& Normal() const;                      // @0x813D50
+    float WidthFrames() const;                             // @0x813D60
+    float MaxFrame() const;                                // @0x813D70
+    float InvWidthFrames() const;                          // @0x813D80
+    float InvHeightFrames() const;                         // @0x813D90
+    float AlphaFadeStart() const;                          // @0x813DA0
+    float AlphaFadeEnd() const;                            // @0x813DB0
     bool SetNodeParams(apsRenderNode* node, const apsRendererRenderInfo& rinfo);  // @0x805D80
     bool UseSortedRendering() const { return mUseSortedRendering != 0; }
     virtual eRenderResult Render(const apsRendererRenderInfo& iInfo);  // @0x8060F0

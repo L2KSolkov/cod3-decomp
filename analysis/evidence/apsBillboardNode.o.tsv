@@ -3,3 +3,51 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00813EB0	?GetVShader@apsBillboardRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813EB0;src/aeps/apsBillboardNode.cpp:13	Release and source both return VS[0].
 0x00813EC0	?GetPShader@apsBillboardRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:20	Emitted getter body returns the registered pixel shader handle.
 0x00813EC0	?GetPShader@apsBillboardRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813EC0;src/aeps/apsBillboardNode.cpp:20	Release and source both return PS[0].
+0x008139F0	??XDir3@math@@QAEABV01@ABVMat43@1@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsMath.cpp:92	Real Mat43 Dir3 transform emits the three-row SIMD multiply and returns this.
+0x008139F0	??XDir3@math@@QAEABV01@ABVMat43@1@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008139F0;src/aeps/apsMath.cpp:92	Release and source both transform x/y/z using the Mat43 rows and return the object.
+0x00813CB0	?Init@SortedParticleIterator@apsRenderSort@@QAEXPAPAEI@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardRenderer.cpp:54	Real iterator initializer resets index, stores count, and records the pointer buffer.
+0x00813CB0	?Init@SortedParticleIterator@apsRenderSort@@QAEXPAPAEI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813CB0;src/aeps/apsBillboardRenderer.cpp:54	Release and source both set m_index=0, m_maxIndex=numParticles, and m_firstParticle=buffer.
+0x00813CD0	?Init@UnsortedParticleIterator@apsRenderSort@@QAEXPAEII@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardRenderer.cpp:88	Real iterator initializer computes the end pointer and stores stride, first, and current particles.
+0x00813CD0	?Init@UnsortedParticleIterator@apsRenderSort@@QAEXPAEII@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813CD0;src/aeps/apsBillboardRenderer.cpp:88	Release and source both compute firstParticle + stride*numParticles and initialize all iterator fields.
+0x00813D00	?TestFlags@apsRenderNode@@QBEII@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:11	Real flag accessor returns the masked node flags.
+0x00813D00	?TestFlags@apsRenderNode@@QBEII@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D00;src/aeps/apsBillboardNode.cpp:11	Release and source both return flag & mFlags.
+0x00813D10	?Particles@apsRenderNode@@QBEPAEXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:17	Real particle-buffer accessor returns the node particle storage pointer.
+0x00813D10	?Particles@apsRenderNode@@QBEPAEXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D10;src/aeps/apsBillboardNode.cpp:17	Release and source both return mParticles.
+0x00813D20	?NumParticles@apsRenderNode@@QAEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:23	Real particle-count accessor returns the node count.
+0x00813D20	?NumParticles@apsRenderNode@@QAEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D20;src/aeps/apsBillboardNode.cpp:23	Release and source both return mNumParticles.
+0x00813D30	?Stride@apsRenderNode@@QAEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:29	Real stride accessor returns the node particle stride.
+0x00813D30	?Stride@apsRenderNode@@QAEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D30;src/aeps/apsBillboardNode.cpp:29	Release and source both return mStride.
+0x00813D40	?Texture@apsBillboardRenderer@@QBEPAUnglTexture@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:35	Real texture accessor returns the renderer texture pointer.
+0x00813D40	?Texture@apsBillboardRenderer@@QBEPAUnglTexture@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D40;src/aeps/apsBillboardNode.cpp:35	Release and source both return mTexture.
+0x00813D50	?Normal@apsBillboardRenderer@@QBEABVDir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:41	Real normal accessor returns the renderer normal reference.
+0x00813D50	?Normal@apsBillboardRenderer@@QBEABVDir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D50;src/aeps/apsBillboardNode.cpp:41	Release and source both return the mNormal field by reference.
+0x00813D60	?WidthFrames@apsBillboardRenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:47	Real atlas accessor returns the fixed one-frame width value.
+0x00813D60	?WidthFrames@apsBillboardRenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D60;src/aeps/apsBillboardNode.cpp:47	Release and source both return 1.0f.
+0x00813D70	?MaxFrame@apsBillboardRenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:53	Real atlas accessor returns the fixed maximum frame value.
+0x00813D70	?MaxFrame@apsBillboardRenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D70;src/aeps/apsBillboardNode.cpp:53	Release and source both return 0.0f.
+0x00813D80	?InvWidthFrames@apsBillboardRenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:59	Real atlas accessor returns the fixed inverse width value.
+0x00813D80	?InvWidthFrames@apsBillboardRenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D80;src/aeps/apsBillboardNode.cpp:59	Release and source both return 1.0f.
+0x00813D90	?InvHeightFrames@apsBillboardRenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:65	Real atlas accessor returns the fixed inverse height value.
+0x00813D90	?InvHeightFrames@apsBillboardRenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813D90;src/aeps/apsBillboardNode.cpp:65	Release and source both return 1.0f.
+0x00813DA0	?AlphaFadeStart@apsBillboardRenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:71	Real alpha-fade accessor returns the start field.
+0x00813DA0	?AlphaFadeStart@apsBillboardRenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813DA0;src/aeps/apsBillboardNode.cpp:71	Release and source both return mAlphaFadeStart.
+0x00813DB0	?AlphaFadeEnd@apsBillboardRenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:77	Real alpha-fade accessor returns the end field.
+0x00813DB0	?AlphaFadeEnd@apsBillboardRenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813DB0;src/aeps/apsBillboardNode.cpp:77	Release and source both return mAlphaFadeEnd.
+0x00813DC0	?GetRenderSortBuffer@apsBillboardNode@@QAEPAUBuffer@apsRenderSort@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:83	Real sort-buffer accessor returns the node buffer pointer.
+0x00813DC0	?GetRenderSortBuffer@apsBillboardNode@@QAEPAUBuffer@apsRenderSort@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813DC0;src/aeps/apsBillboardNode.cpp:83	Release and source both return mRenderSortBuffer.
+0x00813DD0	?ClampToColor32@apsInternal@@YAIABVVector4@math@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsInternal.cpp:239	Real color packer clamps RGBA lanes to 0..255 and packs BGRA32.
+0x00813DD0	?ClampToColor32@apsInternal@@YAIABVVector4@math@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813DD0;src/aeps/apsInternal.cpp:239	Release and source both SIMD-clamp color*255 and pack b|(g<<8)|(r<<16)|(a<<24).
+0x00813ED0	?GetPos@BillboardParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:90	Real particle position accessor returns the packed position field.
+0x00813ED0	?GetPos@BillboardParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813ED0;src/aeps/apsBillboardNode.cpp:90	Release and source both return the particle position at offset zero.
+0x00813EE0	?GetColor@BillboardParticle@@QAE?AVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:96	Real particle color accessor constructs opaque white with particle alpha.
+0x00813EE0	?GetColor@BillboardParticle@@QAE?AVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813EE0;src/aeps/apsBillboardNode.cpp:96	Release and source both return Vector4(1.0f,1.0f,1.0f,mAlpha).
+0x00813F30	?GetWidth@BillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:104	Real particle width accessor returns radius.
+0x00813F30	?GetWidth@BillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813F30;src/aeps/apsBillboardNode.cpp:104	Release and source both return mRadius.
+0x00813F40	?GetHeight@BillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:110	Real particle height accessor returns radius.
+0x00813F40	?GetHeight@BillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813F40;src/aeps/apsBillboardNode.cpp:110	Release and source both return mRadius.
+0x00813F50	?GetAngle@BillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:116	Real particle angle accessor returns the angle field.
+0x00813F50	?GetAngle@BillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813F50;src/aeps/apsBillboardNode.cpp:116	Release and source both return mAngle.
+0x00813F60	?GetFrame@BillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:122	Real particle frame accessor returns the fixed frame value.
+0x00813F60	?GetFrame@BillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813F60;src/aeps/apsBillboardNode.cpp:122	Release and source both return 0.0f.
+0x00813F70	?GetVelocity@BillboardParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:128	Real particle velocity accessor returns the velocity field by reference.
+0x00813F70	?GetVelocity@BillboardParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813F70;src/aeps/apsBillboardNode.cpp:128	Release and source both return mVelocity at offset 0x20.

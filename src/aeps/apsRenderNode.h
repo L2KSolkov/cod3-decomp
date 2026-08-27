@@ -62,6 +62,10 @@ public:
     void SetMatrix(const math::Mat43* matrix);            // ea: 0x802700
     const math::Mat43& Matrix() const;                     // ea: 0x812CD0
     const math::Vector4& BlendColor() const;              // ea: 0x8137C0
+    unsigned int TestFlags(unsigned int flag) const;      // ea: 0x813D00
+    unsigned char* Particles() const;                     // ea: 0x813D10
+    int NumParticles();                                   // ea: 0x813D20
+    int Stride();                                         // ea: 0x813D30
     void SetSphere(const apsSphere* s) { mSphere.mSphere = s->mSphere; }  // ea: 0x8027A0
     void SetParticles(int num, unsigned char* ref, int stride);   // ea: 0x8027D0
     float GetDist(nglScene* Scene);                       // ea: 0x802630

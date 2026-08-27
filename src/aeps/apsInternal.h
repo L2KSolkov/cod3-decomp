@@ -209,6 +209,7 @@ void GetUserCoordinateSystem(const math::Dir3& userDir, math::Dir3& oForward,
 
 unsigned int ClampToColor32(const math::Vector4& iBlendColor,
                             const math::Vector4& iParticleColor);  // @0x8136B0
+unsigned int ClampToColor32(const math::Vector4& iColor);            // @0x813DD0
 
 // ---- D3D render-state and light-context helpers ---------------------------
 void GetLocalLights(nglLightContext* ioLightContext, const apsSphere& iSphere);  // ?GetLocalLights@apsInternal@@YAXPAUnglLightContext@@ABUapsSphere@@@Z

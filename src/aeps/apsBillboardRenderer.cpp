@@ -51,6 +51,14 @@ SortedParticleIterator::SortedParticleIterator()
 {
 }
 
+// apsRenderSort::SortedParticleIterator::Init - ea: 0x00813CB0
+void SortedParticleIterator::Init(unsigned char** buffer, unsigned int numParticles)
+{
+    m_index = 0;
+    m_maxIndex = numParticles;
+    m_firstParticle = buffer;
+}
+
 // ea: 0x0051BB40
 unsigned char* SortedParticleIterator::GetNextParticle()
 {
@@ -75,6 +83,17 @@ ParticleIterator::ParticleIterator()
 // ea: 0x00518870
 UnsortedParticleIterator::UnsortedParticleIterator()
 {
+}
+
+// apsRenderSort::UnsortedParticleIterator::Init - ea: 0x00813CD0
+void UnsortedParticleIterator::Init(unsigned char* firstParticle,
+                                    unsigned int numParticles,
+                                    unsigned int stride)
+{
+    m_particleEnd = firstParticle + stride * numParticles;
+    m_stride = stride;
+    m_firstParticle = firstParticle;
+    m_currentParticle = firstParticle;
 }
 
 // ea: 0x00518880

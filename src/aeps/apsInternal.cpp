@@ -236,6 +236,18 @@ unsigned int apsInternal::ClampToColor32(const math::Vector4& iBlendColor,
     return b | (g << 8) | (r << 16) | (a << 24);
 }
 
+// apsInternal::ClampToColor32(single color) - ea: 0x00813DD0
+unsigned int apsInternal::ClampToColor32(const math::Vector4& iColor) {
+    const __m128 clamped = _mm_min_ps(
+        _mm_max_ps(_mm_mul_ps(iColor.v, _mm_set1_ps(255.0f)), _mm_setzero_ps()),
+        _mm_set1_ps(255.0f));
+    const unsigned int r = static_cast<unsigned int>(clamped.m128_f32[0]);
+    const unsigned int g = static_cast<unsigned int>(_mm_shuffle_ps(clamped, clamped, 85).m128_f32[0]);
+    const unsigned int b = static_cast<unsigned int>(_mm_shuffle_ps(clamped, clamped, 170).m128_f32[0]);
+    const unsigned int a = static_cast<unsigned int>(_mm_shuffle_ps(clamped, clamped, 255).m128_f32[0]);
+    return b | (g << 8) | (r << 16) | (a << 24);
+}
+
 // ea: 0x8036D0
 void apsInternal::SetupBlendAndTexture(nglTexture* iTexture, apsEBlendMode iBlendMode,
                                        bool bFogEnable, int alphaCutOff) {

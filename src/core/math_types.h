@@ -75,6 +75,7 @@ public:
 
     // apsMath.o (non-inline): row-vector * 3x3 matrix. Unresolved here.
     const math::Dir3& operator*=(const math::Mat33& m);
+    const math::Dir3& operator*=(const math::Mat43& m); // apsBillboardNode.o 0x8139F0
     const math::Dir3& operator+=(float _v);  // ??YDir3@math@@QAEABV01@M@Z (render.o 0x6E6490)
     const math::Dir3& operator-=(float _v);  // ??ZDir3@math@@QAEABV01@M@Z (render.o 0x6E64D0)
     const math::Dir3& operator+=(const math::Dir3& _v); // game2.o 0x004EB190
