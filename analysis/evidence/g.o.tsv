@@ -1205,3 +1205,39 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00454AF0	?UseLiveGrenade@@YAXPAVEntity@@00@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x00454AF0	Release body is an empty return with no side effects; source preserves the intentional no-op signature.
 0x00455DF0	?G_RmvInvalidatedNode@@YAXPAVEntity@@PBUPathNode@PathNodes@@@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/logic/g_dobj.cpp:531	Validates entity/client/path inputs, finds the invalidated-node index, and removes it when present.
 0x00455DF0	?G_RmvInvalidatedNode@@YAXPAVEntity@@PBUPathNode@PathNodes@@@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x00455DF0	Release null assertion metadata, guarded G_FindInvalidatedNode call, and shift-remove helper dispatch match source.
+0x004541A0	??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/logic/g_main.cpp:415	Constructs the Task base with the DETH task id.
+0x004541A0	??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004541A0	Release Task(h,0x44455448), EntityDeathTask vftable assignment, and return match source.
+0x004B4E10	??0ae_heap_base@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/core/memory/mem_heap.cpp:511	Base constructor preserves the polymorphic object setup.
+0x004B4E10	??0ae_heap_base@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004B4E10	Release constructor only installs ae_heap_base vftable; source empty constructor has matching compiler-generated setup.
+0x004BB020	?Com_InitZoneMemory@@YAXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/common.cpp:938	Intentional empty platform hook.
+0x004BB020	?Com_InitZoneMemory@@YAXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004BB020	Release body is empty; source preserves the intentional no-op hook.
+0x004BB5A0	?jobqueue_init@@YAXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/sys.cpp:120	Intentional empty job queue hook in this port.
+0x004BB5A0	?jobqueue_init@@YAXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004BB5A0	Release body is empty; source preserves the intentional no-op hook.
+0x004BB5B0	?jobqueue_shutdown@@YAXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/sys.cpp:125	Intentional empty job queue shutdown hook in this port.
+0x004BB5B0	?jobqueue_shutdown@@YAXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004BB5B0	Release body is empty; source preserves the intentional no-op hook.
+0x004BBAA0	?Script_Init@@YAXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/sys.cpp:136	Intentional empty script-init compatibility hook; script setup occurs through other release entry points.
+0x004BBAA0	?Script_Init@@YAXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004BBAA0	Release body is empty; source preserves the intentional no-op hook.
+0x004BD560	?LinkFrame@TlSystemCallbacks@@SAXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/sys.cpp:249	Intentional empty link-frame callback.
+0x004BD560	?LinkFrame@TlSystemCallbacks@@SAXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004BD560	Release is a thunk to nullsub_32; source empty callback has equivalent no side effects.
+0x004BD6E0	??0CtrlIcon@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/ctor_dtor.cpp:888	Default constructor intentionally leaves the icon state zero/uninitialized as in release.
+0x004BD6E0	??0CtrlIcon@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004BD6E0	Release constructor returns this without stores; source matches.
+0x004BD6F0	??1CtrlIcon@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/ctor_dtor.cpp:893	Destructor intentionally has no side effects.
+0x004BD6F0	??1CtrlIcon@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004BD6F0	Release destructor is an empty return; source matches.
+0x004DD8C0	??1nalHeap@@UAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/effect_events.cpp:930	Destructor preserves the nalHeap vftable teardown semantics.
+0x004DD8C0	??1nalHeap@@UAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DD8C0	Release destructor only restores nalHeap vftable; source empty virtual destructor has matching compiler behavior.
+0x004DDAE0	?TriangleResponseNone@DialogMenuSystem@@SAXH@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/shell/dialog_menu.cpp:1064	Intentional empty dialog response callback.
+0x004DDAE0	?TriangleResponseNone@DialogMenuSystem@@SAXH@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DDAE0	Release body is empty; source preserves the intentional no-op callback.
+0x004DE420	??0RumbleEffectInstanceHandle@@QAE@H@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/rumble.cpp:344	Stores the supplied rumble handle value.
+0x004DE420	??0RumbleEffectInstanceHandle@@QAE@H@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DE420	Release mVal=val store and constructor return match source.
+0x004DE610	??0SmokeGrenadeInfo@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/logic/g_game2_misc.cpp:100	Initializes effect pointer, time, and all three hit-state entries.
+0x004DE610	??0SmokeGrenadeInfo@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DE610	Release null effect, zero time, and three zero bHit stores match source value initialization.
+0x004DEDD0	??1PadAliasMgr@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/logic/g_cmd.cpp:2423	Destructor intentionally has no side effects.
+0x004DEDD0	??1PadAliasMgr@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DEDD0	Release destructor is an empty return; source matches.
+0x004DEF20	??0idVec3@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/utility.cpp:95	Default vector constructor intentionally performs no stores.
+0x004DEF20	??0idVec3@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DEF20	Release constructor returns this without stores; source matches.
+0x004DEF30	??0idVec3@@QAE@MMM@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/utility.cpp:100	Stores x, y, and z constructor arguments.
+0x004DEF30	??0idVec3@@QAE@MMM@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DEF30	Release x/y/z stores and constructor return match source.
+0x004DF0D0	??0mat3_t@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/utility.cpp:155	Default matrix constructor intentionally performs no stores.
+0x004DF0D0	??0mat3_t@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DF0D0	Release constructor returns this without stores; source matches.
+0x004DF240	??0strdata@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/utility.cpp:190	Initializes string length/refcount, data pointer, and allocation flag to zero.
+0x004DF240	??0strdata@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DF240	Release len/refcount/data/alloced zero initialization matches source.
