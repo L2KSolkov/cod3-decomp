@@ -1204,7 +1204,7 @@ void CG_Player(Entity* entity);
 void CG_Actor(Entity* entity);
 
 // ea: 0x00689A80
-void CG_EntityEffects()
+void CG_EntityEffects(Entity*)
 {
 }
 

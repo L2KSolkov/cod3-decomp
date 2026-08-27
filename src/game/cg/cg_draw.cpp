@@ -435,7 +435,7 @@ extern void nglAddMeshSection(nglMesh* mesh, nglMeshSection* section,
                               nglMaterial* material, int flags);
 extern void* nglLockSectionIndices(nglMeshSection* section);
 extern void* nglLockSectionVertices(nglMeshSection* section);
-struct nglMeshParams;
+class nglMeshParams;
 struct nglShaderParamSet;
 class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* mesh,
@@ -2746,7 +2746,7 @@ static Entity* EntityHandleDb_Get2(unsigned int handleVal)
 }
 
 // ea: 0x0068BA90
-void CG_DrawObjectives()
+void CG_DrawObjectives(float, float*)
 {
 }
 

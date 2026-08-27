@@ -1442,7 +1442,7 @@ void CG_UpdateShellShockCamera(const shellshock_parms_t* parms, int time,
     dword_F6417C[base] = v23mix * kickRadius;
 }
 // ea: 0x0068C760
-void CG_StartShellShock()
+void CG_StartShellShock(const shellshock_parms_t*, int, int)
 {
 }
 
