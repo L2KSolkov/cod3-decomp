@@ -389,3 +389,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E9960	??0Block@BackupStack@AeThread@@QAE@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005E9960	Release constructor writes mNext=nullptr and returns this.
 0x005E95E0	??$IsDefined@I@@YA_NI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:5806	Source returns false only for the release undefined sentinel 0xFEFEFEFE.
 0x005E95E0	??$IsDefined@I@@YA_NI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005E95E0	Release compares the unsigned value against -16843010 (0xFEFEFEFE), matching the source template instantiation.
+0x005BC1A0	?XboxGetEntryFunction@@YAP6AP6AXXZPAPAUBrocAPI@@AAUBrocExports@@@ZPBD@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:62	Source returns mp_level::InitScript only for a case-insensitive mp_level map name and nullptr otherwise.
+0x005BC1A0	?XboxGetEntryFunction@@YAP6AP6AXXZPAPAUBrocAPI@@AAUBrocExports@@@ZPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC1A0	Release uses _stricmp(mapname,"mp_level") and selects mp_level::InitScript with the same null fallback.
+0x005BC210	?ConvertStringToHash@BrocSys@@YA?BIPBD@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:3326	Source returns zero for null and otherwise constructs tlFixedString and returns its hash.
+0x005BC210	?ConvertStringToHash@BrocSys@@YA?BIPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC210	Release has the same null branch and tlFixedString hash extraction; IDA's displayed pointer return is a type-display artifact.
+0x005BC230	?MemFree@BrocSys@@YAXPAX@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:3335	Source releases pool allocations, then Broc heap allocations, then falls back to mem_heap_free.
+0x005BC230	?MemFree@BrocSys@@YAXPAX@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC230	Release InPool/CheckFree/fallback branch and calls match source.
+0x005BC280	?PoolAlloc@BrocSys@@YAPAXI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:3348	Source forwards size and false forceHeapAlloc to gCommonPoolAllocator.
+0x005BC280	?PoolAlloc@BrocSys@@YAPAXI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC280	Release calls gCommonPoolAllocator::Allocate(s,false), matching source.
+0x005BC2A0	?PoolFree@BrocSys@@YAXPAX@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:3354	Source forwards the pointer to gCommonPoolAllocator::Release.
+0x005BC2A0	?PoolFree@BrocSys@@YAXPAX@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC2A0	Release calls gCommonPoolAllocator::Release with the same pointer.
+0x005BC450	?SettleMapVote@BrocSys@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:11548	Source checks host status and tallies AAR map votes from menu slot 4.
+0x005BC450	?SettleMapVote@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC450	Release host branch and AARMapVote::TallyVotes(menu slot 4) match source.
+0x005BC470	?SettleGameModeVote@BrocSys@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:11555	Source checks host status and tallies AAR game-mode votes from menu slot 3.
+0x005BC470	?SettleGameModeVote@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC470	Release host branch and AARGameModeVote::TallyVotes(menu slot 3) match source.
+0x005BE6C0	?GetPlayerArray@BrocSys@@YAHPAI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:8415	Source scans all 16 player slots and returns handles only for entities with sentient state.
+0x005BE6C0	?GetPlayerArray@BrocSys@@YAHPAI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BE6C0	Release loop bounds, sentient filter, handle writes, and count return match source.
+0x005BE750	?GetLocalPlayerArray@BrocSys@@YAHPAI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:8428	Source validates player 0, sentient state, and IsLocalPlayer before writing one handle.
+0x005BE750	?GetLocalPlayerArray@BrocSys@@YAHPAI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BE750	Release null/sentient/local checks and 0-or-1 result match source.
+0x005BE7A0	?GetLevel@BrocSys@@YAIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:2521	Source returns the world entity handle.
+0x005BE7A0	?GetLevel@BrocSys@@YAIXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BE7A0	Release returns EntityManager::sInst->mWorld->mHandle.mVal, matching source.
+0x005BE7B0	?GetPlayer@BrocSys@@YAIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:2966	Source resolves currCl through EntityManager and returns that entity handle.
+0x005BE7B0	?GetPlayer@BrocSys@@YAIXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BE7B0	Release calls EntityManager::GetPlayer(currCl) and returns mHandle.mVal, matching source.
