@@ -767,6 +767,30 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00449A30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449A30	Release instruction sequence matches source, including the +1 Z offset, eFlags toggle, NaN check, and trBase copy.
 0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:545	Client view-angle setter handles prone corrections, delta-angle encoding, current-angle storage, and viewangle copy.
 0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449BC0	Release prone thresholds, 182.04445 scaling/masks, delta-angle loop, angle storage, and PlayerState copy match source.
+0x0044A900	?Cmd_Noclip_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1603	noclip command checks cheats/alive, toggles client noclip and global state, and sends status.
+0x0044A900	?Cmd_Noclip_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A900	Release gates, toggle, globals, strings, and server command match source.
+0x0044A9C0	?Cmd_UFO_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1303	UFO command checks cheats/alive, toggles client UFO, and sends status.
+0x0044A9C0	?Cmd_UFO_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A9C0	Release gates, toggle, strings, and server command match source.
+0x0044AA60	?G_canPickupMelee@@YAHPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_items.cpp:37	melee pickup predicate handles null client, weapon, weapon state, and two-handed restriction.
+0x0044AA60	?G_canPickupMelee@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AA60	Release conditions and BG weapon query match source.
+0x0044AAB0	?Cmd_SetSpawnPoint_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:469	spawn-point command parses one optional argument exactly as release.
+0x0044AAB0	?Cmd_SetSpawnPoint_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AAB0	Release argc check, buffer size, argv index, and atoi call match source.
+0x0044AAF0	?Cmd_NGLStats_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:237	NGL stats command prints the fixed stats heading.
+0x0044AAF0	?Cmd_NGLStats_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AAF0	Release emits the same nglstats string.
+0x0044AB00	?Cmd_NGLStatDisplay_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:243	NGL performance display command toggles ShowPerfInfo against one.
+0x0044AB00	?Cmd_NGLStatDisplay_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AB00	Release toggles the same global value; bool return is a decompiler artifact.
+0x0044AB10	?Cmd_ProfileShaders_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:249	shader-profile command forwards to nglProfileShaders.
+0x0044AB10	?Cmd_ProfileShaders_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AB10	Release is the same one-call thunk; pointer return is a decompiler artifact.
+0x0044AB30	?Cmd_NGLFPSDisplay_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:334	NGL FPS display command toggles ShowPerfInfo between 0 and 2.
+0x0044AB30	?Cmd_NGLFPSDisplay_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AB30	Release ternary and global store match source.
+0x0044AB50	?Cmd_Wireframe_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:165	wireframe command toggles wireframe and normal debug modes.
+0x0044AB50	?Cmd_Wireframe_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AB50	Release mode comparison and SetDebugRenderMode calls match source.
+0x0044AB70	?Cmd_Fullbright_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:173	fullbright command toggles fullbright and normal debug modes.
+0x0044AB70	?Cmd_Fullbright_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AB70	Release mode comparison and SetDebugRenderMode calls match source.
+0x0044AB90	?Cmd_SolidColor_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:261	solid-color command toggles solid-color and normal debug modes.
+0x0044AB90	?Cmd_SolidColor_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AB90	Release mode comparison and SetDebugRenderMode calls match source.
+0x0044ABB0	?Cmd_TextureSize_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:340	texture-size command toggles texture-size and normal debug modes.
+0x0044ABB0	?Cmd_TextureSize_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044ABB0	Release mode comparison and SetDebugRenderMode calls match source.
 0x0044A000	?G_SetPlayerSize@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_active.cpp:51	player bounds setter writes half width and standing height.
 0x0044A000	?G_SetPlayerSize@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A000	release writes the same five player bound components.
 0x0044A050	?G_AddLean@@YAXPAVEntity@@QAM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:2399	lean helper preserves null-client assert and calls AddLeanToPosition with yaw, lean fraction, 16,20.
