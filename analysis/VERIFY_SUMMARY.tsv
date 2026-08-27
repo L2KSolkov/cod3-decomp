@@ -16,7 +16,7 @@ ae_fixed_string.o	9	0	0	9	0	0	0
 ae_heap.o	12	12	0	0	0	0	0
 afmv_dx_idct.o	3	3	0	0	0	0	0
 afmv_dx_rgb.o	2	2	0	0	0	0	0
-anim.o	741	257	3	474	7	0	0
+anim.o	741	257	3	465	7	9	0
 apk.o	24	1	0	23	0	0	0
 apsAction.o	19	12	1	6	0	0	0
 apsActionList.o	26	18	1	7	0	0	0
@@ -179,7 +179,7 @@ cl.o	341	15	36	274	0	16	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
 controller_xbox.o	16	15	0	1	0	0	0
-core.o	1437	624	80	729	4	0	0
+core.o	1437	624	80	725	4	4	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
@@ -293,7 +293,7 @@ rigid_body.o	13	5	1	7	0	0	0
 scr.o	1540	618	9	128	0	785	0
 shell.o	2214	837	27	1315	4	31	0
 streamer.o	730	377	84	269	0	0	0
-sv.o	148	15	7	126	0	0	0
+sv.o	148	15	7	125	0	1	0
 tl_initlist.o	1	1	0	0	0	0	0
 tl_instbank.o	9	0	0	9	0	0	0
 tl_system.o	25	9	0	16	0	0	0
