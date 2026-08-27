@@ -9390,7 +9390,7 @@ void BrocSys::MissionFailed(const Broc::string& reason)
     Entity* v1 = EntityHandleDb::sInst.Find(640, hash_const.player);
     if (v1 != nullptr && (v1->flags & 1) == 0)
     {
-        // release no-op callback in the binary
+        respawn(v1);
         level.bMissionSuccess = 0;
         level.bMissionFailed = 1;
         level.strMissionFailedReason.clear();
