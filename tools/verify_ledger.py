@@ -394,6 +394,8 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_DObjGetWorldTagMatrix@@YAPBUDObjSkelMat@@PAVEntity@@PAVDObj@@IPAU1@@Z",
         "?CG_Respawn@@YAXXZ":
             "?CG_Respawn@@YAHXZ",
+        "?CG_HoldBreathInit@@YAXXZ":
+            "?CG_HoldBreathInit@@YAHXZ",
         "?CG_WeaponSelectable@@YAHH@Z":
             "?CG_WeaponSelectable@@YA_NH@Z",
         "?CG_Weapon_f@@YAXXZ":

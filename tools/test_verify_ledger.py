@@ -125,6 +125,8 @@ def main() -> int:
                         "?CG_DObjGetWorldTagMatrix@@YAHPAVEntity@@PAVDObj@@IPAUDObjSkelMat@@@Z"))
             assert ("?CG_Respawn@@YAHXZ"
                     in ledger.symbol_variants("?CG_Respawn@@YAXXZ"))
+            assert ("?CG_HoldBreathInit@@YAHXZ"
+                    in ledger.symbol_variants("?CG_HoldBreathInit@@YAXXZ"))
             assert ("?CG_WeaponSelectable@@YA_NH@Z"
                     in ledger.symbol_variants("?CG_WeaponSelectable@@YAHH@Z"))
             assert ("?CG_Weapon_f@@YAHXZ"
