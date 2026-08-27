@@ -349,3 +349,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005C11C0	?MPScript_SetCompassVisibilty@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C11C0	Release decompiles to an empty body, matching source.
 0x005C1A40	?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3067	Source preserves the release no-op NPC-to-vehicle hook.
 0x005C1A40	?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C1A40	Release decompiles to an empty body, matching source.
+0x005BD2F0	?HudClearTypeSettings@BrocSys@@YAXPAUgame_hudelem_s@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2505	Source clears the release HUD type-specific fields and preserves the element ABI.
+0x005BD2F0	?HudClearTypeSettings@BrocSys@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD2F0	Release writes the same width/height, texture, transition, timing, value, and text fields.
+0x005BD320	?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:7393	Source preserves release asserts and initializes all HUD defaults, type, colors, and value.
+0x005BD320	?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD320	Release field-by-field decompilation matches source defaults and assert metadata.
+0x005BD440	?HudIsPanelType@BrocSys@@YA_NPAUgame_hudelem_s@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2941	Source returns the panel-type range predicate used by the script API.
+0x005BD440	?HudIsPanelType@BrocSys@@YA_NPAUgame_hudelem_s@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD440	Release predicate matches source: type >= HE_TYPE_COUNT and <= HE_TYPE_COUNT|HE_TYPE_TIMER_DOWN.
+0x005BD4D0	?HudFree@BrocSys@@YAXPAUgame_hudelem_s@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:8203	Source preserves release pointer/type assertions, text config cleanup, and free transition.
+0x005BD4D0	?HudFree@BrocSys@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD4D0	Release body matches source assertions, text reference cleanup, configstring clear, and HE_TYPE_FREE assignment.
+0x005BD600	?HudSetIsVisible@BrocSys@@YAX_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2948	Source updates the FE manager HUD suppression latch with the inverse visibility flag.
+0x005BD600	?HudSetIsVisible@BrocSys@@YAX_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD600	Release writes g_femanager.mDontDrawHud = !vla, matching source.
+0x005BD670	?SetValue@BrocSys@@YAXABVhudelem@Broc@@M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:7445	Source preserves release bounds assertion, value-slot clears, HE_TYPE_VALUE transition, and value write.
+0x005BD670	?SetValue@BrocSys@@YAXABVhudelem@Broc@@M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD670	Release field stores and HUD type transition match source exactly.
+0x005BD730	?Reset@BrocSys@@YAXABVhudelem@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:8365	Source preserves release index assertion and delegates to HudSetDefaults for the selected element.
+0x005BD730	?Reset@BrocSys@@YAXABVhudelem@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD730	Release index validation and HudSetDefaults call match source.
+0x005BD7A0	?Destroy@BrocSys@@YAXABVhudelem@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:8383	Source preserves release index assertion and conditional HudFree call.
+0x005BD7A0	?Destroy@BrocSys@@YAXABVhudelem@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD7A0	Release validation and conditional free behavior match source.
+0x005BD810	?ValidateApiSize@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:8250	Source preserves the release API-size checks, assert metadata, and expected 456/4924 constants.
+0x005BD810	?ValidateApiSize@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD810	Release checks BrocExports=456 and BrocAPI=4924 with matching error strings and break behavior.
