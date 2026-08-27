@@ -1,0 +1,9 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x004FB510	?ApplyFootIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1065293	Source body is empty; release body is real.
+0x004FBD10	?ApplyHandIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1065582	Source body is empty; release body is real.
+0x004FCA40	?ApplyPainFlinch@AnimIK@@AAEXPAVEntity@@@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1066051	Source body is empty; release body is real.
+0x004FDDC0	?ApplyTorsoRotations@AnimIK@@AAEXPAVEntity@@@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1066742	Source body is empty; release body is real.
+0x004FFC30	?ApplyFire@AnimIK@@AAEXPAVEntity@@@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1068193	Source body is empty; release body is real.
+0x00504C90	?ApplyVehicleSteering@AnimIK@@AAEXPAVEntity@@@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1071109	Source body is empty; release body is real.
+0x005068F0	?ApplyADS@AnimIK@@AAEXPAVEntity@@@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1072043	Source body is empty; release body is real.
+0x00507EC0	?ApplyTerrainMapping@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1072768	Source body is empty; release body is real.

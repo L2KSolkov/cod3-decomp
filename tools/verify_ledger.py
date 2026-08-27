@@ -446,9 +446,11 @@ def compute_level(function: Function, hits: list[Marker], symbols: set[str],
             level = "V2"
             for gate in ("V3", "V4", "V5"):
                 record = evidence.get((f"0x{function.ida_ea:08X}".upper(), function.name, gate))
-                if record is None or record["result"] != PASS:
+                if record is None:
                     break
-                gate_state[gate] = PASS
+                gate_state[gate] = record["result"]
+                if record["result"] != PASS:
+                    break
                 level = gate
     return gate_state, level
 

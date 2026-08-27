@@ -37,6 +37,12 @@ def main() -> int:
             states, level = ledger.compute_level(function, [marker], {"fn"}, evidence)
             assert states["V4"] == "UNVERIFIED" and level == "V2"
 
+            states, level = ledger.compute_level(
+                function, [marker], {"fn"},
+                {("0X0040C000", "fn", "V3"): dict(
+                    gate="V3", result="FAIL")})
+            assert states["V3"] == "FAIL" and level == "V2"
+
             # Definition comments may carry a descriptive function name
             # before the EA; marker parsing must retain that address.
             assert ledger.re.search(
