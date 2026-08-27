@@ -1885,6 +1885,7 @@ public:
     Entity* GetObject(int idx);  // HandleDb<Entity,1344,SizedHandle<12,20>> (g.o)
 };
 
+// ea: 0x004B0DA0
 // ?GetObject@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@H@Z
 Entity* EntityHandleDb::GetObject(int idx)
 {
