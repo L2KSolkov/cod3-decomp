@@ -66,6 +66,10 @@ def main() -> int:
             candidate = ledger.function_candidate(long_signature, 0)
             assert candidate and candidate[0] == "BrocSys::MPScript_SendGameState"
 
+            inline_ctor = ["// ea: 0x00687A90", "refdef_s() {}"]
+            candidate = ledger.function_candidate(inline_ctor, 0)
+            assert candidate and candidate[0] == "refdef_s"
+
             # Release map symbols may carry private member access (AA) while
             # the port exposes the same signature publicly (QA).  Access is
             # not a V2 signature mismatch.

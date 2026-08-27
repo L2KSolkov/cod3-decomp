@@ -187,8 +187,13 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
                 # Calls, control statements, placement-new, and expressions
                 # can occur between a marker and the next definition. A
                 # definition has a return/type prefix (or qualified method).
+                # Constructors and destructors may begin the definition
+                # without a return-type prefix (including inline ``T() {}``
+                # bodies).  A call/expression without an opening brace is
+                # still rejected below by the definition check.
                 if (candidate in {"if", "for", "while", "switch", "catch", "return", "new"}
-                        or not prefix or prefix.endswith((".", "->", "="))):
+                        or (not prefix and "{" not in text)
+                        or prefix.endswith((".", "->", "="))):
                     continue
                 valid.append((candidate, match))
                 if text[:match.start()].rstrip().endswith("*"):

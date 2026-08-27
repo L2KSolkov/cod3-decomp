@@ -3437,13 +3437,18 @@ void CG_DebugArc(const float* center, float radius, float angle0, float angle1,
 // ADS meta-anim player (cg.o cg_misc.cpp)
 // ============================================================================
 
-struct nalAnyPoseAnim {
+class nalAnyPose;
+class nalBaseSkeleton;
+template <typename T> struct nalAnimClass;
+template <> class nalAnimClass<nalAnyPose> {
+public:
     unsigned char _pad[0x30];
     void* Skeleton;          // +0x30
     unsigned char Flags;     // +0x34
     float Duration;          // +0x38
     int InstanceCount;       // +0x3C
 };
+using nalAnyPoseAnim = nalAnimClass<nalAnyPose>;
 
 struct tlFixedString {
     unsigned int hash;  // +0x00
@@ -3512,7 +3517,7 @@ struct nalBasePose {
 class ADSMetaAnimInstance {
 public:
     ADSMetaAnimInstance(nalAnyPoseAnim* forwardAnim, nalAnyPoseAnim* reverseAnim,
-                        void* theSkel, float* interpValue);  // ea: 0x006BB7C0
+                        nalBaseSkeleton* theSkel, float* interpValue);  // ea: 0x006BB7C0
     virtual ~ADSMetaAnimInstance();                          // ea: 0x006BB940
     virtual void VirtualGetPose(float t, float t_prev,
                                 nalBasePose* pose,
@@ -3763,13 +3768,17 @@ typedef void (__thiscall* InstanceVirtualGetPoseFn)(
 // ea: 0x006BB7C0
 ADSMetaAnimInstance::ADSMetaAnimInstance(nalAnyPoseAnim* forwardAnim,
                                         nalAnyPoseAnim* reverseAnim,
-                                        void* theSkel, float* interpValue)
+                                        nalBaseSkeleton* theSkel, float* interpValue)
 {
+    // The release constructs the nalInstanceClass base first, then switches
+    // to the ADSMetaAnimInstance vtable after the shared fields are set.
+    *(void**)this = (void*)0x00CEC48C;  // nalInstanceClass vftable
     Duration = forwardAnim->Duration;
     InverseDuration = Duration == 0.0f ? 0.0f : 1.0f / Duration;
     Skeleton = theSkel != nullptr ? theSkel : forwardAnim->Skeleton;
     Anim = forwardAnim;
     ++forwardAnim->InstanceCount;
+    *(void**)this = (void*)0x00D0ECB8;  // ADSMetaAnimInstance vftable
     mInterpValue = interpValue;
     mPrevValue = 0.0f;
     if (theSkel != nullptr
@@ -3803,6 +3812,7 @@ ADSMetaAnimInstance::~ADSMetaAnimInstance()
         ((InstanceDtorFn)((void**)*(void**)mForwardInst)[0])(mForwardInst, 1);
     if (mReverseInst != nullptr)
         ((InstanceDtorFn)((void**)*(void**)mReverseInst)[0])(mReverseInst, 1);
+    *(void**)this = (void*)0x00CEC48C;  // nalInstanceClass vftable
     --Anim->InstanceCount;
 }
 
@@ -3857,7 +3867,7 @@ void* ADSMetaAnimInstance_Ctor(void* self, void* forwardAnim,
 {
     return new (self) ADSMetaAnimInstance((nalAnyPoseAnim*)forwardAnim,
                                           (nalAnyPoseAnim*)reverseAnim,
-                                          theSkel, interpValue);
+                                          (nalBaseSkeleton*)theSkel, interpValue);
 }
 
 // ea: 0x006BBAC0
