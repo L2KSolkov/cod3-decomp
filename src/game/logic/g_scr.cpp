@@ -25780,6 +25780,10 @@ T entity_get_field(unsigned int handle)
 // ea: 0x005F3920
 // ea: 0x005F3B70
 // ea: 0x005F3DC0
+// ea: 0x005F4010
+// ea: 0x005F4260
+// ea: 0x005F4550
+// ea: 0x005F4840
 template <typename T, int OFF, int IDX>
 void entity_set_actor_field(unsigned int handle, T val)
 {
@@ -25818,6 +25822,10 @@ void entity_set_actor_field(unsigned int handle, T val)
 // ea: 0x005F3A40
 // ea: 0x005F3C90
 // ea: 0x005F3EE0
+// ea: 0x005F4130
+// ea: 0x005F4390
+// ea: 0x005F4680
+// ea: 0x005F4970
 template <typename T, int OFF, int IDX>
 T entity_get_actor_field(unsigned int handle)
 {
