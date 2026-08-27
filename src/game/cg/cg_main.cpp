@@ -40,10 +40,10 @@ extern int dword_F64140[4 * 1580];
 extern int dword_F63BB4[4 * 1580];
 extern int dword_F63BAC[4 * 1580];
 extern int dword_F63CF4[4 * 1580];
-int dword_F641E4;  // ?dword_F641E4@@3HA (cg.o scalar)
-int dword_F641E8;  // ?dword_F641E8@@3HA (cg.o scalar)
-extern int dword_F641E0[2];
-int dword_F641EC;  // ?dword_F641EC@@3HA (cg.o scalar)
+extern int dword_F641E0[4 * 1580];
+extern int dword_F641E4[4 * 1580];
+extern int dword_F641E8[4 * 1580];
+extern int dword_F641EC[4 * 1580];
 enum netsrc_t {
     NS_CLIENT = 0,
     NS_SERVER = 1,
@@ -882,10 +882,10 @@ void CG_MapInit(int restart)
     dword_F63BB4[v9] = -1;
     dword_F63BAC[v9] = -1;
     dword_F63CF4[v9] = 1;
-    dword_F641E4 = 0;
-    dword_F641E8 = 0;
+    dword_F641E4[0] = 0;
+    dword_F641E8[0] = 0;
     dword_F641E0[0] = -1;
-    dword_F641EC = 0;
+    dword_F641EC[0] = 0;
 }
 
 // ea: 0x006B0EB0

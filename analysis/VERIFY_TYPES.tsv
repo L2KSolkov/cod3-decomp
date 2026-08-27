@@ -1,0 +1,1470 @@
+check	type	field	expected	source	line	status
+sizeof	D3DResource		0x0C	platform\xbox_shim\d3d8.h	25	COMPILE_ASSERT_PRESENT
+sizeof	_D3DLOCKED_RECT		8	platform\xbox_shim\d3d8.h	32	COMPILE_ASSERT_PRESENT
+sizeof	_D3DVIEWPORT8		0x18	platform\xbox_shim\d3d8.h	44	COMPILE_ASSERT_PRESENT
+sizeof	_D3DSURFACE_DESC		0x1C	platform\xbox_shim\d3d8.h	139	COMPILE_ASSERT_PRESENT
+sizeof	D3DBaseTexture		0x14	platform\xbox_shim\d3d8.h	167	COMPILE_ASSERT_PRESENT
+sizeof	D3DSurface		0x18	platform\xbox_shim\d3d8.h	203	COMPILE_ASSERT_PRESENT
+sizeof	D3DPalette		0xC	platform\xbox_shim\d3d8.h	211	COMPILE_ASSERT_PRESENT
+sizeof	_D3DCAPS8		0xD4	platform\xbox_shim\d3d8.h	277	COMPILE_ASSERT_PRESENT
+sizeof	D3DVertexBuffer		0x0C	platform\xbox_shim\d3d8.h	285	COMPILE_ASSERT_PRESENT
+sizeof	D3DIndexBuffer		0x0C	platform\xbox_shim\d3d8.h	292	COMPILE_ASSERT_PRESENT
+sizeof	_D3DSTREAM_INPUT		0x0C	platform\xbox_shim\d3d8.h	315	COMPILE_ASSERT_PRESENT
+sizeof	_D3DVBLANKDATA		0x0C	platform\xbox_shim\d3d8.h	375	COMPILE_ASSERT_PRESENT
+sizeof	_D3DGAMMARAMP		0x300	platform\xbox_shim\d3d8.h	383	COMPILE_ASSERT_PRESENT
+sizeof	_D3DPixelShaderDef		0xF0	platform\xbox_shim\d3d8.h	406	COMPILE_ASSERT_PRESENT
+sizeof	_D3DVERTEXSHADERINPUT		0x10	platform\xbox_shim\d3d8.h	420	COMPILE_ASSERT_PRESENT
+sizeof	_D3DVERTEXATTRIBUTEFORMAT		0x100	platform\xbox_shim\d3d8.h	426	COMPILE_ASSERT_PRESENT
+sizeof	_D3DPRESENT_PARAMETERS_		0x44	platform\xbox_shim\d3d8.h	446	COMPILE_ASSERT_PRESENT
+sizeof	PixelShaderDefLayout		0xF0	platform\xbox_shim\nv2a_vsh_d3d9.cpp	38	COMPILE_ASSERT_PRESENT
+sizeof	xbox_adpcmwaveformat_tag		20	platform\xbox_shim\xbox_directsound.h	178	COMPILE_ASSERT_PRESENT
+sizeof	XMediaObject		4	platform\xbox_shim\xbox_directsound.h	180	COMPILE_ASSERT_PRESENT
+sizeof	XFileMediaObject		4	platform\xbox_shim\xbox_directsound.h	181	COMPILE_ASSERT_PRESENT
+sizeof	IDirectSoundStream		4	platform\xbox_shim\xbox_directsound.h	183	COMPILE_ASSERT_PRESENT
+sizeof	_D3DVECTOR		12	platform\xbox_shim\xbox_directsound.h	185	COMPILE_ASSERT_PRESENT
+sizeof	D3DXVECTOR3		12	platform\xbox_shim\xbox_directsound.h	186	COMPILE_ASSERT_PRESENT
+sizeof	_DS3DBUFFER		76	platform\xbox_shim\xbox_directsound.h	187	COMPILE_ASSERT_PRESENT
+sizeof	tWAVEFORMATEX		18	platform\xbox_shim\xbox_directsound.h	188	COMPILE_ASSERT_PRESENT
+sizeof	xbox_WAVEFORMATEXTENSIBLE		40	platform\xbox_shim\xbox_directsound.h	189	COMPILE_ASSERT_PRESENT
+sizeof	_DSENVELOPEDESC		40	platform\xbox_shim\xbox_directsound.h	191	COMPILE_ASSERT_PRESENT
+sizeof	_DSSTREAMDESC		24	platform\xbox_shim\xbox_directsound.h	192	COMPILE_ASSERT_PRESENT
+sizeof	_DSI3DL2LISTENER		48	platform\xbox_shim\xbox_directsound.h	193	COMPILE_ASSERT_PRESENT
+sizeof	_DSBUFFERDESC		24	platform\xbox_shim\xbox_directsound.h	195	COMPILE_ASSERT_PRESENT
+sizeof	_DSEFFECTMAP		32	platform\xbox_shim\xbox_directsound.h	196	COMPILE_ASSERT_PRESENT
+sizeof	_DSEFFECTIMAGELOC		8	platform\xbox_shim\xbox_directsound.h	197	COMPILE_ASSERT_PRESENT
+sizeof	_DSEFFECTIMAGEDESC		40	platform\xbox_shim\xbox_directsound.h	198	COMPILE_ASSERT_PRESENT
+sizeof	apsVirtualBase		4	src\aeps\apsAction.h	41	COMPILE_ASSERT_PRESENT
+sizeof	apsDomain		4	src\aeps\apsAction.h	65	COMPILE_ASSERT_PRESENT
+sizeof	apsAction		0x1C	src\aeps\apsAction.h	407	COMPILE_ASSERT_PRESENT
+sizeof	apsActionList		8	src\aeps\apsActionList.h	59	COMPILE_ASSERT_PRESENT
+sizeof	ParticleIterator		0x04	src\aeps\apsBillboardRenderer.h	61	COMPILE_ASSERT_PRESENT
+sizeof	SortedParticleIterator		0x10	src\aeps\apsBillboardRenderer.h	63	COMPILE_ASSERT_PRESENT
+sizeof	UnsortedParticleIterator		0x14	src\aeps\apsBillboardRenderer.h	65	COMPILE_ASSERT_PRESENT
+sizeof	apsBillboardNode		0xC0	src\aeps\apsBillboardRenderer.h	81	COMPILE_ASSERT_PRESENT
+sizeof	apsBillboardRenderer		0x80	src\aeps\apsBillboardRenderer.h	179	COMPILE_ASSERT_PRESENT
+sizeof	apsColorBillboardNode		0xC0	src\aeps\apsColorBillboardRenderer.h	21	COMPILE_ASSERT_PRESENT
+sizeof	apsColorBillboardRenderer		0x80	src\aeps\apsColorBillboardRenderer.h	39	COMPILE_ASSERT_PRESENT
+sizeof	apsColorRectangleNode		0xC0	src\aeps\apsColorRectangleRenderer.h	21	COMPILE_ASSERT_PRESENT
+sizeof	apsColorRectangleRenderer		0x80	src\aeps\apsColorRectangleRenderer.h	37	COMPILE_ASSERT_PRESENT
+sizeof	apsColorUVARectangleNode		0xC0	src\aeps\apsColorUVARectangleRenderer.h	21	COMPILE_ASSERT_PRESENT
+sizeof	apsColorUVARectangleRenderer		0x90	src\aeps\apsColorUVARectangleRenderer.h	37	COMPILE_ASSERT_PRESENT
+sizeof	apsColorUVANode		0xC0	src\aeps\apsColorUVARenderer.h	21	COMPILE_ASSERT_PRESENT
+sizeof	apsColorUVARenderer		0x90	src\aeps\apsColorUVARenderer.h	37	COMPILE_ASSERT_PRESENT
+sizeof	apsLOD		0x2C	src\aeps\apsCommon.h	81	COMPILE_ASSERT_PRESENT
+sizeof	apsAllocator		4	src\aeps\apsCommon.h	94	COMPILE_ASSERT_PRESENT
+sizeof	CameraSettings		0x40	src\aeps\apsCommon.h	127	COMPILE_ASSERT_PRESENT
+sizeof	PlayerViewPort		0x80	src\aeps\apsCommon.h	140	COMPILE_ASSERT_PRESENT
+sizeof	Element		0x48	src\aeps\apsEffect.h	63	COMPILE_ASSERT_PRESENT
+sizeof	Modifier		0x2C	src\aeps\apsEffect.h	75	COMPILE_ASSERT_PRESENT
+sizeof	Stats		0x18	src\aeps\apsEffect.h	96	COMPILE_ASSERT_PRESENT
+sizeof	apsEffectTemplate		0xD0	src\aeps\apsEffect.h	174	COMPILE_ASSERT_PRESENT
+sizeof	CollisionData		0xC30	src\aeps\apsEffect.h	321	COMPILE_ASSERT_PRESENT
+sizeof	apsEffect		0x80	src\aeps\apsEffect.h	393	COMPILE_ASSERT_PRESENT
+sizeof	apsGroupManager		0x0C	src\aeps\apsGroupMgr.h	48	COMPILE_ASSERT_PRESENT
+sizeof	Entry		0x40	src\aeps\apsInternal.h	138	COMPILE_ASSERT_PRESENT
+sizeof	SpawnedEffectQueue		0x1010	src\aeps\apsInternal.h	198	COMPILE_ASSERT_PRESENT
+sizeof	apsQuaternion		16	src\aeps\apsMath.h	50	COMPILE_ASSERT_PRESENT
+sizeof	Config		0x0C	src\aeps\apsMemory.h	50	COMPILE_ASSERT_PRESENT
+sizeof	PoolBlock		8	src\aeps\apsMemory.h	77	COMPILE_ASSERT_PRESENT
+sizeof	Stats		0x48	src\aeps\apsMemory.h	109	COMPILE_ASSERT_PRESENT
+sizeof	Pool		0x24	src\aeps\apsMemory.h	138	COMPILE_ASSERT_PRESENT
+sizeof	BlockAllocator		4	src\aeps\apsMemory.h	152	COMPILE_ASSERT_PRESENT
+sizeof	BlockManager		0x1C	src\aeps\apsMemory.h	183	COMPILE_ASSERT_PRESENT
+sizeof	PoolAllocator<int>		0x2C	src\aeps\apsMemory.h	231	COMPILE_ASSERT_PRESENT
+sizeof	apsParam		0x10	src\aeps\apsParam.h	61	COMPILE_ASSERT_PRESENT
+sizeof	MeshParticleContext		0xD0	src\aeps\apsParticleTypes.h	18	COMPILE_ASSERT_PRESENT
+sizeof	ShrimpParticle		0x20	src\aeps\apsParticleTypes.h	28	COMPILE_ASSERT_PRESENT
+sizeof	MeshParticle		0x20	src\aeps\apsParticleTypes.h	35	COMPILE_ASSERT_PRESENT
+sizeof	apsRectangleNode		0xC0	src\aeps\apsRectangleRenderer.h	22	COMPILE_ASSERT_PRESENT
+sizeof	apsRectangleRenderer		0x80	src\aeps\apsRectangleRenderer.h	40	COMPILE_ASSERT_PRESENT
+sizeof	apsRenderNode		0xB0	src\aeps\apsRenderNode.h	68	COMPILE_ASSERT_PRESENT
+sizeof	apsShrimpNode		0xC0	src\aeps\apsShrimpRenderer.h	46	COMPILE_ASSERT_PRESENT
+sizeof	apsShrimpRenderer		0x40	src\aeps\apsShrimpRenderer.h	101	COMPILE_ASSERT_PRESENT
+sizeof	apsSimpleMeshShader		0x10	src\aeps\apsSimpleMeshRenderer.h	35	COMPILE_ASSERT_PRESENT
+sizeof	apsSimpleMeshNode		0xC0	src\aeps\apsSimpleMeshRenderer.h	50	COMPILE_ASSERT_PRESENT
+sizeof	apsSimpleMeshRenderer		0x18	src\aeps\apsSimpleMeshRenderer.h	78	COMPILE_ASSERT_PRESENT
+sizeof	apsSphereDomain		0x20	src\aeps\apsSuppliedDomains.h	55	COMPILE_ASSERT_PRESENT
+sizeof	apsYHemisphereDomain		0x20	src\aeps\apsSuppliedDomains.h	71	COMPILE_ASSERT_PRESENT
+sizeof	apsZHemisphereDomain		0x20	src\aeps\apsSuppliedDomains.h	87	COMPILE_ASSERT_PRESENT
+sizeof	apsSphereSurfaceDomain		0x20	src\aeps\apsSuppliedDomains.h	103	COMPILE_ASSERT_PRESENT
+sizeof	apsLineDomain		0x30	src\aeps\apsSuppliedDomains.h	122	COMPILE_ASSERT_PRESENT
+sizeof	apsDiscDomain		0x40	src\aeps\apsSuppliedDomains.h	142	COMPILE_ASSERT_PRESENT
+sizeof	apsCircleDomain		0x40	src\aeps\apsSuppliedDomains.h	161	COMPILE_ASSERT_PRESENT
+sizeof	apsUVARectangleNode		0xC0	src\aeps\apsUVARectangleRenderer.h	21	COMPILE_ASSERT_PRESENT
+sizeof	apsUVARectangleRenderer		0x90	src\aeps\apsUVARectangleRenderer.h	37	COMPILE_ASSERT_PRESENT
+sizeof	apsUVANode		0xC0	src\aeps\apsUVARenderer.h	22	COMPILE_ASSERT_PRESENT
+sizeof	apsUVARenderer		0x90	src\aeps\apsUVARenderer.h	47	COMPILE_ASSERT_PRESENT
+sizeof	SpriteVertex		0x18	src\aeps\apsVertexBuffer.h	31	COMPILE_ASSERT_PRESENT
+sizeof	nalCachedPoseInfo		8	src\animation\nal.cpp	543	COMPILE_ASSERT_PRESENT
+sizeof	nalCachedLODInfo		4	src\animation\nal.cpp	549	COMPILE_ASSERT_PRESENT
+sizeof	tlFileBuf		12	src\animation\nal.cpp	563	COMPILE_ASSERT_PRESENT
+sizeof	nalAnimFileHeader		72	src\animation\nal.cpp	577	COMPILE_ASSERT_PRESENT
+sizeof	nalAnimFile		72	src\animation\nal.cpp	582	COMPILE_ASSERT_PRESENT
+sizeof	nalAnimHeap		12	src\animation\nal.cpp	617	COMPILE_ASSERT_PRESENT
+sizeof	nalBaseSkeleton		96	src\animation\nal.cpp	674	COMPILE_ASSERT_PRESENT
+sizeof	nalBasePose		8	src\animation\nal.cpp	722	COMPILE_ASSERT_PRESENT
+sizeof	nalAnimClass<nalAnyPose>::nalInstanceClass		20	src\animation\nal.cpp	915	COMPILE_ASSERT_PRESENT
+sizeof	nalAnimClass<nalAnyPose>		64	src\animation\nal.cpp	917	COMPILE_ASSERT_PRESENT
+sizeof	nalIKSpin		96	src\animation\nal.cpp	1199	COMPILE_ASSERT_PRESENT
+sizeof	nalMatrix3x3		0x30	src\animation\nal.cpp	1259	COMPILE_ASSERT_PRESENT
+sizeof	nalGenericBoneHandle		8	src\animation\nal.cpp	1418	COMPILE_ASSERT_PRESENT
+sizeof	nalLOD		16	src\animation\nal.cpp	1434	COMPILE_ASSERT_PRESENT
+sizeof	nalObject		32	src\animation\nal.cpp	1447	COMPILE_ASSERT_PRESENT
+sizeof	nalAnimCache		28	src\animation\nal.cpp	1470	COMPILE_ASSERT_PRESENT
+sizeof	nalGenericPose		16	src\animation\nal.cpp	1773	COMPILE_ASSERT_PRESENT
+sizeof	nalOffsetMap		20	src\animation\nal.cpp	1782	COMPILE_ASSERT_PRESENT
+sizeof	nalLODInfo		20	src\animation\nal.cpp	1794	COMPILE_ASSERT_PRESENT
+sizeof	nalBoneInfo		48	src\animation\nal.cpp	1804	COMPILE_ASSERT_PRESENT
+sizeof	nalTrackInfo		40	src\animation\nal.cpp	1811	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentInfo		48	src\animation\nal.cpp	1820	COMPILE_ASSERT_PRESENT
+sizeof	nalGenericSkeleton		224	src\animation\nal.cpp	1922	COMPILE_ASSERT_PRESENT
+sizeof	nalGenericAnim		112	src\animation\nal.cpp	2200	COMPILE_ASSERT_PRESENT
+sizeof	nalGenericInstance		48	src\animation\nal.cpp	2236	COMPILE_ASSERT_PRESENT
+sizeof	nalInitListAnimType		0x30	src\animation\nal.cpp	3171	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentInitList		0x10	src\animation\nal.cpp	3215	COMPILE_ASSERT_PRESENT
+sizeof	nalSceneAnimChunkHeader		12	src\animation\nal.cpp	3258	COMPILE_ASSERT_PRESENT
+sizeof	nalSceneAnimHeader		80	src\animation\nal.cpp	3274	COMPILE_ASSERT_PRESENT
+sizeof	nalSceneAnim		80	src\animation\nal.cpp	3291	COMPILE_ASSERT_PRESENT
+sizeof	nalClientAnimNode		16	src\animation\nal.cpp	3336	COMPILE_ASSERT_PRESENT
+sizeof	nalSceneAnimInstance		28	src\animation\nal.cpp	3372	COMPILE_ASSERT_PRESENT
+sizeof	nalStreamInstance		124	src\animation\nal.cpp	3456	COMPILE_ASSERT_PRESENT
+sizeof	nalStaticInstance		32	src\animation\nal.cpp	3551	COMPILE_ASSERT_PRESENT
+sizeof	InteractionController		0x210	src\animation\nal.cpp	6990	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentSignalCounter		4	src\animation\nal.cpp	11488	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentRLE8Int1		4	src\animation\nal.cpp	11490	COMPILE_ASSERT_PRESENT
+sizeof	nalPosition16		6	src\animation\nal.cpp	11738	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentPacked16EntropyIKSpinData::SkeletonComponentData		20	src\animation\nal.cpp	12809	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentPacked16EntropyIKSpinData::AnimData		4	src\animation\nal.cpp	12811	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentPacked16EntropyIKSpinData::AnimComponentData		1	src\animation\nal.cpp	12813	COMPILE_ASSERT_PRESENT
+sizeof	nalComponentPacked16EntropyIKSpinData::CacheType		26	src\animation\nal.cpp	12815	COMPILE_ASSERT_PRESENT
+sizeof	nalRLEDecoder<unsigned char>		8	src\animation\nal.cpp	21936	COMPILE_ASSERT_PRESENT
+sizeof	InteractStateInfo		0x598	src\animation\nal.cpp	27626	COMPILE_ASSERT_PRESENT
+sizeof	AnimBankManager		0x190	src\animation\nal.cpp	37099	COMPILE_ASSERT_PRESENT
+sizeof	bdStringData		12	src\bd\bd_types.h	35	COMPILE_ASSERT_PRESENT
+sizeof	bdString		4	src\bd\bd_types.h	49	COMPILE_ASSERT_PRESENT
+sizeof	bdLogImpl		8	src\bd\bd_types.h	136	COMPILE_ASSERT_PRESENT
+sizeof	bdReference<bdReferencable>		4	src\bd\bd_types.h	165	COMPILE_ASSERT_PRESENT
+sizeof	bdInAddr		4	src\bd\bd_types.h	192	COMPILE_ASSERT_PRESENT
+sizeof	bdInetAddr		4	src\bd\bd_types.h	228	COMPILE_ASSERT_PRESENT
+sizeof	bdAddr		8	src\bd\bd_types.h	258	COMPILE_ASSERT_PRESENT
+offsetof	bdAddr	m_port	0x04	src\bd\bd_types.h	259	COMPILE_ASSERT_PRESENT
+sizeof	bdSocket		0x08	src\bd\bd_types.h	329	COMPILE_ASSERT_PRESENT
+sizeof	bdBuffer		0x0C	src\bd\bd_types.h	340	COMPILE_ASSERT_PRESENT
+sizeof	bdFastArray<char>		0x0C	src\bd\bd_types.h	416	COMPILE_ASSERT_PRESENT
+sizeof	bdArray<char>		0x0C	src\bd\bd_types.h	428	COMPILE_ASSERT_PRESENT
+sizeof	bdByteBuffer		0x18	src\bd\bd_types.h	446	COMPILE_ASSERT_PRESENT
+offsetof	bdByteBuffer	m_size	0x08	src\bd\bd_types.h	447	COMPILE_ASSERT_PRESENT
+offsetof	bdByteBuffer	m_data	0x0C	src\bd\bd_types.h	448	COMPILE_ASSERT_PRESENT
+sizeof	bdBitBuffer		0x24	src\bd\bd_types.h	547	COMPILE_ASSERT_PRESENT
+offsetof	bdBitBuffer	m_data	0x08	src\bd\bd_types.h	548	COMPILE_ASSERT_PRESENT
+offsetof	bdBitBuffer	m_writePosition	0x14	src\bd\bd_types.h	549	COMPILE_ASSERT_PRESENT
+offsetof	bdBitBuffer	m_readPosition	0x1C	src\bd\bd_types.h	550	COMPILE_ASSERT_PRESENT
+sizeof	bdMessage		0x18	src\bd\bd_types.h	576	COMPILE_ASSERT_PRESENT
+offsetof	bdMessage	m_type	0x08	src\bd\bd_types.h	577	COMPILE_ASSERT_PRESENT
+offsetof	bdMessage	m_payload	0x0C	src\bd\bd_types.h	578	COMPILE_ASSERT_PRESENT
+offsetof	bdMessage	m_unencPayload	0x14	src\bd\bd_types.h	579	COMPILE_ASSERT_PRESENT
+sizeof	XNADDR		0x24	src\bd\bd_types.h	592	COMPILE_ASSERT_PRESENT
+sizeof	bdCommonAddr		0x40	src\bd\bd_types.h	636	COMPILE_ASSERT_PRESENT
+offsetof	bdCommonAddr	m_addr	0x08	src\bd\bd_types.h	637	COMPILE_ASSERT_PRESENT
+offsetof	bdCommonAddr	m_port	0x2C	src\bd\bd_types.h	638	COMPILE_ASSERT_PRESENT
+offsetof	bdCommonAddr	m_hash	0x34	src\bd\bd_types.h	639	COMPILE_ASSERT_PRESENT
+offsetof	bdCommonAddr	m_natType	0x3C	src\bd\bd_types.h	640	COMPILE_ASSERT_PRESENT
+sizeof	bdAddrHandle		0x10	src\bd\bd_types.h	655	COMPILE_ASSERT_PRESENT
+offsetof	bdAddrHandle	m_addr	0x08	src\bd\bd_types.h	656	COMPILE_ASSERT_PRESENT
+offsetof	bdAddrHandle	m_port	0x0C	src\bd\bd_types.h	657	COMPILE_ASSERT_PRESENT
+sizeof	bdConnectionStatistics		0x40	src\bd\bd_types.h	698	COMPILE_ASSERT_PRESENT
+offsetof	bdConnectionStatistics	m_bytesSent	0x00	src\bd\bd_types.h	699	COMPILE_ASSERT_PRESENT
+offsetof	bdConnectionStatistics	m_packetsRecv	0x30	src\bd\bd_types.h	700	COMPILE_ASSERT_PRESENT
+offsetof	bdConnectionStatistics	m_avgRTT	0x3C	src\bd\bd_types.h	701	COMPILE_ASSERT_PRESENT
+sizeof	bdLinkedList<char>		0x0C	src\bd\bd_types.h	840	COMPILE_ASSERT_PRESENT
+sizeof	bdQueue<char>		0x0C	src\bd\bd_types.h	872	COMPILE_ASSERT_PRESENT
+sizeof	bdGapAckBlock		0x08	src\bd\bd_types.h	884	COMPILE_ASSERT_PRESENT
+sizeof	bdChunk		0x0C	src\bd\bd_types.h	904	COMPILE_ASSERT_PRESENT
+sizeof	bdHeartbeatChunk		0x10	src\bd\bd_types.h	925	COMPILE_ASSERT_PRESENT
+sizeof	bdHeartbeatAckChunk		0x10	src\bd\bd_types.h	946	COMPILE_ASSERT_PRESENT
+sizeof	bdShutdownChunk		0x10	src\bd\bd_types.h	967	COMPILE_ASSERT_PRESENT
+sizeof	bdShutdownAckChunk		0x10	src\bd\bd_types.h	988	COMPILE_ASSERT_PRESENT
+sizeof	bdShutdownCompleteChunk		0x10	src\bd\bd_types.h	1009	COMPILE_ASSERT_PRESENT
+sizeof	bdCookie		0x18	src\bd\bd_types.h	1037	COMPILE_ASSERT_PRESENT
+sizeof	bdCookieEchoChunk		0x18	src\bd\bd_types.h	1062	COMPILE_ASSERT_PRESENT
+sizeof	bdCookieAckChunk		0x10	src\bd\bd_types.h	1083	COMPILE_ASSERT_PRESENT
+sizeof	bdInitChunk		0x1C	src\bd\bd_types.h	1110	COMPILE_ASSERT_PRESENT
+sizeof	bdInitAckChunk		0x24	src\bd\bd_types.h	1141	COMPILE_ASSERT_PRESENT
+sizeof	bdPacket		0x24	src\bd\bd_types.h	1171	COMPILE_ASSERT_PRESENT
+sizeof	bdPacket		0x24	src\bd\bd_types.h	1173	COMPILE_ASSERT_PRESENT
+sizeof	bdDataChunk		0x18	src\bd\bd_types.h	1210	COMPILE_ASSERT_PRESENT
+offsetof	bdDataChunk	m_message	0x10	src\bd\bd_types.h	1211	COMPILE_ASSERT_PRESENT
+offsetof	bdDataChunk	m_flags	0x14	src\bd\bd_types.h	1212	COMPILE_ASSERT_PRESENT
+offsetof	bdDataChunk	m_sequenceNumber	0x16	src\bd\bd_types.h	1213	COMPILE_ASSERT_PRESENT
+sizeof	bdSAckChunk		0x28	src\bd\bd_types.h	1248	COMPILE_ASSERT_PRESENT
+offsetof	bdSAckChunk	m_flags	0x10	src\bd\bd_types.h	1249	COMPILE_ASSERT_PRESENT
+offsetof	bdSAckChunk	m_cumulativeAck	0x14	src\bd\bd_types.h	1250	COMPILE_ASSERT_PRESENT
+offsetof	bdSAckChunk	m_gapList	0x18	src\bd\bd_types.h	1251	COMPILE_ASSERT_PRESENT
+offsetof	bdSAckChunk	m_windowCredit	0x24	src\bd\bd_types.h	1252	COMPILE_ASSERT_PRESENT
+sizeof	bdSequenceNumber		4	src\bd\bd_types.h	1281	COMPILE_ASSERT_PRESENT
+sizeof	bdMessageFrame		0x0C	src\bd\bd_types.h	1319	COMPILE_ASSERT_PRESENT
+sizeof	bdReliableSendWindow		0x628	src\bd\bd_types.h	1355	COMPILE_ASSERT_PRESENT
+sizeof	bdReliableReceiveWindow		0x21C	src\bd\bd_types.h	1384	COMPILE_ASSERT_PRESENT
+sizeof	bdUnreliableSendWindow		0x14	src\bd\bd_types.h	1403	COMPILE_ASSERT_PRESENT
+sizeof	bdUnreliableReceiveWindow		0x14	src\bd\bd_types.h	1421	COMPILE_ASSERT_PRESENT
+sizeof	bdConnection		0x64	src\bd\bd_types.h	1496	COMPILE_ASSERT_PRESENT
+offsetof	bdConnection	m_addr	0x08	src\bd\bd_types.h	1497	COMPILE_ASSERT_PRESENT
+offsetof	bdConnection	m_stats	0x10	src\bd\bd_types.h	1498	COMPILE_ASSERT_PRESENT
+offsetof	bdConnection	m_listeners	0x50	src\bd\bd_types.h	1499	COMPILE_ASSERT_PRESENT
+offsetof	bdConnection	m_maxTransmissionRate	0x5C	src\bd\bd_types.h	1500	COMPILE_ASSERT_PRESENT
+offsetof	bdConnection	m_status	0x60	src\bd\bd_types.h	1501	COMPILE_ASSERT_PRESENT
+sizeof	bdLoopbackConnection		0x74	src\bd\bd_types.h	1527	COMPILE_ASSERT_PRESENT
+sizeof	bdReceivedMessage		0x08	src\bd\bd_types.h	1545	COMPILE_ASSERT_PRESENT
+sizeof	bdDispatcher		0x0C	src\bd\bd_types.h	1562	COMPILE_ASSERT_PRESENT
+sizeof	bdAddressMapImpl		0x04	src\bd\bdAddressMap.h	33	COMPILE_ASSERT_PRESENT
+sizeof	bdConnectionStore		0x60	src\bd\bdConnectionStore.h	57	COMPILE_ASSERT_PRESENT
+sizeof	bdDiscoveryServer		0x1C	src\bd\bdDiscovery.h	55	COMPILE_ASSERT_PRESENT
+sizeof	bdDiscoveryClient		0x40	src\bd\bdDiscovery.h	85	COMPILE_ASSERT_PRESENT
+sizeof	bdGameInfo		0x28	src\bd\bdGameInfo.h	52	COMPILE_ASSERT_PRESENT
+sizeof	bdGameInfoFactoryImpl		4	src\bd\bdGameInfo.h	76	COMPILE_ASSERT_PRESENT
+sizeof	bdAddrHandleHashmapWrapper		0x04	src\bd\bdHashMap.h	35	COMPILE_ASSERT_PRESENT
+sizeof	bdHashMap<bdAddrHandleHashmapWrapper, bdReference<bdConnection>, bdAddrHandleHashmapWrapper>		0x18	src\bd\bdHashMap.h	219	COMPILE_ASSERT_PRESENT
+sizeof	bdLogChannelMap		0x18	src\bd\bdLog.cpp	40	COMPILE_ASSERT_PRESENT
+sizeof	bdLogChannelMapNode		0x0C	src\bd\bdLog.cpp	41	COMPILE_ASSERT_PRESENT
+sizeof	bdLogChannel		0x28	src\bd\bdLog.cpp	72	COMPILE_ASSERT_PRESENT
+sizeof	bdSingletonRegistryImpl		0x14	src\bd\bdLog.cpp	373	COMPILE_ASSERT_PRESENT
+sizeof	bdMallocMemory::bdMemoryChainElement		0x14	src\bd\bdMemory\bdMallocMemory.h	39	COMPILE_ASSERT_PRESENT
+sizeof	bdNetStartParams		0x2C	src\bd\bdNet.h	43	COMPILE_ASSERT_PRESENT
+sizeof	bdNetImpl		0x90	src\bd\bdNet.h	90	COMPILE_ASSERT_PRESENT
+sizeof	XNQOSINFO		0x18	src\bd\bdQoSProbe.cpp	62	COMPILE_ASSERT_PRESENT
+sizeof	bdQoSRemoteAddr		0x1C	src\bd\bdQoSProbe.h	29	COMPILE_ASSERT_PRESENT
+sizeof	bdQoSProbeInfo		0x24	src\bd\bdQoSProbe.h	51	COMPILE_ASSERT_PRESENT
+sizeof	bdQoSProbe		0x18	src\bd\bdQoSProbe.h	76	COMPILE_ASSERT_PRESENT
+sizeof	bdPeerData		0x08	src\bd\bdSession.h	62	COMPILE_ASSERT_PRESENT
+sizeof	bdSession		0x98	src\bd\bdSession.h	160	COMPILE_ASSERT_PRESENT
+sizeof	bdSocketRouter		0x2C	src\bd\bdSocketRouter.h	55	COMPILE_ASSERT_PRESENT
+sizeof	bdStopwatch		0x10	src\bd\bdStopwatch.h	24	COMPILE_ASSERT_PRESENT
+sizeof	bdShortTimer		4	src\bd\bdTiming\bdShortTimer.h	42	COMPILE_ASSERT_PRESENT
+sizeof	bdUnicastConnection		0x138	src\bd\bdUnicastConnection.h	153	COMPILE_ASSERT_PRESENT
+sizeof	Level		0x0C	src\broc\mp_anim_wad.h	27	COMPILE_ASSERT_PRESENT
+sizeof	Anim		0x08	src\broc\mp_anim_wad.h	28	COMPILE_ASSERT_PRESENT
+sizeof	Level		0x234	src\broc\mp_level.cpp	117	COMPILE_ASSERT_PRESENT
+sizeof	Anim		0x08	src\broc\mp_level.cpp	118	COMPILE_ASSERT_PRESENT
+sizeof	Level		0x0C	src\broc\mp_util_wad.h	15	COMPILE_ASSERT_PRESENT
+sizeof	Anim		0x08	src\broc\mp_util_wad.h	16	COMPILE_ASSERT_PRESENT
+sizeof	LocalFields		0x14	src\broc\mp_util_wad.h	76	COMPILE_ASSERT_PRESENT
+sizeof	Level		0x230	src\broc\mp_util_wad.h	186	COMPILE_ASSERT_PRESENT
+sizeof	Anim		0x08	src\broc\mp_util_wad.h	191	COMPILE_ASSERT_PRESENT
+sizeof	cdl_cinfo1		0x20	src\core\cdl_types.h	19	COMPILE_ASSERT_PRESENT
+sizeof	cdlConvex_vtbl		0x24	src\core\cdl_types.h	34	COMPILE_ASSERT_PRESENT
+sizeof	cdlVirtual		0x04	src\core\cdl_types.h	42	COMPILE_ASSERT_PRESENT
+sizeof	cdlConvex		0x30	src\core\cdl_types.h	87	COMPILE_ASSERT_PRESENT
+offsetof	cdlConvex	__vftable	0x00	src\core\cdl_types.h	88	COMPILE_ASSERT_PRESENT
+offsetof	cdlConvex	m_surfaceFlags	0x04	src\core\cdl_types.h	89	COMPILE_ASSERT_PRESENT
+offsetof	cdlConvex	m_contentFlags	0x08	src\core\cdl_types.h	90	COMPILE_ASSERT_PRESENT
+offsetof	cdlConvex	m_checkCount	0x0C	src\core\cdl_types.h	91	COMPILE_ASSERT_PRESENT
+offsetof	cdlConvex	m_sphere	0x10	src\core\cdl_types.h	92	COMPILE_ASSERT_PRESENT
+offsetof	cdlConvex	m_dims	0x20	src\core\cdl_types.h	93	COMPILE_ASSERT_PRESENT
+sizeof	cdlAABB		0x30	src\core\cdl_types.h	101	COMPILE_ASSERT_PRESENT
+sizeof	cdlSphere		0x30	src\core\cdl_types.h	109	COMPILE_ASSERT_PRESENT
+sizeof	cdl_cinfo2		0x30	src\core\cdl_types.h	122	COMPILE_ASSERT_PRESENT
+offsetof	cdl_cinfo2	pa	0x00	src\core\cdl_types.h	123	COMPILE_ASSERT_PRESENT
+offsetof	cdl_cinfo2	pb	0x10	src\core\cdl_types.h	124	COMPILE_ASSERT_PRESENT
+offsetof	cdl_cinfo2	ni	0x20	src\core\cdl_types.h	125	COMPILE_ASSERT_PRESENT
+sizeof	Color32		4	src\core\color.h	28	COMPILE_ASSERT_PRESENT
+sizeof	Color		0x10	src\core\color.h	52	COMPILE_ASSERT_PRESENT
+sizeof	DiagMat33		0x10	src\core\math_types.h	44	COMPILE_ASSERT_PRESENT
+sizeof	Dir3		0x10	src\core\math_types.h	104	COMPILE_ASSERT_PRESENT
+sizeof	Dir3::Constant		0x10	src\core\math_types.h	105	COMPILE_ASSERT_PRESENT
+sizeof	Dir3::Packed		0x0C	src\core\math_types.h	106	COMPILE_ASSERT_PRESENT
+sizeof	Position3		0x10	src\core\math_types.h	164	COMPILE_ASSERT_PRESENT
+sizeof	Position3::Constant		0x10	src\core\math_types.h	165	COMPILE_ASSERT_PRESENT
+sizeof	Position3::Packed		0x0C	src\core\math_types.h	166	COMPILE_ASSERT_PRESENT
+sizeof	Vector4		0x10	src\core\math_types.h	298	COMPILE_ASSERT_PRESENT
+sizeof	Mat43		0x40	src\core\math_types.h	357	COMPILE_ASSERT_PRESENT
+sizeof	Mat43::Packed		0x30	src\core\math_types.h	358	COMPILE_ASSERT_PRESENT
+sizeof	Mat33		0x30	src\core\math_types.h	390	COMPILE_ASSERT_PRESENT
+sizeof	Mat44		0x40	src\core\math_types.h	446	COMPILE_ASSERT_PRESENT
+sizeof	TranMat43		0x10	src\core\math_types.h	489	COMPILE_ASSERT_PRESENT
+sizeof	Quaternion		0x10	src\core\math_types.h	511	COMPILE_ASSERT_PRESENT
+sizeof	ae_heap_base		4	src\core\memory_types.h	26	COMPILE_ASSERT_PRESENT
+sizeof	ae_heap_wrapper		8	src\core\memory_types.h	38	COMPILE_ASSERT_PRESENT
+sizeof	cFreeList<char>		0x0C	src\core\memory_types.h	63	COMPILE_ASSERT_PRESENT
+sizeof	PoolConfig		0x10	src\core\PoolAllocator.h	51	COMPILE_ASSERT_PRESENT
+offsetof	PoolConfig	blockAlign	0x04	src\core\PoolAllocator.h	52	COMPILE_ASSERT_PRESENT
+offsetof	PoolConfig	numBlocks	0x08	src\core\PoolAllocator.h	54	COMPILE_ASSERT_PRESENT
+sizeof	tlFileBuf		8	src\core\tl_system.cpp	34	COMPILE_ASSERT_PRESENT
+sizeof	tlFixedString		0x20	src\core\tlFixedString.h	87	COMPILE_ASSERT_PRESENT
+sizeof	Instance		0x2C	src\core\tlInstanceBank.h	23	COMPILE_ASSERT_PRESENT
+sizeof	tlInstanceBank		0x14	src\core\tlInstanceBank.h	46	COMPILE_ASSERT_PRESENT
+sizeof	tlResourceDirectory<int>		4	src\core\tlResourceDirectory.h	98	COMPILE_ASSERT_PRESENT
+sizeof	BrocAPI		0x133C	src\engine\broc_types.h	1630	COMPILE_ASSERT_PRESENT
+sizeof	PathNodeDynamic		0x24	src\engine\broc_types.h	1995	COMPILE_ASSERT_PRESENT
+sizeof	PathNodeConstant		0x48	src\engine\broc_types.h	2021	COMPILE_ASSERT_PRESENT
+sizeof	PathNodeTransient		0x14	src\engine\broc_types.h	2034	COMPILE_ASSERT_PRESENT
+sizeof	PathLink		0x0C	src\engine\broc_types.h	2047	COMPILE_ASSERT_PRESENT
+sizeof	PathSort		8	src\engine\broc_types.h	2056	COMPILE_ASSERT_PRESENT
+sizeof	PathNodeTree		0x10	src\engine\broc_types.h	2075	COMPILE_ASSERT_PRESENT
+sizeof	TOC1		0x34	src\engine\broc_types.h	2097	COMPILE_ASSERT_PRESENT
+sizeof	TOC2		0x0C	src\engine\broc_types.h	2109	COMPILE_ASSERT_PRESENT
+sizeof	NodeVariableSaver		0xC2	src\engine\broc_types.h	2119	COMPILE_ASSERT_PRESENT
+sizeof	PathLinkInfo		8	src\engine\broc_types.h	2128	COMPILE_ASSERT_PRESENT
+sizeof	PathNodes::PathNode		0x84	src\engine\broc_types.h	2141	COMPILE_ASSERT_PRESENT
+sizeof	apkFileSection		0x18	src\filesystem\apk.h	27	COMPILE_ASSERT_PRESENT
+sizeof	apkFileTypeEntry		0x14	src\filesystem\apk.h	47	COMPILE_ASSERT_PRESENT
+sizeof	txSlotEntry		12	src\filesystem\nfl.cpp	319	COMPILE_ASSERT_PRESENT
+sizeof	nflInitParams		20	src\filesystem\nfl.cpp	320	COMPILE_ASSERT_PRESENT
+sizeof	nflRequestParams		40	src\filesystem\nfl.cpp	321	COMPILE_ASSERT_PRESENT
+sizeof	nflRequestInfo		12	src\filesystem\nfl.cpp	322	COMPILE_ASSERT_PRESENT
+sizeof	nflMediaAlignments		12	src\filesystem\nfl.cpp	323	COMPILE_ASSERT_PRESENT
+sizeof	nflSimulateError		20	src\filesystem\nfl.cpp	324	COMPILE_ASSERT_PRESENT
+sizeof	nfsRequest		68	src\filesystem\nfl.cpp	325	COMPILE_ASSERT_PRESENT
+sizeof	nfsFile		292	src\filesystem\nfl.cpp	326	COMPILE_ASSERT_PRESENT
+sizeof	nfsStream		16	src\filesystem\nfl.cpp	327	COMPILE_ASSERT_PRESENT
+sizeof	nfdMedia		20	src\filesystem\nfl.cpp	328	COMPILE_ASSERT_PRESENT
+sizeof	nfdInit		12	src\filesystem\nfl.cpp	329	COMPILE_ASSERT_PRESENT
+sizeof	nfdFile		24	src\filesystem\nfl.cpp	330	COMPILE_ASSERT_PRESENT
+sizeof	nfdIo		12	src\filesystem\nfl.cpp	331	COMPILE_ASSERT_PRESENT
+sizeof	nfdBuffer		20	src\filesystem\nfl.cpp	332	COMPILE_ASSERT_PRESENT
+sizeof	nfdIoCommand		28	src\filesystem\nfl.cpp	333	COMPILE_ASSERT_PRESENT
+sizeof	nfdWork		48	src\filesystem\nfl.cpp	334	COMPILE_ASSERT_PRESENT
+sizeof	nfdDriver		72	src\filesystem\nfl.cpp	335	COMPILE_ASSERT_PRESENT
+sizeof	ai_orient_t		0x14	src\game\actor_types.h	157	COMPILE_ASSERT_PRESENT
+sizeof	scr_anim_s		4	src\game\actor_types.h	172	COMPILE_ASSERT_PRESENT
+sizeof	scr_animscript_t		0x0C	src\game\actor_types.h	187	COMPILE_ASSERT_PRESENT
+sizeof	actor_prone_info_t		0x18	src\game\actor_types.h	211	COMPILE_ASSERT_PRESENT
+sizeof	ActorLookAt		0x3C	src\game\actor_types.h	219	COMPILE_ASSERT_PRESENT
+sizeof	actor_physics_t		0x130	src\game\actor_types.h	239	COMPILE_ASSERT_PRESENT
+sizeof	pathpoint_t		0x1C	src\game\actor_types.h	250	COMPILE_ASSERT_PRESENT
+sizeof	path_t		0x410	src\game\actor_types.h	256	COMPILE_ASSERT_PRESENT
+sizeof	path_trim_t		8	src\game\actor_types.h	264	COMPILE_ASSERT_PRESENT
+sizeof	sentient_s		0x170	src\game\actor_types.h	341	COMPILE_ASSERT_PRESENT
+offsetof	sentient_s	pEnt	0x000	src\game\actor_types.h	342	COMPILE_ASSERT_PRESENT
+offsetof	sentient_s	eTeam	0x004	src\game\actor_types.h	343	COMPILE_ASSERT_PRESENT
+offsetof	sentient_s	pEnemy	0x068	src\game\actor_types.h	344	COMPILE_ASSERT_PRESENT
+sizeof	vis_cache_t		0x14	src\game\actor_types.h	357	COMPILE_ASSERT_PRESENT
+offsetof	vis_cache_t	bVisible	0x00	src\game\actor_types.h	358	COMPILE_ASSERT_PRESENT
+sizeof	sentient_info_t		0x50	src\game\actor_types.h	377	COMPILE_ASSERT_PRESENT
+offsetof	sentient_info_t	vLastKnownPos	0x00	src\game\actor_types.h	378	COMPILE_ASSERT_PRESENT
+offsetof	sentient_info_t	VisCache	0x20	src\game\actor_types.h	380	COMPILE_ASSERT_PRESENT
+offsetof	sentient_info_t	iLastKnownPosTime	0x38	src\game\actor_types.h	382	COMPILE_ASSERT_PRESENT
+offsetof	sentient_info_t	attackTime	0x40	src\game\actor_types.h	384	COMPILE_ASSERT_PRESENT
+sizeof	sentient_info_array		0xC0	src\game\actor_types.h	396	COMPILE_ASSERT_PRESENT
+sizeof	BadPlaceArc		0x1C	src\game\actor_types.h	407	COMPILE_ASSERT_PRESENT
+sizeof	BadPathData		0x1C	src\game\actor_types.h	414	COMPILE_ASSERT_PRESENT
+sizeof	BadPathManager		0x1AC	src\game\actor_types.h	425	COMPILE_ASSERT_PRESENT
+sizeof	actor_s		0xB30	src\game\actor_types.h	588	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	pEnt	0x000	src\game\actor_types.h	589	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	pSentient	0x004	src\game\actor_types.h	590	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	fFovDot	0x8AC	src\game\actor_types.h	591	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	fMaxSightDistSqrd	0x8B0	src\game\actor_types.h	592	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	sentientInfo	0x8CC	src\game\actor_types.h	594	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	pPileUpActor	0x83C	src\game\actor_types.h	595	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	pPileUpEnt	0x840	src\game\actor_types.h	596	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	iSpawnTime	0xA84	src\game\actor_types.h	597	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	mg42stayput	0xA98	src\game\actor_types.h	598	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	closeEnt	0xAB4	src\game\actor_types.h	599	COMPILE_ASSERT_PRESENT
+offsetof	actor_s	iUseHintString	0xAA4	src\game\actor_types.h	600	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor		4	src\game\AeThreadFunctor.h	40	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor1<Broc::entity>		12	src\game\AeThreadFunctor.h	63	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor2<Broc::entity, Broc::entity>		16	src\game\AeThreadFunctor.h	87	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor2<Broc::entity, Broc::bbool>		16	src\game\AeThreadFunctor.h	89	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor2<Broc::entity, Broc::bint>		16	src\game\AeThreadFunctor.h	91	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor2<Broc::entity, Broc::bfloat>		16	src\game\AeThreadFunctor.h	93	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor2<Broc::entity, Broc::string>		16	src\game\AeThreadFunctor.h	95	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor2<Broc::entity, HashStr>		16	src\game\AeThreadFunctor.h	97	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor2<Broc::entity, Broc::vector>		24	src\game\AeThreadFunctor.h	99	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor3<Broc::entity, Broc::vector, Broc::vector>		36	src\game\AeThreadFunctor.h	125	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor3<Broc::entity, Broc::string, Broc::bfloat>		20	src\game\AeThreadFunctor.h	127	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor3<Broc::entity, Broc::string, Broc::vector>		28	src\game\AeThreadFunctor.h	129	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor3<Broc::entity, Broc::bint, HashStr>		20	src\game\AeThreadFunctor.h	131	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor3<Broc::entity, Broc::bint, Broc::bint>		20	src\game\AeThreadFunctor.h	133	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadFunctor3<Broc::entity, Broc::bfloat, const char*>		20	src\game\AeThreadFunctor.h	135	COMPILE_ASSERT_PRESENT
+sizeof	hudelem_s		0x7C	src\game\cg\cg_draw.cpp	198	COMPILE_ASSERT_PRESENT
+sizeof	game_hudelem_s		0x7C	src\game\cg\cg_draw.cpp	412	COMPILE_ASSERT_PRESENT
+sizeof	localEntity_t		0xB0	src\game\cg\cg_ents.cpp	85	COMPILE_ASSERT_PRESENT
+sizeof	cgGlobal_t		0x34	src\game\cg\cg_global.h	20	COMPILE_ASSERT_PRESENT
+sizeof	cgMedia_t		0x60	src\game\cg\cg_local.h	52	COMPILE_ASSERT_PRESENT
+offsetof	cgsGlobal_t	media	0x578	src\game\cg\cg_local.h	60	COMPILE_ASSERT_PRESENT
+sizeof	cgsGlobal_t		0x5D8	src\game\cg\cg_local.h	62	COMPILE_ASSERT_PRESENT
+offsetof	EntityHandleDb	mElements	0xA8	src\game\cg\cg_local.h	155	COMPILE_ASSERT_PRESENT
+sizeof	EntityHandleDb		27312	src\game\cg\cg_local.h	156	COMPILE_ASSERT_PRESENT
+sizeof	_objectiveInfo_t		0xB0	src\game\cg\cg_misc.cpp	484	COMPILE_ASSERT_PRESENT
+sizeof	usercmd_s		0x30	src\game\cg\cg_view.cpp	35	COMPILE_ASSERT_PRESENT
+offsetof	cg_pmove_abi	pmove_fixed	0x138	src\game\cg\cg_view.cpp	61	COMPILE_ASSERT_PRESENT
+offsetof	cg_pmove_abi	trace	0x140	src\game\cg\cg_view.cpp	63	COMPILE_ASSERT_PRESENT
+sizeof	cameraShake_t		0x24	src\game\cg\cg_view.cpp	726	COMPILE_ASSERT_PRESENT
+sizeof	field_t		0x11C	src\game\cl\cl_console.h	53	COMPILE_ASSERT_PRESENT
+sizeof	messagewindow_t		0x80	src\game\cl\cl_console.h	72	COMPILE_ASSERT_PRESENT
+sizeof	console_t		0x1144	src\game\cl\cl_console.h	107	COMPILE_ASSERT_PRESENT
+offsetof	InputClientView	weapon	0xA4	src\game\cl\cl_input.cpp	45	COMPILE_ASSERT_PRESENT
+offsetof	InputClientView	mFlags	0x5C8	src\game\cl\cl_input.cpp	46	COMPILE_ASSERT_PRESENT
+offsetof	InputClientView	persPlayerState	0x65C	src\game\cl\cl_input.cpp	47	COMPILE_ASSERT_PRESENT
+sizeof	kbutton_t		0x18	src\game\cl\cl_input.h	21	COMPILE_ASSERT_PRESENT
+sizeof	usercmd_s		0x30	src\game\cl\cl_input.h	40	COMPILE_ASSERT_PRESENT
+sizeof	clPlayerState		0x5D0	src\game\cl\cl_input.h	86	COMPILE_ASSERT_PRESENT
+sizeof	clSnapshot		0x600	src\game\cl\cl_input.h	102	COMPILE_ASSERT_PRESENT
+sizeof	outPacket_t		0x0C	src\game\cl\cl_input.h	108	COMPILE_ASSERT_PRESENT
+sizeof	clientActive_t		0x18B0	src\game\cl\cl_input.h	165	COMPILE_ASSERT_PRESENT
+offsetof	FEManagerView	inGame	0x36	src\game\cl\cl_localclient.cpp	57	COMPILE_ASSERT_PRESENT
+offsetof	FEManagerView	mIGMS	0xC8	src\game\cl\cl_localclient.cpp	59	COMPILE_ASSERT_PRESENT
+offsetof	ClientFrameView	spectatorClient	0x550	src\game\cl\cl_parse.cpp	48	COMPILE_ASSERT_PRESENT
+offsetof	ClientFrameView	playerState	0x774	src\game\cl\cl_parse.cpp	50	COMPILE_ASSERT_PRESENT
+sizeof	netadr_t		0x14	src\game\cl\cl_parse.cpp	142	COMPILE_ASSERT_PRESENT
+offsetof	FEManager	IGO	0x14	src\game\cl\cl_snapshot.cpp	58	COMPILE_ASSERT_PRESENT
+offsetof	FEManager	mIGMS	0xC8	src\game\cl\cl_snapshot.cpp	60	COMPILE_ASSERT_PRESENT
+sizeof	glconfig_t		0xA0	src\game\cl\cl_snapshot.cpp	130	COMPILE_ASSERT_PRESENT
+offsetof	ClientPSAnglesView	delta_angles	0x54	src\game\cl\cl_usercmd.cpp	53	COMPILE_ASSERT_PRESENT
+offsetof	ClientPSAnglesView	viewangles	0xD0	src\game\cl\cl_usercmd.cpp	55	COMPILE_ASSERT_PRESENT
+sizeof	AnimIKFireEvent		8	src\game\client_types.h	29	COMPILE_ASSERT_PRESENT
+sizeof	AnimIKPainEvent		0x1C	src\game\client_types.h	43	COMPILE_ASSERT_PRESENT
+offsetof	AnimIKPainEvent	dir	0x0C	src\game\client_types.h	44	COMPILE_ASSERT_PRESENT
+sizeof	AnimLadderData_t		0x0C	src\game\client_types.h	55	COMPILE_ASSERT_PRESENT
+sizeof	clientPersistent_t		0x218	src\game\client_types.h	87	COMPILE_ASSERT_PRESENT
+offsetof	clientPersistent_t	mStats	0x000	src\game\client_types.h	88	COMPILE_ASSERT_PRESENT
+offsetof	clientPersistent_t	mBaseScore	0x198	src\game\client_types.h	89	COMPILE_ASSERT_PRESENT
+offsetof	clientPersistent_t	cmd	0x1B0	src\game\client_types.h	90	COMPILE_ASSERT_PRESENT
+offsetof	clientPersistent_t	maxHealth	0x214	src\game\client_types.h	91	COMPILE_ASSERT_PRESENT
+sizeof	Client		0xBA0	src\game\client_types.h	183	COMPILE_ASSERT_PRESENT
+offsetof	Client	ps	0x000	src\game\client_types.h	184	COMPILE_ASSERT_PRESENT
+offsetof	Client	pers	0x5D0	src\game\client_types.h	185	COMPILE_ASSERT_PRESENT
+offsetof	Client	noclip	0x7E8	src\game\client_types.h	186	COMPILE_ASSERT_PRESENT
+offsetof	Client	oldOrigin	0x810	src\game\client_types.h	187	COMPILE_ASSERT_PRESENT
+offsetof	Client	fGunPitch	0x820	src\game\client_types.h	188	COMPILE_ASSERT_PRESENT
+offsetof	Client	pHitHitEnt	0x850	src\game\client_types.h	189	COMPILE_ASSERT_PRESENT
+offsetof	Client	AnimIKFireEvents	0x8B4	src\game\client_types.h	190	COMPILE_ASSERT_PRESENT
+offsetof	Client	AnimIKPainEvents	0x92C	src\game\client_types.h	191	COMPILE_ASSERT_PRESENT
+offsetof	Client	mFakerootOriginMatrix	0xB20	src\game\client_types.h	192	COMPILE_ASSERT_PRESENT
+offsetof	Client	mLadderData	0xB64	src\game\client_types.h	193	COMPILE_ASSERT_PRESENT
+offsetof	Client	mFootStepsSurface	0xB98	src\game\client_types.h	194	COMPILE_ASSERT_PRESENT
+sizeof	AnimCacheHeap		4	src\game\core\anim_heap.cpp	27	COMPILE_ASSERT_PRESENT
+sizeof	ConfigStringBankLayout		0x1C	src\game\core\configstring.cpp	32	COMPILE_ASSERT_PRESENT
+sizeof	ConfigStringManagerLayout		0x190	src\game\core\configstring.cpp	39	COMPILE_ASSERT_PRESENT
+sizeof	DbQueryString		0x80	src\game\core\core_systems.h	177	COMPILE_ASSERT_PRESENT
+sizeof	VariableSaver<int>		8	src\game\core\core_systems.h	269	COMPILE_ASSERT_PRESENT
+sizeof	reserved_dlist<int>		0x10	src\game\core\core_systems.h	583	COMPILE_ASSERT_PRESENT
+sizeof	SimpleCollisionDesc		0x20	src\game\core\core_systems.h	763	COMPILE_ASSERT_PRESENT
+sizeof	CollisionDesc		0x30	src\game\core\core_systems.h	774	COMPILE_ASSERT_PRESENT
+sizeof	SoundParams		0x38	src\game\core\core_systems.h	797	COMPILE_ASSERT_PRESENT
+offsetof	SoundParams	mDuration	0x18	src\game\core\core_systems.h	798	COMPILE_ASSERT_PRESENT
+sizeof	AbstractEffect		0x34	src\game\core\core_systems.h	855	COMPILE_ASSERT_PRESENT
+offsetof	AbstractEffect	mPoPtr	0x1C	src\game\core\core_systems.h	856	COMPILE_ASSERT_PRESENT
+sizeof	AbstractEffectSound		0xA0	src\game\core\core_systems.h	893	COMPILE_ASSERT_PRESENT
+sizeof	AbstractEffectParticle		0x38	src\game\core\core_systems.h	917	COMPILE_ASSERT_PRESENT
+sizeof	ParticleEffect		0x3C	src\game\core\core_systems.h	940	COMPILE_ASSERT_PRESENT
+offsetof	ParticleEffect	mEffect	0x1C	src\game\core\core_systems.h	941	COMPILE_ASSERT_PRESENT
+sizeof	AbstractEffectLight		0x44	src\game\core\core_systems.h	966	COMPILE_ASSERT_PRESENT
+sizeof	RumbleEffectInstanceHandle		0x4	src\game\core\core_systems.h	983	COMPILE_ASSERT_PRESENT
+sizeof	AbstractEffectShakeAndRumble		0x70	src\game\core\core_systems.h	1026	COMPILE_ASSERT_PRESENT
+sizeof	ActiveEffectSet		0x2C	src\game\core\core_systems.h	1071	COMPILE_ASSERT_PRESENT
+offsetof	ActiveEffectSet	mPakId	0x1C	src\game\core\core_systems.h	1072	COMPILE_ASSERT_PRESENT
+sizeof	HandleDb		0x1044	src\game\core\core_systems.h	1093	COMPILE_ASSERT_PRESENT
+sizeof	CachedQuery		0x1B8	src\game\core\core_systems.h	1130	COMPILE_ASSERT_PRESENT
+sizeof	PendingQuery		0x220	src\game\core\core_systems.h	1151	COMPILE_ASSERT_PRESENT
+sizeof	EffectRef		0x8	src\game\core\core_systems.h	1158	COMPILE_ASSERT_PRESENT
+sizeof	EffectEventSys		0xA380	src\game\core\core_systems.h	1234	COMPILE_ASSERT_PRESENT
+sizeof	RumbleEffectInstance		0x30	src\game\core\core_systems.h	1267	COMPILE_ASSERT_PRESENT
+sizeof	RumbleData		0x20	src\game\core\core_systems.h	1288	COMPILE_ASSERT_PRESENT
+sizeof	RumbleEffect		0x40	src\game\core\core_systems.h	1313	COMPILE_ASSERT_PRESENT
+sizeof	RumbleManager		0x30	src\game\core\core_systems.h	1345	COMPILE_ASSERT_PRESENT
+sizeof	DbField		0x4	src\game\core\core_systems.h	1397	COMPILE_ASSERT_PRESENT
+sizeof	DbRow		0xC	src\game\core\core_systems.h	1411	COMPILE_ASSERT_PRESENT
+sizeof	DbColumn		0x10	src\game\core\core_systems.h	1423	COMPILE_ASSERT_PRESENT
+sizeof	DbSchema		0x30	src\game\core\core_systems.h	1457	COMPILE_ASSERT_PRESENT
+sizeof	DbTable		0x34	src\game\core\core_systems.h	1478	COMPILE_ASSERT_PRESENT
+sizeof	DbGraphNode		0x10	src\game\core\core_systems.h	1592	COMPILE_ASSERT_PRESENT
+sizeof	DbFieldSet		0x250	src\game\core\core_systems.h	1609	COMPILE_ASSERT_PRESENT
+sizeof	DbQuery		0x460	src\game\core\core_systems.h	1632	COMPILE_ASSERT_PRESENT
+sizeof	DbQueryResults		0x20C	src\game\core\core_systems.h	1644	COMPILE_ASSERT_PRESENT
+sizeof	ConfigString		0x10	src\game\core\core_systems.h	1656	COMPILE_ASSERT_PRESENT
+sizeof	ConfigStringPtr		0x8	src\game\core\core_systems.h	1662	COMPILE_ASSERT_PRESENT
+sizeof	ConfigStringBank		0x1C	src\game\core\core_systems.h	1667	COMPILE_ASSERT_PRESENT
+sizeof	ConfigStringManager		0x190	src\game\core\core_systems.h	1686	COMPILE_ASSERT_PRESENT
+sizeof	STBManager		0x190	src\game\core\core_systems.h	1716	COMPILE_ASSERT_PRESENT
+sizeof	WaitTilOutput		0xC	src\game\core\core_systems.h	1748	COMPILE_ASSERT_PRESENT
+sizeof	EntityNotify		0x14	src\game\core\core_systems.h	1776	COMPILE_ASSERT_PRESENT
+sizeof	EntityNotifySet		0x2C	src\game\core\core_systems.h	1810	COMPILE_ASSERT_PRESENT
+sizeof	gdLight		0x2C	src\game\core\core_systems.h	1828	COMPILE_ASSERT_PRESENT
+sizeof	gdShakeRumble		0x38	src\game\core\core_systems.h	1846	COMPILE_ASSERT_PRESENT
+sizeof	LightEffect		0x70	src\game\core\core_systems.h	1874	COMPILE_ASSERT_PRESENT
+sizeof	AbstractEffectLight::Params		0x14	src\game\core\core_systems.h	1883	COMPILE_ASSERT_PRESENT
+sizeof	AbstractEffectShakeAndRumble::Params		0x14	src\game\core\core_systems.h	1893	COMPILE_ASSERT_PRESENT
+sizeof	DbStringHashTable		0x1100	src\game\core\core_systems.h	1903	COMPILE_ASSERT_PRESENT
+sizeof	DbTableSet		0x28	src\game\core\core_systems.h	1913	COMPILE_ASSERT_PRESENT
+sizeof	DbFieldType<int>		8	src\game\core\core_systems.h	2043	COMPILE_ASSERT_PRESENT
+sizeof	DbFieldType<float>		8	src\game\core\core_systems.h	2045	COMPILE_ASSERT_PRESENT
+sizeof	DbFieldType<FourCC>		8	src\game\core\core_systems.h	2047	COMPILE_ASSERT_PRESENT
+sizeof	DbFieldType<DbQueryString>		0x84	src\game\core\core_systems.h	2049	COMPILE_ASSERT_PRESENT
+sizeof	TBankAlloc		0x10	src\game\core\core_systems.h	2061	COMPILE_ASSERT_PRESENT
+sizeof	LoadStats		0x20	src\game\core\core_systems.h	2069	COMPILE_ASSERT_PRESENT
+sizeof	tlFileBuf		0xC	src\game\core\core_systems.h	2076	COMPILE_ASSERT_PRESENT
+sizeof	TlSystemCallbacks		0x28	src\game\core\core_systems.h	2139	COMPILE_ASSERT_PRESENT
+sizeof	StringTableEntry		0xC	src\game\core\core_systems.h	2148	COMPILE_ASSERT_PRESENT
+sizeof	nalHeap		0x4	src\game\core\core_systems.h	2155	COMPILE_ASSERT_PRESENT
+sizeof	AnimHeap		0x4A4	src\game\core\core_systems.h	2168	COMPILE_ASSERT_PRESENT
+sizeof	AssetBankSet		0x4	src\game\core\core_systems.h	2174	COMPILE_ASSERT_PRESENT
+sizeof	CtrlIcon		0x800	src\game\core\core_systems.h	2190	COMPILE_ASSERT_PRESENT
+sizeof	DialogueBank		0x1C	src\game\core\core_systems.h	2195	COMPILE_ASSERT_PRESENT
+sizeof	DialogueInstance		0x0C	src\game\core\core_systems.h	2202	COMPILE_ASSERT_PRESENT
+sizeof	DialogueManager		0x190	src\game\core\core_systems.h	2218	COMPILE_ASSERT_PRESENT
+sizeof	PakFile		0x114	src\game\core\core_systems.h	2280	COMPILE_ASSERT_PRESENT
+sizeof	qfile_gus		0x4	src\game\core\core_systems.h	2288	COMPILE_ASSERT_PRESENT
+sizeof	qfile_us		0x8	src\game\core\core_systems.h	2294	COMPILE_ASSERT_PRESENT
+sizeof	fileHandleData_t		0x120	src\game\core\core_systems.h	2306	COMPILE_ASSERT_PRESENT
+offsetof	fileHandleData_t	name	0x20	src\game\core\core_systems.h	2308	COMPILE_ASSERT_PRESENT
+sizeof	fileInList_s		0x10	src\game\core\core_systems.h	2315	COMPILE_ASSERT_PRESENT
+sizeof	filelist_s		0x94	src\game\core\core_systems.h	2325	COMPILE_ASSERT_PRESENT
+offsetof	filelist_s	numfiles	0x80	src\game\core\core_systems.h	2326	COMPILE_ASSERT_PRESENT
+sizeof	SoundOptions		0x38	src\game\core\core_systems.h	2351	COMPILE_ASSERT_PRESENT
+sizeof	ParticleParams		0x4C	src\game\core\core_systems.h	2372	COMPILE_ASSERT_PRESENT
+offsetof	ParticleParams	mBoneName	0x18	src\game\core\core_systems.h	2373	COMPILE_ASSERT_PRESENT
+sizeof	ServerTime		0x14	src\game\core\core_systems.h	2391	COMPILE_ASSERT_PRESENT
+sizeof	RumbleManager::InstanceHolder		0x4	src\game\core\core_systems.h	2397	COMPILE_ASSERT_PRESENT
+sizeof	searchpath_s		0x14	src\game\core\core_types.h	25	COMPILE_ASSERT_PRESENT
+offsetof	searchpath_s	pack	0x04	src\game\core\core_types.h	26	COMPILE_ASSERT_PRESENT
+offsetof	searchpath_s	language	0x10	src\game\core\core_types.h	28	COMPILE_ASSERT_PRESENT
+sizeof	fileData_s		0x0C	src\game\core\core_types.h	40	COMPILE_ASSERT_PRESENT
+offsetof	fileData_s	data	0x04	src\game\core\core_types.h	41	COMPILE_ASSERT_PRESENT
+sizeof	fileInPack_s		0x18	src\game\core\core_types.h	54	COMPILE_ASSERT_PRESENT
+offsetof	fileInPack_s	data	0x04	src\game\core\core_types.h	55	COMPILE_ASSERT_PRESENT
+offsetof	fileInPack_s	name	0x10	src\game\core\core_types.h	57	COMPILE_ASSERT_PRESENT
+sizeof	pack_t		0x1A0	src\game\core\core_types.h	77	COMPILE_ASSERT_PRESENT
+offsetof	pack_t	handle	0x180	src\game\core\core_types.h	78	COMPILE_ASSERT_PRESENT
+offsetof	pack_t	hashTable	0x198	src\game\core\core_types.h	79	COMPILE_ASSERT_PRESENT
+sizeof	directory_t		0x100	src\game\core\core_types.h	90	COMPILE_ASSERT_PRESENT
+offsetof	directory_t	gamedir	0x80	src\game\core\core_types.h	91	COMPILE_ASSERT_PRESENT
+sizeof	cplane_s		0x14	src\game\core\core_types.h	105	COMPILE_ASSERT_PRESENT
+offsetof	cplane_s	dist	0x0C	src\game\core\core_types.h	106	COMPILE_ASSERT_PRESENT
+sizeof	qtime_s		0x24	src\game\core\core_types.h	123	COMPILE_ASSERT_PRESENT
+offsetof	qtime_s	tm_year	0x14	src\game\core\core_types.h	124	COMPILE_ASSERT_PRESENT
+sizeof	sysEvent_t		0x18	src\game\core\core_types.h	151	COMPILE_ASSERT_PRESENT
+offsetof	sysEvent_t	evType	0x04	src\game\core\core_types.h	152	COMPILE_ASSERT_PRESENT
+sizeof	angles_t		0x0C	src\game\core\core_types.h	170	COMPILE_ASSERT_PRESENT
+sizeof	DObjSkelMat		0x40	src\game\core\core_types.h	180	COMPILE_ASSERT_PRESENT
+offsetof	DObjSkelMat	origin	0x30	src\game\core\core_types.h	181	COMPILE_ASSERT_PRESENT
+sizeof	DSkel		0x70	src\game\core\core_types.h	203	COMPILE_ASSERT_PRESENT
+sizeof	DSkelMax		0x1630	src\game\core\core_types.h	204	COMPILE_ASSERT_PRESENT
+sizeof	DSkel4		0x130	src\game\core\core_types.h	205	COMPILE_ASSERT_PRESENT
+sizeof	idVec3		0x0C	src\game\core\core_types.h	226	COMPILE_ASSERT_PRESENT
+offsetof	idVec3	z	0x08	src\game\core\core_types.h	227	COMPILE_ASSERT_PRESENT
+sizeof	mat3_t		0x24	src\game\core\core_types.h	246	COMPILE_ASSERT_PRESENT
+offsetof	mat3_t	mat	0x00	src\game\core\core_types.h	247	COMPILE_ASSERT_PRESENT
+sizeof	quat_t		0x10	src\game\core\core_types.h	261	COMPILE_ASSERT_PRESENT
+offsetof	quat_t	w	0x0C	src\game\core\core_types.h	262	COMPILE_ASSERT_PRESENT
+sizeof	strdata		0x10	src\game\core\core_types.h	277	COMPILE_ASSERT_PRESENT
+sizeof	idStr		0x04	src\game\core\core_types.h	288	COMPILE_ASSERT_PRESENT
+sizeof	WaitTilOutputInst1<Broc::entity>		0x10	src\game\core\ctor_dtor.cpp	437	COMPILE_ASSERT_PRESENT
+sizeof	PakHeader::Section		0x18	src\game\core\stb.cpp	58	COMPILE_ASSERT_PRESENT
+sizeof	PakHeader::File		0x14	src\game\core\stb.cpp	59	COMPILE_ASSERT_PRESENT
+sizeof	PakHeader::Bank		0x20	src\game\core\stb.cpp	60	COMPILE_ASSERT_PRESENT
+sizeof	PakHeader		0x30	src\game\core\stb.cpp	61	COMPILE_ASSERT_PRESENT
+sizeof	NumBanks		0x20	src\game\core\stb.cpp	74	COMPILE_ASSERT_PRESENT
+sizeof	mem_info		0x8	src\game\core\stb.cpp	80	COMPILE_ASSERT_PRESENT
+sizeof	BankManager		0x30	src\game\core\stb.cpp	97	COMPILE_ASSERT_PRESENT
+offsetof	PakManager	mSlots	0x40	src\game\core\stb.cpp	106	COMPILE_ASSERT_PRESENT
+sizeof	DbTablesetManagerLayout		0x190	src\game\core\stb.cpp	264	COMPILE_ASSERT_PRESENT
+sizeof	cvar_t		0x2C	src\game\cvar_types.h	28	COMPILE_ASSERT_PRESENT
+offsetof	cvar_t	name	0x00	src\game\cvar_types.h	29	COMPILE_ASSERT_PRESENT
+offsetof	cvar_t	value	0x1C	src\game\cvar_types.h	30	COMPILE_ASSERT_PRESENT
+offsetof	cvar_t	hashNext	0x28	src\game\cvar_types.h	31	COMPILE_ASSERT_PRESENT
+sizeof	vmCvar_t		0x90	src\game\cvar_types.h	44	COMPILE_ASSERT_PRESENT
+offsetof	vmCvar_t	string	0x10	src\game\cvar_types.h	45	COMPILE_ASSERT_PRESENT
+sizeof	cvarTable_t		0x10	src\game\cvar_types.h	57	COMPILE_ASSERT_PRESENT
+sizeof	CVarTable		0x18	src\game\cvar_types.h	71	COMPILE_ASSERT_PRESENT
+offsetof	CVarTable	trackChange	0x14	src\game\cvar_types.h	72	COMPILE_ASSERT_PRESENT
+sizeof	biped_phys_info		0x580	src\game\game_types.h	55	COMPILE_ASSERT_PRESENT
+offsetof	biped_phys_info	m_bp_sys	0x568	src\game\game_types.h	56	COMPILE_ASSERT_PRESENT
+sizeof	Handle		4	src\game\game_types.h	109	COMPILE_ASSERT_PRESENT
+sizeof	DbLinkedHandle<void, void>		4	src\game\game_types.h	139	COMPILE_ASSERT_PRESENT
+sizeof	tagInfo_t		0x70	src\game\game_types.h	180	COMPILE_ASSERT_PRESENT
+offsetof	tagInfo_t	name	0x08	src\game\game_types.h	181	COMPILE_ASSERT_PRESENT
+offsetof	tagInfo_t	index	0x0C	src\game\game_types.h	182	COMPILE_ASSERT_PRESENT
+sizeof	InplaceVector<char>		8	src\game\game_types.h	195	COMPILE_ASSERT_PRESENT
+sizeof	IVPointer<char>		8	src\game\game_types.h	217	COMPILE_ASSERT_PRESENT
+sizeof	DObjModel		0x14	src\game\game_types.h	234	COMPILE_ASSERT_PRESENT
+sizeof	trajectory_t		0x28	src\game\game_types.h	268	COMPILE_ASSERT_PRESENT
+offsetof	trajectory_t	trBase	0x0C	src\game\game_types.h	269	COMPILE_ASSERT_PRESENT
+offsetof	trajectory_t	trDelta	0x18	src\game\game_types.h	270	COMPILE_ASSERT_PRESENT
+sizeof	EntityState		0xE0	src\game\game_types.h	314	COMPILE_ASSERT_PRESENT
+offsetof	EntityState	eFlags	0x10	src\game\game_types.h	315	COMPILE_ASSERT_PRESENT
+sizeof	EntityShared		0x150	src\game\game_types.h	356	COMPILE_ASSERT_PRESENT
+sizeof	AttachModelInfo		0x0C	src\game\game_types.h	372	COMPILE_ASSERT_PRESENT
+sizeof	Entity		0x470	src\game\game_types.h	577	COMPILE_ASSERT_PRESENT
+offsetof	Entity	s	0x000	src\game\game_types.h	579	COMPILE_ASSERT_PRESENT
+offsetof	Entity	r	0x0E0	src\game\game_types.h	580	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mPakId	0x230	src\game\game_types.h	581	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mHandle	0x234	src\game\game_types.h	582	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mDObj	0x23C	src\game\game_types.h	583	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mDestructible	0x24C	src\game\game_types.h	584	COMPILE_ASSERT_PRESENT
+offsetof	Entity	client	0x254	src\game\game_types.h	585	COMPILE_ASSERT_PRESENT
+offsetof	Entity	actor	0x258	src\game\game_types.h	586	COMPILE_ASSERT_PRESENT
+offsetof	Entity	sentient	0x25C	src\game\game_types.h	587	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mModel	0x270	src\game\game_types.h	588	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mClassName	0x27C	src\game\game_types.h	589	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mClassNameHash	0x280	src\game\game_types.h	590	COMPILE_ASSERT_PRESENT
+offsetof	Entity	pos1	0x2E0	src\game\game_types.h	591	COMPILE_ASSERT_PRESENT
+offsetof	Entity	movedir	0x330	src\game\game_types.h	592	COMPILE_ASSERT_PRESENT
+offsetof	Entity	health	0x358	src\game\game_types.h	593	COMPILE_ASSERT_PRESENT
+offsetof	Entity	enemy	0x370	src\game\game_types.h	594	COMPILE_ASSERT_PRESENT
+offsetof	Entity	mAttachModels	0x3E0	src\game\game_types.h	595	COMPILE_ASSERT_PRESENT
+offsetof	Entity	uniqueIndex	0x460	src\game\game_types.h	596	COMPILE_ASSERT_PRESENT
+sizeof	pml_t		0xC0	src\game\logic\g_bg_pmove.cpp	42	COMPILE_ASSERT_PRESENT
+sizeof	viewLerpWaypoint_s		0xC	src\game\logic\g_bg_pmove.cpp	10650	COMPILE_ASSERT_PRESENT
+sizeof	MsaQuat		0x10	src\game\logic\g_camerashake.h	34	COMPILE_ASSERT_PRESENT
+sizeof	NoiseFloat		0x10	src\game\logic\g_camerashake.h	52	COMPILE_ASSERT_PRESENT
+sizeof	CameraShakeInstance		0x40	src\game\logic\g_camerashake.h	75	COMPILE_ASSERT_PRESENT
+sizeof	CameraShakeType		0x20	src\game\logic\g_camerashake.h	92	COMPILE_ASSERT_PRESENT
+sizeof	CameraShake		0x14C	src\game\logic\g_camerashake.h	119	COMPILE_ASSERT_PRESENT
+sizeof	CheckpointStub		0x170C	src\game\logic\g_checkpoint.cpp	94	COMPILE_ASSERT_PRESENT
+sizeof	BspNode		0x10	src\game\logic\g_cm_load.cpp	83	COMPILE_ASSERT_PRESENT
+sizeof	rtree_visitor_t		0xA60	src\game\logic\g_cm_load.cpp	593	COMPILE_ASSERT_PRESENT
+sizeof	WorldSector		0x24	src\game\logic\g_cm_load.cpp	1113	COMPILE_ASSERT_PRESENT
+sizeof	BinFileManager::DataElem		0x0C	src\game\logic\g_cm_load.cpp	1281	COMPILE_ASSERT_PRESENT
+sizeof	BinFileManager		0x25C	src\game\logic\g_cm_load.cpp	1283	COMPILE_ASSERT_PRESENT
+sizeof	sphere_t		0x30	src\game\logic\g_cm_load.cpp	4264	COMPILE_ASSERT_PRESENT
+sizeof	debug_brush		0x60	src\game\logic\g_cm_load.cpp	11884	COMPILE_ASSERT_PRESENT
+sizeof	BaseCmdFuncInfo		0x0C	src\game\logic\g_cmd.cpp	65	COMPILE_ASSERT_PRESENT
+sizeof	CmdFuncInfo		0x10	src\game\logic\g_cmd.cpp	66	COMPILE_ASSERT_PRESENT
+sizeof	InputCmdFuncInfo		0x10	src\game\logic\g_cmd.cpp	67	COMPILE_ASSERT_PRESENT
+sizeof	CurveManager		0x28C	src\game\logic\g_cmd.cpp	177	COMPILE_ASSERT_PRESENT
+sizeof	Curve		0x6C	src\game\logic\g_cmd.cpp	375	COMPILE_ASSERT_PRESENT
+sizeof	CurveEffectListElem		0x1C	src\game\logic\g_cmd.cpp	396	COMPILE_ASSERT_PRESENT
+sizeof	PadAliasMgr::Context		0x148	src\game\logic\g_cmd.cpp	2417	COMPILE_ASSERT_PRESENT
+sizeof	PadAliasMgr		0x3D8	src\game\logic\g_cmd.cpp	2418	COMPILE_ASSERT_PRESENT
+sizeof	HealthRegenTask		0x38	src\game\logic\g_debugthread.cpp	996	COMPILE_ASSERT_PRESENT
+sizeof	AnimNoteHandler::NotifyInfo		0x0C	src\game\logic\g_debugthread.cpp	1142	COMPILE_ASSERT_PRESENT
+sizeof	MetaNalBaseAnim		0x44	src\game\logic\g_debugthread.cpp	1398	COMPILE_ASSERT_PRESENT
+sizeof	TestFPS::PerformanceStats		0x2C	src\game\logic\g_debugthread.cpp	2438	COMPILE_ASSERT_PRESENT
+sizeof	debug_brush		0x60	src\game\logic\g_entity_misc.cpp	279	COMPILE_ASSERT_PRESENT
+sizeof	GdbTreeElementLookup		8	src\game\logic\g_entity_misc.cpp	3402	COMPILE_ASSERT_PRESENT
+sizeof	GdbFileSetLookup		20	src\game\logic\g_entity_misc.cpp	3404	COMPILE_ASSERT_PRESENT
+sizeof	GdbFileBankLookup		28	src\game\logic\g_entity_misc.cpp	3406	COMPILE_ASSERT_PRESENT
+offsetof	PakManagerView	mSlots	0x40	src\game\logic\g_entity_misc.cpp	4196	COMPILE_ASSERT_PRESENT
+sizeof	ae_heap		0x4A0	src\game\logic\g_entity_misc.cpp	4208	COMPILE_ASSERT_PRESENT
+sizeof	BrocExportsLoadScriptView		0x1C8	src\game\logic\g_entity_misc.cpp	4234	COMPILE_ASSERT_PRESENT
+sizeof	AnimNotifyTask		0x24	src\game\logic\g_entity_misc.cpp	6016	COMPILE_ASSERT_PRESENT
+sizeof	WbkEntry		0x6C	src\game\logic\g_entity_misc.cpp	6248	COMPILE_ASSERT_PRESENT
+sizeof	nalPositionOrientation		0x20	src\game\logic\g_game2_misc.cpp	122	COMPILE_ASSERT_PRESENT
+sizeof	nalGenericBoneHandle		0x8	src\game\logic\g_game2_misc.cpp	140	COMPILE_ASSERT_PRESENT
+sizeof	mpAnimJointPosOrientations_t		0x60	src\game\logic\g_game2_misc.cpp	150	COMPILE_ASSERT_PRESENT
+sizeof	mpAnimJointBoneHandles_t		0x18	src\game\logic\g_game2_misc.cpp	160	COMPILE_ASSERT_PRESENT
+sizeof	_xmission_data		0x78	src\game\logic\g_game2_misc.cpp	239	COMPILE_ASSERT_PRESENT
+sizeof	ScriptEventHandler		0x44	src\game\logic\g_game2_misc.cpp	315	COMPILE_ASSERT_PRESENT
+sizeof	AnimIK		0x7C	src\game\logic\g_game2_misc.cpp	595	COMPILE_ASSERT_PRESENT
+sizeof	ButtonEntry		0xC	src\game\logic\g_game2_misc.cpp	1378	COMPILE_ASSERT_PRESENT
+sizeof	KeyInfoEntry		8	src\game\logic\g_game2_misc.cpp	1403	COMPILE_ASSERT_PRESENT
+sizeof	SoundOptions		0x38	src\game\logic\g_game2_misc.cpp	2028	COMPILE_ASSERT_PRESENT
+sizeof	TaskDbInit		0x108	src\game\logic\g_globals.cpp	415	COMPILE_ASSERT_PRESENT
+sizeof	SoundOptions		0x38	src\game\logic\g_inspector.cpp	45	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleAlphaDebug		0x40	src\game\logic\g_inspector.cpp	1102	COMPILE_ASSERT_PRESENT
+sizeof	_INSPECTOR_MENU_ITEM		0x14	src\game\logic\g_inspector.h	28	COMPILE_ASSERT_PRESENT
+sizeof	_INSPECTOR_MENU		0x18	src\game\logic\g_inspector.h	39	COMPILE_ASSERT_PRESENT
+sizeof	_INSPECTOR_DATA		0x14	src\game\logic\g_inspector.h	48	COMPILE_ASSERT_PRESENT
+sizeof	InspectorManager		0x88	src\game\logic\g_inspector.h	114	COMPILE_ASSERT_PRESENT
+sizeof	LightGridData		0x64	src\game\logic\g_local.h	37	COMPILE_ASSERT_PRESENT
+sizeof	CachedLightGrid		0x74	src\game\logic\g_local.h	47	COMPILE_ASSERT_PRESENT
+sizeof	ae_vector<char>		0x0C	src\game\logic\g_local.h	87	COMPILE_ASSERT_PRESENT
+sizeof	vehicleAnimStage_t		0x10	src\game\logic\g_local.h	214	COMPILE_ASSERT_PRESENT
+sizeof	vehicleAnimRoute_t		0x18	src\game\logic\g_local.h	224	COMPILE_ASSERT_PRESENT
+sizeof	vehicleAnimMap_t		0x1C	src\game\logic\g_local.h	237	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_path_node_t		0x40	src\game\logic\g_local.h	251	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_pathpos_t		0xB8	src\game\logic\g_local.h	265	COMPILE_ASSERT_PRESENT
+sizeof	vehicleSeat_t		0x1C	src\game\logic\g_local.h	279	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_follow		0x418	src\game\logic\g_local.h	300	COMPILE_ASSERT_PRESENT
+sizeof	local_physic_s		0x60	src\game\logic\g_local.h	464	COMPILE_ASSERT_PRESENT
+offsetof	scr_vehicle_t	infoIdx	0x178	src\game\logic\g_local.h	465	COMPILE_ASSERT_PRESENT
+offsetof	scr_vehicle_t	altWeapon	0x19C	src\game\logic\g_local.h	466	COMPILE_ASSERT_PRESENT
+offsetof	scr_vehicle_t	mLastRequestedOwnershipTime	0x1BC	src\game\logic\g_local.h	467	COMPILE_ASSERT_PRESENT
+offsetof	scr_vehicle_t	boneIndex	0x460	src\game\logic\g_local.h	468	COMPILE_ASSERT_PRESENT
+offsetof	scr_vehicle_t	mRBVeh	0x518	src\game\logic\g_local.h	469	COMPILE_ASSERT_PRESENT
+offsetof	scr_vehicle_t	animMap	0x568	src\game\logic\g_local.h	470	COMPILE_ASSERT_PRESENT
+sizeof	trRefEntity		0x104	src\game\logic\g_local.h	496	COMPILE_ASSERT_PRESENT
+offsetof	trRefEntity	iflIndex	0xFC	src\game\logic\g_local.h	497	COMPILE_ASSERT_PRESENT
+offsetof	trRefEntity	mWaterHeightOffset	0xF4	src\game\logic\g_local.h	498	COMPILE_ASSERT_PRESENT
+sizeof	trigger_info_t		0x10	src\game\logic\g_local.h	541	COMPILE_ASSERT_PRESENT
+sizeof	level_locals_t		0x2688	src\game\logic\g_local.h	616	COMPILE_ASSERT_PRESENT
+offsetof	level_locals_t	time	0x09C	src\game\logic\g_local.h	617	COMPILE_ASSERT_PRESENT
+offsetof	level_locals_t	initializing	0xC28	src\game\logic\g_local.h	618	COMPILE_ASSERT_PRESENT
+offsetof	level_locals_t	triggerList	0xC7C	src\game\logic\g_local.h	619	COMPILE_ASSERT_PRESENT
+offsetof	level_locals_t	delayFreeAnimTree	0x1C84	src\game\logic\g_local.h	620	COMPILE_ASSERT_PRESENT
+sizeof	DebugThread		0x14	src\game\logic\g_local.h	640	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_node_t		0x40	src\game\logic\g_local.h	702	COMPILE_ASSERT_PRESENT
+sizeof	TestFPS		0xAD90	src\game\logic\g_local.h	780	COMPILE_ASSERT_PRESENT
+sizeof	str_const_t		0x2B4	src\game\logic\g_local.h	1019	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	spawn_intermission	0x168	src\game\logic\g_local.h	1020	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	spawn_sd_axis	0x1B0	src\game\logic\g_local.h	1022	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	spawn_deathmatch	0x16C	src\game\logic\g_local.h	1024	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	spawn_hq_allies_primary	0x18C	src\game\logic\g_local.h	1026	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	hq_point	0x1B4	src\game\logic\g_local.h	1028	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	info_player_deathmatch	0xBC	src\game\logic\g_local.h	1030	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	worldspawn	0x23C	src\game\logic\g_local.h	1032	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	script_vehicle	0x15C	src\game\logic\g_local.h	1034	COMPILE_ASSERT_PRESENT
+offsetof	str_const_t	axis	0x288	src\game\logic\g_local.h	1036	COMPILE_ASSERT_PRESENT
+sizeof	hash_const_t		0x2B4	src\game\logic\g_local.h	1138	COMPILE_ASSERT_PRESENT
+offsetof	hash_const_t	turret_on_target	0x224	src\game\logic\g_local.h	1139	COMPILE_ASSERT_PRESENT
+offsetof	hash_const_t	turretstatechange	0x250	src\game\logic\g_local.h	1141	COMPILE_ASSERT_PRESENT
+offsetof	hash_const_t	turretownerchange	0x254	src\game\logic\g_local.h	1143	COMPILE_ASSERT_PRESENT
+offsetof	hash_const_t	overheated	0x284	src\game\logic\g_local.h	1145	COMPILE_ASSERT_PRESENT
+offsetof	hash_const_t	fireSpecial	0x138	src\game\logic\g_local.h	1147	COMPILE_ASSERT_PRESENT
+sizeof	ent_field_t		0x10	src\game\logic\g_local.h	1171	COMPILE_ASSERT_PRESENT
+sizeof	hudelem_t		0x7C	src\game\logic\g_local.h	1485	COMPILE_ASSERT_PRESENT
+sizeof	game_hudelem_s		0x7C	src\game\logic\g_local.h	1489	COMPILE_ASSERT_PRESENT
+sizeof	corpseInfo_t		0x1C	src\game\logic\g_local.h	1530	COMPILE_ASSERT_PRESENT
+offsetof	scr_data_t	actorCorpseInfo	0x60C	src\game\logic\g_local.h	1547	COMPILE_ASSERT_PRESENT
+sizeof	RumbleData		0x20	src\game\logic\g_local.h	2657	COMPILE_ASSERT_PRESENT
+sizeof	RumbleEffect		0x40	src\game\logic\g_local.h	2660	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_info_t		0x310	src\game\logic\g_local.h	2850	COMPILE_ASSERT_PRESENT
+offsetof	vehicle_info_t	maxSpeed	0x50	src\game\logic\g_local.h	2851	COMPILE_ASSERT_PRESENT
+offsetof	vehicle_info_t	mMantleHintStringIndex	0x27C	src\game\logic\g_local.h	2852	COMPILE_ASSERT_PRESENT
+sizeof	ConfigString		0x10	src\game\logic\g_local.h	2884	COMPILE_ASSERT_PRESENT
+sizeof	cspField_t		0xC	src\game\logic\g_local.h	2909	COMPILE_ASSERT_PRESENT
+sizeof	gitem_s		0x34	src\game\logic\g_local.h	2971	COMPILE_ASSERT_PRESENT
+offsetof	gitem_s	giType	0x24	src\game\logic\g_local.h	2972	COMPILE_ASSERT_PRESENT
+sizeof	weaponFileInfo_t		0x948	src\game\logic\g_local.h	3133	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	index	0x0	src\game\logic\g_local.h	3134	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	aiDamageMod	0x860	src\game\logic\g_local.h	3135	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	bTwoHanded	0x6E8	src\game\logic\g_local.h	3136	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iAltWeaponIndex	0x764	src\game\logic\g_local.h	3137	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iProjectileSpeed	0x784	src\game\logic\g_local.h	3138	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iProjectileSpeedUp	0x788	src\game\logic\g_local.h	3139	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iProjectileDelay	0x7AC	src\game\logic\g_local.h	3140	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iFireTime	0x5F8	src\game\logic\g_local.h	3141	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iMinDamagePercent	0x5DC	src\game\logic\g_local.h	3142	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iDamageInnerRadius	0x5E0	src\game\logic\g_local.h	3143	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	iDamageOuterRadius	0x5E4	src\game\logic\g_local.h	3144	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	weapClass	0xB0	src\game\logic\g_local.h	3145	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	stance	0xBC	src\game\logic\g_local.h	3146	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	turnSpeed	0x880	src\game\logic\g_local.h	3147	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	szScript	0x8BC	src\game\logic\g_local.h	3148	COMPILE_ASSERT_PRESENT
+offsetof	weaponFileInfo_t	slot	0xB4	src\game\logic\g_local.h	3149	COMPILE_ASSERT_PRESENT
+sizeof	weaponParms		0x40	src\game\logic\g_local.h	3189	COMPILE_ASSERT_PRESENT
+sizeof	turretInfo_t		0x8C	src\game\logic\g_local.h	3228	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	turret_state	0x01	src\game\logic\g_local.h	3229	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	turret_flags	0x02	src\game\logic\g_local.h	3230	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	arcmin	0x2C	src\game\logic\g_local.h	3231	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	arcmax	0x34	src\game\logic\g_local.h	3232	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	defaultPitch	0x3C	src\game\logic\g_local.h	3233	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	maxRangeSquared	0x48	src\game\logic\g_local.h	3234	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	detachSentient	0x4C	src\game\logic\g_local.h	3235	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	eTeam	0x64	src\game\logic\g_local.h	3236	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	heat	0x80	src\game\logic\g_local.h	3237	COMPILE_ASSERT_PRESENT
+offsetof	turretInfo_t	overheatEffect	0x88	src\game\logic\g_local.h	3238	COMPILE_ASSERT_PRESENT
+sizeof	pushed_t		0x14	src\game\logic\g_local.h	3429	COMPILE_ASSERT_PRESENT
+sizeof	gdDecal		0x24	src\game\logic\g_local.h	4047	COMPILE_ASSERT_PRESENT
+sizeof	cdl_object_t		0x24	src\game\logic\g_local.h	4150	COMPILE_ASSERT_PRESENT
+sizeof	bounded_proxy_obj_t		0x20	src\game\logic\g_local.h	4186	COMPILE_ASSERT_PRESENT
+sizeof	cdl_cinfo1		0x20	src\game\logic\g_local.h	4224	COMPILE_ASSERT_PRESENT
+sizeof	cdl_poly_inl_t		0x50	src\game\logic\g_local.h	4235	COMPILE_ASSERT_PRESENT
+sizeof	proximity_data_t		0x1850	src\game\logic\g_local.h	4258	COMPILE_ASSERT_PRESENT
+sizeof	CGBank		0xD0	src\game\logic\g_local.h	4308	COMPILE_ASSERT_PRESENT
+sizeof	TaskHandler		0x30	src\game\logic\g_local.h	4664	COMPILE_ASSERT_PRESENT
+sizeof	TouchEntityData		0x230	src\game\logic\g_local.h	4893	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_rb_parameter		0xD0	src\game\logic\g_local.h	5154	COMPILE_ASSERT_PRESENT
+sizeof	Task		0x1C	src\game\logic\g_local.h	5306	COMPILE_ASSERT_PRESENT
+sizeof	TaskSysPostQueue		0x10	src\game\logic\g_local.h	5314	COMPILE_ASSERT_PRESENT
+sizeof	TaskSys		0x19C	src\game\logic\g_local.h	5330	COMPILE_ASSERT_PRESENT
+sizeof	Destructible		0xC4	src\game\logic\g_local.h	5397	COMPILE_ASSERT_PRESENT
+sizeof	PhysData		0x14	src\game\logic\g_local.h	5407	COMPILE_ASSERT_PRESENT
+sizeof	DObj		0xE8	src\game\logic\g_local.h	5489	COMPILE_ASSERT_PRESENT
+sizeof	AeThread::BackupStack		0x14	src\game\logic\g_scr.cpp	1020	COMPILE_ASSERT_PRESENT
+sizeof	AeThread::BackupStack::Block		0x100	src\game\logic\g_scr.cpp	1022	COMPILE_ASSERT_PRESENT
+sizeof	saveField_t		0x8	src\game\logic\g_scr.cpp	1629	COMPILE_ASSERT_PRESENT
+sizeof	BoundingBoxLocal		0x20	src\game\logic\g_testfps.cpp	28	COMPILE_ASSERT_PRESENT
+sizeof	trGlobals_t		0x3A0	src\game\logic\g_testfps.cpp	55	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_info_t		0x310	src\game\logic\g_vehiclefuncs.h	76	COMPILE_ASSERT_PRESENT
+sizeof	vehicle_rb_parameter		0xD0	src\game\logic\g_vehiclefuncs.h	172	COMPILE_ASSERT_PRESENT
+sizeof	weaponFileInfo_t		0x948	src\game\logic\g_weaponfuncs.h	279	COMPILE_ASSERT_PRESENT
+sizeof	MPVote		0x54	src\game\mp\mp_types.h	95	COMPILE_ASSERT_PRESENT
+sizeof	cBezierTrajectoryInterpolator		160	src\game\mp\mp_types.h	258	COMPILE_ASSERT_PRESENT
+sizeof	MPVehicle		0x210	src\game\mp\mp_types.h	351	COMPILE_ASSERT_PRESENT
+sizeof	MPLanDiscovery		120	src\game\mp\mp_types.h	428	COMPILE_ASSERT_PRESENT
+sizeof	MPGameInfo		0x50	src\game\mp\mp_types.h	483	COMPILE_ASSERT_PRESENT
+sizeof	CDefaultResult		162	src\game\mp\mp_types.h	551	COMPILE_ASSERT_PRESENT
+sizeof	UIListBox		172	src\game\mp\mp_types.h	981	COMPILE_ASSERT_PRESENT
+sizeof	FEMenu		0x4C	src\game\mp\mp_types.h	1093	COMPILE_ASSERT_PRESENT
+sizeof	FEMenuEntry		0x18	src\game\mp\mp_types.h	1141	COMPILE_ASSERT_PRESENT
+sizeof	MPOptionsSoundMenu		0x70	src\game\mp\mp_types.h	1472	COMPILE_ASSERT_PRESENT
+sizeof	MPOptionsControlsMenu		0x64	src\game\mp\mp_types.h	1473	COMPILE_ASSERT_PRESENT
+sizeof	MPProfileEditMenu		0x110	src\game\mp\mp_types.h	1474	COMPILE_ASSERT_PRESENT
+sizeof	MPProfileMainMenu		0x8C	src\game\mp\mp_types.h	1475	COMPILE_ASSERT_PRESENT
+sizeof	sDiagnostics		224	src\game\mp\mp_types.h	1671	COMPILE_ASSERT_PRESENT
+sizeof	JoinGameMenu		0x50	src\game\mp\MPMainMenuXBox.h	28	COMPILE_ASSERT_PRESENT
+sizeof	MPMainMenuXBox		0x160	src\game\mp\MPMainMenuXBox.h	68	COMPILE_ASSERT_PRESENT
+sizeof	XBoxLiveIngameOptionsCOD3		0x164	src\game\mp\MPMainMenuXBox.h	115	COMPILE_ASSERT_PRESENT
+sizeof	AARXBoxLiveIngameOptions		0x164	src\game\mp\MPMainMenuXBox.h	131	COMPILE_ASSERT_PRESENT
+sizeof	CharacterType		0x18	src\game\mpactors\aitype.h	22	COMPILE_ASSERT_PRESENT
+sizeof	AIType		0x34	src\game\mpactors\aitype.h	54	COMPILE_ASSERT_PRESENT
+sizeof	AITypeManager		0x190	src\game\mpactors\aitype.h	73	COMPILE_ASSERT_PRESENT
+sizeof	AARMPVoteReset		0x54	src\game\mpshell\session_menus.cpp	49	COMPILE_ASSERT_PRESENT
+sizeof	sServerCreateParams		105	src\game\mpshell\session_menus.cpp	153	COMPILE_ASSERT_PRESENT
+sizeof	CreateSessionMenu		0x158	src\game\mpshell\session_menus.h	75	COMPILE_ASSERT_PRESENT
+sizeof	CreateLanSessionMenu		0x138	src\game\mpshell\session_menus.h	125	COMPILE_ASSERT_PRESENT
+sizeof	FindSessionMenu		0x10C	src\game\mpshell\session_menus.h	169	COMPILE_ASSERT_PRESENT
+sizeof	FindLanSessionMenu		0x104	src\game\mpshell\session_menus.h	213	COMPILE_ASSERT_PRESENT
+sizeof	CreateSessionAdvancedMenu		0x120	src\game\mpshell\session_menus.h	248	COMPILE_ASSERT_PRESENT
+sizeof	CreateLanSessionAdvancedMenu		0x120	src\game\mpshell\session_menus.h	282	COMPILE_ASSERT_PRESENT
+sizeof	GameSettingsView		0x11C	src\game\mpshell\session_menus.h	329	COMPILE_ASSERT_PRESENT
+sizeof	GameSettingsEdit		0x12C	src\game\mpshell\session_menus.h	386	COMPILE_ASSERT_PRESENT
+sizeof	AARGameSettingsEdit		0x12C	src\game\mpshell\session_menus.h	404	COMPILE_ASSERT_PRESENT
+sizeof	AARGameSettingsView		0x11C	src\game\mpshell\session_menus.h	418	COMPILE_ASSERT_PRESENT
+sizeof	InitialLoadingMenu		0x50	src\game\mpshell\session_menus.h	437	COMPILE_ASSERT_PRESENT
+sizeof	InstantActionMenu		0x4C	src\game\mpshell\session_menus.h	451	COMPILE_ASSERT_PRESENT
+sizeof	PlayLanMenu		0x144	src\game\mpshell\session_menus.h	482	COMPILE_ASSERT_PRESENT
+sizeof	PlayOnlineMenu		0x60	src\game\mpshell\session_menus.h	511	COMPILE_ASSERT_PRESENT
+sizeof	PressStartMenu		0x4C	src\game\mpshell\session_menus.h	526	COMPILE_ASSERT_PRESENT
+sizeof	SessionDetailsMenu		0x54	src\game\mpshell\session_menus.h	550	COMPILE_ASSERT_PRESENT
+sizeof	SessionListMenu		0x1B4	src\game\mpshell\session_menus.h	591	COMPILE_ASSERT_PRESENT
+sizeof	SessionLanListMenu		0x1B4	src\game\mpshell\session_menus.h	632	COMPILE_ASSERT_PRESENT
+sizeof	OverlayMenuBase		0x58	src\game\mpshell\session_menus.h	652	COMPILE_ASSERT_PRESENT
+sizeof	InGameOverlay		0x12C	src\game\mpshell\session_menus.h	703	COMPILE_ASSERT_PRESENT
+sizeof	AAROverlay		0x12C	src\game\mpshell\session_menus.h	751	COMPILE_ASSERT_PRESENT
+sizeof	MultilineOverlayMenu		0x68	src\game\mpshell\session_menus.h	769	COMPILE_ASSERT_PRESENT
+sizeof	MultilineFrontendOverlayMenu		0x78	src\game\mpshell\session_menus.h	795	COMPILE_ASSERT_PRESENT
+sizeof	MultilineIngameOverlayMenu		0x6C	src\game\mpshell\session_menus.h	815	COMPILE_ASSERT_PRESENT
+sizeof	VoteMapMenu		0x54	src\game\mpshell\session_menus.h	834	COMPILE_ASSERT_PRESENT
+sizeof	VoteGameTypeMenu		0x54	src\game\mpshell\session_menus.h	849	COMPILE_ASSERT_PRESENT
+sizeof	ModelMenu		0x110	src\game\mpshell\session_menus.h	895	COMPILE_ASSERT_PRESENT
+sizeof	WeaponSelectMenu		0x1F0	src\game\mpshell\session_menus.h	939	COMPILE_ASSERT_PRESENT
+sizeof	InGameSwitchSides		0x120	src\game\mpshell\session_menus.h	971	COMPILE_ASSERT_PRESENT
+sizeof	InGameScoreBoard		0x3E0	src\game\mpshell\session_menus.h	1035	COMPILE_ASSERT_PRESENT
+sizeof	AARBaseMenu		0x88	src\game\mpshell\session_menus.h	1057	COMPILE_ASSERT_PRESENT
+sizeof	AARScoreboardBase		0x34C	src\game\mpshell\session_menus.h	1103	COMPILE_ASSERT_PRESENT
+sizeof	AARScoreboardLoser		0x34C	src\game\mpshell\session_menus.h	1119	COMPILE_ASSERT_PRESENT
+sizeof	AARScoreboardWinner		0x34C	src\game\mpshell\session_menus.h	1134	COMPILE_ASSERT_PRESENT
+sizeof	AARPersonalStats		0x150	src\game\mpshell\session_menus.h	1178	COMPILE_ASSERT_PRESENT
+sizeof	AARMapVote		0x238	src\game\mpshell\session_menus.h	1223	COMPILE_ASSERT_PRESENT
+sizeof	AARGameModeVote		0x20C	src\game\mpshell\session_menus.h	1266	COMPILE_ASSERT_PRESENT
+sizeof	AARPauseMenu		0x50	src\game\mpshell\session_menus.h	1299	COMPILE_ASSERT_PRESENT
+sizeof	HotJoinMenu		0x58	src\game\mpshell\session_menus.h	1324	COMPILE_ASSERT_PRESENT
+sizeof	SpectateMenu		0x70	src\game\mpshell\session_menus.h	1366	COMPILE_ASSERT_PRESENT
+sizeof	PauseMenu		0x6C	src\game\mpshell\session_menus.h	1399	COMPILE_ASSERT_PRESENT
+sizeof	OverlayMenu		0x148	src\game\mpshell\session_menus.h	1457	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_cache_info_internal		0x90	src\game\physics\g_physics.cpp	7055	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_cache_system_avl_tree<500>		0x12900	src\game\physics\g_physics.cpp	7549	COMPILE_ASSERT_PRESENT
+sizeof	prop_collide_callback		0x1C	src\game\physics\g_physics.cpp	8333	COMPILE_ASSERT_PRESENT
+sizeof	client_bone_info		0x50	src\game\physics\g_physics.cpp	10635	COMPILE_ASSERT_PRESENT
+sizeof	InplaceAssetBankSet<PhysDataBank>		0x190	src\game\physics\g_physics.cpp	12797	COMPILE_ASSERT_PRESENT
+sizeof	PhysDataBankManager		0x190	src\game\physics\g_physics.cpp	12799	COMPILE_ASSERT_PRESENT
+sizeof	InplaceAssetBankSet<DestructibleBank>		0x190	src\game\physics\g_physics.cpp	12801	COMPILE_ASSERT_PRESENT
+sizeof	DestructibleBankManager		0x190	src\game\physics\g_physics.cpp	12803	COMPILE_ASSERT_PRESENT
+sizeof	sysEvent_t		0x18	src\game\platform_xbox\GameXbox.cpp	70	COMPILE_ASSERT_PRESENT
+sizeof	MemoryUnitManager::Container		0x288	src\game\platform_xbox\MemoryUnitManager.h	188	COMPILE_ASSERT_PRESENT
+sizeof	MemoryUnitManager::SavedGame		0x4C	src\game\platform_xbox\MemoryUnitManager.h	190	COMPILE_ASSERT_PRESENT
+sizeof	MemoryUnitManager::SavedGame::ModifyTime		0x8	src\game\platform_xbox\MemoryUnitManager.h	192	COMPILE_ASSERT_PRESENT
+sizeof	MemoryUnitManager::MemoryUnitInfo		0x20	src\game\platform_xbox\MemoryUnitManager.h	194	COMPILE_ASSERT_PRESENT
+sizeof	SaveGameData		0x1BF4	src\game\platform_xbox\MPLiveEngine.h	32	COMPILE_ASSERT_PRESENT
+sizeof	MPPlayerSet		0x2	src\game\platform_xbox\MPLiveEngine.h	53	COMPILE_ASSERT_PRESENT
+sizeof	XOnlineMatchSessionRecord		170	src\game\platform_xbox\MPLiveEngine.h	88	COMPILE_ASSERT_PRESENT
+sizeof	CFromIDQuery		0xD0	src\game\platform_xbox\MPLiveEngine.h	129	COMPILE_ASSERT_PRESENT
+sizeof	CDefaultQuery		0x11E0	src\game\platform_xbox\MPLiveEngine.h	179	COMPILE_ASSERT_PRESENT
+sizeof	MPLiveEngine		0x4600	src\game\platform_xbox\MPLiveEngine.h	401	COMPILE_ASSERT_PRESENT
+sizeof	AnimHeap		0x4A4	src\game\platform_xbox\xbox_main.cpp	102	COMPILE_ASSERT_PRESENT
+sizeof	CBlob		0x8	src\game\platform_xbox\XboxLive.h	23	COMPILE_ASSERT_PRESENT
+sizeof	LivePlayer		0x40	src\game\platform_xbox\XboxLive.h	46	COMPILE_ASSERT_PRESENT
+sizeof	LiveRemote		0x48	src\game\platform_xbox\XboxLive.h	62	COMPILE_ASSERT_PRESENT
+sizeof	LiveLocal		0xFE8	src\game\platform_xbox\XboxLive.h	75	COMPILE_ASSERT_PRESENT
+sizeof	LiveTask		0xC	src\game\platform_xbox\XboxLive.h	85	COMPILE_ASSERT_PRESENT
+sizeof	UIX_EXIT_INFO		0x10	src\game\platform_xbox\XboxLive.h	125	COMPILE_ASSERT_PRESENT
+sizeof	LiveWrapper		0x44CC	src\game\platform_xbox\XboxLive.h	257	COMPILE_ASSERT_PRESENT
+sizeof	QosQEntry		0x10	src\game\platform_xbox\XboxLive.h	281	COMPILE_ASSERT_PRESENT
+sizeof	CSessionQosQ		0x8	src\game\platform_xbox\XboxLive.h	292	COMPILE_ASSERT_PRESENT
+sizeof	CSession		0x100	src\game\platform_xbox\XboxLive.h	351	COMPILE_ASSERT_PRESENT
+sizeof	XboxLiveOptionsMenu		0x188	src\game\platform_xbox\XboxLiveMenus.h	66	COMPILE_ASSERT_PRESENT
+sizeof	InGameLiveOptionsMenu		0x60	src\game\platform_xbox\XboxLiveMenus.h	99	COMPILE_ASSERT_PRESENT
+sizeof	PlayerStateEvents		0x3C	src\game\player_types.h	33	COMPILE_ASSERT_PRESENT
+sizeof	PlayerState		0x5D0	src\game\player_types.h	167	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	origin	0x000	src\game\player_types.h	168	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	weapon	0x0A4	src\game\player_types.h	169	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	eFlags	0x0F4	src\game\player_types.h	170	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	event	0x0F8	src\game\player_types.h	171	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	serverCursorHint	0x4A8	src\game\player_types.h	172	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	serverCursorHintTrace	0x4C0	src\game\player_types.h	173	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	vehPos	0x524	src\game\player_types.h	174	COMPILE_ASSERT_PRESENT
+offsetof	PlayerState	mFlags	0x5C8	src\game\player_types.h	175	COMPILE_ASSERT_PRESENT
+sizeof	usercmd_s		0x30	src\game\player_types.h	199	COMPILE_ASSERT_PRESENT
+offsetof	usercmd_s	serverTime	0x00	src\game\player_types.h	200	COMPILE_ASSERT_PRESENT
+sizeof	pmove_t		0x150	src\game\player_types.h	234	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	ps	0x00	src\game\player_types.h	235	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	cmd	0x04	src\game\player_types.h	236	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	oldcmd	0x34	src\game\player_types.h	237	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	tracemask	0x64	src\game\player_types.h	238	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	numtouch	0x84	src\game\player_types.h	239	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	touchents	0x88	src\game\player_types.h	240	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	mins	0x110	src\game\player_types.h	241	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	xyspeed	0x134	src\game\player_types.h	242	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	trace	0x140	src\game\player_types.h	243	COMPILE_ASSERT_PRESENT
+offsetof	pmove_t	pointcontents	0x14C	src\game\player_types.h	244	COMPILE_ASSERT_PRESENT
+sizeof	Light		0x1C	src\game\render\lightgrid.cpp	20	COMPILE_ASSERT_PRESENT
+sizeof	world_t		0x10C	src\game\render\r_stubs.cpp	28	COMPILE_ASSERT_PRESENT
+sizeof	trDebug_t		0x80	src\game\render\r_stubs.cpp	68	COMPILE_ASSERT_PRESENT
+sizeof	orientationr_t		0x7C	src\game\render\r_stubs.cpp	77	COMPILE_ASSERT_PRESENT
+sizeof	trGlobals_t		0x3A0	src\game\render\r_stubs.cpp	94	COMPILE_ASSERT_PRESENT
+sizeof	refimport_t		0x88	src\game\render\re_quad.cpp	35	COMPILE_ASSERT_PRESENT
+sizeof	DebugTexturedQuad2D		0x28	src\game\render\renderdebug.cpp	821	COMPILE_ASSERT_PRESENT
+sizeof	BspNode		0x10	src\game\render\tr_bsp2.cpp	31	COMPILE_ASSERT_PRESENT
+sizeof	orientationr_t		0x7C	src\game\render\tr_bsp2.cpp	122	COMPILE_ASSERT_PRESENT
+sizeof	viewParms_t		0x1E0	src\game\render\tr_bsp2.cpp	134	COMPILE_ASSERT_PRESENT
+sizeof	XBoneInfo		0x28	src\game\render\tr_dobj_extra.cpp	51	COMPILE_ASSERT_PRESENT
+sizeof	XModelParts		0x40	src\game\render\tr_dobj_extra.cpp	72	COMPILE_ASSERT_PRESENT
+sizeof	MeshRecord		0x50	src\game\render\tr_dpvs.cpp	63	COMPILE_ASSERT_PRESENT
+sizeof	trModelCellRef_t		0x20	src\game\render\tr_dpvs.cpp	85	COMPILE_ASSERT_PRESENT
+sizeof	dpvs_plane_t		0x20	src\game\render\tr_dpvs.cpp	94	COMPILE_ASSERT_PRESENT
+sizeof	dpvs_t		0x2180	src\game\render\tr_dpvs.cpp	110	COMPILE_ASSERT_PRESENT
+sizeof	refEntity_t		0x60	src\game\render\tr_dpvs.cpp	131	COMPILE_ASSERT_PRESENT
+offsetof	trRefEntity	mLastCellNum	0xE8	src\game\render\tr_dpvs.cpp	156	COMPILE_ASSERT_PRESENT
+offsetof	trRefEntity	cull	0xFA	src\game\render\tr_dpvs.cpp	158	COMPILE_ASSERT_PRESENT
+sizeof	trRefEntity		0x104	src\game\render\tr_dpvs.cpp	160	COMPILE_ASSERT_PRESENT
+sizeof	trStaticModelList_t		0x08	src\game\render\tr_dpvs.cpp	167	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	absmin	0xA0	src\game\render\tr_dpvs.cpp	179	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	viewCount	0xE4	src\game\render\tr_dpvs.cpp	181	COMPILE_ASSERT_PRESENT
+sizeof	DObjSkelMat		0x40	src\game\render\tr_dpvs.cpp	190	COMPILE_ASSERT_PRESENT
+sizeof	BspCell		0x50	src\game\render\tr_dpvs.cpp	213	COMPILE_ASSERT_PRESENT
+sizeof	BspPortal		0x30	src\game\render\tr_dpvs.cpp	223	COMPILE_ASSERT_PRESENT
+sizeof	orientationDPVSView		0x7C	src\game\render\tr_dpvs.cpp	510	COMPILE_ASSERT_PRESENT
+sizeof	cplaneDPVSView		0x14	src\game\render\tr_dpvs.cpp	520	COMPILE_ASSERT_PRESENT
+sizeof	viewParmsDPVSView		0x1E0	src\game\render\tr_dpvs.cpp	539	COMPILE_ASSERT_PRESENT
+sizeof	glfog_t		0x40	src\game\render\tr_fog.cpp	26	COMPILE_ASSERT_PRESENT
+sizeof	ParticleEffect		0x3C	src\game\render\tr_fx2.cpp	224	COMPILE_ASSERT_PRESENT
+sizeof	BspPortal		0x30	src\game\render\tr_fx4.cpp	171	COMPILE_ASSERT_PRESENT
+sizeof	glconfig_t		0xA0	src\game\render\tr_gl.cpp	56	COMPILE_ASSERT_PRESENT
+sizeof	BP_OVEREXPOSURE		0x2C	src\game\render\tr_gl.cpp	73	COMPILE_ASSERT_PRESENT
+sizeof	viewModelInfo_t		0x70	src\game\render\tr_gl.cpp	87	COMPILE_ASSERT_PRESENT
+sizeof	orientation_t		0x30	src\game\render\tr_main.cpp	36	COMPILE_ASSERT_PRESENT
+sizeof	orientationr_t		0x7C	src\game\render\tr_main.cpp	45	COMPILE_ASSERT_PRESENT
+sizeof	refEntity_t		0x60	src\game\render\tr_main.cpp	61	COMPILE_ASSERT_PRESENT
+sizeof	viewParms_t		0x1E0	src\game\render\tr_main.cpp	109	COMPILE_ASSERT_PRESENT
+sizeof	trRefdef_t		0x24	src\game\render\tr_main.cpp	124	COMPILE_ASSERT_PRESENT
+sizeof	trGlobals_t		0x3A0	src\game\render\tr_main.cpp	148	COMPILE_ASSERT_PRESENT
+sizeof	BspCellView		0x50	src\game\render\tr_main.cpp	843	COMPILE_ASSERT_PRESENT
+sizeof	LightGridData		0x64	src\game\render\tr_staticmodel.cpp	101	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	lgridDataInitialized	0x64	src\game\render\tr_staticmodel.cpp	123	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	xmodel	0x68	src\game\render\tr_staticmodel.cpp	125	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	axis	0x6C	src\game\render\tr_staticmodel.cpp	127	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	origin	0x90	src\game\render\tr_staticmodel.cpp	129	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	scale	0x9C	src\game\render\tr_staticmodel.cpp	131	COMPILE_ASSERT_PRESENT
+sizeof	StaticModel		0xF0	src\game\render\tr_staticmodel.cpp	133	COMPILE_ASSERT_PRESENT
+sizeof	DObjSkelMat		0x40	src\game\render\tr_staticmodel.cpp	175	COMPILE_ASSERT_PRESENT
+sizeof	trace_t		0x50	src\game\render\tr_tiny.cpp	1823	COMPILE_ASSERT_PRESENT
+sizeof	Decal		0x60	src\game\render\tr_wheelmark.cpp	296	COMPILE_ASSERT_PRESENT
+sizeof	DynamicDecalMgr::DecalSet		0x8	src\game\render\tr_wheelmark.cpp	901	COMPILE_ASSERT_PRESENT
+sizeof	DynamicDecalMgr		0x10	src\game\render\tr_wheelmark.cpp	903	COMPILE_ASSERT_PRESENT
+sizeof	nglShaderParamSet		4	src\game\render\tr_xmodel_cluster.cpp	31	COMPILE_ASSERT_PRESENT
+sizeof	nglMeshParams		0x20	src\game\render\tr_xmodel_cluster.cpp	46	COMPILE_ASSERT_PRESENT
+sizeof	XModelCollSurf		0x40	src\game\render\xmodel.cpp	461	COMPILE_ASSERT_PRESENT
+offsetof	XModelCollisionView	collSurfs	0x38	src\game\render\xmodel.cpp	467	COMPILE_ASSERT_PRESENT
+sizeof	XBlendInfo		0x14	src\game\render\xsurface.h	15	COMPILE_ASSERT_PRESENT
+sizeof	XRigidVertexInfo_s		0x18	src\game\render\xsurface.h	21	COMPILE_ASSERT_PRESENT
+sizeof	XSimpleBlendInfo_s		0x10	src\game\render\xsurface.h	28	COMPILE_ASSERT_PRESENT
+sizeof	XSimpleVertexInfo_s		0x20	src\game\render\xsurface.h	36	COMPILE_ASSERT_PRESENT
+sizeof	XVertexInfo_s		0x24	src\game\render\xsurface.h	44	COMPILE_ASSERT_PRESENT
+sizeof	XSurface		0x34	src\game\render\xsurface.h	67	COMPILE_ASSERT_PRESENT
+sizeof	DSurface_s		4	src\game\render\xsurface.h	79	COMPILE_ASSERT_PRESENT
+sizeof	GameSettings		0x2A0	src\game\shell\game_settings.cpp	93	COMPILE_ASSERT_PRESENT
+offsetof	GameSettings	container	0x04	src\game\shell\game_settings.cpp	95	COMPILE_ASSERT_PRESENT
+offsetof	GameSettings	m_temp_buffer	0x28C	src\game\shell\game_settings.cpp	97	COMPILE_ASSERT_PRESENT
+offsetof	GameSettings	m_cur_name	0x292	src\game\shell\game_settings.cpp	99	COMPILE_ASSERT_PRESENT
+offsetof	GameSettings	m_continued_without_saving	0x29E	src\game\shell\game_settings.cpp	157	COMPILE_ASSERT_PRESENT
+sizeof	sServerCreateParams		105	src\game\shell\loading_menu.cpp	60	COMPILE_ASSERT_PRESENT
+sizeof	ProfileManager		0x6C	src\game\shell\shell_types.h	140	COMPILE_ASSERT_PRESENT
+sizeof	ProfileMainMenu		0x8C	src\game\shell\shell_types.h	190	COMPILE_ASSERT_PRESENT
+sizeof	ProfileEditMenu		0x52C	src\game\shell\shell_types.h	237	COMPILE_ASSERT_PRESENT
+sizeof	MemCardCheckMenu		0x58	src\game\shell\shell_types.h	266	COMPILE_ASSERT_PRESENT
+sizeof	system_time		12	src\game\shell\shell_types.h	366	COMPILE_ASSERT_PRESENT
+sizeof	MPsharedStubData		0x5D	src\game\shell\shell_types.h	436	COMPILE_ASSERT_PRESENT
+sizeof	languageInfo_t		8	src\game\shell\stringed_hooks.cpp	59	COMPILE_ASSERT_PRESENT
+sizeof	snapshot_t		0x5F0	src\game\snapshot_types.h	15	COMPILE_ASSERT_PRESENT
+sizeof	mem_heap		0x49C	src\game\streamer\pakmanager.cpp	381	COMPILE_ASSERT_PRESENT
+sizeof	InplaceAssetBankSet<DbTablesetBank>		0x190	src\game\streamer\pakmanager.cpp	2491	COMPILE_ASSERT_PRESENT
+sizeof	DbTablesetMgr		0x190	src\game\streamer\pakmanager.cpp	2493	COMPILE_ASSERT_PRESENT
+sizeof	ZoneBoundaryBank		0x54	src\game\streamer\pakmanager.cpp	2719	COMPILE_ASSERT_PRESENT
+sizeof	XModelLod		0x0C	src\game\streamer\pakmanager.cpp	2754	COMPILE_ASSERT_PRESENT
+sizeof	XModel		0x50	src\game\streamer\pakmanager.cpp	2755	COMPILE_ASSERT_PRESENT
+offsetof	BspTree	mCells	0x18	src\game\streamer\pakmanager.cpp	2787	COMPILE_ASSERT_PRESENT
+sizeof	BspTree::BspCell		0x50	src\game\streamer\pakmanager.cpp	2789	COMPILE_ASSERT_PRESENT
+sizeof	world_t		0x10C	src\game\streamer\pakmanager.cpp	2799	COMPILE_ASSERT_PRESENT
+sizeof	StaticModel		0xF0	src\game\streamer\pakmanager.cpp	2818	COMPILE_ASSERT_PRESENT
+sizeof	ZoneBankArray		0x18C	src\game\streamer\pakmanager.cpp	2969	COMPILE_ASSERT_PRESENT
+offsetof	StreamZoneManager	mInitialPositionStorage	0x1A0	src\game\streamer\pakmanager.cpp	3040	COMPILE_ASSERT_PRESENT
+offsetof	StreamZoneManager	mLastPositionStorage	0x1B0	src\game\streamer\pakmanager.cpp	3042	COMPILE_ASSERT_PRESENT
+offsetof	StreamZoneManager	mInitialCell	0x1C0	src\game\streamer\pakmanager.cpp	3044	COMPILE_ASSERT_PRESENT
+offsetof	StreamZoneManager	mLastCellNum	0x1C4	src\game\streamer\pakmanager.cpp	3046	COMPILE_ASSERT_PRESENT
+offsetof	StreamZoneManager	mLastListSize	0x1C8	src\game\streamer\pakmanager.cpp	3048	COMPILE_ASSERT_PRESENT
+offsetof	StreamZoneManager	mFirstBank	0x1CC	src\game\streamer\pakmanager.cpp	3050	COMPILE_ASSERT_PRESENT
+offsetof	StreamZoneManager	mListSize	0x1D0	src\game\streamer\pakmanager.cpp	3052	COMPILE_ASSERT_PRESENT
+sizeof	StreamZoneManager		0x1E0	src\game\streamer\pakmanager.cpp	3054	COMPILE_ASSERT_PRESENT
+sizeof	InstanceGroup		0x10	src\game\streamer\pakmanager.cpp	3073	COMPILE_ASSERT_PRESENT
+sizeof	InstanceListNode		0x38	src\game\streamer\pakmanager.cpp	3166	COMPILE_ASSERT_PRESENT
+sizeof	ae_heap		0x4A0	src\game\streamer\pakmanager.cpp	3396	COMPILE_ASSERT_PRESENT
+sizeof	SceneEntity		0xE4	src\game\streamer\pakmanager.cpp	4727	COMPILE_ASSERT_PRESENT
+offsetof	SceneEntity	m_target	0x24	src\game\streamer\pakmanager.cpp	4728	COMPILE_ASSERT_PRESENT
+offsetof	SceneEntity	m_targetname	0x28	src\game\streamer\pakmanager.cpp	4730	COMPILE_ASSERT_PRESENT
+offsetof	SceneEntity	mSpecifiedFields	0xD0	src\game\streamer\pakmanager.cpp	4732	COMPILE_ASSERT_PRESENT
+offsetof	nalBaseSkeleton	Name	0x08	src\game\streamer\pakmanager.cpp	12472	COMPILE_ASSERT_PRESENT
+offsetof	nalAnimClass<nalAnyPose>	Name	0x08	src\game\streamer\pakmanager.cpp	12482	COMPILE_ASSERT_PRESENT
+sizeof	netadr_t		0x14	src\game\sv\server_types.h	49	COMPILE_ASSERT_PRESENT
+offsetof	netadr_t	port	0x12	src\game\sv\server_types.h	50	COMPILE_ASSERT_PRESENT
+sizeof	reliableCommands_t		0x14	src\game\sv\server_types.h	72	COMPILE_ASSERT_PRESENT
+sizeof	netchan_t		0x830	src\game\sv\server_types.h	89	COMPILE_ASSERT_PRESENT
+offsetof	netchan_t	remoteAddress	0x08	src\game\sv\server_types.h	90	COMPILE_ASSERT_PRESENT
+offsetof	netchan_t	fragmentBuffer	0x30	src\game\sv\server_types.h	91	COMPILE_ASSERT_PRESENT
+sizeof	msg_t		0x14	src\game\sv\server_types.h	104	COMPILE_ASSERT_PRESENT
+sizeof	client_s		0x1370	src\game\sv\server_types.h	138	COMPILE_ASSERT_PRESENT
+offsetof	client_s	state	0x000	src\game\sv\server_types.h	139	COMPILE_ASSERT_PRESENT
+offsetof	client_s	reliableCommands	0x004	src\game\sv\server_types.h	140	COMPILE_ASSERT_PRESENT
+offsetof	client_s	reliableSequence	0x018	src\game\sv\server_types.h	141	COMPILE_ASSERT_PRESENT
+offsetof	client_s	lastUsercmd	0x030	src\game\sv\server_types.h	142	COMPILE_ASSERT_PRESENT
+offsetof	client_s	lastClientCommandString	0x068	src\game\sv\server_types.h	143	COMPILE_ASSERT_PRESENT
+offsetof	client_s	mEntityHandle	0x168	src\game\sv\server_types.h	144	COMPILE_ASSERT_PRESENT
+offsetof	client_s	frames	0x170	src\game\sv\server_types.h	145	COMPILE_ASSERT_PRESENT
+offsetof	client_s	netchan	0x740	src\game\sv\server_types.h	146	COMPILE_ASSERT_PRESENT
+sizeof	serverStatic_t		0x3C	src\game\sv\server_types.h	161	COMPILE_ASSERT_PRESENT
+offsetof	serverStatic_t	clients	0x08	src\game\sv\server_types.h	162	COMPILE_ASSERT_PRESENT
+sizeof	server_t		0x1010	src\game\sv\server_types.h	175	COMPILE_ASSERT_PRESENT
+offsetof	server_t	checksum	0x000	src\game\sv\server_types.h	176	COMPILE_ASSERT_PRESENT
+offsetof	server_t	state	0x004	src\game\sv\server_types.h	177	COMPILE_ASSERT_PRESENT
+offsetof	server_t	configstrings	0x010	src\game\sv\server_types.h	178	COMPILE_ASSERT_PRESENT
+sizeof	vm_s		0x8C	src\game\sv\server_types.h	190	COMPILE_ASSERT_PRESENT
+sizeof	moveclip_t		0xB0	src\game\sv\server_types.h	208	COMPILE_ASSERT_PRESENT
+sizeof	pointtrace_t		0x90	src\game\sv\server_types.h	225	COMPILE_ASSERT_PRESENT
+sizeof	sightclip_t		0x70	src\game\sv\server_types.h	244	COMPILE_ASSERT_PRESENT
+sizeof	sightpointtrace_t		0x40	src\game\sv\server_types.h	259	COMPILE_ASSERT_PRESENT
+sizeof	tAngularInterpolator		16	src\game\sv\sv_stubs.h	78	COMPILE_ASSERT_PRESENT
+sizeof	kuju::tLinearInterpolator		16	src\game\sv\sv_stubs.h	98	COMPILE_ASSERT_PRESENT
+sizeof	DCGSet		0x70	src\game\sv\sv_stubs.h	182	COMPILE_ASSERT_PRESENT
+offsetof	DCGSet	objects_m_count	0x04	src\game\sv\sv_stubs.h	183	COMPILE_ASSERT_PRESENT
+offsetof	DCGSet	min	0x30	src\game\sv\sv_stubs.h	184	COMPILE_ASSERT_PRESENT
+offsetof	DCGSet	max	0x40	src\game\sv\sv_stubs.h	185	COMPILE_ASSERT_PRESENT
+offsetof	DCGSet	id	0x68	src\game\sv\sv_stubs.h	186	COMPILE_ASSERT_PRESENT
+sizeof	StubData		0x4C0	src\game\sv\sv_stubs.h	270	COMPILE_ASSERT_PRESENT
+offsetof	StubData	mControllerPort	0x3B0	src\game\sv\sv_stubs.h	271	COMPILE_ASSERT_PRESENT
+offsetof	StubData	mSec	0x28	src\game\sv\sv_stubs.h	272	COMPILE_ASSERT_PRESENT
+offsetof	StubData	mInvertAim	0x41	src\game\sv\sv_stubs.h	273	COMPILE_ASSERT_PRESENT
+sizeof	SaveGameData		7156	src\game\sv\sv_stubs.h	306	COMPILE_ASSERT_PRESENT
+offsetof	SaveGameData	ammo	0x4C4	src\game\sv\sv_stubs.h	307	COMPILE_ASSERT_PRESENT
+offsetof	SaveGameData	mFriendlies	0x7E0	src\game\sv\sv_stubs.h	309	COMPILE_ASSERT_PRESENT
+sizeof	ServerTime		0x14	src\game\sv\sv_stubs.h	335	COMPILE_ASSERT_PRESENT
+sizeof	FEManager		0x3F4	src\game\sv\sv_stubs.h	454	COMPILE_ASSERT_PRESENT
+sizeof	AeThreadManager		2148	src\game\sv\sv_stubs.h	490	COMPILE_ASSERT_PRESENT
+sizeof	MultiplayerMgr		80	src\game\sv\sv_stubs.h	720	COMPILE_ASSERT_PRESENT
+sizeof	SmokeGrenadeInfo		0x14	src\game\sv\sv_stubs.h	729	COMPILE_ASSERT_PRESENT
+sizeof	SmokeGrenadeMgr		0xC	src\game\sv\sv_stubs.h	761	COMPILE_ASSERT_PRESENT
+sizeof	SoundDevice		31392	src\game\sv\sv_stubs.h	1030	COMPILE_ASSERT_PRESENT
+sizeof	AeSizedEntityArray		16388	src\game\sv\sv_stubs.h	1208	COMPILE_ASSERT_PRESENT
+offsetof	EntityHandleDb	mElements	0xA8	src\game\sv\sv_stubs.h	1258	COMPILE_ASSERT_PRESENT
+offsetof	EntityHandleDb	mActiveList	0x2AAC	src\game\sv\sv_stubs.h	1259	COMPILE_ASSERT_PRESENT
+sizeof	EntityHandleDb		27312	src\game\sv\sv_stubs.h	1260	COMPILE_ASSERT_PRESENT
+sizeof	XModelManager		4	src\game\sv\sv_stubs.h	1273	COMPILE_ASSERT_PRESENT
+offsetof	EntityManager	mPlayers	0x04	src\game\sv\sv_stubs.h	1308	COMPILE_ASSERT_PRESENT
+offsetof	EntityManager	mWorld	0x44	src\game\sv\sv_stubs.h	1309	COMPILE_ASSERT_PRESENT
+sizeof	EntityManager		0x48	src\game\sv\sv_stubs.h	1310	COMPILE_ASSERT_PRESENT
+sizeof	PathNodeMgr		12	src\game\sv\sv_stubs.h	1585	COMPILE_ASSERT_PRESENT
+sizeof	FEMenuSystem		0x2C	src\game\sv\sv_stubs.h	1669	COMPILE_ASSERT_PRESENT
+sizeof	IGOFrontEnd		168	src\game\sv\sv_stubs.h	1757	COMPILE_ASSERT_PRESENT
+sizeof	Camera		0x1F0	src\game\sv\sv_stubs.h	1818	COMPILE_ASSERT_PRESENT
+sizeof	MPMajorUpdate		0x50	src\game\sv\sv_stubs.h	1880	COMPILE_ASSERT_PRESENT
+sizeof	MPVehicleEvent		0x20	src\game\sv\sv_stubs.h	2272	COMPILE_ASSERT_PRESENT
+sizeof	XModelLod		0x0C	src\game\sv\sv_stubs.h	2487	COMPILE_ASSERT_PRESENT
+sizeof	XBoneHierarchy		0x0C	src\game\sv\sv_stubs.h	2496	COMPILE_ASSERT_PRESENT
+sizeof	XBoneInfo		0x28	src\game\sv\sv_stubs.h	2506	COMPILE_ASSERT_PRESENT
+sizeof	StaticModel		0xF0	src\game\sv\sv_stubs.h	2560	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	xmodel	0x68	src\game\sv\sv_stubs.h	2561	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	origin	0x90	src\game\sv\sv_stubs.h	2563	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	invAxis	0xB8	src\game\sv\sv_stubs.h	2565	COMPILE_ASSERT_PRESENT
+offsetof	StaticModel	pakId	0xE0	src\game\sv\sv_stubs.h	2567	COMPILE_ASSERT_PRESENT
+sizeof	trace_t		0x50	src\game\trace_types.h	42	COMPILE_ASSERT_PRESENT
+offsetof	trace_t	endpos	0x00	src\game\trace_types.h	43	COMPILE_ASSERT_PRESENT
+offsetof	trace_t	fraction	0x20	src\game\trace_types.h	44	COMPILE_ASSERT_PRESENT
+sizeof	collision_context_t		0x18	src\game\trace_types.h	68	COMPILE_ASSERT_PRESENT
+offsetof	collision_context_t	pass_entity1	0x04	src\game\trace_types.h	69	COMPILE_ASSERT_PRESENT
+offsetof	collision_context_t	pass_entity2	0x08	src\game\trace_types.h	71	COMPILE_ASSERT_PRESENT
+offsetof	collision_context_t	pass_owner1	0x0C	src\game\trace_types.h	73	COMPILE_ASSERT_PRESENT
+offsetof	collision_context_t	pass_owner2	0x10	src\game\trace_types.h	75	COMPILE_ASSERT_PRESENT
+offsetof	collision_context_t	contentmask	0x14	src\game\trace_types.h	77	COMPILE_ASSERT_PRESENT
+sizeof	color32		4	src\game\ui_types.h	67	COMPILE_ASSERT_PRESENT
+sizeof	ae_vector<char>		0x0C	src\game\ui_types.h	136	COMPILE_ASSERT_PRESENT
+sizeof	PanelFileUser		4	src\game\ui_types.h	284	COMPILE_ASSERT_PRESENT
+sizeof	PanelAnimObject		0x14	src\game\ui_types.h	358	COMPILE_ASSERT_PRESENT
+offsetof	PanelAnimObject	visibility	0x04	src\game\ui_types.h	359	COMPILE_ASSERT_PRESENT
+sizeof	LightPanelQuad::Vertex		20	src\game\ui_types.h	382	COMPILE_ASSERT_PRESENT
+sizeof	LightPanelQuad		88	src\game\ui_types.h	384	COMPILE_ASSERT_PRESENT
+sizeof	PQArcMaskingInfo		0x34	src\game\ui_types.h	406	COMPILE_ASSERT_PRESENT
+sizeof	PanelQuad		0x48	src\game\ui_types.h	537	COMPILE_ASSERT_PRESENT
+offsetof	PanelQuad	center_point	0x14	src\game\ui_types.h	538	COMPILE_ASSERT_PRESENT
+offsetof	PanelQuad	pqs	0x20	src\game\ui_types.h	539	COMPILE_ASSERT_PRESENT
+sizeof	DefaultPanelQuad		0x48	src\game\ui_types.h	547	COMPILE_ASSERT_PRESENT
+sizeof	PanelMaterial		0x10	src\game\ui_types.h	567	COMPILE_ASSERT_PRESENT
+sizeof	PanelQuadSection::PQVert		20	src\game\ui_types.h	638	COMPILE_ASSERT_PRESENT
+sizeof	PanelQuadSection		104	src\game\ui_types.h	640	COMPILE_ASSERT_PRESENT
+sizeof	FloatingPQ		84	src\game\ui_types.h	655	COMPILE_ASSERT_PRESENT
+sizeof	PanelFile		0x60	src\game\ui_types.h	706	COMPILE_ASSERT_PRESENT
+offsetof	PanelFile	pquads	0x00	src\game\ui_types.h	707	COMPILE_ASSERT_PRESENT
+offsetof	PanelFile	ptext	0x0C	src\game\ui_types.h	708	COMPILE_ASSERT_PRESENT
+offsetof	PanelFile	mName	0x20	src\game\ui_types.h	709	COMPILE_ASSERT_PRESENT
+sizeof	FETextFlashInfo		0x14	src\game\ui_types.h	730	COMPILE_ASSERT_PRESENT
+sizeof	FEText		0x70	src\game\ui_types.h	914	COMPILE_ASSERT_PRESENT
+offsetof	FEText	font	0x18	src\game\ui_types.h	915	COMPILE_ASSERT_PRESENT
+offsetof	FEText	text	0x1C	src\game\ui_types.h	916	COMPILE_ASSERT_PRESENT
+offsetof	FEText	xy	0x2C	src\game\ui_types.h	917	COMPILE_ASSERT_PRESENT
+offsetof	FEText	scale	0x38	src\game\ui_types.h	918	COMPILE_ASSERT_PRESENT
+offsetof	FEText	color1	0x5C	src\game\ui_types.h	919	COMPILE_ASSERT_PRESENT
+offsetof	FEText	panel_text_index	0x68	src\game\ui_types.h	920	COMPILE_ASSERT_PRESENT
+offsetof	FEText	flags	0x6C	src\game\ui_types.h	921	COMPILE_ASSERT_PRESENT
+sizeof	FEMenuEntry		0x18	src\game\ui_types.h	1116	COMPILE_ASSERT_PRESENT
+offsetof	FEMenuEntry	text	0x10	src\game\ui_types.h	1117	COMPILE_ASSERT_PRESENT
+sizeof	FEMenuColorScheme		0x10	src\game\ui_types.h	1140	COMPILE_ASSERT_PRESENT
+sizeof	FEMenuSystem		0x2C	src\game\ui_types.h	1223	COMPILE_ASSERT_PRESENT
+offsetof	FEMenuSystem	menus	0x04	src\game\ui_types.h	1224	COMPILE_ASSERT_PRESENT
+offsetof	FEMenuSystem	m_active	0x1C	src\game\ui_types.h	1225	COMPILE_ASSERT_PRESENT
+sizeof	FrontEndMenuSystem		0x104	src\game\ui_types.h	1256	COMPILE_ASSERT_PRESENT
+sizeof	InGameMenuSystem		0x38	src\game\ui_types.h	1294	COMPILE_ASSERT_PRESENT
+sizeof	FEMenu		0x4C	src\game\ui_types.h	1471	COMPILE_ASSERT_PRESENT
+offsetof	FEMenu	entries	0x04	src\game\ui_types.h	1472	COMPILE_ASSERT_PRESENT
+offsetof	FEMenu	panel	0x48	src\game\ui_types.h	1473	COMPILE_ASSERT_PRESENT
+sizeof	MultiLineString		32	src\game\ui_types.h	1515	COMPILE_ASSERT_PRESENT
+sizeof	MultiLineButtons		4	src\game\ui_types.h	1516	COMPILE_ASSERT_PRESENT
+sizeof	FEMultiLineText		0xA8	src\game\ui_types.h	1645	COMPILE_ASSERT_PRESENT
+offsetof	FEMultiLineText	lines	0x90	src\game\ui_types.h	1646	COMPILE_ASSERT_PRESENT
+sizeof	LoadingMenu		0xF8	src\game\ui_types.h	1692	COMPILE_ASSERT_PRESENT
+offsetof	LoadingMenu	mTipArrays	0x8C	src\game\ui_types.h	1693	COMPILE_ASSERT_PRESENT
+sizeof	FEMultiMenu		0x4C	src\game\ui_types.h	1710	COMPILE_ASSERT_PRESENT
+sizeof	VKMenu		0x1C8	src\game\ui_types.h	1766	COMPILE_ASSERT_PRESENT
+sizeof	DialogMenuDisplay		0x4C	src\game\ui_types.h	1816	COMPILE_ASSERT_PRESENT
+sizeof	DialogMenu		0x78	src\game\ui_types.h	1857	COMPILE_ASSERT_PRESENT
+sizeof	DialogMenuSystem		0x44	src\game\ui_types.h	1927	COMPILE_ASSERT_PRESENT
+sizeof	FESplitScreenMenu		0x68	src\game\ui_types.h	1977	COMPILE_ASSERT_PRESENT
+sizeof	PanelQuadFader		0x18	src\game\ui_types.h	1995	COMPILE_ASSERT_PRESENT
+sizeof	InGameOptionsMenu		0x11C	src\game\ui_types.h	2041	COMPILE_ASSERT_PRESENT
+sizeof	AARInGameOptionsMenu		0x11C	src\game\ui_types.h	2062	COMPILE_ASSERT_PRESENT
+sizeof	OptionsGameplayMenu		0xB0	src\game\ui_types.h	2108	COMPILE_ASSERT_PRESENT
+sizeof	OptionsControlsMenu		0xE8	src\game\ui_types.h	2163	COMPILE_ASSERT_PRESENT
+sizeof	OptionsSoundMenu		0x80	src\game\ui_types.h	2207	COMPILE_ASSERT_PRESENT
+sizeof	OptionsStickMenu		0x90	src\game\ui_types.h	2252	COMPILE_ASSERT_PRESENT
+sizeof	OptionsButtonMenu		0x18C	src\game\ui_types.h	2298	COMPILE_ASSERT_PRESENT
+sizeof	GammaScreenMenu		0x68	src\game\ui_types.h	2334	COMPILE_ASSERT_PRESENT
+sizeof	ControllerDisconnectedMenu		0x50	src\game\ui_types.h	2355	COMPILE_ASSERT_PRESENT
+offsetof	ControllerDisconnectedMenu	text	0x4C	src\game\ui_types.h	2357	COMPILE_ASSERT_PRESENT
+sizeof	IGOWidget		0xC	src\game\ui_types.h	2390	COMPILE_ASSERT_PRESENT
+offsetof	IGOWidget	is_shown	0x04	src\game\ui_types.h	2391	COMPILE_ASSERT_PRESENT
+sizeof	IGOHealthWidget		0x28	src\game\ui_types.h	2415	COMPILE_ASSERT_PRESENT
+sizeof	IGOTankHealthWidget		0x20	src\game\ui_types.h	2436	COMPILE_ASSERT_PRESENT
+sizeof	IGOVoteWidget		0x10	src\game\ui_types.h	2454	COMPILE_ASSERT_PRESENT
+sizeof	IGORowboatWidget		0x1C	src\game\ui_types.h	2481	COMPILE_ASSERT_PRESENT
+sizeof	IGOStanceWidget		0x38	src\game\ui_types.h	2505	COMPILE_ASSERT_PRESENT
+sizeof	IGORankWidget		0x20	src\game\ui_types.h	2527	COMPILE_ASSERT_PRESENT
+sizeof	IGOWeaponNameWidget		0x1C	src\game\ui_types.h	2550	COMPILE_ASSERT_PRESENT
+sizeof	IGOAmmoWidget		0x28	src\game\ui_types.h	2576	COMPILE_ASSERT_PRESENT
+sizeof	IGOActionHintWidget		0x20	src\game\ui_types.h	2599	COMPILE_ASSERT_PRESENT
+sizeof	IGOHQProgressBarWidget		0x28	src\game\ui_types.h	2625	COMPILE_ASSERT_PRESENT
+sizeof	IGOInGameScoreWidget		0x28	src\game\ui_types.h	2651	COMPILE_ASSERT_PRESENT
+sizeof	IGORaiseFlagWidget		0x18	src\game\ui_types.h	2673	COMPILE_ASSERT_PRESENT
+sizeof	IGOTimerWidget		0x24	src\game\ui_types.h	2704	COMPILE_ASSERT_PRESENT
+sizeof	IGOGrenadeWidget		0x44	src\game\ui_types.h	2738	COMPILE_ASSERT_PRESENT
+sizeof	IGOSpecialWeaponWidget		0x28	src\game\ui_types.h	2764	COMPILE_ASSERT_PRESENT
+sizeof	IGOTankLoadingWidget		0x18	src\game\ui_types.h	2785	COMPILE_ASSERT_PRESENT
+sizeof	IGOTankReticleWidget		0x4C	src\game\ui_types.h	2810	COMPILE_ASSERT_PRESENT
+sizeof	IGOHintWidget		0x46C	src\game\ui_types.h	2838	COMPILE_ASSERT_PRESENT
+sizeof	IGOItemIcons		0x1C	src\game\ui_types.h	2867	COMPILE_ASSERT_PRESENT
+sizeof	IGOHeadIcons		0x10C	src\game\ui_types.h	2900	COMPILE_ASSERT_PRESENT
+sizeof	FEMenuListBoxItem		28	src\game\ui_types.h	2925	COMPILE_ASSERT_PRESENT
+sizeof	FEComboBox		0x60	src\game\ui_types.h	2981	COMPILE_ASSERT_PRESENT
+sizeof	FESlider		0x38	src\game\ui_types.h	3017	COMPILE_ASSERT_PRESENT
+sizeof	FEDoubleEntry		0x1C	src\game\ui_types.h	3032	COMPILE_ASSERT_PRESENT
+sizeof	FEMenuListBox		0x5C	src\game\ui_types.h	3073	COMPILE_ASSERT_PRESENT
+sizeof	UIListBoxData		8	src\game\ui_types.h	3107	COMPILE_ASSERT_PRESENT
+sizeof	UIListBoxDataRow		20	src\game\ui_types.h	3129	COMPILE_ASSERT_PRESENT
+sizeof	UIListBoxItem		24	src\game\ui_types.h	3165	COMPILE_ASSERT_PRESENT
+sizeof	UIListBoxRow		16	src\game\ui_types.h	3193	COMPILE_ASSERT_PRESENT
+sizeof	UIListBox		0xAC	src\game\ui_types.h	3268	COMPILE_ASSERT_PRESENT
+sizeof	_XUID		0xC	src\game\ui_types.h	3287	COMPILE_ASSERT_PRESENT
+sizeof	UIHighlightListBox		0xE0	src\game\ui_types.h	3320	COMPILE_ASSERT_PRESENT
+sizeof	UIPlayerListBox		0x108	src\game\ui_types.h	3345	COMPILE_ASSERT_PRESENT
+sizeof	IGOVoipList		0xB8	src\game\ui_types.h	3365	COMPILE_ASSERT_PRESENT
+sizeof	IGOJeepMapWidget		0x50	src\game\ui_types.h	3396	COMPILE_ASSERT_PRESENT
+sizeof	IGOWarStatusWidget		0xA4	src\game\ui_types.h	3432	COMPILE_ASSERT_PRESENT
+sizeof	IGOGrenadeCookWidget		0x34	src\game\ui_types.h	3458	COMPILE_ASSERT_PRESENT
+sizeof	IGOTankIconWidget		0x9C	src\game\ui_types.h	3485	COMPILE_ASSERT_PRESENT
+sizeof	IGOGrenadeIndicator		0x4C	src\game\ui_types.h	3524	COMPILE_ASSERT_PRESENT
+sizeof	IGOMapObject		0x10	src\game\ui_types.h	3552	COMPILE_ASSERT_PRESENT
+sizeof	IGOCompassWidget		0x1488	src\game\ui_types.h	3660	COMPILE_ASSERT_PRESENT
+sizeof	IGOFrontEnd		0xA8	src\game\ui_types.h	3742	COMPILE_ASSERT_PRESENT
+sizeof	XBGAMEPAD		0x58	src\input\controller.cpp	69	COMPILE_ASSERT_PRESENT
+offsetof	XBGAMEPAD	last_buttons	0x12	src\input\controller.cpp	70	COMPILE_ASSERT_PRESENT
+offsetof	XBGAMEPAD	pressed_buttons	0x1C	src\input\controller.cpp	72	COMPILE_ASSERT_PRESENT
+offsetof	XBGAMEPAD	released_buttons	0x26	src\input\controller.cpp	74	COMPILE_ASSERT_PRESENT
+offsetof	XBGAMEPAD	hDevice	0x4C	src\input\controller.cpp	76	COMPILE_ASSERT_PRESENT
+offsetof	controller	locked_port	0x18	src\input\controller.h	93	COMPILE_ASSERT_PRESENT
+offsetof	controller	is_locked	0x1C	src\input\controller.h	95	COMPILE_ASSERT_PRESENT
+offsetof	controller	accepting_input_from_controller	0x1D	src\input\controller.h	97	COMPILE_ASSERT_PRESENT
+sizeof	controller		0x24	src\input\controller.h	99	COMPILE_ASSERT_PRESENT
+sizeof	Instance		0x2C	src\ngl\ngl_debug.cpp	322	COMPILE_ASSERT_PRESENT
+sizeof	tlInstanceBank		0x14	src\ngl\ngl_debug.cpp	330	COMPILE_ASSERT_PRESENT
+sizeof	ngliShaderProfile		0x34	src\ngl\ngl_dx_debug.h	30	COMPILE_ASSERT_PRESENT
+sizeof	FilterSample		0xC	src\ngl\ngl_dx_filters.h	25	COMPILE_ASSERT_PRESENT
+sizeof	nglFontPCUVVertex		0x18	src\ngl\ngl_dx_font.cpp	51	COMPILE_ASSERT_PRESENT
+sizeof	gpuVertexFormat		0x0C	src\ngl\ngl_dx_gpu.h	40	COMPILE_ASSERT_PRESENT
+sizeof	gpuVertexElementUsage		4	src\ngl\ngl_dx_gpu.h	54	COMPILE_ASSERT_PRESENT
+sizeof	nglMeshSection		0x70	src\ngl\ngl_dx_gpu.h	78	COMPILE_ASSERT_PRESENT
+sizeof	nglMeshLOD		8	src\ngl\ngl_dx_gpu.h	140	COMPILE_ASSERT_PRESENT
+sizeof	nglMesh		0x40	src\ngl\ngl_dx_gpu.h	162	COMPILE_ASSERT_PRESENT
+sizeof	nglSkeletonBone		0x90	src\ngl\ngl_dx_gpu.h	175	COMPILE_ASSERT_PRESENT
+sizeof	nglSkeleton		0x0C	src\ngl\ngl_dx_gpu.h	182	COMPILE_ASSERT_PRESENT
+sizeof	nglShaderParamSet		4	src\ngl\ngl_dx_gpu.h	194	COMPILE_ASSERT_PRESENT
+sizeof	nglMeshNode		0x90	src\ngl\ngl_dx_gpu.h	208	COMPILE_ASSERT_PRESENT
+sizeof	nglMeshParams		0x20	src\ngl\ngl_dx_gpu.h	223	COMPILE_ASSERT_PRESENT
+sizeof	nglVertexDeclBankEntry		8	src\ngl\ngl_dx_mesh.cpp	30	COMPILE_ASSERT_PRESENT
+sizeof	nglQuadVertex		0x14	src\ngl\ngl_dx_quad.h	31	COMPILE_ASSERT_PRESENT
+sizeof	nglQuad		0x60	src\ngl\ngl_dx_quad.h	43	COMPILE_ASSERT_PRESENT
+sizeof	nglQuadNode		0x6C	src\ngl\ngl_dx_quad.h	54	COMPILE_ASSERT_PRESENT
+sizeof	StageCache		0x20	src\ngl\ngl_dx_quad.h	70	COMPILE_ASSERT_PRESENT
+sizeof	nglDxTexCacheClass		0x80	src\ngl\ngl_dx_quad.h	76	COMPILE_ASSERT_PRESENT
+sizeof	nglDisplayModeType		0x10	src\ngl\ngl_dx_quad.h	93	COMPILE_ASSERT_PRESENT
+sizeof	nglDxRenderState		4	src\ngl\ngl_dx_state.h	36	COMPILE_ASSERT_PRESENT
+sizeof	PCUVVert		0x18	src\ngl\ngl_dx_texture.cpp	193	COMPILE_ASSERT_PRESENT
+sizeof	nglDebugLineVertex		0x10	src\ngl\ngl_gpu_debug.h	30	COMPILE_ASSERT_PRESENT
+sizeof	nglDebugLineNode		0x14	src\ngl\ngl_gpu_debug.h	46	COMPILE_ASSERT_PRESENT
+sizeof	nglDebugTriNode		0x14	src\ngl\ngl_gpu_debug.h	56	COMPILE_ASSERT_PRESENT
+sizeof	DirProjNode		0x140	src\ngl\ngl_lighting.cpp	597	COMPILE_ASSERT_PRESENT
+sizeof	nglLightNode		0x30	src\ngl\ngl_lighting.h	40	COMPILE_ASSERT_PRESENT
+sizeof	nglLightContext		0x70	src\ngl\ngl_lighting.h	50	COMPILE_ASSERT_PRESENT
+sizeof	nglDirLightInfo		0x20	src\ngl\ngl_lighting.h	59	COMPILE_ASSERT_PRESENT
+sizeof	nglPointLightInfo		0x30	src\ngl\ngl_lighting.h	72	COMPILE_ASSERT_PRESENT
+sizeof	nglFrustum		0x60	src\ngl\ngl_lighting.h	80	COMPILE_ASSERT_PRESENT
+sizeof	nglDicLightInfo		0xB0	src\ngl\ngl_lighting.h	90	COMPILE_ASSERT_PRESENT
+sizeof	nglRenderCallbackNode		0x20	src\ngl\ngl_scene.cpp	136	COMPILE_ASSERT_PRESENT
+sizeof	nglSortInfo		8	src\ngl\ngl_scene.h	29	COMPILE_ASSERT_PRESENT
+sizeof	nglSceneCallback		8	src\ngl\ngl_scene.h	67	COMPILE_ASSERT_PRESENT
+sizeof	nglLockedTextureNode		0x0C	src\ngl\ngl_scene.h	85	COMPILE_ASSERT_PRESENT
+sizeof	nglParamSet		4	src\ngl\ngl_scene.h	97	COMPILE_ASSERT_PRESENT
+sizeof	nglSceneParamSet		4	src\ngl\ngl_scene.h	103	COMPILE_ASSERT_PRESENT
+sizeof	nglScene		0x400	src\ngl\ngl_scene.h	192	COMPILE_ASSERT_PRESENT
+sizeof	nglXbPushQuadClass		4	src\ngl\ngl_xb_internal.h	66	COMPILE_ASSERT_PRESENT
+sizeof	nglDebugStruct		0x11	src\ngl\nglDebug.h	33	COMPILE_ASSERT_PRESENT
+sizeof	nglPerfInfoStruct		0x80	src\ngl\nglDebug.h	67	COMPILE_ASSERT_PRESENT
+sizeof	nglFontHeader		0x14	src\ngl\nglFont.h	33	COMPILE_ASSERT_PRESENT
+sizeof	nglGlyphInfo		0x1C	src\ngl\nglFont.h	44	COMPILE_ASSERT_PRESENT
+sizeof	nglFont		0x38	src\ngl\nglFont.h	108	COMPILE_ASSERT_PRESENT
+sizeof	nglStringSection		0x20	src\ngl\nglFont.h	168	COMPILE_ASSERT_PRESENT
+sizeof	nglStringNode		0x30	src\ngl\nglFont.h	191	COMPILE_ASSERT_PRESENT
+sizeof	nglMorphFrame		8	src\ngl\nglMorph.h	47	COMPILE_ASSERT_PRESENT
+sizeof	nglMeshMorph		8	src\ngl\nglMorph.h	62	COMPILE_ASSERT_PRESENT
+sizeof	nglMorphEntry		8	src\ngl\nglMorph.h	71	COMPILE_ASSERT_PRESENT
+sizeof	nglMorphSetSection		0x88	src\ngl\nglMorph.h	81	COMPILE_ASSERT_PRESENT
+sizeof	nglMorphSetFrame		0xC	src\ngl\nglMorph.h	91	COMPILE_ASSERT_PRESENT
+sizeof	nglMorphSet		0xC	src\ngl\nglMorph.h	101	COMPILE_ASSERT_PRESENT
+sizeof	nglPalette		0x10	src\ngl\nglPalette.h	27	COMPILE_ASSERT_PRESENT
+sizeof	nglRenderNode		0xC	src\ngl\nglRenderNode.h	59	COMPILE_ASSERT_PRESENT
+sizeof	nglShader		0x10	src\ngl\nglShader.h	41	COMPILE_ASSERT_PRESENT
+sizeof	nglMaterial		0x10	src\ngl\nglShader.h	52	COMPILE_ASSERT_PRESENT
+sizeof	nglTexture		0x2C	src\ngl\nglTexture.h	40	COMPILE_ASSERT_PRESENT
+sizeof	nflRequestParams		40	src\nvl\nvl.cpp	78	COMPILE_ASSERT_PRESENT
+sizeof	afmv_motion_t		56	src\nvl\nvl.cpp	102	COMPILE_ASSERT_PRESENT
+sizeof	nvlMovieBase		336	src\nvl\nvl.cpp	787	COMPILE_ASSERT_PRESENT
+sizeof	nvlAFMVMovie		8784	src\nvl\nvl.cpp	878	COMPILE_ASSERT_PRESENT
+sizeof	nvlMovie		8784	src\nvl\nvl.cpp	879	COMPILE_ASSERT_PRESENT
+sizeof	nflRequestParams		40	src\nvl\nvl_api.h	219	COMPILE_ASSERT_PRESENT
+sizeof	nvlMovieBase		336	src\nvl\nvl_api.h	220	COMPILE_ASSERT_PRESENT
+sizeof	nvlAFMVMovie		8784	src\nvl\nvl_api.h	221	COMPILE_ASSERT_PRESENT
+sizeof	nvlMovie		8784	src\nvl\nvl_api.h	222	COMPILE_ASSERT_PRESENT
+sizeof	outer_time		4	src\physics\phys_types.h	26	COMPILE_ASSERT_PRESENT
+sizeof	phys_mem_info		0x30	src\physics\phys_types.h	52	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_cache		8	src\physics\phys_types.h	78	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_node		0x40	src\physics\phys_types.h	97	COMPILE_ASSERT_PRESENT
+offsetof	pulse_sum_node	t_vel	0x10	src\physics\phys_types.h	98	COMPILE_ASSERT_PRESENT
+offsetof	pulse_sum_node	m_inv_mass	0x30	src\physics\phys_types.h	99	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_normal		0xA0	src\physics\phys_types.h	157	COMPILE_ASSERT_PRESENT
+offsetof	pulse_sum_normal	m_ud	0x10	src\physics\phys_types.h	158	COMPILE_ASSERT_PRESENT
+sizeof	phys_memory_heap		0x10	src\physics\phys_types.h	239	COMPILE_ASSERT_PRESENT
+sizeof	rb_inplace_partition_node		0x40	src\physics\phys_types.h	296	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body		0x1B0	src\physics\phys_types.h	396	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body	m_mat	0x000	src\physics\phys_types.h	397	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body	m_inv_mass	0x130	src\physics\phys_types.h	398	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body	m_flags	0x144	src\physics\phys_types.h	399	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body	m_node	0x150	src\physics\phys_types.h	400	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body	m_partition_node	0x168	src\physics\phys_types.h	401	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_pair_key		8	src\physics\phys_types.h	413	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint		0x0C	src\physics\phys_types.h	433	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_point		0x50	src\physics\phys_types.h	455	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body_constraint_point	m_b1_r_loc	0x10	src\physics\phys_types.h	456	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_distance		0x60	src\physics\phys_types.h	485	COMPILE_ASSERT_PRESENT
+sizeof	ragdoll_joint_limit_info		0x20	src\physics\phys_types.h	503	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_ragdoll		0x150	src\physics\phys_types.h	559	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body_constraint_ragdoll	m_b1_axis_loc	0x90	src\physics\phys_types.h	560	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_hinge		0xF0	src\physics\phys_types.h	591	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body_constraint_hinge	m_b1_axis_loc	0x30	src\physics\phys_types.h	592	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_angular_actuator		0xD0	src\physics\phys_types.h	620	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body_constraint_angular_actuator	m_target_mat	0x10	src\physics\phys_types.h	621	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_wheel		0xE0	src\physics\phys_types.h	681	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body_constraint_wheel	m_b2_hitp_loc	0x10	src\physics\phys_types.h	682	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_custom		0x10	src\physics\phys_types.h	697	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_custom::custom_constraint		4	src\physics\phys_types.h	698	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_custom_orientation		0x38	src\physics\phys_types.h	724	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body_constraint_custom_orientation	m_active	0x2C	src\physics\phys_types.h	725	COMPILE_ASSERT_PRESENT
+sizeof	user_rigid_body		0x1C0	src\physics\phys_types.h	738	COMPILE_ASSERT_PRESENT
+offsetof	user_rigid_body	m_dictator	0x1B0	src\physics\phys_types.h	739	COMPILE_ASSERT_PRESENT
+sizeof	environment_rigid_body		0x1B0	src\physics\phys_types.h	748	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_custom_path		0x80	src\physics\phys_types.h	769	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_cache_info		0x10	src\physics\phys_types.h	780	COMPILE_ASSERT_PRESENT
+sizeof	contact_point_info		0x50	src\physics\phys_types.h	815	COMPILE_ASSERT_PRESENT
+offsetof	contact_point_info	m_normal	0x00	src\physics\phys_types.h	816	COMPILE_ASSERT_PRESENT
+sizeof	avl_tree_node		0x0C	src\physics\phys_types.h	828	COMPILE_ASSERT_PRESENT
+sizeof	rigid_body_constraint_contact		0x2C	src\physics\phys_types.h	873	COMPILE_ASSERT_PRESENT
+offsetof	rigid_body_constraint_contact	m_avl_tree_node	0x18	src\physics\phys_types.h	874	COMPILE_ASSERT_PRESENT
+sizeof	contact_manifold_mesh_point		0x20	src\physics\phys_types.h	884	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_geom_vtbl		0x10	src\physics\phys_types.h	895	COMPILE_ASSERT_PRESENT
+sizeof	phys_contact_manifold		0x40	src\physics\phys_types.h	929	COMPILE_ASSERT_PRESENT
+offsetof	phys_contact_manifold	m_feature_hitp	0x00	src\physics\phys_types.h	930	COMPILE_ASSERT_PRESENT
+sizeof	bridge		0x20	src\physics\phys_types.h	944	COMPILE_ASSERT_PRESENT
+sizeof	isect_info		0x20	src\physics\phys_types.h	956	COMPILE_ASSERT_PRESENT
+offsetof	phys_contact_manifold_process	contact_mat	0x000	src\physics\phys_types.h	979	COMPILE_ASSERT_PRESENT
+offsetof	phys_contact_manifold_process	cman1	0xA0	src\physics\phys_types.h	980	COMPILE_ASSERT_PRESENT
+offsetof	phys_contact_manifold_process	m_allocater	0x124	src\physics\phys_types.h	981	COMPILE_ASSERT_PRESENT
+sizeof	phys_contact_manifold_process		0x1140	src\physics\phys_types.h	982	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_collision_info		0x30	src\physics\phys_types.h	993	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_geom_id_pair_key		8	src\physics\phys_types.h	1002	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_cache_info		0x80	src\physics\phys_types.h	1019	COMPILE_ASSERT_PRESENT
+offsetof	phys_gjk_cache_info	m_support_dir	0x00	src\physics\phys_types.h	1020	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_set_info		0x14	src\physics\phys_types.h	1031	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_info		0x330	src\physics\phys_types.h	1079	COMPILE_ASSERT_PRESENT
+offsetof	phys_gjk_info	cg2_to_cg1_xform	0x000	src\physics\phys_types.h	1080	COMPILE_ASSERT_PRESENT
+offsetof	phys_gjk_info	m_set_list	0x1EC	src\physics\phys_types.h	1081	COMPILE_ASSERT_PRESENT
+sizeof	phys_gjk_geom		0x4	src\physics\phys_types.h	1096	COMPILE_ASSERT_PRESENT
+sizeof	phys_collide_data		0x54	src\physics\phys_types.h	1125	COMPILE_ASSERT_PRESENT
+sizeof	phys_vec3		0x10	src\physics\phys_types.h	1143	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_angular		0x90	src\physics\pulse_sum.h	151	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_point		0x110	src\physics\pulse_sum.h	196	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_wheel		0xC0	src\physics\pulse_sum.h	218	COMPILE_ASSERT_PRESENT
+offsetof	pulse_sum_wheel	m_suspension	0x10	src\physics\pulse_sum.h	219	COMPILE_ASSERT_PRESENT
+sizeof	vec2		8	src\physics\pulse_sum.h	234	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_contact		0x40	src\physics\pulse_sum.h	251	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_contact::psc_cpi		0xA0	src\physics\pulse_sum.h	300	COMPILE_ASSERT_PRESENT
+sizeof	phys_link_list<int>		8	src\physics\pulse_sum.h	338	COMPILE_ASSERT_PRESENT
+sizeof	pulse_sum_constraint_solver		0x70	src\physics\pulse_sum.h	452	COMPILE_ASSERT_PRESENT
+sizeof	phys_heap_memory_pool<int>		0x14	src\physics\pulse_sum.h	848	COMPILE_ASSERT_PRESENT
+sizeof	physics_system		0x360	src\physics\pulse_sum.h	928	COMPILE_ASSERT_PRESENT
+sizeof	phys_static_array<void*, 10>		48	src\physics\rb_ragdoll_model.h	68	COMPILE_ASSERT_PRESENT
+sizeof	rb_ragdoll_model		0x130	src\physics\rb_ragdoll_model.h	148	COMPILE_ASSERT_PRESENT
+sizeof	cdAirplaneMetalShaderMat		0x24	src\render\cdAirplaneMetalShader.h	26	COMPILE_ASSERT_PRESENT
+sizeof	cdAirplaneMetalShaderNode		0x18	src\render\cdAirplaneMetalShader.h	34	COMPILE_ASSERT_PRESENT
+sizeof	cdAirplaneMetalShader		0x10	src\render\cdAirplaneMetalShader.h	45	COMPILE_ASSERT_PRESENT
+sizeof	cdBackgroundShaderMat		0x14	src\render\cdBackgroundShader.h	25	COMPILE_ASSERT_PRESENT
+sizeof	cdBackgroundShaderNode		0x18	src\render\cdBackgroundShader.h	35	COMPILE_ASSERT_PRESENT
+sizeof	cdBackgroundShader		0x10	src\render\cdBackgroundShader.h	46	COMPILE_ASSERT_PRESENT
+sizeof	cdCharShaderMat		0x14	src\render\cdCharShader.h	22	COMPILE_ASSERT_PRESENT
+sizeof	cdCharShaderNode		0x18	src\render\cdCharShader.h	30	COMPILE_ASSERT_PRESENT
+sizeof	cdCharShader		0x10	src\render\cdCharShader.h	41	COMPILE_ASSERT_PRESENT
+sizeof	cdCharSpecularShaderMat		0x20	src\render\cdCharSpecularShader.h	25	COMPILE_ASSERT_PRESENT
+sizeof	cdCharSpecularShaderNode		0x18	src\render\cdCharSpecularShader.h	33	COMPILE_ASSERT_PRESENT
+sizeof	cdCharSpecularShader		0x10	src\render\cdCharSpecularShader.h	44	COMPILE_ASSERT_PRESENT
+sizeof	cdDebugShaderMat		0x10	src\render\cdDebugShader.h	24	COMPILE_ASSERT_PRESENT
+sizeof	cdDebugShaderNode		0x18	src\render\cdDebugShader.h	35	COMPILE_ASSERT_PRESENT
+sizeof	cdDebugShader		0x10	src\render\cdDebugShader.h	46	COMPILE_ASSERT_PRESENT
+sizeof	tlInitList		8	src\render\cdDebugVertexDef.h	181	COMPILE_ASSERT_PRESENT
+sizeof	tlInitListFunction		0x0C	src\render\cdDebugVertexDef.h	195	COMPILE_ASSERT_PRESENT
+sizeof	cdDecalShaderMat		0x1C	src\render\cdDecalShader.h	27	COMPILE_ASSERT_PRESENT
+sizeof	cdDecalShaderNode		0x18	src\render\cdDecalShader.h	37	COMPILE_ASSERT_PRESENT
+sizeof	cdDecalShader		0x10	src\render\cdDecalShader.h	48	COMPILE_ASSERT_PRESENT
+sizeof	cdDynamicDecalShaderMat		0x1C	src\render\cdDynamicDecalShader.h	27	COMPILE_ASSERT_PRESENT
+sizeof	cdDynamicDecalShaderNode		0x1C	src\render\cdDynamicDecalShader.h	36	COMPILE_ASSERT_PRESENT
+sizeof	cdDynamicDecalShader		0x10	src\render\cdDynamicDecalShader.h	47	COMPILE_ASSERT_PRESENT
+sizeof	cdFlagShaderMat		0x18	src\render\cdFlagShader.h	29	COMPILE_ASSERT_PRESENT
+sizeof	cdFlagShaderNode		0x18	src\render\cdFlagShader.h	37	COMPILE_ASSERT_PRESENT
+sizeof	cdFlagShader		0x10	src\render\cdFlagShader.h	48	COMPILE_ASSERT_PRESENT
+sizeof	cdGlassShaderMat		0x24	src\render\cdGlassShader.h	26	COMPILE_ASSERT_PRESENT
+sizeof	cdGlassShaderNode		0x18	src\render\cdGlassShader.h	34	COMPILE_ASSERT_PRESENT
+sizeof	cdGlassShader		0x10	src\render\cdGlassShader.h	45	COMPILE_ASSERT_PRESENT
+sizeof	FilterTaps		0x20	src\render\cdGlowShader.h	25	COMPILE_ASSERT_PRESENT
+sizeof	cdGlowShader		0x10	src\render\cdGlowShader.h	34	COMPILE_ASSERT_PRESENT
+sizeof	cdGunShaderMat		0x18	src\render\cdGunShader.h	26	COMPILE_ASSERT_PRESENT
+sizeof	cdGunShaderNode		0x18	src\render\cdGunShader.h	34	COMPILE_ASSERT_PRESENT
+sizeof	cdGunShader		0x10	src\render\cdGunShader.h	45	COMPILE_ASSERT_PRESENT
+sizeof	cdGunSightShaderMat		0x18	src\render\cdGunSightShader.h	26	COMPILE_ASSERT_PRESENT
+sizeof	cdGunSightShaderNode		0x18	src\render\cdGunSightShader.h	36	COMPILE_ASSERT_PRESENT
+sizeof	cdGunSightShader		0x10	src\render\cdGunSightShader.h	47	COMPILE_ASSERT_PRESENT
+sizeof	cdGunSightSpecularShaderMat		0x24	src\render\cdGunSightSpecularShader.h	29	COMPILE_ASSERT_PRESENT
+sizeof	cdGunSightSpecularShaderNode		0x18	src\render\cdGunSightSpecularShader.h	37	COMPILE_ASSERT_PRESENT
+sizeof	cdGunSightSpecularShader		0x10	src\render\cdGunSightSpecularShader.h	48	COMPILE_ASSERT_PRESENT
+sizeof	WaveBank		0xD0	src\render\cdOceanGlobals.h	50	COMPILE_ASSERT_PRESENT
+sizeof	LayerParam		4	src\render\cdOceanShader.h	30	COMPILE_ASSERT_PRESENT
+sizeof	cdOceanShaderMat		0x28	src\render\cdOceanShader.h	39	COMPILE_ASSERT_PRESENT
+sizeof	cdOceanShaderNode		0x18	src\render\cdOceanShader.h	53	COMPILE_ASSERT_PRESENT
+sizeof	cdOceanShader		0x10	src\render\cdOceanShader.h	64	COMPILE_ASSERT_PRESENT
+sizeof	cdPrelitShaderMat		0x18	src\render\cdPrelitShader.h	23	COMPILE_ASSERT_PRESENT
+sizeof	cdPrelitShaderNode		0x18	src\render\cdPrelitShader.h	31	COMPILE_ASSERT_PRESENT
+sizeof	cdPrelitShader		0x10	src\render\cdPrelitShader.h	42	COMPILE_ASSERT_PRESENT
+sizeof	cdPropellerShaderMat		0x1C	src\render\cdPropellerShader.h	27	COMPILE_ASSERT_PRESENT
+sizeof	cdPropellerShaderNode		0x18	src\render\cdPropellerShader.h	35	COMPILE_ASSERT_PRESENT
+sizeof	cdPropellerShader		0x10	src\render\cdPropellerShader.h	46	COMPILE_ASSERT_PRESENT
+sizeof	cdRiverShaderMat		0x28	src\render\cdRiverShader.h	28	COMPILE_ASSERT_PRESENT
+sizeof	cdRiverShaderNode		0x18	src\render\cdRiverShader.h	40	COMPILE_ASSERT_PRESENT
+sizeof	cdRiverShader		0x10	src\render\cdRiverShader.h	51	COMPILE_ASSERT_PRESENT
+sizeof	cdScratchMaterial		0x20	src\render\cdScratchShader.h	28	COMPILE_ASSERT_PRESENT
+sizeof	cdScratchShaderNode		0x18	src\render\cdScratchShader.h	38	COMPILE_ASSERT_PRESENT
+sizeof	cdScratchShader		0x10	src\render\cdScratchShader.h	49	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleAlphaShaderMat		0x48	src\render\cdSimpleAlphaShader.h	36	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleAlphaShaderNode		0x18	src\render\cdSimpleAlphaShader.h	44	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleAlphaShader		0x10	src\render\cdSimpleAlphaShader.h	55	COMPILE_ASSERT_PRESENT
+sizeof	nglShaderNode		0x14	src\render\cdSimpleColorShader.h	58	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleShaderNode		0x1C	src\render\cdSimpleColorShader.h	69	COMPILE_ASSERT_PRESENT
+sizeof	SimpleContext		0x40	src\render\cdSimpleColorShader.h	75	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleColorShader		0x10	src\render\cdSimpleColorShader.h	89	COMPILE_ASSERT_PRESENT
+sizeof	XForm		0x90	src\render\cdSimpleInstance.h	37	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleInstance		0x20	src\render\cdSimpleInstance.h	56	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleInstanceShader		0x10	src\render\cdSimpleInstance.h	65	COMPILE_ASSERT_PRESENT
+sizeof	cdSimplePrelitShaderMat		0x18	src\render\cdSimplePrelitShader.h	26	COMPILE_ASSERT_PRESENT
+sizeof	cdSimplePrelitShaderNode		0x18	src\render\cdSimplePrelitShader.h	36	COMPILE_ASSERT_PRESENT
+sizeof	cdSimplePrelitShader		0x10	src\render\cdSimplePrelitShader.h	47	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleShaderMat		0x18	src\render\cdSimpleShader.h	32	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleShader		0x10	src\render\cdSimpleShader.h	47	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleSpecularShaderMat		0x24	src\render\cdSimpleSpecularShader.h	30	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleSpecularShaderNode		0x18	src\render\cdSimpleSpecularShader.h	40	COMPILE_ASSERT_PRESENT
+sizeof	SimpleSpecularContext		0x100	src\render\cdSimpleSpecularShader.h	51	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleSpecularShader		0x10	src\render\cdSimpleSpecularShader.h	62	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleUVAnimShaderMat		0x60	src\render\cdSimpleUVAnimShader.h	29	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleUVAnimShaderNode		0x60	src\render\cdSimpleUVAnimShader.h	42	COMPILE_ASSERT_PRESENT
+sizeof	cdSimpleUVAnimShader		0x10	src\render\cdSimpleUVAnimShader.h	53	COMPILE_ASSERT_PRESENT
+sizeof	cdSkyShaderMat		0x28	src\render\cdSkyShader.h	26	COMPILE_ASSERT_PRESENT
+sizeof	cdSkyShaderNode		0x18	src\render\cdSkyShader.h	36	COMPILE_ASSERT_PRESENT
+sizeof	SkyContext		0x50	src\render\cdSkyShader.h	46	COMPILE_ASSERT_PRESENT
+sizeof	cdSkyShader		0x10	src\render\cdSkyShader.h	57	COMPILE_ASSERT_PRESENT
+sizeof	cdWaterShaderMat		0x24	src\render\cdWaterShader.h	29	COMPILE_ASSERT_PRESENT
+sizeof	cdWaterShaderNode		0x18	src\render\cdWaterShader.h	37	COMPILE_ASSERT_PRESENT
+sizeof	cdWaterShader		0x10	src\render\cdWaterShader.h	48	COMPILE_ASSERT_PRESENT
+sizeof	WheelMarkShaderParams		0x60	src\render\cdWheelMarkShader.cpp	68	COMPILE_ASSERT_PRESENT
+sizeof	cdWheelMarkShaderMat		0x14	src\render\cdWheelMarkShader.h	29	COMPILE_ASSERT_PRESENT
+sizeof	cdWheelMarkShaderStruct		0x08	src\render\cdWheelMarkShader.h	36	COMPILE_ASSERT_PRESENT
+sizeof	cdWheelMarkShaderNode		0x1C	src\render\cdWheelMarkShader.h	48	COMPILE_ASSERT_PRESENT
+sizeof	cdWheelMarkShader		0x10	src\render\cdWheelMarkShader.h	59	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldBlendPointLitShaderMat		0x20	src\render\cdWorldBlendPointLitShader.h	25	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldBlendPointLitShaderNode		0x18	src\render\cdWorldBlendPointLitShader.h	33	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldBlendPointLitShader		0x10	src\render\cdWorldBlendPointLitShader.h	44	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldBlendShaderMat		0x20	src\render\cdWorldBlendShader.h	27	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldBlendShaderNode		0x18	src\render\cdWorldBlendShader.h	36	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldBlendShader		0x10	src\render\cdWorldBlendShader.h	47	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldBlendParams		0x100	src\render\cdWorldBlendShader.h	87	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldShaderNode		0x20	src\render\cdWorldColorShader.h	30	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldColorShader		0x10	src\render\cdWorldColorShader.h	41	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldPointLitShaderMat		0x1C	src\render\cdWorldPointLitShader.h	24	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldPointLitShaderNode		0x1C	src\render\cdWorldPointLitShader.h	33	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldPointLitShader		0x10	src\render\cdWorldPointLitShader.h	44	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldShaderMat		0x1C	src\render\cdWorldShader.h	23	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldShader		0x10	src\render\cdWorldShader.h	34	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldParams		0x110	src\render\cdWorldShader.h	74	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldVertexLitShaderMat		0x14	src\render\cdWorldVertexLitShader.h	25	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldVertexLitShaderNode		0x18	src\render\cdWorldVertexLitShader.h	35	COMPILE_ASSERT_PRESENT
+sizeof	BackgroundContext		0x40	src\render\cdWorldVertexLitShader.h	41	COMPILE_ASSERT_PRESENT
+sizeof	cdWorldVertexLitShader		0x10	src\render\cdWorldVertexLitShader.h	52	COMPILE_ASSERT_PRESENT
+sizeof	nslSource		248	src\sound\nsl.cpp	141	COMPILE_ASSERT_PRESENT
+sizeof	nslEmitter		200	src\sound\nsl.cpp	142	COMPILE_ASSERT_PRESENT
+sizeof	txSlotEntry		12	src\sound\nsl.cpp	159	COMPILE_ASSERT_PRESENT
+sizeof	txSlotPool		40	src\sound\nsl.cpp	160	COMPILE_ASSERT_PRESENT
+sizeof	nslWave		40	src\sound\nsl.cpp	201	COMPILE_ASSERT_PRESENT
+sizeof	XMEDIAPACKET		24	src\sound\nsl.cpp	213	COMPILE_ASSERT_PRESENT
+sizeof	PACKET_CONTEXT		12	src\sound\nsl.cpp	236	COMPILE_ASSERT_PRESENT
+sizeof	nslDriverVoice		172	src\sound\nsl.cpp	237	COMPILE_ASSERT_PRESENT
+sizeof	nslParam		8	src\sound\nsl.cpp	280	COMPILE_ASSERT_PRESENT
+sizeof	nslParamUnpacked		264	src\sound\nsl.cpp	303	COMPILE_ASSERT_PRESENT
+sizeof	nslWaveInfo		280	src\sound\nsl.cpp	304	COMPILE_ASSERT_PRESENT
+sizeof	nslGroup		296	src\sound\nsl.cpp	370	COMPILE_ASSERT_PRESENT
+sizeof	nslSpeaker		32	src\sound\nsl.cpp	376	COMPILE_ASSERT_PRESENT
+sizeof	nslVoice		224	src\sound\nsl.cpp	395	COMPILE_ASSERT_PRESENT
+sizeof	nslEffect		48	src\sound\nsl.cpp	412	COMPILE_ASSERT_PRESENT
+sizeof	nslWaveBank		128	src\sound\nsl.cpp	427	COMPILE_ASSERT_PRESENT
+sizeof	nslWaveBankSlot		52	src\sound\nsl.cpp	428	COMPILE_ASSERT_PRESENT
+sizeof	nslWaveBankLoader		44	src\sound\nsl.cpp	429	COMPILE_ASSERT_PRESENT
+sizeof	jqBatch		56	src\threading\jobqueue.cpp	30	COMPILE_ASSERT_PRESENT
+sizeof	jqBatch		0x38	src\threading\jobqueue.h	26	COMPILE_ASSERT_PRESENT

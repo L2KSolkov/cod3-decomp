@@ -3488,7 +3488,7 @@ extern vmCvar_t g_knockback;
 extern vmCvar_t g_debugDamage;
 extern int damageForceReductionThreshold;  // 0xDD7F40?
 extern int damageForceMax;
-extern int dword_F63D1C[1580 * 802];
+extern int dword_F63D1C[4 * 1580];
 extern cgGlobal_t cgGlobal;   // 0xF5FE30
 
 // kuju::knet::sTime (4 bytes; mTime in milliseconds)
