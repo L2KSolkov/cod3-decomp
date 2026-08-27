@@ -17,3 +17,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00689240	?CG_DrawSmallString@@YAXMMPBDM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296960	Release and source match on color construction, offsets, scale, alignment, and text syscall.
 0x00689300	?CG_DrawStrlen@@YAHPBD@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:994	Non-empty body matches the release-indexed color-code-aware string length path.
 0x00689300	?CG_DrawStrlen@@YAHPBD@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296990	Release and source match on the loop, caret-color escape handling, and character counting behavior.
+0x006891F0	?CG_DrawBigStringColor@@YAXMMPBDQBM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:973	Non-empty body matches the release-indexed big-string color draw path.
+0x006891F0	?CG_DrawBigStringColor@@YAXMMPBDQBM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296951	Release and source use the same coordinates, alignment, scale, color pointer, string, and text syscall arguments.
+0x006892B0	?CG_DrawSmallStringColor@@YAXMMPBDQBM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:987	Non-empty body matches the release-indexed small-string color draw path.
+0x006892B0	?CG_DrawSmallStringColor@@YAXMMPBDQBM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296969	Release and source use the same coordinates, alignment, scale, color pointer, string, and text syscall arguments.
