@@ -2199,10 +2199,12 @@ SmokeGrenadeMgr* SmokeGrenadeMgr::Inst()
 {
     return (SmokeGrenadeMgr*)SmokeGrenadeMgr::sInst;
 }
+// ea: 0x004A9060
 TestFPS* TestFPS::Inst()
 {
     return TestFPS::sInst;
 }
+// ea: 0x004A9070
 bool TestFPS::IsTesting()
 {
     return mTesting;
@@ -2275,6 +2277,7 @@ PathNodes::NodeHandle::operator bool() const
     return mValue != 0 && mValue != 0xFFFF && operator->() != nullptr;
 }
 
+// ea: 0x004A79E0
 // scr_vehicle_t::LerpedVariables::Clear (g.o 0x4A79E0)
 void scr_vehicle_t::LerpedVariables::Clear()
 {
@@ -2306,38 +2309,46 @@ int InteractionController::IsFlagged(unsigned int f) const
 }
 
 // Camera accessors (g.o 0x4A9020-0x4A9040)
+// ea: 0x004A9020
 ECameraModes Camera::GetCameraMode()
 {
     return (ECameraModes)mCamMode;
 }
+// ea: 0x004A9030
 EVehicleCameraMode Camera::GetVehicleCameraMode()
 {
     return (EVehicleCameraMode)mVehicleCamMode;
 }
+// ea: 0x004A9040
 float Camera::GetLastViewAngles(int axis)
 {
     return mPrevAngles.v.m128_f32[axis];
 }
 
 // Handle (g.o 0x4A9100-0x4A9160)
+// ea: 0x004A9100
 Handle::Handle(int v)
 {
     mVal = (unsigned int)v;
 }
+// ea: 0x004A9120
 Handle Handle::NullHandle()
 {
     Handle h;
     h.mVal = 0;
     return h;
 }
+// ea: 0x004A9140
 bool Handle::IsUnassigned() const
 {
     return mVal == 0;
 }
+// ea: 0x004A9150
 unsigned int Handle::GetVal() const
 {
     return mVal;
 }
+// ea: 0x004A9160
 bool operator==(Handle lhs, Handle rhs)
 {
     return lhs.mVal == rhs.mVal;
@@ -2826,6 +2837,7 @@ template class InplaceVector<XAnimEntry>;
 // Batch 25: nal orientation, template container instantiations (g.o 0x4A9180-0x4AE540)
 // ============================================================================
 
+// ea: 0x004A9180
 // Handle operator!= (g.o 0x4A9180)
 bool operator!=(Handle lhs, Handle rhs)
 {
@@ -2835,6 +2847,7 @@ bool operator!=(Handle lhs, Handle rhs)
 // nal matrix / position-orientation (g.o 0x4A9240-0x4A96D0)
 class nalMatrix4x4 : public math::Mat44 {
 public:
+    // ea: 0x004A9230
     nalMatrix4x4() {}
     nalMatrix4x4(const math::Vector4& _x, const math::Vector4& _y,
                  const math::Vector4& _z, const math::Vector4& _w);
@@ -2868,17 +2881,20 @@ public:
     nalPositionOrientation(const math::Dir3& _p, const math::Quaternion& _o);
     nalPositionOrientation(const nalMatrix4x4& m);
 };
+// ea: 0x004A9240
 math::Quaternion nalQuaternionFromMatrix(const nalMatrix4x4& m)
 {
     return math::GetQuaternion(
         math::Mat33(math::Dir3(m.x), math::Dir3(m.y), math::Dir3(m.z)));
 }
+// ea: 0x004A9670
 nalPositionOrientation::nalPositionOrientation(const math::Dir3& _p,
                                                const math::Quaternion& _o)
 {
     o = _o;
     p = _p;
 }
+// ea: 0x004A96D0
 nalPositionOrientation::nalPositionOrientation(const nalMatrix4x4& m)
 {
     o = nalQuaternionFromMatrix(m);

@@ -359,3 +359,35 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A85F0	?DeclareUnit@math@@YA?AVQuaternion@1@ABV21@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A85F0	Release copies the quaternion SIMD value and returns the result, matching source.
 0x004A8620	?GetQuaternion@math@@YA?AVQuaternion@1@ABVMat33@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1933	Source implements all trace/diagonal branches and the same sqrt scaling for matrix-to-quaternion conversion.
 0x004A8620	?GetQuaternion@math@@YA?AVQuaternion@1@ABVMat33@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A8620	Release has matching matrix lane extraction, branch thresholds, component formulas, and 0.5/sqrt scaling.
+0x004A79E0	?Clear@LerpedVariables@scr_vehicle_t@@QAEXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2280	Source clears steering, turret-angle, and body-position state fields.
+0x004A79E0	?Clear@LerpedVariables@scr_vehicle_t@@QAEXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A79E0	Release zeroes the same scalar and vector lanes, matching source.
+0x004A9020	?GetCameraMode@Camera@@QAE?AW4ECameraModes@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2312	Source returns mCamMode cast to ECameraModes.
+0x004A9020	?GetCameraMode@Camera@@QAE?AW4ECameraModes@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9020	Release returns mCamMode directly, matching source.
+0x004A9030	?GetVehicleCameraMode@Camera@@QAE?AW4EVehicleCameraMode@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2317	Source returns mVehicleCamMode cast to EVehicleCameraMode.
+0x004A9030	?GetVehicleCameraMode@Camera@@QAE?AW4EVehicleCameraMode@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9030	Release returns mVehicleCamMode directly, matching source.
+0x004A9040	?GetLastViewAngles@Camera@@QAEMH@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2322	Source indexes and returns the requested previous view-angle component.
+0x004A9040	?GetLastViewAngles@Camera@@QAEMH@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9040	Release indexes mPrevAngles by axis and returns that component, matching source.
+0x004A9060	?Inst@TestFPS@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2202	Non-empty source body returns the TestFPS singleton pointer.
+0x004A9060	?Inst@TestFPS@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9060	Release returns TestFPS::sInst directly, matching source.
+0x004A9070	?IsTesting@TestFPS@@QAE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2207	Source returns the mTesting flag.
+0x004A9070	?IsTesting@TestFPS@@QAE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9070	Release returns mTesting, matching source.
+0x004A9100	??0Handle@@QAE@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2329	Source stores the constructor integer in mVal.
+0x004A9100	??0Handle@@QAE@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9100	Release stores v into mVal and returns this, matching source.
+0x004A9120	?NullHandle@Handle@@SA?AV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2334	Source returns a Handle with mVal zero.
+0x004A9120	?NullHandle@Handle@@SA?AV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9120	Release writes zero to the returned handle and returns it, matching source.
+0x004A9140	?IsUnassigned@Handle@@QBE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2341	Source reports unassigned when mVal is zero.
+0x004A9140	?IsUnassigned@Handle@@QBE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9140	Release compares mVal to zero, matching source.
+0x004A9150	?GetVal@Handle@@QBEIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2346	Source returns mVal.
+0x004A9150	?GetVal@Handle@@QBEIXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9150	Release returns mVal directly, matching source.
+0x004A9160	??8@YA_NVHandle@@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2351	Source compares both Handle mVal fields for equality.
+0x004A9160	??8@YA_NVHandle@@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9160	Release compares lhs.mVal and rhs.mVal, matching source.
+0x004A9180	??9@YA_NVHandle@@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2840	Source compares both Handle mVal fields for inequality.
+0x004A9180	??9@YA_NVHandle@@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9180	Release compares lhs.mVal and rhs.mVal for inequality, matching source.
+0x004A9230	??0nalMatrix4x4@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2850	Source default nalMatrix4x4 constructor is intentionally empty.
+0x004A9230	??0nalMatrix4x4@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9230	Release constructor returns this without stores, matching source.
+0x004A9240	?nalQuaternionFromMatrix@@YA?AVQuaternion@math@@ABVnalMatrix4x4@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2884	Source builds a Mat33 from the matrix rotation rows and delegates to GetQuaternion.
+0x004A9240	?nalQuaternionFromMatrix@@YA?AVQuaternion@math@@ABVnalMatrix4x4@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9240	Release performs the same matrix-to-quaternion conversion, with the call inlined.
+0x004A9670	??0nalPositionOrientation@@QAE@ABVDir3@math@@ABVQuaternion@2@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2890	Source copies quaternion orientation and position vectors into the object.
+0x004A9670	??0nalPositionOrientation@@QAE@ABVDir3@math@@ABVQuaternion@2@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9670	Release copies o and p SIMD values and returns this, matching source.
+0x004A96D0	??0nalPositionOrientation@@QAE@ABVnalMatrix4x4@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2897	Source derives orientation from the matrix and copies its w row into position.
+0x004A96D0	??0nalPositionOrientation@@QAE@ABVnalMatrix4x4@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A96D0	Release calls nalQuaternionFromMatrix for o, copies m.w to p, and returns this.
