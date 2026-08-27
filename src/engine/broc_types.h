@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 
 // IDA type: ?sNaN@@3MA.  Broc::vector's default constructor uses this
@@ -1629,6 +1630,12 @@ struct BrocAPI {
     void (*mKillThreadExec)();                            // +0x1338
 };
 static_assert(sizeof(BrocAPI) == 0x133C, "BrocAPI size mismatch");
+static_assert(offsetof(BrocAPI, mNewHudElem) == 0x60C,
+              "BrocAPI mNewHudElem offset mismatch");
+static_assert(offsetof(BrocAPI, mIsTurretReady) == 0xB74,
+              "BrocAPI mIsTurretReady offset mismatch");
+static_assert(offsetof(BrocAPI, mBrocExports) == 0xBE8,
+              "BrocAPI mBrocExports offset mismatch");
 
 extern BrocAPI gBrocAPI;  // ?gBrocAPI@@3UBrocAPI@@A @0x10F0568
 
