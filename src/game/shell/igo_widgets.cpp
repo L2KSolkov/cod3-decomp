@@ -10,6 +10,7 @@
 #include "game/actor_types.h"
 #include "game/logic/g_weaponfuncs.h"
 #include "core/tlFixedString.h"
+#include "engine/broc_api_compat.h"
 
 extern void* mem_heap_malloc(unsigned int size);  // core.o
 extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
@@ -30,32 +31,6 @@ bool ValidPlayerState(int idx)
     Entity* player = GetPlayer(idx);
     return player != nullptr && player->client != nullptr;
 }
-
-// Global-scope twin of BrocAPI (broc_types.h's lives in namespace Broc);
-// only the HQ callbacks used here are declared. Offsets verified against IDA.
-struct BrocAPI {
-    uint8_t _pad[0xB74];
-    bool (*mIsTurretReady)(unsigned int);  // +0xB74
-    uint8_t _pad2[0xBE8 - 0xB78];
-    struct {
-        uint8_t _pad0[0x17C];
-        int (*mCallbackGetFlagBeingContested)(const Broc::entity);  // +0x17C
-        void (*mCallbackPickupKit)(const Broc::entity,
-                                   const unsigned int);  // +0x180
-        int (*mCallbackGetTeamCapturingHQPercent)(
-            const Broc::entity);  // +0x184
-        int (*mCallbackGetTeamDestroyingHQPercent)();    // +0x188
-        int (*mCallbackGetHQCaptureStatus)();            // +0x18C
-        int (*mCallbackGetFlagCount)();                  // +0x190
-        int (*mCallbackGetTeamControllingFlag)(unsigned int);  // +0x194
-        int (*mCallbackGetFlagBeingCaptured)();          // +0x198
-        int (*mCallbackGetTeamCapturingFlag)();          // +0x19C
-        int (*mCallbackGetCapturingFlagPercent)();       // +0x1A0
-        uint8_t _pad1A4[4];                              // +0x1A4
-        int (*mCallbackGetFlagBreatherTime)();           // +0x1A8
-    } mBrocExports;  // +0xBE8
-};
-extern BrocAPI* gpBrocAPI;          // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
 
 static inline int WeaponSlot(weaponFileInfo_t* w)
 {

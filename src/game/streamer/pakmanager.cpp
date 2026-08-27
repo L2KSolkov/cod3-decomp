@@ -26,6 +26,7 @@
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
 #include "engine/broc_types.h"
+#include "engine/broc_api_compat.h"
 #include "input/controller.h"
 
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
@@ -3116,26 +3117,6 @@ struct vehicle_node_t {
     int          nextIdx;           // +0x3C
 };
 extern vehicle_node_t* SP_create_info_vehicle_node(void);  // g_scr_vehicle.cpp
-// BrocAPI local view (broc_types.h's is Broc::BrocAPI; the mangled
-// ?gpBrocAPI@@3PAUBrocAPI@@A needs a global-scope `struct` tag)
-struct BrocExports {
-    uint8_t _pad[0x34];
-    void (*mSetVNodeField_string)(unsigned int, unsigned int,
-                                  Broc::string);  // +0x34
-    uint8_t _pad38[0x3C - 0x38];
-    void (*mSetVNodeField_int)(unsigned int, unsigned int, int);  // +0x3C
-    uint8_t _pad40[0x44 - 0x40];
-    void (*mSetVNodeField_float)(unsigned int, unsigned int,
-                                 float);  // +0x44
-};
-struct BrocAPI {
-    uint8_t    _pad[0x94];
-    unsigned int (*mGetEnt)(Broc::string* name, unsigned int hash,
-                            void* a3, void* a4, int a5);  // +0x94
-    uint8_t    _pad98[0xBE8 - 0x98];
-    BrocExports mBrocExports;  // +0xBE8
-};
-extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A @ 0xF3ABDC
 struct cdSimpleInstance {
     void*  Mesh;           // +0x00
     void*  Section;        // +0x04

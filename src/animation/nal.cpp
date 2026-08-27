@@ -17,6 +17,7 @@
 #include "core/tlResourceDirectory.h"
 #include "core/ae_fixed_string.h"
 #include "engine/broc_types.h"
+#include "engine/broc_api_compat.h"
 
 class Entity;
 class SceneAnimClient;
@@ -27697,12 +27698,6 @@ struct cvar_t {
 extern cvar_t* com_timescale;
 extern cvar_t* m_yaw;  // ?m_yaw@@3PAUcvar_t@@A (cl.o @ 0x12FC4E4)
 
-struct BrocAPI {
-    char _pad[0x94];
-    unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int,
-                            int);
-};
-extern BrocAPI* gpBrocAPI;
 extern float sArmsOffsetX;
 extern float sArmsOffsetY;
 extern float sArmsOffsetZ;

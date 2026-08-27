@@ -5,6 +5,7 @@
 #include "game/sv/sv_decl.h"
 #include "game/sv/sv_stubs.h"
 #include "ngl/ngl_dx_gpu.h"
+#include "engine/broc_api_compat.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -177,16 +178,6 @@ public:
     static TimerRenderBars sInst;
     void TimeUserBegin() { mUser.mBegin = __rdtsc(); }
     void TimeUserEnd() { mUser.mEnd = __rdtsc(); }
-};
-
-// gpBrocAPI is owned by the game-logic object's compact BrocAPI view.  The
-// server only needs the shutdown callback at BrocExports +0x94.
-struct BrocExports {
-    unsigned char _pad00[0x94];
-    void (*mShutdown)();
-};
-struct BrocAPI {
-    BrocExports mBrocExports;
 };
 
 namespace BrocSys {

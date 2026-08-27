@@ -19,6 +19,7 @@
 #include "core/color.h"
 #include "core/ae_array.h"
 #include "engine/broc_types.h"
+#include "engine/broc_api_compat.h"
 #include "core/fourcc.h"
 
 #include <stddef.h>
@@ -2620,15 +2621,6 @@ struct BrocAPICompat {
     void (*mOceanSetWavePhase)(int, int, float);  // +0x1328
     void (*mOceanSetWaveTimescale)(int, int, float);  // +0x132C
 };
-// Keep global tag names for the release linker symbols while inheriting the
-// canonical IDA-derived layouts.  The inheritance is layout-neutral here
-// (both bases are standard-layout, non-virtual aggregates).
-struct BrocExports : Broc::BrocExports {};
-struct BrocAPI : Broc::BrocAPI {};
-static_assert(sizeof(BrocExports) == sizeof(Broc::BrocExports), "global BrocExports layout mismatch");
-static_assert(sizeof(BrocAPI) == sizeof(Broc::BrocAPI), "global BrocAPI layout mismatch");
-extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
-
 // ============================================================================
 // RumbleEffect layout twin + rumble shims (full types live in
 // core/core_systems.h, which cannot be included alongside g_local.h)

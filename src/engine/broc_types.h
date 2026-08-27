@@ -1543,7 +1543,8 @@ struct BrocAPI {
     bool (*mIsVehicleFlipped)(const unsigned int);        // +0xB34
     char _padB38[0xB70 - 0xB38];                          // +0xB38
     void (*mFireTurret)(const unsigned int, const bool);  // +0xB70
-    char _padB74[0xB94 - 0xB74];                          // +0xB74
+    bool (*mIsTurretReady)(const unsigned int);           // +0xB74
+    char _padB78[0xB94 - 0xB78];                          // +0xB78
     void (*mSetShader)(const Broc::hudelem*, const Broc::string*, int,
                        int);                              // +0xB94
     char _padB98[0xBB8 - 0xB98];                          // +0xB98
