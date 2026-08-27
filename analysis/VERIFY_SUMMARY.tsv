@@ -18,7 +18,7 @@ afmv_dx_idct.o	3	3	0	0	0	0	0
 afmv_dx_rgb.o	2	2	0	0	0	0	0
 anim.o	741	257	3	465	7	9	0
 apk.o	24	1	0	23	0	0	0
-apsAction.o	19	12	1	6	0	0	0
+apsAction.o	19	11	1	7	0	0	0
 apsActionList.o	26	18	1	7	0	0	0
 apsBillboardNode.o	33	2	0	1	0	30	0
 apsBillboardRenderer.o	12	2	3	4	0	3	0
@@ -179,13 +179,13 @@ cl.o	341	15	36	274	0	16	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
 controller_xbox.o	16	15	0	1	0	0	0
-core.o	1437	624	80	725	4	4	0
+core.o	1437	621	82	726	4	4	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	678	0	721	0	71	0
+g.o	1470	663	0	721	0	86	0
 game.o	1158	461	12	681	4	0	0
-game2.o	1040	421	94	511	8	6	0
+game2.o	1040	420	94	512	8	6	0
 game_xbox.o	365	152	93	110	0	10	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
@@ -282,7 +282,7 @@ phys_util.o	11	3	8	0	0	0	0
 physics.o	747	475	24	246	0	2	0
 physics_system.o	313	277	30	6	0	0	0
 physics_system_internal.o	154	117	27	10	0	0	0
-rb_ragdoll_model.o	92	61	16	15	0	0	0
+rb_ragdoll_model.o	92	60	17	15	0	0	0
 rbc_def_contact.o	14	8	4	2	0	0	0
 rbc_def_custom.o	4	2	0	2	0	0	0
 rbc_def_generic.o	26	9	5	12	0	0	0

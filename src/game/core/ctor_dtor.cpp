@@ -178,6 +178,7 @@ EntityNotify::~EntityNotify()
 }
 
 // EntityNotify memory ops / dlist accessor (g.o 0x4A5B70-0x4A5C60)
+// ea: 0x004A5B70
 void* EntityNotify::get_dlist_node()
 {
     return this;

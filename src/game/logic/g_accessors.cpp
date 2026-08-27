@@ -752,9 +752,12 @@ void math::Dir3::SetZ(float _z)
 {
     v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_z), v, 0xF0), 0xC4);
 }
+// ea: 0x004A5730
 float& math::Dir3::operator[](unsigned int i) { return v.m128_f32[i]; }
+// ea: 0x004A5740
 const float& math::Dir3::operator[](unsigned int i) const { return v.m128_f32[i]; }
 
+// ea: 0x004A57A0
 math::Position3::Position3(float _x, float _y, float _z)
 {
     v.m128_f32[0] = _x;
@@ -762,6 +765,7 @@ math::Position3::Position3(float _x, float _y, float _z)
     v.m128_f32[2] = _z;
     v.m128_f32[3] = 0.0f;
 }
+// ea: 0x004A5830
 math::Position3::Position3(float _x)
 {
     v.m128_f32[0] = _x;
@@ -781,26 +785,32 @@ float math::Position3::GetZ() const
 {
     return _mm_shuffle_ps(v, v, 0xAA).m128_f32[0];
 }
+// ea: 0x004A59B0
 void math::Position3::SetX(float _x)
 {
     __m128 t = v;
     t.m128_f32[0] = _x;
     v = t;
 }
+// ea: 0x004A59F0
 void math::Position3::SetY(float _y)
 {
     v = _mm_shuffle_ps(_mm_shuffle_ps(_mm_set1_ps(_y), v, 0), v, 0xE2);
 }
+// ea: 0x004A5A30
 void math::Position3::SetZ(float _z)
 {
     v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_z), v, 0xF0), 0xC4);
 }
+// ea: 0x004A5A70
 float& math::Position3::operator[](unsigned int i) { return v.m128_f32[i]; }
+// ea: 0x004A5A80
 const float& math::Position3::operator[](unsigned int i) const
 {
     return v.m128_f32[i];
 }
 
+// ea: 0x004A5AA0
 math::Vector4::Vector4(float _x, float _y, float _z, float _w)
 {
     v.m128_f32[0] = _x;
@@ -808,6 +818,7 @@ math::Vector4::Vector4(float _x, float _y, float _z, float _w)
     v.m128_f32[2] = _z;
     v.m128_f32[3] = _w;
 }
+// ea: 0x004A5B10
 math::Vector4::Vector4(float _x)
 {
     v = _mm_set1_ps(_x);
@@ -849,6 +860,7 @@ void math::Vector4::SetW(float _w)
 }
 
 // Cross-type ctors / assignments (g.o 0x4A5CD0-0x4A5F80)
+// ea: 0x004A5CD0
 const math::Dir3& math::Dir3::operator=(const math::Position3& _v)
 {
     v = _v.v;
@@ -859,6 +871,7 @@ const math::Dir3& math::Dir3::operator=(const math::Vector4& _v)
     v = _v.v;
     return *this;
 }
+// ea: 0x004A5CF0
 math::Dir3::Dir3(const math::Position3& _v)
 {
     v = _v.v;
@@ -2003,6 +2016,7 @@ int GetPlayerIndex(Entity* player)
 }
 
 // EntityState::GetLerpAngles (g.o 0x4A5750)
+// ea: 0x004A5750
 const math::Position3 EntityState::GetLerpAngles() const
 {
     return lerpAngles;

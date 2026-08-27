@@ -93,3 +93,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A5C10	?GetZ@Vector4@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5C10	Release shuffles and returns Vector4 z lane, matching source.
 0x004A5C80	?GetW@Vector4@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:828	Source returns Vector4 w lane.
 0x004A5C80	?GetW@Vector4@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5C80	Release shuffles and returns Vector4 w lane, matching source.
+0x004A5730	??ADir3@math@@QAEAAMI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:756	Source returns a mutable pointer to the requested Dir3 float lane.
+0x004A5730	??ADir3@math@@QAEAAMI@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5730	Release computes the indexed float address, matching the source lane-index operation.
+0x004A5740	??ADir3@math@@QBEABMI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:758	Source returns a const pointer to the requested Dir3 float lane.
+0x004A5740	??ADir3@math@@QBEABMI@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5740	Release computes the indexed const float address, matching the source lane-index operation.
+0x004A5750	?GetLerpAngles@EntityState@@QBE?BVPosition3@math@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2020	Source returns the EntityState lerpAngles Position3 value.
+0x004A5750	?GetLerpAngles@EntityState@@QBE?BVPosition3@math@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5750	Release copies lerpAngles into the ABI result and returns it, matching the source value return.
+0x004A57A0	??0Position3@math@@QAE@MMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:761	Source initializes Position3 x, y, z lanes and clears the fourth lane.
+0x004A57A0	??0Position3@math@@QAE@MMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A57A0	Release stores the three coordinate arguments into Position3 and writes zero to the fourth lane.
+0x004A5830	??0Position3@math@@QAE@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:769	Source broadcasts the scalar into x, y, and z and clears the fourth lane.
+0x004A5830	??0Position3@math@@QAE@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5830	Release writes the scalar to the first three lanes and zeroes lane four, matching source.
+0x004A59B0	?SetX@Position3@math@@QAEXM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:789	Source preserves the other lanes and replaces Position3 x.
+0x004A59B0	?SetX@Position3@math@@QAEXM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A59B0	Release loads the vector, replaces lane zero, and stores it back, matching source.
+0x004A59F0	?SetY@Position3@math@@QAEXM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:796	Source replaces Position3 y while preserving the remaining lanes.
+0x004A59F0	?SetY@Position3@math@@QAEXM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A59F0	Release uses the same two-shuffle lane replacement for y as source.
+0x004A5A30	?SetZ@Position3@math@@QAEXM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:801	Source replaces Position3 z while preserving the remaining lanes.
+0x004A5A30	?SetZ@Position3@math@@QAEXM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5A30	Release uses the same shuffle sequence to replace z as source.
+0x004A5A70	??APosition3@math@@QAEAAMI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:806	Source returns a mutable pointer to the requested Position3 float lane.
+0x004A5A70	??APosition3@math@@QAEAAMI@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5A70	Release computes the indexed float address, matching source.
+0x004A5A80	??APosition3@math@@QBEABMI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:808	Source returns a const pointer to the requested Position3 float lane.
+0x004A5A80	??APosition3@math@@QBEABMI@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5A80	Release computes the indexed const float address, matching source.
+0x004A5AA0	??0Vector4@math@@QAE@MMMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:814	Source initializes all four Vector4 lanes from the four constructor arguments.
+0x004A5AA0	??0Vector4@math@@QAE@MMMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5AA0	Release stores the four constructor arguments into Vector4 lanes, matching source.
+0x004A5B10	??0Vector4@math@@QAE@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:822	Source broadcasts the scalar to all four Vector4 lanes.
+0x004A5B10	??0Vector4@math@@QAE@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5B10	Release writes the scalar into all four lanes, matching source.
+0x004A5B70	?get_dlist_node@EntityNotify@@QAEPAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/core/ctor_dtor.cpp:182	Source returns the EntityNotify object as its embedded dlist node.
+0x004A5B70	?get_dlist_node@EntityNotify@@QAEPAXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5B70	Release returns this unchanged, matching source.
+0x004A5CD0	??4Dir3@math@@QAEABV01@ABVPosition3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:864	Source copies the Position3 SIMD value into Dir3 and returns the destination.
+0x004A5CD0	??4Dir3@math@@QAEABV01@ABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5CD0	Release copies the source Position3 vector into the destination Dir3 and returns it.
+0x004A5CF0	??0Dir3@math@@QAE@ABVPosition3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:873	Source initializes Dir3 from the Position3 SIMD value.
+0x004A5CF0	??0Dir3@math@@QAE@ABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5CF0	Release copies the Position3 vector into the new Dir3, matching source.
