@@ -123,6 +123,8 @@ def main() -> int:
             assert ("?CG_DObjGetWorldTagMatrix@@YAPBUDObjSkelMat@@PAVEntity@@PAVDObj@@IPAU1@@Z"
                     in ledger.symbol_variants(
                         "?CG_DObjGetWorldTagMatrix@@YAHPAVEntity@@PAVDObj@@IPAUDObjSkelMat@@@Z"))
+            assert ("?CG_Respawn@@YAHXZ"
+                    in ledger.symbol_variants("?CG_Respawn@@YAXXZ"))
 
             # Missing source_ref is rejected rather than silently granting a gate.
             path.write_text("\t".join(ledger.EVIDENCE_FIELDS) + "\n" + row("PASS", source_ref="") + "\n", encoding="utf-8")
