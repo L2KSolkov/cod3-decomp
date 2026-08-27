@@ -5,3 +5,43 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008139E0	?GetPShader@apsShrimpRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008139E0;src/aeps/apsShrimpNode.cpp:22	Release and source both return PS[0].
 0x00812D90	?Render@apsShrimpNode@@UAEXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:33	Real shrimp-particle render body with shader setup, atlas addressing, billboard geometry, vertex emission, and draw.
 0x00812D90	?Render@apsShrimpNode@@UAEXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D90;src/aeps/apsShrimpNode.cpp:33	Release decompile and source agree on assertions, blend/texture setup, world-to-screen constants, shader cache loads, atlas frame/rotation math, per-particle billboard vertices, and ReleaseAndDraw.
+0x00813530	??$Limit@VVector4@math@@M@apsMath@@YA?AVVector4@math@@ABV12@ABM1@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:21	Real explicit Vector4/float specialization clamps all four lanes.
+0x00813530	??$Limit@VVector4@math@@M@apsMath@@YA?AVVector4@math@@ABV12@ABM1@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813530;src/aeps/apsShrimpNode.cpp:21	Release uses SIMD max/min with replicated low/high bounds; source uses the same lane-wise operations.
+0x008135B0	?ACos@apsMath@@YAMM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsMath.cpp:24	Real polynomial acos approximation with absolute-value branch and sign correction.
+0x008135B0	?ACos@apsMath@@YAMM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008135B0;src/aeps/apsMath.cpp:24	Release and source agree on fabs branch threshold, polynomial coefficients, square-root path, and signed result.
+0x008137C0	?BlendColor@apsRenderNode@@QBEABVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:31	Real const accessor returns mBlendColor.
+0x008137C0	?BlendColor@apsRenderNode@@QBEABVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008137C0;src/aeps/apsShrimpNode.cpp:31	Release and source both return a const reference to mBlendColor.
+0x008137D0	?Texture@apsShrimpRenderer@@QBEPAUnglTexture@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:37	Real const accessor returns mTexture.
+0x008137D0	?Texture@apsShrimpRenderer@@QBEPAUnglTexture@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008137D0;src/aeps/apsShrimpNode.cpp:37	Release and source both return mTexture.
+0x008137E0	?BlendMode@apsShrimpRenderer@@QBE?BW4apsEBlendMode@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:43	Real const enum accessor returns mBlendMode.
+0x008137E0	?BlendMode@apsShrimpRenderer@@QBE?BW4apsEBlendMode@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008137E0;src/aeps/apsShrimpNode.cpp:43	Release and source both return the top-level-const apsEBlendMode field value.
+0x008137F0	?NumFrames@apsShrimpRenderer@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:49	Real const integer accessor returns mNumFrames.
+0x008137F0	?NumFrames@apsShrimpRenderer@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008137F0;src/aeps/apsShrimpNode.cpp:49	Release and source both return mNumFrames.
+0x00813800	?NumRows@apsShrimpRenderer@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:55	Real const integer accessor returns mNumRows.
+0x00813800	?NumRows@apsShrimpRenderer@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813800;src/aeps/apsShrimpNode.cpp:55	Release and source both return mNumRows.
+0x00813810	?NumRotations@apsShrimpRenderer@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:61	Real const integer accessor returns mNumRotations.
+0x00813810	?NumRotations@apsShrimpRenderer@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813810;src/aeps/apsShrimpNode.cpp:61	Release and source both return mNumRotations.
+0x00813820	?SpriteWidth@apsShrimpRenderer@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:67	Real const integer accessor returns mSpriteWidth.
+0x00813820	?SpriteWidth@apsShrimpRenderer@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813820;src/aeps/apsShrimpNode.cpp:67	Release and source both return mSpriteWidth.
+0x00813830	?SpriteHeight@apsShrimpRenderer@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:73	Real const integer accessor returns mSpriteHeight.
+0x00813830	?SpriteHeight@apsShrimpRenderer@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813830;src/aeps/apsShrimpNode.cpp:73	Release and source both return mSpriteHeight.
+0x00813840	?TextureWidth@apsShrimpRenderer@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:79	Real const integer accessor returns mTextureWidth.
+0x00813840	?TextureWidth@apsShrimpRenderer@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813840;src/aeps/apsShrimpNode.cpp:79	Release and source both return mTextureWidth.
+0x00813850	?TextureHeight@apsShrimpRenderer@@QBEHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:85	Real const integer accessor returns mTextureHeight.
+0x00813850	?TextureHeight@apsShrimpRenderer@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813850;src/aeps/apsShrimpNode.cpp:85	Release and source both return mTextureHeight.
+0x00813860	?Renderer@apsShrimpNode@@QAEAAVapsShrimpRenderer@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:91	Real renderer accessor includes release null-renderer assertion/debugbreak handling.
+0x00813860	?Renderer@apsShrimpNode@@QAEAAVapsShrimpRenderer@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813860;src/aeps/apsShrimpNode.cpp:91	Release and source return mRenderer and preserve the null-renderer assertion path.
+0x008138A0	?GetPos@ShrimpParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:103	Real accessor returns the particle position storage.
+0x008138A0	?GetPos@ShrimpParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008138A0;src/aeps/apsShrimpNode.cpp:103	Release returns this at the Packed position offset; source returns mPos reference.
+0x008138B0	?GetWidth@ShrimpParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:109	Real scalar accessor returns mWidth.
+0x008138B0	?GetWidth@ShrimpParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008138B0;src/aeps/apsShrimpNode.cpp:109	Release and source both return mWidth with non-const this ABI.
+0x008138C0	?GetHeight@ShrimpParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:115	Real scalar accessor returns mHeight.
+0x008138C0	?GetHeight@ShrimpParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008138C0;src/aeps/apsShrimpNode.cpp:115	Release and source both return mHeight with non-const this ABI.
+0x008138D0	?GetColor@ShrimpParticle@@QAE?AVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:121	Real value accessor constructs opaque-white RGB with particle alpha.
+0x008138D0	?GetColor@ShrimpParticle@@QAE?AVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008138D0;src/aeps/apsShrimpNode.cpp:121	Release and source both construct Vector4(1,1,1,mAlpha) and return it.
+0x00813920	?GetFrame@ShrimpParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:129	Real scalar accessor returns mFrame.
+0x00813920	?GetFrame@ShrimpParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813920;src/aeps/apsShrimpNode.cpp:129	Release and source both return mFrame with non-const this ABI.
+0x00813930	?GetAngle@ShrimpParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:135	Real scalar accessor returns mAngle.
+0x00813930	?GetAngle@ShrimpParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813930;src/aeps/apsShrimpNode.cpp:135	Release and source both return mAngle with non-const this ABI.
+0x00813940	?Set@SpriteVertex@apsVertexBuffer@@QAEXABVDir3@math@@IMM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsVertexBuffer.cpp:15	Real vertex setter writes xyz, u, diffuse, and v fields.
+0x00813940	?Set@SpriteVertex@apsVertexBuffer@@QAEXABVDir3@math@@IMM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813940;src/aeps/apsVertexBuffer.cpp:15	Release and source store position xyz, u, rgba, and v in the same fields/order.

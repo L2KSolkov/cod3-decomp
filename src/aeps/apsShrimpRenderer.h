@@ -40,6 +40,7 @@ public:
     class apsShrimpRenderer* mRenderer;  // +0xB0
 
     void SetRenderer(class apsShrimpRenderer* r) { mRenderer = r; }   // ea: 0x802F90
+    class apsShrimpRenderer& Renderer();                              // ea: 0x813860
     virtual void GetDesc(char* buf);                                  // ea: 0x802FA0
     virtual void Render() override;                                   // ea: 0x812D90 (apsShrimpNode.o)
 };
@@ -87,6 +88,16 @@ public:
     int16_t       mSpriteHeight;   // +0x30
     int16_t       mTextureWidth;   // +0x32
     int16_t       mTextureHeight;  // +0x34
+
+    nglTexture* Texture() const;       // ea: 0x8137D0
+    const apsEBlendMode BlendMode() const; // ea: 0x8137E0
+    int NumFrames() const;              // ea: 0x8137F0
+    int NumRows() const;                // ea: 0x813800
+    int NumRotations() const;           // ea: 0x813810
+    int SpriteWidth() const;            // ea: 0x813820
+    int SpriteHeight() const;           // ea: 0x813830
+    int TextureWidth() const;           // ea: 0x813840
+    int TextureHeight() const;          // ea: 0x813850
 
     apsShrimpRenderer(const cArgs* args);          // @0x804520
     virtual ~apsShrimpRenderer();                  // @0x8044D0 (vtable)

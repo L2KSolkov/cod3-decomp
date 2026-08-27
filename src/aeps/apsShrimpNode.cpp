@@ -17,6 +17,126 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 static const __m128 Float4_XAxis_130 = { 1.0f, 0.0f, 0.0f, 0.0f };
 static const __m128 Float4_ZAxis_130 = { 0.0f, 0.0f, 1.0f, 0.0f };
 
+template <>
+math::Vector4 apsMath::Limit<math::Vector4, float>(
+    const math::Vector4& iValue, const float& iMin, const float& iMax)
+{
+    math::Vector4 result;
+    result.v = _mm_min_ps(_mm_max_ps(iValue.v, _mm_set1_ps(iMin)),
+                          _mm_set1_ps(iMax));
+    return result;
+}
+
+// apsRenderNode::BlendColor - ea: 0x008137C0
+const math::Vector4& apsRenderNode::BlendColor() const
+{
+    return mBlendColor;
+}
+
+// apsShrimpRenderer::Texture - ea: 0x008137D0
+nglTexture* apsShrimpRenderer::Texture() const
+{
+    return mTexture;
+}
+
+// apsShrimpRenderer::BlendMode - ea: 0x008137E0
+const apsEBlendMode apsShrimpRenderer::BlendMode() const
+{
+    return mBlendMode;
+}
+
+// apsShrimpRenderer::NumFrames - ea: 0x008137F0
+int apsShrimpRenderer::NumFrames() const
+{
+    return mNumFrames;
+}
+
+// apsShrimpRenderer::NumRows - ea: 0x00813800
+int apsShrimpRenderer::NumRows() const
+{
+    return mNumRows;
+}
+
+// apsShrimpRenderer::NumRotations - ea: 0x00813810
+int apsShrimpRenderer::NumRotations() const
+{
+    return mNumRotations;
+}
+
+// apsShrimpRenderer::SpriteWidth - ea: 0x00813820
+int apsShrimpRenderer::SpriteWidth() const
+{
+    return mSpriteWidth;
+}
+
+// apsShrimpRenderer::SpriteHeight - ea: 0x00813830
+int apsShrimpRenderer::SpriteHeight() const
+{
+    return mSpriteHeight;
+}
+
+// apsShrimpRenderer::TextureWidth - ea: 0x00813840
+int apsShrimpRenderer::TextureWidth() const
+{
+    return mTextureWidth;
+}
+
+// apsShrimpRenderer::TextureHeight - ea: 0x00813850
+int apsShrimpRenderer::TextureHeight() const
+{
+    return mTextureHeight;
+}
+
+// apsShrimpNode::Renderer - ea: 0x00813860
+apsShrimpRenderer& apsShrimpNode::Renderer()
+{
+    if (mRenderer != 0)
+        return *mRenderer;
+    if (!_tlAssert("c:/cod/code/tl/aeps/include\\apsShrimpNode.h", 14,
+                   "mRenderer", "null renderer"))
+        return *mRenderer;
+    __debugbreak();
+    return *mRenderer;
+}
+
+// ShrimpParticle::GetPos - ea: 0x008138A0
+math::Dir3::Packed& ShrimpParticle::GetPos()
+{
+    return mPos;
+}
+
+// ShrimpParticle::GetWidth - ea: 0x008138B0
+float ShrimpParticle::GetWidth()
+{
+    return mWidth;
+}
+
+// ShrimpParticle::GetHeight - ea: 0x008138C0
+float ShrimpParticle::GetHeight()
+{
+    return mHeight;
+}
+
+// ShrimpParticle::GetColor - ea: 0x008138D0
+math::Vector4 ShrimpParticle::GetColor()
+{
+    math::Vector4 result;
+    result.v = _mm_setr_ps(1.0f, 1.0f, 1.0f, mAlpha);
+    return result;
+}
+
+// ShrimpParticle::GetFrame - ea: 0x00813920
+float ShrimpParticle::GetFrame()
+{
+    return mFrame;
+}
+
+// ShrimpParticle::GetAngle - ea: 0x00813930
+float ShrimpParticle::GetAngle()
+{
+    return mAngle;
+}
+
 // apsShrimpRender::GetVShader - ea: 0x008139D0
 unsigned long apsShrimpRender::GetVShader()
 {

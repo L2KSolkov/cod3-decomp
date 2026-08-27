@@ -11,6 +11,7 @@
 
 namespace apsVertexBuffer {
 
+// apsVertexBuffer::SpriteVertex::Set - ea: 0x00813940
 void SpriteVertex::Set(const math::Dir3& pos, unsigned int rgba, float u, float v) {
     x = pos.v.m128_f32[0];
     y = _mm_shuffle_ps(pos.v, pos.v, 85).m128_f32[0];

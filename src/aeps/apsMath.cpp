@@ -20,6 +20,7 @@
 
 namespace apsMath {
 
+// apsMath::ACos - ea: 0x008135B0
 float ACos(float x) {
     const __m128 absMask = _mm_castsi128_ps(_mm_set1_epi32(0x7FFFFFFF));
     const float ax = _mm_and_ps(_mm_set_ss(x), absMask).m128_f32[0];

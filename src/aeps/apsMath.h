@@ -132,6 +132,7 @@ inline T Min(const T& a, const T& b) {
     return (b <= a) ? b : a;
 }
 
+// apsMath::Limit<Vector4,float> - ea: 0x00813530
 template <typename T, typename S>
 inline T Limit(const T& iValue, const S& iMin, const S& iMax) {
     T v = iValue;

@@ -24,6 +24,13 @@ struct ShrimpParticle {
     float mAngle;             // +0x14
     float mHeight;            // +0x18
     float mFrame;             // +0x1C
+
+    math::Dir3::Packed& GetPos();
+    float GetWidth();
+    float GetHeight();
+    math::Vector4 GetColor();
+    float GetFrame();
+    float GetAngle();
 };
 static_assert(sizeof(ShrimpParticle) == 0x20, "ShrimpParticle size mismatch");
 
