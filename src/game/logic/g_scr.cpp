@@ -12579,12 +12579,12 @@ void BrocInitEntity(
 {
     void* v3 = nullptr;
     if (gpBrocAPI != nullptr
-        && Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity != nullptr)
+        && gpBrocAPI->mBrocExports.mCreateExtendedEntity != nullptr)
     {
         const char** pKey = nullptr;
         if (keyValuePairs.mSize != 0)
             pKey = (const char**)&keyValuePairs.mList[0].mKey.mStr;
-        v3 = Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity(
+        v3 = gpBrocAPI->mBrocExports.mCreateExtendedEntity(
             pKey, keyValuePairs.mSize);
     }
     ent->mBrocExtendedEntity = v3;

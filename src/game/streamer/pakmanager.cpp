@@ -2879,9 +2879,49 @@ extern bool ValidForGametype(void);  // g.o (g_main.cpp)
 extern void G_CallEntitySpawnFunction(Entity* ent);  // g.o (g_spawn.cpp)
 extern void BrocAddEntityThread(Entity* ent,
                                 const char* fcnName);  // scr.o
+extern bool gIsWorkspaceMap;                         // sv_ccmds.cpp
 void BrocAddEntityThread(Entity* ent, const char* fcnName)
 {
-    (void)ent; (void)fcnName;  // stub: scr.o
+    if (gpBrocAPI == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 266;
+        AeAssert::gCurrentExpr = "gpBrocAPI";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (gpBrocAPI->mBrocExports.mSpawnScriptThread == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 267;
+        AeAssert::gCurrentExpr =
+            "gpBrocAPI->mBrocExports.mSpawnScriptThread";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    unsigned int fcnHash = HashString::CalcHash(fcnName);
+    Broc::vector undefined_vec;
+    undefined_vec.x = sNaN;
+    undefined_vec.y = sNaN;
+    undefined_vec.z = sNaN;
+    const unsigned int entHandle =
+        *reinterpret_cast<const unsigned int*>((const char*)ent + 0x234);
+    int found = (int)gpBrocAPI->mBrocExports.mSpawnScriptThread(
+        fcnHash, false, Broc::entity(entHandle),
+        Broc::entity(0), Broc::entity(0), sNaN, sNaN, sNaN,
+        &undefined_vec);
+    if (found == 0 && !gIsWorkspaceMap)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BrocEntity.cpp";
+        AeAssert::gCurrentLine = 276;
+        AeAssert::gCurrentExpr = "found || gIsWorkspaceMap";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Couldn't find AUTO_THREAD '%s'", fcnName))
+            __debugbreak();
+    }
 }
 extern IVPointer<Destructible> DestructibleBankManager_GetDestructible(
     void* self, TPakId pak_id, const char* name);  // physics.o (g_checkpoint.cpp)
