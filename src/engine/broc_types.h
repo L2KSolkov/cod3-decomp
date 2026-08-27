@@ -174,6 +174,7 @@ public:
         mSize = 0;
     }
     // ea: 0x005EDF00 (dyn_array<Broc::entity>)
+    // ea: 0x005EE060 (dyn_array<Broc::string>)
     T* begin() { return mElements; }
     // ea: 0x005EDF10 (dyn_array<Broc::entity>)
     T* end() { return &mElements[mSize]; }
