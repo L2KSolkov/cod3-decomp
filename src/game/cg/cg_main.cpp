@@ -178,6 +178,12 @@ struct cg_t {
 cg_t::cg_t()
     : data{}
 {
+    // The release constructor leaves the zeroed state intact except for the
+    // invalid viewmodel pak sentinels.  These are load-bearing: zero denotes
+    // a valid pak in the script/HUD path, while -1 is PAK_ID_INVALID.
+    *reinterpret_cast<int*>(data + 0x10C) = -1;
+    *reinterpret_cast<int*>(data + 0x6FC) = -1;
+    *reinterpret_cast<int*>(data + 0xCEC) = -1;
 }
 
 cg_t cg[2] = {};  // ?cg@@3PAUcg_t@@A (cg.o @ 0x1351E40)

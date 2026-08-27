@@ -41,6 +41,20 @@ enum { kLocalPlayerStateUnused = 0 };
 // ea: 0x006BC070
 cgs_t::cgs_t() : state(0), controller(0), _data{}
 {
+    // Release starts by clearing the complete object, then applies these
+    // defaults (the remaining fields/objective members stay zero).
+    *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(this) + 0xA0) = 1.0f;
+    *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(this) + 0xA4) = 1.0f;
+    *(reinterpret_cast<unsigned char*>(this) + 0xBC) = 1;
+    *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(this) + 0xC0) = 1.0f;
+    *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(this) + 0xC4) = 1.0f;
+    *(reinterpret_cast<unsigned char*>(this) + 0xD4) = 1;
+    for (int i = 0; i < 17; ++i)
+    {
+        unsigned char* objective = reinterpret_cast<unsigned char*>(this) + 0xD8 + i * 0xB0;
+        *reinterpret_cast<int*>(objective + 0x1C) = -1;
+        *reinterpret_cast<int*>(objective + 0x24) = -1;
+    }
 }
 
 cgs_t cgs[2] = {};  // ?cgs@@3PAUcgs_t@@A (cg.o @ 0x13596D8)
