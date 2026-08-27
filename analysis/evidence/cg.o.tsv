@@ -173,3 +173,17 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0068A700	?CG_DObjCalcBone@@YAXPAVEntity@@PAVDObj@@H@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0068A700	Source matches release assertions, map-ABI skeleton call, hierarchy bits, helper call, and CL_DObjCalcSkel sequence.
 0x0068A7E0	?CG_DObjCalcBoneGeneric@@YAXPAVDObj@@H@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_dobj.cpp:160	Non-empty body validates the DObj and calculates the requested bone skeleton.
 0x0068A7E0	?CG_DObjCalcBoneGeneric@@YAXPAVDObj@@H@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0068A7E0	Source matches release null assertion, map-ABI skeleton call, hierarchy bits, helper call, and CL_DObjCalcSkel sequence.
+0x0068BB10	?CG_ParseServerinfo@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_ents.cpp:150	Non-empty body reads the server mapname and formats cgsGlobal.mapname.
+0x0068BB10	?CG_ParseServerinfo@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1299006	Source matches release config-string index, mapname key, and maps/%s.bsp formatting.
+0x0068BBB0	?CG_RegisterServerShaders@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_main.cpp:609	Non-empty body registers the complete server shader range.
+0x0068BBB0	?CG_RegisterServerShaders@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1299036	Source matches release loop bounds 725 through 979 inclusive and registration call.
+0x0068BBD0	?CG_CloseScriptMenu@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_main.cpp:626	Non-empty body clears all script-menu cvars and resets their indices/flags.
+0x0068BBD0	?CG_CloseScriptMenu@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1299045	Source matches all seven release Cvar_Set names and values.
+0x0068C010	?CG_SetShellShockParmsFromCvars@@YAXPAUshellshock_parms_t@@@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_view.cpp:1142	Non-empty body validates and populates view, sound, volume, and mouse shellshock parameters.
+0x0068C010	?CG_SetShellShockParmsFromCvars@@YAXPAUshellshock_parms_t@@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1299194;IDA:0x0068C010	Source matches release assert context, millisecond rounding/minimums, wet/volume clamps, roomtype copy/termination, channel mapping, and mouse fields.
+0x0068C870	?trap_R_SetCullDist@@YAXM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_trap.cpp:9	Non-empty wrapper forwards cull distance to the renderer export.
+0x0068C870	?trap_R_SetCullDist@@YAXM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0068C870	Source directly forwards the float to re.SetCullDist as release does.
+0x0068C880	?trap_R_SetFog@@YAXHHHMMMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_trap.cpp:15	Non-empty wrapper forwards fog parameters to the renderer export.
+0x0068C880	?trap_R_SetFog@@YAXHHHMMMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0068C880	Source directly forwards all seven fog parameters to re.SetFog as release does.
+0x0068C890	?trap_R_SaveScreen@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_trap.cpp:22	Non-empty wrapper forwards screen-save to the renderer export.
+0x0068C890	?trap_R_SaveScreen@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0068C890	Source directly forwards re.SaveScreen as the release thunk does.
