@@ -29149,20 +29149,19 @@ int InteractState::GetRandomPlayerAnimIndex() const
     tlFixedString name(info->playerAnim);
     if (nalGetAnim(name) == nullptr)
         return -1;
+    int animIndices[7];
+    animIndices[0] = -1;
     int count = 1;
-    int v2 = 0;
     for (int i = 0; i < 6; ++i)
     {
         if (*(char*)((char*)info + 0xF8 + 40 * i) != 0)
         {
             tlFixedString v9(info->playerModAnim[i]);
             if (nalGetAnim(v9) != nullptr)
-                ++count;
+                animIndices[count++] = i;
         }
-        ++v2;
     }
-    (void)v2;
-    return irand(0, count);
+    return animIndices[irand(0, count)];
 }
 
 // ea: 0x0053F9F0
