@@ -16,6 +16,7 @@
 // ============================================================================
 class apsUVANode : public apsBillboardNode {
 public:
+    apsRenderSort::Buffer* GetRenderSortBuffer(); // ea: 0x816370
     virtual void GetDesc(char* buf);
     virtual void Render() override;  // ea: 0x804290
 };
@@ -37,6 +38,10 @@ public:
     float mMaxFrame;        // +0x84
     float mInvWidthFrames;  // +0x88
     float mInvHeightFrames; // +0x8C
+    float WidthFrames() const;    // ea: 0x816380
+    float MaxFrame() const;       // ea: 0x816390
+    float InvWidthFrames() const; // ea: 0x8163A0
+    float InvHeightFrames() const;// ea: 0x8163B0
     apsUVARenderer(const cArgs* args);          // @0x805960
     virtual ~apsUVARenderer();                  // @0x805900 (vtable)
     static void Init();                                    // @0x805A50

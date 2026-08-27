@@ -3,3 +3,13 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008163C0	?GetVShader@apsUVARender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163C0;src/aeps/apsUVANode.cpp:13	Release and source both return VS[0].
 0x008163D0	?GetPShader@apsUVARenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVANode.cpp:20	Emitted getter body returns the registered pixel shader handle.
 0x008163D0	?GetPShader@apsUVARenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163D0;src/aeps/apsUVANode.cpp:20	Release and source both return PS[0].
+0x00816370	?GetRenderSortBuffer@apsUVANode@@QAEPAUBuffer@apsRenderSort@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVANode.cpp:12	Real UVA node accessor returns mRenderSortBuffer.
+0x00816370	?GetRenderSortBuffer@apsUVANode@@QAEPAUBuffer@apsRenderSort@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816370;src/aeps/apsUVANode.cpp:12	Release and source both return mRenderSortBuffer.
+0x00816380	?WidthFrames@apsUVARenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVANode.cpp:18	Real UVA width-frame accessor returns mWidthFrames.
+0x00816380	?WidthFrames@apsUVARenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816380;src/aeps/apsUVANode.cpp:18	Release and source both return mWidthFrames.
+0x00816390	?MaxFrame@apsUVARenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVANode.cpp:24	Real UVA max-frame accessor returns mMaxFrame.
+0x00816390	?MaxFrame@apsUVARenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816390;src/aeps/apsUVANode.cpp:24	Release and source both return mMaxFrame.
+0x008163A0	?InvWidthFrames@apsUVARenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVANode.cpp:30	Real UVA inverse-width accessor returns mInvWidthFrames.
+0x008163A0	?InvWidthFrames@apsUVARenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163A0;src/aeps/apsUVANode.cpp:30	Release and source both return mInvWidthFrames.
+0x008163B0	?InvHeightFrames@apsUVARenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVANode.cpp:36	Real UVA inverse-height accessor returns mInvHeightFrames.
+0x008163B0	?InvHeightFrames@apsUVARenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163B0;src/aeps/apsUVANode.cpp:36	Release and source both return mInvHeightFrames.

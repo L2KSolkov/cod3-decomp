@@ -51,7 +51,7 @@ apsSimpleMeshNode.o	10	0	0	0	0	10	0
 apsSimpleMeshRenderer.o	30	12	6	9	0	3	0
 apsSuppliedActions.o	125	74	42	9	0	0	0
 apsSuppliedDomains.o	27	25	0	2	0	0	0
-apsUVANode.o	21	11	0	1	0	9	0
+apsUVANode.o	21	6	0	1	0	14	0
 apsUVARectangleNode.o	16	6	0	1	0	9	0
 apsUVARectangleRenderer.o	11	5	1	2	0	3	0
 apsUVARenderer.o	7	1	1	2	0	3	0

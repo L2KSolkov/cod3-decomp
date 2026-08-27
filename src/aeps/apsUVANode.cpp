@@ -8,6 +8,36 @@
 #include "apsNodeRenderer.h"
 #include "apsParticleTypes.h"
 
+// apsUVANode::GetRenderSortBuffer - ea: 0x00816370
+apsRenderSort::Buffer* apsUVANode::GetRenderSortBuffer()
+{
+    return mRenderSortBuffer;
+}
+
+// apsUVARenderer::WidthFrames - ea: 0x00816380
+float apsUVARenderer::WidthFrames() const
+{
+    return mWidthFrames;
+}
+
+// apsUVARenderer::MaxFrame - ea: 0x00816390
+float apsUVARenderer::MaxFrame() const
+{
+    return mMaxFrame;
+}
+
+// apsUVARenderer::InvWidthFrames - ea: 0x008163A0
+float apsUVARenderer::InvWidthFrames() const
+{
+    return mInvWidthFrames;
+}
+
+// apsUVARenderer::InvHeightFrames - ea: 0x008163B0
+float apsUVARenderer::InvHeightFrames() const
+{
+    return mInvHeightFrames;
+}
+
 // apsUVARender::GetVShader - ea: 0x008163C0
 unsigned long apsUVARender::GetVShader()
 {
