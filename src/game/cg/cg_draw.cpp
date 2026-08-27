@@ -1101,7 +1101,7 @@ extern int dword_F641D4[4 * 1580];
 
 // ea: 0x0069C3C0
 void CG_DrawRotatedPic(float x, float y, float width, float height,
-                       float angle, void* tex)
+                       float angle, nglTexture* tex)
 {
     float fSin, fCos;
     FastSinCos((angle * 3.1415927f) * 0.0055555557f, &fSin, &fCos);
@@ -1128,7 +1128,8 @@ void CG_DrawRotatedPic(float x, float y, float width, float height,
 
 // ea: 0x0069C540
 void CG_DrawRotatedQuadPic(float x, float y, const float (*verts)[2],
-                           const float (*texCoords)[2], float angle, void* tex)
+                           const float (*texCoords)[2], float angle,
+                           nglTexture* tex)
 {
     float s, c;
     FastSinCos((angle * 3.1415927f) * 0.0055555557f, &s, &c);

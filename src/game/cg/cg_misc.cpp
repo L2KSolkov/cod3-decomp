@@ -630,6 +630,8 @@ void CG_ClampAngles(float* angles, const float* centerAngles,
 void CG_ClampAngles(math::Position3* angles, const float* centerAngles,
                     const float* minClamp, const float* maxClamp)
 {
+    float diffAngles[3];
+    float newAngles[3];
     float viewAngles[3] = {angles->v.m128_f32[0], angles->v.m128_f32[1],
                            angles->v.m128_f32[2]};
     for (int i = 0; i < 3; ++i)
@@ -640,13 +642,16 @@ void CG_ClampAngles(math::Position3* angles, const float* centerAngles,
             viewAngles[i] = v18;
             float angle = v18 - AngleNormalize180(centerAngles[i]);
             v18 = AngleNormalize180(angle);
+            diffAngles[i] = v18;
             if (minClamp[i] != 0.0f)
             {
                 if (minClamp[i] > v18)
                 {
                     float v9 = minClamp[i] + 0.0099999998f;
-                    angles->v.m128_f32[i] = AngleNormalize180(
-                        AngleNormalize180(centerAngles[i]) + v9);
+                    newAngles[i] = v9;
+                    newAngles[i] = AngleNormalize180(
+                        AngleNormalize180(centerAngles[i]) + newAngles[i]);
+                    angles->v.m128_f32[i] = newAngles[i];
                     continue;
                 }
             }
@@ -654,8 +659,10 @@ void CG_ClampAngles(math::Position3* angles, const float* centerAngles,
             if (v10 != 0.0f && v18 > v10)
             {
                 float v9 = v10 - 0.0099999998f;
-                angles->v.m128_f32[i] = AngleNormalize180(
-                    AngleNormalize180(centerAngles[i]) + v9);
+                newAngles[i] = v9;
+                newAngles[i] = AngleNormalize180(
+                    AngleNormalize180(centerAngles[i]) + newAngles[i]);
+                angles->v.m128_f32[i] = newAngles[i];
             }
         }
     }
