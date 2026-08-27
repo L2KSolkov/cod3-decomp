@@ -26145,6 +26145,14 @@ T vnode_get_field(int handle)
 }
 
 template <typename T, int OFF, int IDX>
+// ea: 0x005FC330
+// ea: 0x005FC680
+// ea: 0x005FC8B0
+// ea: 0x005FCAF0
+// ea: 0x005FCD40
+// ea: 0x005FCFB0
+// ea: 0x005FD1F0
+// ea: 0x005FD430
 void entity_set_sentient_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26177,6 +26185,14 @@ void entity_set_sentient_field(unsigned int handle, T val)
         __debugbreak();
 }
 
+// ea: 0x005FC490
+// ea: 0x005FC790
+// ea: 0x005FC9D0
+// ea: 0x005FCC00
+// ea: 0x005FCE60
+// ea: 0x005FD0D0
+// ea: 0x005FD310
+// ea: 0x005FD540
 template <typename T, int OFF, int IDX>
 T entity_get_sentient_field(unsigned int handle)
 {
