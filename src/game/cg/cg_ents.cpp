@@ -120,11 +120,18 @@ int CG_CheckAmmo()
 {
     int v0 = dword_F62960[1580 * currCl];
     int v1 = *(int*)(v0 + 1076);
-    if (v1 != 0 || *(int*)(v0 + 1080) != 0)
+    // The release frame reads these two stack slots before the weapon scan;
+    // preserve that control-flow dependency instead of silently simplifying
+    // it away.  They are intentionally uninitialized in the Xbox body.
+    int v5;
+    int vars0;
+    int result;
+    if (v1 != 0 || *(int*)(v0 + 1080) != 0 || v5 != 0
+        || (result = vars0, vars0 != 0))
     {
         int v3 = 0;
         int v4 = 1;
-        int result = BG_GetNumWeapons();
+        result = BG_GetNumWeapons();
         if (result > 1)
         {
             do
@@ -142,9 +149,8 @@ int CG_CheckAmmo()
                 result = BG_GetNumWeapons();
             } while (v4 < result);
         }
-        return result;
     }
-    return 0;
+    return result;
 }
 
 // ea: 0x0068BB10
