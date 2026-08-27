@@ -760,8 +760,43 @@ public:
 };
 static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
 
-float AnimIK::painDurationMin = 0.0f;
-float AnimIK::painDurationMax = 0.0f;
+float AnimIK::painDurationMin = 450.0f;
+float AnimIK::painDurationMax = 700.0f;
+float AnimIK_painFlinchAngle = 22.0f;
+float AnimIK_painLowBlowPelvisShift[2] = {6.0f, 0.0f};
+float AnimIK_painLowBlowPelvisPow = 0.365f;
+float AnimIK_painHighBlowPelvisShift[2] = {-3.0f, 0.0f};
+float AnimIK_painHighBlowPelvisPow = 0.47f;
+
+struct AnimIKPainBone {
+    int boneIndex;
+    float pitchScale;
+    float yawScale;
+    float rollScale;
+};
+
+static const AnimIKPainBone AnimIKHighBlowBones[4] = {
+    {1, -1.0f, 0.5f, 1.0f},
+    {2, -1.0f, 0.5f, 1.0f},
+    {3, -1.0f, 0.75f, 1.0f},
+    {4, -2.0f, 0.75f, -2.0f},
+};
+static const AnimIKPainBone AnimIKLowBlowBones[4] = {
+    {1, 0.8f, 0.45f, 1.0f},
+    {2, 0.8f, 0.5f, 1.0f},
+    {3, 1.0f, 0.45f, 1.0f},
+    {4, 2.0f, 0.5f, -2.0f},
+};
+static const int AnimIKViewBones[5] = {0, 1, 2, 3, 4};
+static const float AnimIKViewBoneScales[5] = {
+    0.05f, 0.05f, 0.05f, 0.05f, 0.6f
+};
+static const float AnimIKViewTorsoScales[5] = {
+    -0.1f, -0.1f, -0.1f, -0.1f, 1.4f
+};
+static const float AnimIKViewTankScales[5] = {
+    -0.02f, -0.02f, 0.03f, 0.02f, 0.9f
+};
 
 // game2.o dynamic initializers at 0xA63040/0xA63260.
 tlFixedString AnimIK::BoneNames[25] = {
@@ -1160,27 +1195,337 @@ void AnimIK::RotateBone(int boneIndex, const math::Dir3& rotation)
 // ea: 0x004FCA40
 void AnimIK::ApplyPainFlinch(Entity* ent)
 {
+    if (ent == nullptr || ent->client == nullptr || pose == nullptr
+        || skeleton == nullptr)
+        return;
+
+    for (int eventIndex = 0; eventIndex < 15; ++eventIndex)
+    {
+        AnimIKPainEvent& event = ent->client->AnimIKPainEvents[eventIndex];
+        if (event.time == 0)
+            continue;
+        const float duration = event.duration > 0
+            ? static_cast<float>(event.duration) : painDurationMax;
+        const float age = static_cast<float>(level.time - event.time)
+            / duration;
+        if (age < 0.0f || age > 1.0f)
+        {
+            event.time = 0;
+            continue;
+        }
+
+        const float phase = powf(age, 0.65f) * 3.14159265358979323846f;
+        const float impulse = sinf(phase) * event.amplitude;
+        const float yaw = atan2f(event.dir[1], event.dir[0])
+            * 57.29577951308232f;
+        const float lateral = cosf(yaw * 0.0174532925199433f) * impulse;
+        const float forward = sinf(yaw * 0.0174532925199433f) * impulse;
+        const AnimIKPainBone* bones = event.bIsLowBlow
+            ? AnimIKLowBlowBones : AnimIKHighBlowBones;
+        for (int bone = 0; bone < 4; ++bone)
+        {
+            const AnimIKPainBone& scale = bones[bone];
+            RotateBone(scale.boneIndex,
+                        math::Dir3(forward * scale.pitchScale
+                                       * AnimIK_painFlinchAngle,
+                                   lateral * scale.yawScale
+                                       * AnimIK_painFlinchAngle,
+                                   impulse * scale.rollScale
+                                       * AnimIK_painFlinchAngle));
+        }
+    }
 }
 // ea: 0x004FDDC0
 void AnimIK::ApplyTorsoRotations(Entity* ent)
 {
+    if (ent == nullptr || ent->client == nullptr || pose == nullptr
+        || skeleton == nullptr)
+        return;
+    Client* client = ent->client;
+    float pitch = (client->ps.pm_flags & 1) != 0
+        ? 0.0f : AngleNormalize180(client->ps.viewangles[0]);
+    float yaw = AngleNormalize180(client->mStepViewYaw
+                                  - client->ps.legsYaw);
+    if ((client->ps.eFlags & 0x100000) != 0 && client->ps.vehPos == 1)
+        pitch *= 0.5f;
+    if ((client->ps.pm_flags & 0x10) != 0)
+    {
+        pitch *= 0.35f;
+        yaw *= 0.35f;
+    }
+    if ((client->ps.eFlags & 0x100000) != 0 && client->ps.vehPos == 2)
+    {
+        weaponFileInfo_t* weapon = BG_GetInfoForWeapon(client->ps.weapon);
+        if (weapon != nullptr
+            && (weapon->weapClass == 6 || weapon->weapClass == 8
+                || weapon->weapClass == 16))
+        {
+            pitch = pitch * 0.5f + 15.0f;
+            yaw += 25.0f;
+        }
+    }
+    client->mLastTorsoIKLegsYaw = client->ps.legsYaw;
+    for (int i = 0; i < 5; ++i)
+    {
+        const float torso = pitch * AnimIKViewTorsoScales[i];
+        const float lateral = yaw * AnimIKViewBoneScales[i];
+        if (torso != 0.0f || lateral != 0.0f)
+            RotateBone(AnimIKViewBones[i], math::Dir3(torso, lateral, 0.0f));
+    }
 }
 // ea: 0x004FFC30
 void AnimIK::ApplyFire(Entity* ent)
 {
+    if (ent == nullptr || ent->client == nullptr || pose == nullptr
+        || skeleton == nullptr)
+        return;
+
+    float offsetScale = 0.0f;
+    float pitchScale = 0.0f;
+    float torsoScale = 0.0f;
+    weaponFileInfo_t* latestWeapon = nullptr;
+    int latestFireTime = 0;
+    for (int i = 0; i < 15; ++i)
+    {
+        AnimIKFireEvent& event = ent->client->AnimIKFireEvents[i];
+        if (event.fireTime == 0)
+            continue;
+        weaponFileInfo_t* weapon = BG_GetInfoForWeapon(event.fireWeapon);
+        if (weapon == nullptr)
+            continue;
+
+        float offsetTime = weapon->fAnimIKOffsetTime;
+        float offsetForce = weapon->fAnimIKOffsetForce;
+        float offsetDist = weapon->fAnimIKOffsetDist;
+        float pitchTime = weapon->fAnimIKPitchTime;
+        float pitchForce = weapon->fAnimIKPitchForce;
+        float pitchAngle = weapon->fAnimIKPitchAngle;
+        float torsoTime = weapon->fAnimIKTorsoRecoilPitchTime;
+        float torsoForce = weapon->fAnimIKTorsoRecoilPitchForce;
+        float torsoAngle = weapon->fAnimIKTorsoRecoilPitchAngle;
+        if (offsetTime == 0.0f && pitchTime == 0.0f
+            && torsoTime == 0.0f)
+        {
+            offsetTime = 0.35f;
+            offsetForce = 2.0f;
+            offsetDist = 6.0f;
+            pitchTime = 0.15f;
+            pitchForce = 1.0f;
+            pitchAngle = 30.0f;
+            torsoTime = 0.6f;
+            torsoForce = 2.0f;
+            torsoAngle = 15.0f;
+        }
+        const float age = static_cast<float>(level.time - event.fireTime);
+        const float eventOffsetScale =
+            WeaponRecoilTimeScale(event.fireTime, offsetTime, offsetForce);
+        const float eventPitchScale =
+            WeaponRecoilTimeScale(event.fireTime, pitchTime, pitchForce);
+        const float eventTorsoScale =
+            WeaponRecoilTimeScale(event.fireTime, torsoTime, torsoForce);
+        offsetScale = max(offsetScale, eventOffsetScale);
+        pitchScale = max(pitchScale, eventPitchScale);
+        torsoScale = max(torsoScale, eventTorsoScale);
+        if (event.fireTime > latestFireTime)
+        {
+            latestFireTime = event.fireTime;
+            latestWeapon = weapon;
+        }
+        if (age > 200.0f && eventOffsetScale == 0.0f
+            && eventPitchScale == 0.0f && eventTorsoScale == 0.0f)
+            event.fireTime = 0;
+    }
+    if (latestWeapon == nullptr
+        || (offsetScale == 0.0f && pitchScale == 0.0f
+            && torsoScale == 0.0f))
+        return;
+
+    const float torsoAngle = latestWeapon->fAnimIKTorsoRecoilPitchAngle != 0.0f
+        ? latestWeapon->fAnimIKTorsoRecoilPitchAngle : 15.0f;
+    const float pitchAngle = latestWeapon->fAnimIKPitchAngle != 0.0f
+        ? latestWeapon->fAnimIKPitchAngle : 30.0f;
+    const float offsetAngle = latestWeapon->fAnimIKOffsetDist != 0.0f
+        ? latestWeapon->fAnimIKOffsetDist : 6.0f;
+    RotateBone(2, math::Dir3(-torsoAngle * torsoScale, 0.0f, 0.0f));
+    RotateBone(4, math::Dir3(torsoAngle * torsoScale, 0.0f, 0.0f));
+    RotateBone(7, math::Dir3(-pitchAngle * pitchScale,
+                             offsetAngle * offsetScale, 0.0f));
+    RotateBone(11, math::Dir3(-pitchAngle * pitchScale,
+                              -offsetAngle * offsetScale, 0.0f));
 }
 // ea: 0x00504C90
 void AnimIK::ApplyVehicleSteering(Entity* ent)
 {
+    if (ent == nullptr || ent->client == nullptr || ent->sentient == nullptr
+        || pose == nullptr || skeleton == nullptr)
+        return;
+    Client* client = ent->client;
+    if ((client->ps.eFlags & 0x100000) == 0
+        || !IsPlayerFullySeatedInVehicle(ent))
+        return;
+    Entity* vehicle = *client->ps.mViewLockedEntity;
+    if (vehicle == nullptr || vehicle->scr_vehicle == nullptr
+        || client->ps.vehPos > 1)
+        return;
+
+    const float steering = vehicle->scr_vehicle->current.mSteeringAngle;
+    if (client->ps.vehType == 1 && client->ps.vehSubType == 2)
+    {
+        const float side = fabsf(steering);
+        RotateBone(1, math::Dir3(side * 0.15f,
+                                 steering * -0.05f, side * 0.15f));
+        RotateBone(2, math::Dir3(side * 0.15f,
+                                 steering * 0.1f, side * 0.35f));
+        RotateBone(4, math::Dir3(-side * 0.6f,
+                                 steering * 0.1f, -steering * 0.35f));
+    }
+    else if (client->ps.vehPos == 1)
+    {
+        const float gunnerPitch =
+            vehicle->scr_vehicle->current.mGunnerAngles.v.m128_f32[0];
+        RotateBone(2, math::Dir3(gunnerPitch * 0.3f, 0.0f, 0.0f));
+        RotateBone(3, math::Dir3(gunnerPitch * 0.3f, 0.0f, 0.0f));
+        RotateBone(4, math::Dir3(gunnerPitch * 0.7f, 0.0f, 0.0f));
+    }
+    else
+    {
+        const float side = fabsf(steering);
+        RotateBone(2, math::Dir3(side * 0.05f,
+                                 steering * 0.1f, steering * 0.2f));
+        RotateBone(4, math::Dir3(-side * 0.15f,
+                                 steering * 0.1f, steering * 0.2f));
+    }
+
+    float viewYaw = AngleNormalize180(client->ps.viewangles[1]);
+    float viewPitch = AngleNormalize180(client->ps.viewangles[0]);
+    if (client->ps.vehPos == 1)
+    {
+        viewYaw = max(-40.0f, min(0.0f, viewYaw));
+    }
+    else
+    {
+        viewYaw = max(-120.0f, min(120.0f, viewYaw));
+        viewPitch = max(-40.0f, min(40.0f, viewPitch));
+    }
+    const int elapsed = level.time - ent->sentient->mLastAnimIKOffsetTime;
+    if (elapsed > 0 && elapsed < 500)
+    {
+        const float maxDelta = elapsed * 0.65f;
+        const float delta = viewYaw - ent->sentient->mLastAnimIKOffsetYaw;
+        if (fabsf(delta) > maxDelta)
+            viewYaw = ent->sentient->mLastAnimIKOffsetYaw
+                + (delta < 0.0f ? -maxDelta : maxDelta);
+    }
+    ent->sentient->mLastAnimIKOffsetYaw = viewYaw;
+    ent->sentient->mLastAnimIKOffsetTime = level.time;
+    for (int i = 0; i < 5; ++i)
+    {
+        const float lateral = viewYaw * AnimIKViewBoneScales[i];
+        float pitch = viewYaw * -0.15f * AnimIKViewTorsoScales[i];
+        if (client->ps.vehType == 2)
+            pitch += viewPitch * AnimIKViewTankScales[i];
+        else
+            pitch += viewPitch * AnimIKViewTorsoScales[i];
+        RotateBone(AnimIKViewBones[i], math::Dir3(pitch, lateral, 0.0f));
+    }
 }
 // ea: 0x005068F0
 void AnimIK::ApplyADS(Entity* ent)
 {
+    if (ent == nullptr || ent->client == nullptr || pose == nullptr
+        || skeleton == nullptr)
+        return;
+    if ((ent->client->ps.eFlags & 0x100000) != 0)
+        return;
+    const float ads = ent->client->ps.fWeaponPosFrac;
+    if (ads <= 0.0f)
+        return;
+    RotateBone(4, math::Dir3(-5.0f * ads, 0.0f, 15.0f * ads));
+    RotateBone(3, math::Dir3(-5.0f * ads, 0.0f, 10.0f * ads));
 }
 // ea: 0x00507EC0
 void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
                                  nalMatrix4x4& rightFootMat)
 {
+    if (ent == nullptr || ent->sentient == nullptr || ent->client == nullptr
+        || pose == nullptr || skeleton == nullptr)
+        return;
+    sentient_s* sentient = ent->sentient;
+    const int elapsedMs = level.time
+        - sentient->mLastTerrainMappingFootOffsetZTime;
+    sentient->mLastTerrainMappingFootOffsetZTime = level.time;
+    if (elapsedMs <= 0 || elapsedMs > 300)
+        return;
+    if (!sentient->mEnableTerrainMappingIK)
+    {
+        sentient->mLastTerrainMappingFootOffsetZ[0] = 0.0f;
+        sentient->mLastTerrainMappingFootOffsetZ[1] = 0.0f;
+        sentient->mLastTerrainMappingPelvisZ = -9999.0f;
+        sentient->mLastTerrainMappingOriginZ = -9999.0f;
+        return;
+    }
+    if (!ent->has_zone_collision())
+        return;
+
+    nalMatrix4x4* footMatrices[2] = {&leftFootMat, &rightFootMat};
+    float pelvisTarget = 0.0f;
+    for (int i = 0; i < 2; ++i)
+    {
+        nalMatrix4x4* foot = footMatrices[i];
+        const math::Position3 footPos(foot->w[0], foot->w[1], foot->w[2]);
+        math::Position3 start(footPos.v.m128_f32[0],
+                             footPos.v.m128_f32[1],
+                             footPos.v.m128_f32[2] + 18.0f);
+        math::Position3 end(footPos.v.m128_f32[0],
+                           footPos.v.m128_f32[1],
+                           footPos.v.m128_f32[2] - 24.0f);
+        const math::Position3 mins(-3.0f, -3.0f, -3.0f);
+        const math::Position3 maxs(3.0f, 3.0f, 3.0f);
+        trace_t trace{};
+        collision_context_t context(ent->mHandle, 42008593);
+        g_Trace(&trace, start, mins, maxs, end, context);
+        float targetOffset = 0.0f;
+        if (trace.fraction < 1.0f && trace.normal.v.m128_f32[2] > 0.0f)
+        {
+            targetOffset = trace.endpos.v.m128_f32[2]
+                - footPos.v.m128_f32[2];
+            sentient->mLastTerrainMappingTraceZ[i] =
+                trace.endpos.v.m128_f32[2];
+            ent->client->mFootStepsSurface[i] =
+                trace.surfaceFlags;
+        }
+        const float blend = min(1.0f, elapsedMs * 0.001f * 8.0f);
+        float& offset = sentient->mLastTerrainMappingFootOffsetZ[i];
+        offset += (targetOffset - offset) * blend;
+        foot->w[2] += offset;
+        sentient->mLastTerrainMappingToePos[i] = footPos;
+        pelvisTarget = min(pelvisTarget, offset);
+    }
+
+    const float originZ = ent->r.currentOrigin.v.m128_f32[2];
+    if (sentient->mLastTerrainMappingOriginZ < -9998.0f)
+        sentient->mLastTerrainMappingOriginZ = originZ;
+    const float originDelta = originZ - sentient->mLastTerrainMappingOriginZ;
+    sentient->mLastTerrainMappingOriginZ = originZ;
+    pelvisTarget += originDelta;
+    if (sentient->mLastTerrainMappingPelvisZ < -9998.0f)
+        sentient->mLastTerrainMappingPelvisZ = originZ;
+    const float maxChange = max(3.0f, elapsedMs * 0.001f * 60.0f);
+    const float pelvisDelta = pelvisTarget
+        - (sentient->mLastTerrainMappingPelvisZ - originZ);
+    const float clampedDelta = max(-maxChange, min(maxChange, pelvisDelta));
+    sentient->mLastTerrainMappingPelvisZ += clampedDelta;
+
+    nalGenericBoneHandle pelvisHandle{nullptr, 0};
+    nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle, &BoneNames[0]);
+    if (pelvisHandle.Skeleton != nullptr)
+    {
+        nalPositionOrientation pelvis =
+            nalGenericPose_GetModelPositionOrientation(pose, &pelvisHandle);
+        pelvis.pos.v.m128_f32[2] += clampedDelta;
+        static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
+            pelvisHandle, pelvis);
+    }
 }
 
 // ============================================================================

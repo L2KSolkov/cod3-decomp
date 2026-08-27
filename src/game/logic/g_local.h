@@ -3127,7 +3127,10 @@ struct weaponFileInfo_t {
     float   fAnimIKOffsetDist;    // +0x8D0
     float   fAnimIKPitchTime;     // +0x8D4
     float   fAnimIKPitchForce;    // +0x8D8
-    uint8_t _pad10[0x8EC - 0x8DC];
+    float   fAnimIKPitchAngle;        // +0x8DC
+    float   fAnimIKTorsoRecoilPitchTime;  // +0x8E0
+    float   fAnimIKTorsoRecoilPitchForce; // +0x8E4
+    float   fAnimIKTorsoRecoilPitchAngle; // +0x8E8
     struct gdDecal* pDecals[23];  // +0x8EC
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
@@ -5479,6 +5482,7 @@ public:
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
     void SetEntity(Entity* entity); // game.o 0x0065C5B0
     DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;
+    int GetBoneIndexInternal(unsigned int boneNameHash) const;
     // ?GetBoneParent@DObj@@QAEHH@Z (render.o 0x6CE560)
     int GetBoneParent(int boneIndex);
     void SetLOD(int startLod);  // ?SetLOD@DObj@@QAEXH@Z (render.o 0x6EE150)
@@ -5508,9 +5512,5 @@ public:
 };
 
 namespace BrocSys {
-inline const char* ConvertHashToString(int hash)  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
-{
-    (void)hash;
-    return nullptr;  // sHashStrings hash-map not ported yet
-}
+const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
 }
