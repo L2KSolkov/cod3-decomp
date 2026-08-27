@@ -313,3 +313,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0068B600	?CG_StartAmbient@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0068B600	Release config lookup, n/t key accesses, and atoi return match source; current int decoration is normalized against the map void spelling.
 0x0068B630	?CG_GetMenuBuffer@@YAPADPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cg/cg_main.cpp:577	Release-intentional dead-code helper asserts with the release metadata and returns null.
 0x0068B630	?CG_GetMenuBuffer@@YAPADPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0068B630	Release assertion file, line, expression, message, and null return match source exactly; this is an intentional release no-op, not an accidental stub.
+0x0068B680	?CG_Asset_Parse@@YAHHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cg/cg_main.cpp:577	Release-intentional null implementation returns zero.
+0x0068B680	?CG_Asset_Parse@@YAHHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0068B680	Release body is exactly an integer zero return; current no-argument spelling is normalized against the stale map prototype.
+0x0068B690	?CG_ParseMenu@@YAXPBDH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cg/cg_main.cpp:583	Release-intentional dead-code path records the assert and returns.
+0x0068B690	?CG_ParseMenu@@YAXPBDH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0068B690	Release assertion metadata and dead-code message match source; current no-argument spelling is normalized against the stale map prototype.
+0x0068B6E0	?CG_Load_Menu@@YAHPAPBDH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cg/cg_main.cpp:589	Release-intentional dead-code path asserts and returns zero.
+0x0068B6E0	?CG_Load_Menu@@YAHPAPBDH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0068B6E0	Release assertion metadata, dead-code message, and zero return match source; current no-argument spelling is normalized against the stale map prototype.
+0x0068B730	?CG_LoadMenus@@YAXPBDH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cg/cg_main.cpp:596	Release-intentional dead-code path records the assert and returns.
+0x0068B730	?CG_LoadMenus@@YAXPBDH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0068B730	Release assertion metadata and dead-code message match source; current no-argument spelling is normalized against the stale map prototype.

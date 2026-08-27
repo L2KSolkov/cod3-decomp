@@ -111,6 +111,10 @@ def main() -> int:
                     in ledger.symbol_variants("?CG_StartAmbient@@YAXXZ"))
             assert ("?CG_Argv@@YAPADH@Z"
                     in ledger.symbol_variants("?CG_Argv@@YAPBDH@Z"))
+            assert ("?CG_Asset_Parse@@YAHXZ"
+                    in ledger.symbol_variants("?CG_Asset_Parse@@YAHHH@Z"))
+            assert ("?CG_LoadMenus@@YAXXZ"
+                    in ledger.symbol_variants("?CG_LoadMenus@@YAXPBDH@Z"))
 
             # Missing source_ref is rejected rather than silently granting a gate.
             path.write_text("\t".join(ledger.EVIDENCE_FIELDS) + "\n" + row("PASS", source_ref="") + "\n", encoding="utf-8")

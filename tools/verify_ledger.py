@@ -376,6 +376,16 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_Argv@@YAPADH@Z",
         "?CG_ConfigString@@YAPBDH@Z":
             "?CG_ConfigString@@YAPBDI@Z",
+        "?CG_GetMenuBuffer@@YAPADPBD@Z":
+            "?CG_GetMenuBuffer@@YAPADXZ",
+        "?CG_Asset_Parse@@YAHHH@Z":
+            "?CG_Asset_Parse@@YAHXZ",
+        "?CG_ParseMenu@@YAXPBDH@Z":
+            "?CG_ParseMenu@@YAXXZ",
+        "?CG_Load_Menu@@YAHPAPBDH@Z":
+            "?CG_Load_Menu@@YAHXZ",
+        "?CG_LoadMenus@@YAXPBDH@Z":
+            "?CG_LoadMenus@@YAXXZ",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
