@@ -1262,21 +1262,21 @@ index	status	map_line
 1261	SKIPPED	0002:001f0100 ?_Buynode@?$list@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAEPAU_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@2@XZ 009DF600 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1262	SKIPPED	0002:001f0120 ??0?$_List_ptr@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@IAE@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@1@@Z 009DF620 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1263	SKIPPED	0002:001f0130 ??0_Node@?$_List_nod@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@V?$allocator@U?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@std@@@2@@std@@QAE@PAU012@0ABU?$pair@$$CBHV?$ae_fixed_string@$0CA@E@@@2@@Z 009DF630 f i scr.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1264	FIXED	0002:001f0190 ??$entity_set_field@Vstring@Broc@@$0CHM@$00@BrocSys@@YAXIVstring@Broc@@@Z 009DF690 f i scr.o
+1264	VERIFIED	0002:001f0190 ??$entity_set_field@Vstring@Broc@@$0CHM@$00@BrocSys@@YAXIVstring@Broc@@@Z 009DF690 f i scr.o
 1265	VERIFIED	0002:001f02b0 ??$entity_get_field@Vstring@Broc@@$0CHM@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009DF7B0 f i scr.o
-1266	FIXED	0002:001f0420 ??$entity_set_field@Uvector@Broc@@$0BFA@$01@BrocSys@@YAXIUvector@Broc@@@Z 009DF920 f i scr.o
+1266	VERIFIED	0002:001f0420 ??$entity_set_field@Uvector@Broc@@$0BFA@$01@BrocSys@@YAXIUvector@Broc@@@Z 009DF920 f i scr.o
 1267	VERIFIED	0002:001f0500 ??$entity_get_field@Uvector@Broc@@$0BFA@$0A@@BrocSys@@YA?AUvector@Broc@@I@Z 009DFA00 f i scr.o
-1268	FIXED	0002:001f0660 ??$entity_set_field@Vstring@Broc@@$0CHA@$00@BrocSys@@YAXIVstring@Broc@@@Z 009DFB60 f i scr.o
-1269	FIXED	0002:001f0780 ??$entity_get_field@Vstring@Broc@@$0CHA@$05@BrocSys@@YA?AVstring@Broc@@I@Z 009DFC80 f i scr.o
-1270	FIXED	0002:001f08f0 ??$entity_set_field@H$0CMA@$00@BrocSys@@YAXIH@Z 009DFDF0 f i scr.o
+1268	VERIFIED	0002:001f0660 ??$entity_set_field@Vstring@Broc@@$0CHA@$00@BrocSys@@YAXIVstring@Broc@@@Z 009DFB60 f i scr.o
+1269	VERIFIED	0002:001f0780 ??$entity_get_field@Vstring@Broc@@$0CHA@$05@BrocSys@@YA?AVstring@Broc@@I@Z 009DFC80 f i scr.o
+1270	VERIFIED	0002:001f08f0 ??$entity_set_field@H$0CMA@$00@BrocSys@@YAXIH@Z 009DFDF0 f i scr.o
 1271	VERIFIED	0002:001f09c0 ??$entity_get_field@H$0CMA@$0A@@BrocSys@@YAHI@Z 009DFEC0 f i scr.o
 1272	VERIFIED	0002:001f0a80 ??$entity_set_field@M$0DBM@$0A@@BrocSys@@YAXIM@Z 009DFF80 f i scr.o
 1273	VERIFIED	0002:001f0b50 ??$entity_get_field@M$0DBM@$0A@@BrocSys@@YAMI@Z 009E0050 f i scr.o
 1274	VERIFIED	0002:001f0c10 ??$entity_set_field@M$0DCA@$0A@@BrocSys@@YAXIM@Z 009E0110 f i scr.o
 1275	VERIFIED	0002:001f0ce0 ??$entity_get_field@M$0DCA@$0A@@BrocSys@@YAMI@Z 009E01E0 f i scr.o
-1276	FIXED	0002:001f0da0 ??$entity_set_field@Vstring@Broc@@$0CIM@$0L@@BrocSys@@YAXIVstring@Broc@@@Z 009E02A0 f i scr.o
+1276	VERIFIED	0002:001f0da0 ??$entity_set_field@Vstring@Broc@@$0CIM@$0L@@BrocSys@@YAXIVstring@Broc@@@Z 009E02A0 f i scr.o
 1277	VERIFIED	0002:001f0ec0 ??$entity_get_field@Vstring@Broc@@$0CIM@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E03C0 f i scr.o
-1278	FIXED	0002:001f1030 ??$entity_set_field@Vstring@Broc@@$0CIE@$0M@@BrocSys@@YAXIVstring@Broc@@@Z 009E0530 f i scr.o
+1278	VERIFIED	0002:001f1030 ??$entity_set_field@Vstring@Broc@@$0CIE@$0M@@BrocSys@@YAXIVstring@Broc@@@Z 009E0530 f i scr.o
 1279	VERIFIED	0002:001f1150 ??$entity_get_field@Vstring@Broc@@$0CIE@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E0650 f i scr.o
 1280	VERIFIED	0002:001f12c0 ??$entity_set_field@Vstring@Broc@@$0DBI@$0A@@BrocSys@@YAXIVstring@Broc@@@Z 009E07C0 f i scr.o
 1281	VERIFIED	0002:001f13e0 ??$entity_get_field@Vstring@Broc@@$0DBI@$0A@@BrocSys@@YA?AVstring@Broc@@I@Z 009E08E0 f i scr.o

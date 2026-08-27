@@ -25717,6 +25717,12 @@ static Entity* BrocSysApiHandleToEntity(unsigned int handle)
     return nullptr;
 }
 
+// ea: 0x005F0190
+// ea: 0x005F0420
+// ea: 0x005F0660
+// ea: 0x005F08F0
+// ea: 0x005F0DA0
+// ea: 0x005F1030
 template <typename T, int OFF, int IDX>
 void entity_set_field(unsigned int handle, T val)
 {
@@ -25739,6 +25745,12 @@ void entity_set_field(unsigned int handle, T val)
         __debugbreak();
 }
 
+// ea: 0x005F02B0
+// ea: 0x005F0500
+// ea: 0x005F0780
+// ea: 0x005F09C0
+// ea: 0x005F0EC0
+// ea: 0x005F1150
 template <typename T, int OFF, int IDX>
 T entity_get_field(unsigned int handle)
 {
