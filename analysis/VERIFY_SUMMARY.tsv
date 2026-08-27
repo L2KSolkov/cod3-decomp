@@ -288,7 +288,7 @@ rbc_def_custom.o	4	2	0	2	0	0	0
 rbc_def_generic.o	26	9	5	12	0	0	0
 rbc_def_ragdoll.o	38	19	5	14	0	0	0
 rbc_def_vehicle.o	46	32	7	7	0	0	0
-render.o	1038	696	2	317	0	23	0
+render.o	1038	695	2	317	0	24	0
 rigid_body.o	13	5	1	7	0	0	0
 scr.o	1540	431	188	126	0	795	0
 shell.o	2214	836	27	1316	4	31	0

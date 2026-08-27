@@ -1241,3 +1241,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004DF0D0	??0mat3_t@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DF0D0	Release constructor returns this without stores; source matches.
 0x004DF240	??0strdata@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/utility.cpp:190	Initializes string length/refcount, data pointer, and allocation flag to zero.
 0x004DF240	??0strdata@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DF240	Release len/refcount/data/alloced zero initialization matches source.
+0x006CC380	?DObjGetBasePose@@YAXPAVDObj@@@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/physics/g_physics.cpp:1902	Validates the DObj and skeleton, then computes each model slot base pose into the skeleton matrices with parent-model chaining.
+0x006CC380	?DObjGetBasePose@@YAXPAVDObj@@@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x006CC380	Release null/object and skeleton assertions, numModels loop, modelParents 0xFF parent handling, matOffset output indexing, IVPointer model stride, and XModelGetBasePose calls match source.

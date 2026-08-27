@@ -18,6 +18,7 @@
 // effect_events / core_systems views
 class Entity;
 class Handle;
+class XModel;
 namespace rb_prop_system {
 void remove_entity(Entity* e);  // ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z
 }
@@ -681,6 +682,8 @@ struct DSkelLocal {
     int skelPartBits[4];       // +0x20
     DObjSkelMat mat[1];        // +0x30
 };
+extern void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
+                              DObjSkelMat* modelParentMat);
 DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);  // ?SV_DObjGetMatrixArray@@YAPAUDObjSkelMat@@PAVEntity@@@Z (sv.o)
 DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);  // ?DObjGetMatrixArray@@YAPAUDObjSkelMat@@PBVDObj@@H@Z (render.o)
 void DObjMatriceModelToLocal(Entity* owner);  // ?DObjMatriceModelToLocal@@YAXPAVEntity@@@Z
@@ -1883,17 +1886,56 @@ public:
 };
 
 // ?GetObject@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@H@Z
-// (g.o; stub until g.o is ported)
 Entity* EntityHandleDb::GetObject(int idx)
 {
-    (void)idx;
-    return nullptr;
+    if (static_cast<unsigned int>(idx) >= 0x540u)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+        AeAssert::gCurrentLine = 78;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _MaxEltements";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("index out of bounds"))
+            __debugbreak();
+    }
+    return mElements[idx].mObject;
 }
 
-// ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o; stub until render.o is ported)
+// ea: 0x006CC380
+// ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o)
 void DObjGetBasePose(DObj* obj)
 {
-    (void)obj;
+    if (obj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 740;
+        AeAssert::gCurrentExpr = "obj";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    DSkelLocal* skel = static_cast<DSkelLocal*>(obj->skel);
+    if (skel == nullptr)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 742;
+        AeAssert::gCurrentExpr = "skel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    IVPointer<XModel>* models =
+        reinterpret_cast<IVPointer<XModel>*>(obj->models);
+    for (unsigned int i = 0; i < obj->numModels; ++i)
+    {
+        const unsigned char parentIndex = obj->modelParents[i];
+        DObjSkelMat* modelParentMat = nullptr;
+        if (parentIndex != 0xFFu)
+            modelParentMat = &skel->mat[parentIndex];
+        DObjSkelMat* mat = &skel->mat[obj->matOffset[i]];
+        XModelGetBasePose(models[i], mat, modelParentMat);
+    }
 }
 
 // ea: 0x00602220
