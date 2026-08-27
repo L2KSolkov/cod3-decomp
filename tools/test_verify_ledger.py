@@ -93,6 +93,12 @@ def main() -> int:
             candidate = ledger.function_candidate(array_return, 0)
             assert candidate and candidate[0] == "InteractionController::GetHandsAngles"
 
+            operator_mul = ["// operator*(bfloat,int) - ea: 0x0093AD40",
+                            "Broc::bfloat operator*(Broc::bfloat lhs, int rhs) {",
+                            "    return Broc::bfloat(lhs.mVal * rhs);", "}"]
+            candidate = ledger.function_candidate(operator_mul, 0)
+            assert candidate and candidate[0] == "operator*"
+
             # Release map symbols may carry private member access (AA) while
             # the port exposes the same signature publicly (QA).  Access is
             # not a V2 signature mismatch.
