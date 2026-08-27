@@ -499,6 +499,30 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005C6890	?ObjectiveString@BrocSys@@YAXHABVstring@Broc@@HPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C6890	Release direct ObjectiveStringInternal thunk arguments match source.
 0x005C68C0	?ObjectiveString2@BrocSys@@YAXHHHPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10275	Source resolves the localized string and forwards objective-string parameters.
 0x005C68C0	?ObjectiveString2@BrocSys@@YAXHHHPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C68C0	Release GetLocalizedString, ObjectiveStringInternal call, and temporary-string cleanup match source.
+0x005BC6E0	?Localize@BrocSys@@YAPBDPBD@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:8124	Source resolves the STB reference and falls back to the input string when unresolved.
+0x005BC6E0	?Localize@BrocSys@@YAPBDPBD@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC6E0;src/game/logic/g_scr.cpp:8124	Release and source match the STBManager singleton call, null result test, and input fallback.
+0x005BC700	?Print@BrocSys@@YAXPBD@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:3427	Source forwards the script text to the console printer.
+0x005BC700	?Print@BrocSys@@YAXPBD@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC700;src/game/logic/g_scr.cpp:3427	Release is a four-instruction tail jump to Com_Printf and source has the same direct forwarding contract.
+0x005BC790	?PrintFloat3D@BrocSys@@YAXABUvector@Broc@@M0MM@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:8092	Source builds the RGBA debug color, formats the number, and submits a debug string.
+0x005BC790	?PrintFloat3D@BrocSys@@YAXABUvector@Broc@@M0MM@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC790;src/game/logic/g_scr.cpp:8092	Release and source match color construction, %f formatting, position, scale, and g_AddDebugString arguments.
+0x005BC860	?ThreadBackupStack@BrocSys@@YAXI@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:2648	Source backs up the executing thread stack through its manager-owned backup object.
+0x005BC860	?ThreadBackupStack@BrocSys@@YAXI@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC860;src/game/logic/g_scr.cpp:2648	Release and source use the executing thread, supplied stack begin, and thread stack start.
+0x005BC880	?ThreadIsThreadExecuting@BrocSys@@YA_NXZ	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:3104	Source returns whether the script manager has an executing thread.
+0x005BC880	?ThreadIsThreadExecuting@BrocSys@@YA_NXZ	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC880;src/game/logic/g_scr.cpp:3104	Release and source both test AeThreadManager::sInst.mThreadExecuting for null.
+0x005BC930	?Error@BrocSys@@YA_NPBDH0@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:6331	Source populates the AeAssert context and forwards the message to AeAssert::Error.
+0x005BC930	?Error@BrocSys@@YA_NPBDH0@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC930;src/game/logic/g_scr.cpp:6331	Release and source match author, file, line, default expression, and Error call.
+0x005BC9A0	?CVarGetInt@BrocSys@@YAHPBD@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:3110	Source forwards integer cvar lookup.
+0x005BC9A0	?CVarGetInt@BrocSys@@YAHPBD@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC9A0;src/game/logic/g_scr.cpp:3110	Release and source are direct calls to Cvar_VariableIntegerValue.
+0x005BC9B0	?CVarGetFloat@BrocSys@@YAMPBD@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:2308	Source forwards floating-point cvar lookup.
+0x005BC9B0	?CVarGetFloat@BrocSys@@YAMPBD@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BC9B0;src/game/logic/g_scr.cpp:2308	Release and source are direct calls to Cvar_VariableValue.
+0x005BCB70	?MusicStop@BrocSys@@YAXM@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:2914	Source forwards the fade time to MusicMgr::Stop.
+0x005BCB70	?MusicStop@BrocSys@@YAXM@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BCB70;src/game/logic/g_scr.cpp:2914	Release and source match the MusicMgr singleton and fadeOutTime argument.
+0x005BCB90	?MusicIndoorStop@BrocSys@@YAXM@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:2920	Source forwards the fade time to MusicMgr::StopIndoor.
+0x005BCB90	?MusicIndoorStop@BrocSys@@YAXM@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BCB90;src/game/logic/g_scr.cpp:2920	Release and source match the MusicMgr singleton and fadeOutTime argument.
+0x005BCBB0	?SoundFadeIn@BrocSys@@YAXIM@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:2926	Source cross-fades from handle zero to the requested sound.
+0x005BCBB0	?SoundFadeIn@BrocSys@@YAXIM@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BCBB0;src/game/logic/g_scr.cpp:2926	Release and source match SoundDevice::CrossFade(0, handle, time).
+0x005BCBD0	?SoundFadeOut@BrocSys@@YAXIM@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:2932	Source cross-fades from the requested sound to handle zero.
+0x005BCBD0	?SoundFadeOut@BrocSys@@YAXIM@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BCBD0;src/game/logic/g_scr.cpp:2932	Release and source match SoundDevice::CrossFade(handle, 0, time).
 0x005C6960	?ObjectivePosition@BrocSys@@YAXHABUvector@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10293	Source preserves client/objective validation and origin writes using release table strides.
 0x005C6960	?ObjectivePosition@BrocSys@@YAXHABUvector@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C6960	Release diagnostics and vOrigin x/y/z stores at 176/3208-byte offsets match source.
 0x005C6A80	?ObjectiveWorldState@BrocSys@@YAXHABVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10333	Source preserves client/objective validation, state conversion, empty-state clearing, and world-state stores.
