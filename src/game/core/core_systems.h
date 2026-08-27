@@ -299,6 +299,7 @@ struct BitSet {
         int m_word_idx;          // +0x08
         int m_cur_val;           // +0x0C
 
+        // ea: 0x005EAF70 (BitSet<256>::iterator)
         iterator()
             : m_src(nullptr), m_cur_word((unsigned int)-1), m_word_idx(-1),
               m_cur_val(-1) {}

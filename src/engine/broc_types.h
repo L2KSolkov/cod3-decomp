@@ -173,8 +173,9 @@ public:
         mCapacity = 0;
         mSize = 0;
     }
-    // ea: 0x005EDF00 / 0x005EDF10 (dyn_array<Broc::entity>)
+    // ea: 0x005EDF00 (dyn_array<Broc::entity>)
     T* begin() { return mElements; }
+    // ea: 0x005EDF10 (dyn_array<Broc::entity>)
     T* end() { return &mElements[mSize]; }
 
     void reserve(unsigned int newCapacity) {
