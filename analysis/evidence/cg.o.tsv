@@ -37,3 +37,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00688960	?CG_GetCenterOfScreen@@YAXPAM0@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296618	Release and source match on viewport dimensions, half-size factors, origins, and in-place results.
 0x006889D0	?CG_FillRect@@YAXMMMMPBMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_misc.cpp:242	Non-empty body sets color, draws the scaled white rectangle, and resets color.
 0x006889D0	?CG_FillRect@@YAXMMMMPBMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296629	Release and source match on color setup/reset, scaled coordinates, UVs, shader, z value, and draw call.
+0x00688D50	?CG_HorizontalPercentBar@@YAXMMMMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_misc.cpp:346	Non-empty body draws the gray background and white percentage fill with the release dimensions and alpha.
+0x00688D50	?CG_HorizontalPercentBar@@YAXMMMMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296800	Release and source match on color constants, background draw, inset geometry, percentage scaling, and fill draw.
