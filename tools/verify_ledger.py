@@ -428,6 +428,8 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_SpawnTracer@@YAXPBVPosition3@math@@0H@Z",
         "?CG_EventSpawnTracer@@YAXABVPosition3@math@@0H@Z":
             "?CG_EventSpawnTracer@@YAXPBVPosition3@math@@0H@Z",
+        "?CG_CalcMuzzlePoint@@YAHV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAMPAD@Z":
+            "?CG_CalcMuzzlePoint@@YAHIPAMPAD@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
