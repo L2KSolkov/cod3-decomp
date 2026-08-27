@@ -41,11 +41,13 @@ static_assert(sizeof(apsColorRectangleRenderer) == 0x80, "apsColorRectangleRende
 namespace apsColorRectangleRender {
     extern unsigned int* VS;
     extern const unsigned int** VShaderTable;
+    unsigned long GetVShader();
     void RegisterVShader();
 }
 namespace apsColorRectangleRenderPixel {
     extern unsigned int** PS;
     extern const unsigned int** PShaderTable;
+    unsigned long* GetPShader();
     void RegisterPShader();
     void InitPShader();
 }

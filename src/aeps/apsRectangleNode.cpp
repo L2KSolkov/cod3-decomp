@@ -14,14 +14,16 @@ apsRectangleNode::apsRectangleNode()
     mFlags = 0;
 }
 
+// apsRectangleRender::GetVShader - ea: 0x00819D50
 unsigned long apsRectangleRender::GetVShader()
 {
     return apsRectangleRender::VS[0];
 }
 
+// apsRectangleRenderPixel::GetPShader - ea: 0x00819D60
 unsigned long* apsRectangleRenderPixel::GetPShader()
 {
-    return apsRectangleRenderPixel::PS[0];
+    return reinterpret_cast<unsigned long*>(apsRectangleRenderPixel::PS[0]);
 }
 
 // ============================================================================

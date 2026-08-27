@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00819D50	?GetVShader@apsRectangleRender@@YAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsRectangleNode.cpp:18	Existing getter body is non-empty and returns the vertex shader handle.
+0x00819D50	?GetVShader@apsRectangleRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819D50;src/aeps/apsRectangleNode.cpp:18	Release and source both return VS[0].
+0x00819D60	?GetPShader@apsRectangleRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsRectangleNode.cpp:25	Existing getter body is non-empty and returns the pixel shader handle.
+0x00819D60	?GetPShader@apsRectangleRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819D60;src/aeps/apsRectangleNode.cpp:25	Release and source both return PS[0].

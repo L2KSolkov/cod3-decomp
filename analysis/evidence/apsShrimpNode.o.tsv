@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008139D0	?GetVShader@apsShrimpRender@@YAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:15	Emitted getter body returns the registered vertex shader handle.
+0x008139D0	?GetVShader@apsShrimpRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008139D0;src/aeps/apsShrimpNode.cpp:15	Release and source both return VS[0].
+0x008139E0	?GetPShader@apsShrimpRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpNode.cpp:22	Emitted getter body returns the registered pixel shader handle.
+0x008139E0	?GetPShader@apsShrimpRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008139E0;src/aeps/apsShrimpNode.cpp:22	Release and source both return PS[0].

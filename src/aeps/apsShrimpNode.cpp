@@ -17,6 +17,18 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 static const __m128 Float4_XAxis_130 = { 1.0f, 0.0f, 0.0f, 0.0f };
 static const __m128 Float4_ZAxis_130 = { 0.0f, 0.0f, 1.0f, 0.0f };
 
+// apsShrimpRender::GetVShader - ea: 0x008139D0
+unsigned long apsShrimpRender::GetVShader()
+{
+    return VS[0];
+}
+
+// apsShrimpRenderPixel::GetPShader - ea: 0x008139E0
+unsigned long* apsShrimpRenderPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned long*>(PS[0]);
+}
+
 void apsShrimpNode::Render() {
     if (mRenderer == 0 &&
         _tlAssert("c:/cod/code/tl/aeps/include\\apsShrimpNode.h", 14,

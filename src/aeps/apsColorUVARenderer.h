@@ -41,11 +41,13 @@ static_assert(sizeof(apsColorUVARenderer) == 0x90, "apsColorUVARenderer size mis
 namespace apsColorUVARender {
     extern unsigned int* VS;
     extern const unsigned int** VShaderTable;
+    unsigned long GetVShader();
     void RegisterVShader();
 }
 namespace apsColorUVARenderPixel {
     extern unsigned int** PS;
     extern const unsigned int** PShaderTable;
+    unsigned long* GetPShader();
     void RegisterPShader();
     void InitPShader();
 }

@@ -8,6 +8,18 @@
 #include "apsNodeRenderer.h"
 #include "apsParticleTypes.h"
 
+// apsColorUVARender::GetVShader - ea: 0x0081B010
+unsigned long apsColorUVARender::GetVShader()
+{
+    return VS[0];
+}
+
+// apsColorUVARenderPixel::GetPShader - ea: 0x0081B020
+unsigned long* apsColorUVARenderPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned long*>(PS[0]);
+}
+
 // ============================================================================
 // apsColorUVANode::Render — forward to the color UVA renderer.
 // ea: 0x81AFF0

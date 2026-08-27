@@ -54,14 +54,16 @@ nglMesh* apsSimpleMeshRenderer::Mesh() const
     return mMesh;
 }
 
+// apsSimpleMeshRender::GetVShader - ea: 0x00812D40
 unsigned long apsSimpleMeshRender::GetVShader()
 {
     return VS[0];
 }
 
+// apsSimpleMeshRenderPixel::GetPShader - ea: 0x00812D50
 unsigned long* apsSimpleMeshRenderPixel::GetPShader()
 {
-    return PS[0];
+    return reinterpret_cast<unsigned long*>(PS[0]);
 }
 
 MeshParticleContext::MeshParticleContext()

@@ -116,6 +116,7 @@ extern void nglDxInitPShader(const unsigned int* Microcode);
 namespace apsShrimpRender {
     extern unsigned int* VS;                  // ?VS@apsShrimpRender@@3PAKA
     extern const unsigned int** VShaderTable; // ?VShaderTable@apsShrimpRender@@3PAPBIA
+    unsigned long GetVShader();
 
     void RegisterVShader();
 }
@@ -123,6 +124,7 @@ namespace apsShrimpRender {
 namespace apsShrimpRenderPixel {
     extern unsigned int** PS;                 // ?PS@apsShrimpRenderPixel@@3PAPAKA
     extern const unsigned int** PShaderTable; // ?PShaderTable@apsShrimpRenderPixel@@3PAPBIA
+    unsigned long* GetPShader();
 
     void RegisterPShader();
     void InitPShader();

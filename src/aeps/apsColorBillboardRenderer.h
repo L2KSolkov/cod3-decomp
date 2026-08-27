@@ -43,11 +43,13 @@ static_assert(sizeof(apsColorBillboardRenderer) == 0x80, "apsColorBillboardRende
 namespace apsColorBillboardRender {
     extern unsigned int* VS;
     extern const unsigned int** VShaderTable;
+    unsigned long GetVShader();
     void RegisterVShader();
 }
 namespace apsColorBillboardRenderPixel {
     extern unsigned int** PS;
     extern const unsigned int** PShaderTable;
+    unsigned long* GetPShader();
     void RegisterPShader();
     void InitPShader();
 }

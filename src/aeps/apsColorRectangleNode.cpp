@@ -8,6 +8,18 @@
 #include "apsNodeRenderer.h"
 #include "apsParticleTypes.h"
 
+// apsColorRectangleRender::GetVShader - ea: 0x00815170
+unsigned long apsColorRectangleRender::GetVShader()
+{
+    return VS[0];
+}
+
+// apsColorRectangleRenderPixel::GetPShader - ea: 0x00815180
+unsigned long* apsColorRectangleRenderPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned long*>(PS[0]);
+}
+
 // ============================================================================
 // apsColorRectangleNode::Render — forward to the color rectangle renderer.
 // ea: 0x815150

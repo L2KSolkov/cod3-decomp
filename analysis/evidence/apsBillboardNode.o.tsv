@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00813EB0	?GetVShader@apsBillboardRender@@YAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:13	Emitted getter body returns the registered vertex shader handle.
+0x00813EB0	?GetVShader@apsBillboardRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813EB0;src/aeps/apsBillboardNode.cpp:13	Release and source both return VS[0].
+0x00813EC0	?GetPShader@apsBillboardRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:20	Emitted getter body returns the registered pixel shader handle.
+0x00813EC0	?GetPShader@apsBillboardRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813EC0;src/aeps/apsBillboardNode.cpp:20	Release and source both return PS[0].

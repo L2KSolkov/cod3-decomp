@@ -51,11 +51,13 @@ static_assert(sizeof(apsUVARenderer) == 0x90, "apsUVARenderer size mismatch");
 namespace apsUVARender {
     extern unsigned int* VS;
     extern const unsigned int** VShaderTable;
+    unsigned long GetVShader();
     void RegisterVShader();
 }
 namespace apsUVARenderPixel {
     extern unsigned int** PS;
     extern const unsigned int** PShaderTable;
+    unsigned long* GetPShader();
     void RegisterPShader();
     void InitPShader();
 }

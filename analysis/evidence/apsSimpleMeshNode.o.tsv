@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00812D40	?GetVShader@apsSimpleMeshRender@@YAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:58	Existing getter body is non-empty and returns the vertex shader handle.
+0x00812D40	?GetVShader@apsSimpleMeshRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D40;src/aeps/apsSimpleMeshNode.cpp:58	Release and source both return VS[0].
+0x00812D50	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:65	Existing getter body is non-empty and returns the pixel shader handle.
+0x00812D50	?GetPShader@apsSimpleMeshRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D50;src/aeps/apsSimpleMeshNode.cpp:65	Release and source both return PS[0].

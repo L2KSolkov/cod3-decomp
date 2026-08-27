@@ -183,11 +183,13 @@ static_assert(sizeof(apsBillboardRenderer) == 0x80, "apsBillboardRenderer size m
 namespace apsBillboardRender {
     extern unsigned int* VS;
     extern const unsigned int** VShaderTable;
+    unsigned long GetVShader();
     void RegisterVShader();
 }
 namespace apsBillboardRenderPixel {
     extern unsigned int** PS;
     extern const unsigned int** PShaderTable;
+    unsigned long* GetPShader();
     void RegisterPShader();
     void InitPShader();
 }

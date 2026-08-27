@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008189E0	?GetVShader@apsUVARectangleRender@@YAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVARectangleNode.cpp:13	Emitted getter body returns the registered vertex shader handle.
+0x008189E0	?GetVShader@apsUVARectangleRender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008189E0;src/aeps/apsUVARectangleNode.cpp:13	Release and source both return VS[0].
+0x008189F0	?GetPShader@apsUVARectangleRenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVARectangleNode.cpp:20	Emitted getter body returns the registered pixel shader handle.
+0x008189F0	?GetPShader@apsUVARectangleRenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008189F0;src/aeps/apsUVARectangleNode.cpp:20	Release and source both return PS[0].
