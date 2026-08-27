@@ -53,8 +53,10 @@ bool compare_controller_sort(const cgs_t* elem1, const cgs_t* elem2)
 
 } // namespace View
 
+namespace View {
+
 // ea: 0x00693D40
-int View_GetClientController(int clientIndex)
+int GetClientController(int clientIndex)
 {
     if (clientIndex != 0)
     {
@@ -63,6 +65,8 @@ int View_GetClientController(int clientIndex)
     }
     return dword_F6A28C[802 * clientIndex];
 }
+
+} // namespace View
 
 static unsigned int sHelmetInit = 0;
 static unsigned int helmetHash_0 = 0;
