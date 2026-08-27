@@ -26248,6 +26248,9 @@ T entity_get_sentient_field(unsigned int handle)
 }
 
 template <typename T, int OFF, int IDX>
+// ea: 0x005FEFA0
+// ea: 0x005FF1E0
+// ea: 0x005FF420
 void entity_set_player_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26281,6 +26284,9 @@ void entity_set_player_field(unsigned int handle, T val)
 }
 
 template <typename T, int OFF, int IDX>
+// ea: 0x005FF0C0
+// ea: 0x005FF300
+// ea: 0x005FF550
 T entity_get_player_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26317,6 +26323,10 @@ T entity_get_player_field(unsigned int handle)
 }
 
 template <typename T, int OFF, int IDX>
+// ea: 0x005FF710
+// ea: 0x005FF960
+// ea: 0x005FFBB0
+// ea: 0x005FFE00
 void entity_set_persistent_player_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26350,6 +26360,10 @@ void entity_set_persistent_player_field(unsigned int handle, T val)
 }
 
 template <typename T, int OFF, int IDX>
+// ea: 0x005FF830
+// ea: 0x005FFA80
+// ea: 0x005FFCD0
+// ea: 0x005FFF20
 T entity_get_persistent_player_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
