@@ -418,6 +418,12 @@ def symbol_variants(name: str) -> set[str]:
             "?trap_R_TrackStatistics@@YAXPAX@Z",
         "?CG_RegisterItems@@YAXXZ":
             "?CG_RegisterItems@@YAHXZ",
+        "?CG_Actor_DoControllers@@YAXPAVEntity@@QAH@Z":
+            "?CG_Actor_DoControllers@@YAXPAVEntity@@@Z",
+        "?CG_Drone_DoControllers@@YAXPAVEntity@@QAH@Z":
+            "?CG_Drone_DoControllers@@YAXPAVEntity@@@Z",
+        "?CG_DoControllers@@YAXPAVEntity@@QAH@Z":
+            "?CG_DoControllers@@YAXPAVEntity@@@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
