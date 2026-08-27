@@ -369,6 +369,7 @@ WaitTilOutputInst2<T1, T2>::~WaitTilOutputInst2()
 {
 }
 
+// ea: 0x005EFBF0 (WaitTilOutputInst1<int>::AssignData)
 template <>
 void WaitTilOutputInst1<int>::AssignData(WaitTilOutput* scriptVariable)
 {
@@ -398,6 +399,7 @@ void WaitTilOutputInst1<int>::AssignData(WaitTilOutput* scriptVariable)
     *(int*)((unsigned char*)scriptVariable + 0x0C) = data;
 }
 
+// ea: 0x005EFD20 (WaitTilOutputInst2<float, unsigned int>::AssignData)
 template <>
 void WaitTilOutputInst2<float, unsigned int>::AssignData(
     WaitTilOutput* scriptVariable)
