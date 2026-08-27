@@ -903,6 +903,16 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044C710	?G_TransposeMatrix@@YAXQAY02M0@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044C710	release three-iteration pointer-copy loop matches source transpose mapping.
 0x0044C750	?G_RotatePoint@@YAXAAVPosition3@math@@QAY02M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:518	rotate helper preserves the input coordinates and applies all three matrix rows to update the point.
 0x0044C750	?G_RotatePoint@@YAXAAVPosition3@math@@QAY02M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044C750	release temporaries and row-major multiply/add expressions match source.
+0x0044D2B0	?SP_script_prop_collmap@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5536	script prop collision-map spawn clears contents and assigns entity type 17.
+0x0044D2B0	?SP_script_prop_collmap@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044D2B0	release contents clear and eType 17 assignment match source.
+0x0044D2D0	?G_SetupProps@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_combat.cpp:531	props setup entry is an intentional no-op.
+0x0044D2D0	?G_SetupProps@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044D2D0	release empty body matches source.
+0x0044D2E0	?VEH_GetInfo@@YAPAUvehicle_info_t@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5460	vehicle-info accessor returns the indexed s_vehicleInfos entry.
+0x0044D2E0	?VEH_GetInfo@@YAPAUvehicle_info_t@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044D2E0	release indexed s_vehicleInfos lookup matches source.
+0x0044D2F0	?Is4WheeledVehicle@@YA_NPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5543	four-wheel classification returns false without script vehicle and true only for vehicle type 1.
+0x0044D2F0	?Is4WheeledVehicle@@YA_NPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044D2F0	release null-vehicle guard, info lookup, and type-1 test match source.
+0x0044D320	?IsVehicleTank@@YA_NPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:3437	tank classification returns true only when a script vehicle exists and its info type is 2.
+0x0044D320	?IsVehicleTank@@YA_NPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044D320	release null-vehicle guard and type-2 lookup/test match source.
 0x0044CA80	?use_trigger_use@@YAXPAVEntity@@00@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_trigger.cpp:64	use-trigger throttles by wait time, schedules the next wait, and toggles spawnflag bit 1 for non-client activators.
 0x0044CA80	?use_trigger_use@@YAXPAVEntity@@00@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044CA80	release time gate, delay+time assignment, client-null branch, and spawnflag toggle match source.
 0x0044CE40	?G_GetHintStringIndex@@YAHPAHPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:529	hint index lookup scans 32 configstring slots, reuses matches, inserts into the first empty slot, and reports overflow with -1/0.
