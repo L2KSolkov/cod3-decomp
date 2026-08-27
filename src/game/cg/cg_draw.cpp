@@ -109,7 +109,7 @@ extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
 extern void trap_R_DrawStretchPicRotate(float x, float y, float w, float h,
                                          float s1, float t1, float s2,
                                          float t2, float rotation,
-                                         void* tex);
+                                         nglTexture* tex);
 extern void AnglesToForward(const float* const angles, float* const forward);
 struct refdef_s {
     int x;
@@ -1299,7 +1299,8 @@ void CG_DrawReticleHitIndicator(void* weapDefArg, int weapIndex, int* baseColor,
                              fade[3]};
     trap_R_SetColor(reticleColor);
 
-    void* texture = cg_weapons[weapIndex].hReticleSide;
+    nglTexture* texture =
+        reinterpret_cast<nglTexture*>(cg_weapons[weapIndex].hReticleSide);
     // These tables are the release stack layout expressed as four logical
     // sides.  The release indexes the 7-element arrays at -1 for X, which
     // yields the same values shown here without relying on negative indexes.
