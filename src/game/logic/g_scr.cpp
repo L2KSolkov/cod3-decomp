@@ -5556,11 +5556,25 @@ void AeThreadManager::AddThread(AeThread* t)
             && node != (AeDListNode*)&((AeThreadManagerLayout*)this)->mThreads.m_end)
         {
             int i = 0;
-            for (AeDListNode* n = node; n != nullptr; n = n->mNext)
+            AeDListNode* n = node;
+            AeDListNode* next = n->mNext;
+            while (next != nullptr)
             {
                 AeThread* th = (AeThread*)n;
                 tlPrintf("%s(%d): (%03d) %s\n", th->mFile, th->mLine, i++,
                          th->mFuncName);
+                n = next;
+                next = n->mNext;
+                if (next == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+                    AeAssert::gCurrentLine = 501;
+                    AeAssert::gCurrentExpr = "m_next != 0";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Please add a descriptive string"))
+                        __debugbreak();
+                }
             }
         }
         tlFatal("out of room in pool");
