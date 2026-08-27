@@ -1873,3 +1873,83 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005DFDB0	?InitAPI@BrocSys@@YAPAVBrocAPI@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005DFDB0;src/game/logic/g_scr.cpp:26874	Release and source match sentinel/table-copy sequence, export memcpy, callback initialization, ocean assignments, and returned gpBrocAPI ABI.
 0x005BC800	?Line@BrocSys@@YAXABUvector@Broc@@00MH@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x005BC800;src/game/logic/g_scr.cpp:8132	IDA release decompiles the entry point as an empty body; source preserves the vector/float/int ABI and no-op behavior.
 0x005BC800	?Line@BrocSys@@YAXABUvector@Broc@@00MH@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x005BC800	Release and source both contain no state-changing instructions.
+0x005EB090	??$hud_set_field@H$03@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD x setter uses handle lookup, HE_TYPE_FREE guard, offset 4 write, and matching warning path.
+0x005EB090	??$hud_set_field@H$03@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB090	Release writes elem.x at offset 4 and matches the generic source guard/assert flow.
+0x005EB110	??$hud_get_field@H$03@BrocSys@@YAHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD x getter uses the free-element warning path and returns the typed zero fallback.
+0x005EB110	??$hud_get_field@H$03@BrocSys@@YAHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB110	Release reads elem.x and matches the generic source getter flow.
+0x005EB190	??$hud_set_field@H$07@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD y setter uses the generic guarded offset write.
+0x005EB190	??$hud_set_field@H$07@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB190	Release writes elem.y at offset 8 with the same warning/assert flow.
+0x005EB210	??$hud_get_field@H$07@BrocSys@@YAHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD y getter uses the generic guarded read and zero fallback.
+0x005EB210	??$hud_get_field@H$07@BrocSys@@YAHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB210	Release reads elem.y and matches source.
+0x005EB290	??$hud_set_field@H$0BE@@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD alignX setter uses the generic guarded offset write.
+0x005EB290	??$hud_set_field@H$0BE@@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB290	Release writes elem.alignX at offset 20 with matching diagnostics.
+0x005EB310	??$hud_get_field@H$0BE@@BrocSys@@YAHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD alignX getter uses the generic guarded read.
+0x005EB310	??$hud_get_field@H$0BE@@BrocSys@@YAHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB310	Release reads elem.alignX and matches source.
+0x005EB390	??$hud_set_field@H$0BI@@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD alignY setter uses the generic guarded offset write.
+0x005EB390	??$hud_set_field@H$0BI@@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB390	Release writes elem.alignY at offset 24 with matching diagnostics.
+0x005EB410	??$hud_get_field@H$0BI@@BrocSys@@YAHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD alignY getter uses the generic guarded read.
+0x005EB410	??$hud_get_field@H$0BI@@BrocSys@@YAHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB410	Release reads elem.alignY and matches source.
+0x005EB490	??$hud_set_field@M$0GM@@BrocSys@@YAXHM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD sort setter uses the generic guarded float write.
+0x005EB490	??$hud_set_field@M$0GM@@BrocSys@@YAXHM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB490	Release writes elem.sort at offset 108 with matching diagnostics.
+0x005EB510	??$hud_get_field@M$0GM@@BrocSys@@YAMH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD sort getter uses the generic guarded float read.
+0x005EB510	??$hud_get_field@M$0GM@@BrocSys@@YAMH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB510	Release reads elem.sort and returns 0.0f on the warning path, matching source.
+0x005EB590	??$hud_set_field@M$0M@@BrocSys@@YAXHM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD fontScale setter uses the generic guarded float write.
+0x005EB590	??$hud_set_field@M$0M@@BrocSys@@YAXHM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB590	Release writes elem.fontScale at offset 12 with matching diagnostics.
+0x005EB610	??$hud_get_field@M$0M@@BrocSys@@YAMH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD fontScale getter uses the generic guarded float read.
+0x005EB610	??$hud_get_field@M$0M@@BrocSys@@YAMH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB610	Release reads elem.fontScale and matches source.
+0x005EB690	??$hud_set_field@E$0BP@@BrocSys@@YAXHE@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD alpha setter uses the generic guarded byte write.
+0x005EB690	??$hud_set_field@E$0BP@@BrocSys@@YAXHE@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB690	Release writes elem.color.a at offset 31 with matching diagnostics.
+0x005EB710	??$hud_get_field@E$0BP@@BrocSys@@YAEH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD alpha getter uses the generic guarded byte read.
+0x005EB710	??$hud_get_field@E$0BP@@BrocSys@@YAEH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB710	Release reads elem.color.a and matches source.
+0x005EB790	??$hud_set_field@E$0BM@@BrocSys@@YAXHE@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD red setter uses the generic guarded byte write.
+0x005EB790	??$hud_set_field@E$0BM@@BrocSys@@YAXHE@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB790	Release writes elem.color.r at offset 28 with matching diagnostics.
+0x005EB810	??$hud_get_field@E$0BM@@BrocSys@@YAEH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD red getter uses the generic guarded byte read.
+0x005EB810	??$hud_get_field@E$0BM@@BrocSys@@YAEH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB810	Release reads elem.color.r and matches source.
+0x005EB890	??$hud_set_field@E$0BN@@BrocSys@@YAXHE@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD green setter uses the generic guarded byte write.
+0x005EB890	??$hud_set_field@E$0BN@@BrocSys@@YAXHE@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB890	Release writes elem.color.g at offset 29 with matching diagnostics.
+0x005EB910	??$hud_get_field@E$0BN@@BrocSys@@YAEH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD green getter uses the generic guarded byte read.
+0x005EB910	??$hud_get_field@E$0BN@@BrocSys@@YAEH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB910	Release reads elem.color.g and matches source.
+0x005EB990	??$hud_set_field@E$0BO@@BrocSys@@YAXHE@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25658	HUD blue setter uses the generic guarded byte write.
+0x005EB990	??$hud_set_field@E$0BO@@BrocSys@@YAXHE@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EB990	Release writes elem.color.b at offset 30 with matching diagnostics.
+0x005EBA10	??$hud_get_field@E$0BO@@BrocSys@@YAEH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25676	HUD blue getter uses the generic guarded byte read.
+0x005EBA10	??$hud_get_field@E$0BO@@BrocSys@@YAEH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EBA10	Release reads elem.color.b and matches source.
+0x005EBA90	??$pnode_set_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node targetname setter matches the shared node-handle, warning, callback, and direct-member source template.
+0x005EBA90	??$pnode_set_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EBA90	Release resolves targetname at offset 48 and matches the source callback/direct-write paths.
+0x005EBBD0	??$pnode_get_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node targetname getter matches the shared invalid-string, callback, and direct-member source template.
+0x005EBBD0	??$pnode_get_field@Vstring@Broc@@$0DA@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EBBD0	Release reads targetname at offset 48 and matches source return/cleanup behavior.
+0x005EBD30	??$pnode_set_field@Vstring@Broc@@$0DI@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node target setter matches the shared pnode setter template.
+0x005EBD30	??$pnode_set_field@Vstring@Broc@@$0DI@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EBD30	Release writes target at offset 56 and matches the source callback/direct-member paths.
+0x005EBE70	??$pnode_get_field@Vstring@Broc@@$0DI@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node target getter matches the shared pnode getter template.
+0x005EBE70	??$pnode_get_field@Vstring@Broc@@$0DI@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EBE70	Release reads target at offset 56 and matches source return/cleanup behavior.
+0x005EBFD0	??$pnode_set_field@Vstring@Broc@@$0DM@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node on-goal callback setter matches the shared pnode setter template.
+0x005EBFD0	??$pnode_set_field@Vstring@Broc@@$0DM@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EBFD0	Release writes on-goal callback at offset 60 and matches source.
+0x005EC110	??$pnode_get_field@Vstring@Broc@@$0DM@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node on-goal callback getter matches the shared pnode getter template.
+0x005EC110	??$pnode_get_field@Vstring@Broc@@$0DM@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EC110	Release reads on-goal callback at offset 60 and matches source.
+0x005EC270	??$pnode_set_field@Vstring@Broc@@$0EA@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node reserve-name setter matches the shared pnode setter template.
+0x005EC270	??$pnode_set_field@Vstring@Broc@@$0EA@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EC270	Release writes reserve-name at offset 64 and matches source.
+0x005EC3B0	??$pnode_get_field@Vstring@Broc@@$0EA@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node reserve-name getter matches the shared pnode getter template.
+0x005EC3B0	??$pnode_get_field@Vstring@Broc@@$0EA@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EC3B0	Release reads reserve-name at offset 64 and matches source.
+0x005EC510	??$pnode_set_field@Vstring@Broc@@$0EE@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node animscript setter matches the shared pnode setter template.
+0x005EC510	??$pnode_set_field@Vstring@Broc@@$0EE@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EC510	Release writes animscript at offset 68 and matches source.
+0x005EC650	??$pnode_get_field@Vstring@Broc@@$0EE@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node animscript getter matches the shared pnode getter template.
+0x005EC650	??$pnode_get_field@Vstring@Broc@@$0EE@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EC650	Release reads animscript at offset 68 and matches source.
+0x005EC7B0	??$pnode_set_field@Vstring@Broc@@$0DE@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node script noteworthy setter matches the shared pnode setter template.
+0x005EC7B0	??$pnode_set_field@Vstring@Broc@@$0DE@$0A@@BrocSys@@YAXHVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EC7B0	Release writes script noteworthy at offset 52 and matches source.
+0x005EC8F0	??$pnode_get_field@Vstring@Broc@@$0DE@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node script noteworthy getter matches the shared pnode getter template.
+0x005EC8F0	??$pnode_get_field@Vstring@Broc@@$0DE@$0A@@BrocSys@@YA?AVstring@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EC8F0	Release reads script noteworthy at offset 52 and matches source.
+0x005ECA50	??$pnode_set_field@Uvector@Broc@@$0EM@$0A@@BrocSys@@YAXHUvector@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node origin setter matches the shared pnode setter template and vector callback initialization.
+0x005ECA50	??$pnode_set_field@Uvector@Broc@@$0EM@$0A@@BrocSys@@YAXHUvector@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ECA50	Release writes origin at offset 76 and matches source callback/direct-write behavior.
+0x005ECB70	??$pnode_get_field@Uvector@Broc@@$0EM@$0A@@BrocSys@@YA?AUvector@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node origin getter matches the shared vector invalid-value and callback template.
+0x005ECB70	??$pnode_get_field@Uvector@Broc@@$0EM@$0A@@BrocSys@@YA?AUvector@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ECB70	Release reads origin at offset 76 and returns sNaN fallback on invalid nodes, matching source.
+0x005ECCB0	??$pnode_set_field@Uvector@Broc@@$0FI@$0CC@@BrocSys@@YAXHUvector@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node angles setter matches the shared vector callback template.
+0x005ECCB0	??$pnode_set_field@Uvector@Broc@@$0FI@$0CC@@BrocSys@@YAXHUvector@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ECCB0	Release writes angles at offset 88 and uses the matching off_DF49A0 callback/direct write.
+0x005ECDD0	??$pnode_get_field@Uvector@Broc@@$0FI@$0CD@@BrocSys@@YA?AUvector@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node angles getter matches the shared vector callback template.
+0x005ECDD0	??$pnode_get_field@Uvector@Broc@@$0FI@$0CD@@BrocSys@@YA?AUvector@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ECDD0	Release reads angles at offset 88 and uses matching off_DF49A4 callback/direct read.
+0x005ECF10	??$pnode_set_field@M$0FM@$0A@@BrocSys@@YAXHM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node radius setter matches the shared scalar pnode setter template.
+0x005ECF10	??$pnode_set_field@M$0FM@$0A@@BrocSys@@YAXHM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ECF10	Release writes radius at offset 92 and matches source.
+0x005ED020	??$pnode_get_field@M$0FM@$0A@@BrocSys@@YAMH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node radius getter matches the shared scalar pnode getter template.
+0x005ED020	??$pnode_get_field@M$0FM@$0A@@BrocSys@@YAMH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ED020	Release reads radius at offset 92 and matches source's zero fallback path.
+0x005ED0D0	??$pnode_set_field@F$0CM@$0A@@BrocSys@@YAXHF@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25818	Path-node spawnflags setter matches the shared scalar pnode setter template.
+0x005ED0D0	??$pnode_set_field@F$0CM@$0A@@BrocSys@@YAXHF@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ED0D0	Release writes spawnflags at offset 44 and matches source.
+0x005ED1E0	??$pnode_get_field@F$0CM@$0A@@BrocSys@@YAFH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25863	Path-node spawnflags getter matches the shared scalar pnode getter template.
+0x005ED1E0	??$pnode_get_field@F$0CM@$0A@@BrocSys@@YAFH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005ED1E0	Release reads spawnflags at offset 44 and matches source.

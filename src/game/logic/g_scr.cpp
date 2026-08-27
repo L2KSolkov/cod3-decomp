@@ -25654,6 +25654,16 @@ inline Broc::string pnode_get_type_value<Broc::string>(
 
 // hud_set_field<T,OFF> (binary 0x5EB090+) - writes g_hudelems[handle]
 // elem byte offset OFF
+// ea: 0x005EB090
+// ea: 0x005EB190
+// ea: 0x005EB290
+// ea: 0x005EB390
+// ea: 0x005EB490
+// ea: 0x005EB590
+// ea: 0x005EB690
+// ea: 0x005EB790
+// ea: 0x005EB890
+// ea: 0x005EB990
 template <typename T, int OFF>
 void hud_set_field(int handle, T val)
 {
@@ -25672,6 +25682,16 @@ void hud_set_field(int handle, T val)
         __debugbreak();
 }
 
+// ea: 0x005EB110
+// ea: 0x005EB210
+// ea: 0x005EB310
+// ea: 0x005EB410
+// ea: 0x005EB510
+// ea: 0x005EB610
+// ea: 0x005EB710
+// ea: 0x005EB810
+// ea: 0x005EB910
+// ea: 0x005EBA10
 template <typename T, int OFF>
 T hud_get_field(int handle)
 {
@@ -25814,6 +25834,16 @@ T entity_get_actor_field(unsigned int handle)
     return *(T*)((char*)mObject->actor + OFF);
 }
 
+// ea: 0x005EBA90
+// ea: 0x005EBD30
+// ea: 0x005EBFD0
+// ea: 0x005EC270
+// ea: 0x005EC510
+// ea: 0x005EC7B0
+// ea: 0x005ECA50
+// ea: 0x005ECCB0
+// ea: 0x005ECF10
+// ea: 0x005ED0D0
 template <typename T, int OFF, int IDX>
 void pnode_set_field(int handle, T val)
 {
@@ -25859,6 +25889,16 @@ void pnode_set_field(int handle, T val)
     }
 }
 
+// ea: 0x005EBBD0
+// ea: 0x005EBE70
+// ea: 0x005EC110
+// ea: 0x005EC3B0
+// ea: 0x005EC650
+// ea: 0x005EC8F0
+// ea: 0x005ECB70
+// ea: 0x005ECDD0
+// ea: 0x005ED020
+// ea: 0x005ED1E0
 template <typename T, int OFF, int IDX>
 T pnode_get_field(int handle)
 {
