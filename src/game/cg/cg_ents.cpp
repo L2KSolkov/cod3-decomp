@@ -722,8 +722,11 @@ void CG_Trace(trace_t* result, const math::Position3* start,
     trace_t v9;
     memset(&v9, 0, sizeof(v9));
     Trace(&v9, *start, *end, *mins, *maxs, nullptr, contentmask, 0, nullptr);
+    Entity* world = *(Entity**)((char*)EntityManager::sInst + 0x44);
     v9.mEntity.mHandle.mVal =
-        v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
+        v9.fraction == 1.0f
+            ? 0
+            : world->mHandle.mHandle.mVal;
     CG_ClipMoveToEntities(start, mins, maxs, end, context, 0, &v9);
     *result = v9;
 }
@@ -739,8 +742,11 @@ void CG_TraceCapsule(trace_t* result, const math::Position3* start,
     trace_t v9;
     memset(&v9, 0, sizeof(v9));
     Trace(&v9, *start, *end, *mins, *maxs, nullptr, contentmask, 0, nullptr);
+    Entity* world = *(Entity**)((char*)EntityManager::sInst + 0x44);
     v9.mEntity.mHandle.mVal =
-        v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
+        v9.fraction == 1.0f
+            ? 0
+            : world->mHandle.mHandle.mVal;
     CG_ClipMoveToEntities(start, mins, maxs, end, context, 1, &v9);
     *result = v9;
 }
@@ -758,7 +764,11 @@ int CG_PointContents(const math::Position3* point,
                    == EntityHandleDb::sInst.mElements[v4].mKey)
         {
             Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
-            if (mObject != nullptr && mObject->s.solid == 0xFFFFFF
+            if (mObject != nullptr
+                && context->filter(mObject) == false
+                && mObject->mHandle.mHandle.mVal
+                       != context->pass_entity1.mHandle.mVal
+                && mObject->s.solid == 0xFFFFFF
                 && mObject->r.bmodel != nullptr)
             {
                 v17 |= CM_TransformedPointContents(
