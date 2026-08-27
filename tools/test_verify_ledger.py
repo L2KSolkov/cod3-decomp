@@ -129,6 +129,8 @@ def main() -> int:
                     in ledger.symbol_variants("?CG_WeaponSelectable@@YAHH@Z"))
             assert ("?CG_Weapon_f@@YAHXZ"
                     in ledger.symbol_variants("?CG_Weapon_f@@YAXXZ"))
+            assert ("?CG_WeaponSlot_f@@YAPAUClient@@XZ"
+                    in ledger.symbol_variants("?CG_WeaponSlot_f@@YAXXZ"))
 
             # Missing source_ref is rejected rather than silently granting a gate.
             path.write_text("\t".join(ledger.EVIDENCE_FIELDS) + "\n" + row("PASS", source_ref="") + "\n", encoding="utf-8")
