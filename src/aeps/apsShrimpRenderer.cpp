@@ -17,6 +17,25 @@ const unsigned int** apsShrimpRender::VShaderTable = nullptr;
 unsigned int** apsShrimpRenderPixel::PS = nullptr;
 const unsigned int** apsShrimpRenderPixel::PShaderTable = nullptr;
 
+// apsShrimpRender::RegisterVShader - ea: 0x00804490
+// The release body registers the vertex microcode through the static table.
+void apsShrimpRender::RegisterVShader() {
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsShrimpRender::VS),
+                         apsShrimpRender::VShaderTable[0]);
+}
+
+// apsShrimpRenderPixel::RegisterPShader - ea: 0x008044B0
+void apsShrimpRenderPixel::RegisterPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsShrimpRenderPixel::PS),
+                         apsShrimpRenderPixel::PShaderTable[0]);
+}
+
+// apsShrimpRenderPixel::InitPShader - ea: 0x008044D0
+void apsShrimpRenderPixel::InitPShader() {
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsShrimpRenderPixel::PS),
+                         apsShrimpRenderPixel::PShaderTable[0]);
+}
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

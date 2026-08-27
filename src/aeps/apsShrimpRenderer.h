@@ -113,20 +113,20 @@ extern void nglDxInitPShader(const unsigned int* Microcode);
 // ============================================================================
 // Shader microcode registration structs (data in apsShrimpRendererVertex.o)
 // ============================================================================
-struct apsShrimpRender {
-    static unsigned int* VS;                  // ?VS@apsShrimpRender@@3PAKA
-    static const unsigned int** VShaderTable; // ?VShaderTable@apsShrimpRender@@3PAPBIA
+namespace apsShrimpRender {
+    extern unsigned int* VS;                  // ?VS@apsShrimpRender@@3PAKA
+    extern const unsigned int** VShaderTable; // ?VShaderTable@apsShrimpRender@@3PAPBIA
 
-    static void RegisterVShader() { nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]); }   // ea: 0x804470
-};
+    void RegisterVShader();
+}
 
-struct apsShrimpRenderPixel {
-    static unsigned int** PS;                 // ?PS@apsShrimpRenderPixel@@3PAPAKA
-    static const unsigned int** PShaderTable; // ?PShaderTable@apsShrimpRenderPixel@@3PAPBIA
+namespace apsShrimpRenderPixel {
+    extern unsigned int** PS;                 // ?PS@apsShrimpRenderPixel@@3PAPAKA
+    extern const unsigned int** PShaderTable; // ?PShaderTable@apsShrimpRenderPixel@@3PAPBIA
 
-    static void RegisterPShader() { nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]); }   // ea: 0x804490
-    static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x8044B0
-};
+    void RegisterPShader();
+    void InitPShader();
+}
 
 // ============================================================================
 // apsInternal::GetBlendColor — declared in apsInternal.h (inline COMDAT,

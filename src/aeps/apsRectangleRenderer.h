@@ -45,13 +45,13 @@ namespace apsRectangleRender {
     extern unsigned long* VS;                  // ?VS@apsRectangleRender@@3PAKA
     extern const unsigned long** VShaderTable; // ?VShaderTable@apsRectangleRender@@3PAPBIA
     unsigned long GetVShader();                // ea: 0x80DD50
-    void RegisterVShader();                    // ea: 0x8052A0
+    void RegisterVShader();                    // release: 0x8052A0
 }
 namespace apsRectangleRenderPixel {
     extern unsigned long** PS;                 // ?PS@apsRectangleRenderPixel@@3PAPAKA
     extern const unsigned long** PShaderTable; // ?PShaderTable@apsRectangleRenderPixel@@3PAPBIA
     unsigned long* GetPShader();               // ea: 0x80DD60
-    void RegisterPShader();                    // ea: 0x8052C0
-    void InitPShader();                        // ea: 0x8052E0
+    void RegisterPShader();                    // release: 0x8052C0
+    void InitPShader();                        // release: 0x8052E0
 }
 #endif // COD3_AEPS_APSRECTANGLERENDERER_H

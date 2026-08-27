@@ -69,6 +69,7 @@ apsRenderer::eRenderResult apsRectangleRenderer::Render(const apsRendererRenderI
     return this->DefaultRender<apsRectangleRenderer, apsRectangleNode>(rinfo);
 }
 
+// apsRectangleRender::RegisterVShader - ea: 0x8052A0
 void apsRectangleRender::RegisterVShader()
 {
     nglDxRegisterVShader(
@@ -76,6 +77,7 @@ void apsRectangleRender::RegisterVShader()
         reinterpret_cast<const unsigned int*>(apsRectangleRender::VShaderTable[0]));
 }
 
+// apsRectangleRenderPixel::RegisterPShader - ea: 0x8052C0
 void apsRectangleRenderPixel::RegisterPShader()
 {
     nglDxRegisterPShader(
@@ -83,6 +85,7 @@ void apsRectangleRenderPixel::RegisterPShader()
         reinterpret_cast<const unsigned int*>(apsRectangleRenderPixel::PShaderTable[0]));
 }
 
+// apsRectangleRenderPixel::InitPShader - ea: 0x8052E0
 void apsRectangleRenderPixel::InitPShader()
 {
     nglDxRegisterPShader(

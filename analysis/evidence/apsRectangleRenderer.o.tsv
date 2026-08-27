@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008052A0	?RegisterVShader@apsRectangleRender@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsRectangleRenderer.cpp:73	Out-of-line shader-registration body is present and non-empty.
+0x008052A0	?RegisterVShader@apsRectangleRender@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008052A0;src/aeps/apsRectangleRenderer.cpp:73	IDA release calls nglDxRegisterVShader(VS,VShaderTable[0]); source preserves the same call and operands.
+0x008052C0	?RegisterPShader@apsRectangleRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsRectangleRenderer.cpp:81	Out-of-line shader-registration body is present and non-empty.
+0x008052C0	?RegisterPShader@apsRectangleRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008052C0;src/aeps/apsRectangleRenderer.cpp:81	IDA release calls nglDxRegisterPShader(PS,PShaderTable[0]); source preserves the same call and operands.
+0x008052E0	?InitPShader@apsRectangleRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsRectangleRenderer.cpp:89	Out-of-line shader-registration body is present and non-empty.
+0x008052E0	?InitPShader@apsRectangleRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008052E0;src/aeps/apsRectangleRenderer.cpp:89	IDA release calls nglDxRegisterPShader(PS,PShaderTable[0]); source preserves the same call and operands.

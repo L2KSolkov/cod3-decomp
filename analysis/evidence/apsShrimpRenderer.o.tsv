@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00804490	?RegisterVShader@apsShrimpRender@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpRenderer.cpp:20	Emitted namespace shader-registration body is non-empty and corresponds to the release function.
+0x00804490	?RegisterVShader@apsShrimpRender@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00804490;src/aeps/apsShrimpRenderer.cpp:20	IDA release calls nglDxRegisterVShader(VS,VShaderTable[0]); source preserves the same call and operands.
+0x008044B0	?RegisterPShader@apsShrimpRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpRenderer.cpp:27	Emitted namespace shader-registration body is non-empty and corresponds to the release function.
+0x008044B0	?RegisterPShader@apsShrimpRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008044B0;src/aeps/apsShrimpRenderer.cpp:27	IDA release calls nglDxRegisterPShader(PS,PShaderTable[0]); source preserves the same call and operands.
+0x008044D0	?InitPShader@apsShrimpRenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpRenderer.cpp:33	Emitted namespace shader-registration body is non-empty and corresponds to the release function.
+0x008044D0	?InitPShader@apsShrimpRenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008044D0;src/aeps/apsShrimpRenderer.cpp:33	IDA release calls nglDxRegisterPShader(PS,PShaderTable[0]); source preserves the same call and operands.
