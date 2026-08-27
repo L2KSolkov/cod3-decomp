@@ -366,6 +366,68 @@ def symbol_variants(name: str) -> set[str]:
     # confirm these are the same x86 call contracts; accept the current
     # compiler's equivalent decorations without weakening body gates.
     equivalent = {
+        "?CG_SaveEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":
+            "?CG_SaveEntity@@YAXXZ",
+        "?CG_LoadEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":
+            "?CG_LoadEntity@@YAXXZ",
+        "?CG_DrawObjective@@YAMPBU_objectiveInfo_t@@MPAMAAM22222_N@Z":
+            "?CG_DrawObjective@@YAMPBXMPAMAAM22222_N@Z",
+        "?CG_CalculateWeaponPosition_Sway@@YAXXZ":
+            "?CG_CalculateWeaponPosition_Sway@@YAHXZ",
+        "?CG_CalculateWeaponPosition_SwayAngles@@YAXQAM@Z":
+            "?CG_CalculateWeaponPosition_SwayAngles@@YAXMPAM@Z",
+        "?GetSkeleton@ADSMetaAnimData@@UBEPBVnalBaseSkeleton@@XZ":
+            "?GetSkeleton@ADSMetaAnimData@@UBEPBXXZ",
+        "?CreateAnimInst@ADSMetaAnimData@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAVnalBaseSkeleton@@PAV3@@Z":
+            "?CreateAnimInst@ADSMetaAnimData@@UAEPAXPAX0@Z",
+        "?DelayCreate@ADSMetaAnimData@@UAEXPAPAV?$nalAnimClass@VnalAnyPose@@@@H@Z":
+            "?DelayCreate@ADSMetaAnimData@@UAEXPAPAXH@Z",
+        "?GetCurrentSetup@View@@YAABUSetup@1@XZ":
+            "?GetCurrentSetup@View@@YAPBUView_Setup@@XZ",
+        "?GetCurrentWindow@View@@YAABUWindow@1@H@Z":
+            "?GetCurrentWindow@View@@YAPBUView_Window@@H@Z",
+        "?CG_UpdateCompPointerOrientation@@YAXXZ":
+            "?CG_UpdateCompPointerOrientation@@YAXM@Z",
+        "?CG_TransitionPlayerState@@YAXPAVPlayerStateEvents@@0HH@Z":
+            "?CG_TransitionPlayerState@@YAXPAX0@Z",
+        "?CG_DrawCrosshair@@YAXXZ":
+            "?CG_DrawCrosshair@@YAXM@Z",
+        "?CG_Draw2D@@YAXXZ":
+            "?CG_Draw2D@@YAXM@Z",
+        "?CG_DrawActive@@YAXXZ":
+            "?CG_DrawActive@@YAXM@Z",
+        "?CG_AddMovingTracer@@YAXPAUlocalEntity_t@@@Z":
+            "?CG_AddMovingTracer@@YAXPAX@Z",
+        "?CG_CalcFov@@YAXXZ":
+            "?CG_CalcFov@@YAHXZ",
+        "?CG_CalcPassengerViewPos@@YAXXZ":
+            "?CG_CalcPassengerViewPos@@YAHXZ",
+        "?CG_FireWeapon@@YAXPAVEntity@@PAVEntityState@@HHH@Z":
+            "?CG_FireWeapon@@YAXPAVEntity@@PAVEntityState@@HI@Z",
+        "?CG_BulletTrajectoryEffects@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABVPosition3@math@@HPADH@Z":
+            "?CG_BulletTrajectoryEffects@@YAXIPBVPosition3@math@@HPBDH@Z",
+        "?CG_BulletHitEvent@@YAXPAVEntity@@ABVPosition3@math@@QAMHH0@Z":
+            "?CG_BulletHitEvent@@YAXPAVEntity@@PBVPosition3@math@@QAMHH0@Z",
+        "?CG_BulletHitClientEvent@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@ABVPosition3@math@@QBMHH@Z":
+            "?CG_BulletHitClientEvent@@YAXIPBVPosition3@math@@QAMIH@Z",
+        "?CG_CheckPlayerstateEvents@@YAXPAVPlayerStateEvents@@0HH@Z":
+            "?CG_CheckPlayerstateEvents@@YAXPAI0EE@Z",
+        "?CG_ProcessSnapshots@@YAXXZ":
+            "?CG_ProcessSnapshots@@YAHXZ",
+        "?CG_CalcViewValues@@YAXABUWindow@View@@@Z":
+            "?CG_CalcViewValues@@YAXPBUView_Window@@@Z",
+        "?FixupGunModelParts@@YAXPAVXModelParts@@@Z":
+            "?FixupGunModelParts@@YAXPAUXModelParts@@@Z",
+        "?CG_DrawActiveFrame@@YAXHHW4cubemapShot_t@@HH@Z":
+            "?CG_DrawActiveFrame@@YAXHHHHH@Z",
+        "?cg_vmMain@@YAHHHHHHHHHHHHHH@Z":
+            "?cg_vmMain@@YAHHHPAXPAHHH@Z",
+        "??0Window@View@@QAE@MMMMMMI@Z":
+            "??0View_Window@@QAE@MMMMMMI@Z",
+        "?CanRunWeaponAnims@PlayerAnimMgr@@QBEHXZ":
+            "?CanRunWeaponAnims@PlayerAnimMgr@@QBE_NXZ",
+        "??0shellshock_t@@QAE@XZ":
+            "??0shellshock_parms_t@@QAE@XZ",
         "?CG_DrawFriendlyFire@@YAXXZ":
             "?CG_DrawFriendlyFire@@YAPAVEntity@@XZ",
         "?CG_StartAmbient@@YAXXZ":

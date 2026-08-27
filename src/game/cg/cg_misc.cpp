@@ -839,12 +839,17 @@ public:
 struct shellshock_t {
     RumbleEffectInstanceHandle hLoopSound;  // +0x00
     RumbleEffectInstanceHandle hExitSound;  // +0x04
-    shellshock_t()
-    {
-        hLoopSound.mVal = 0;
-        hExitSound.mVal = 0;
-    }
+    shellshock_t();
 };
+
+// Keep the release constructor as a callable export.  The original object
+// contains this symbol at 0x006BBC20; allowing the tiny body to inline erases
+// the export and leaves the map entry unresolved.
+__declspec(noinline) shellshock_t::shellshock_t()
+{
+    hLoopSound.mVal = 0;
+    hExitSound.mVal = 0;
+}
 
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;
