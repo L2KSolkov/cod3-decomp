@@ -366,6 +366,16 @@ def symbol_variants(name: str) -> set[str]:
     # confirm these are the same x86 call contracts; accept the current
     # compiler's equivalent decorations without weakening body gates.
     equivalent = {
+        "?CG_DrawFriendlyFire@@YAXXZ":
+            "?CG_DrawFriendlyFire@@YAPAVEntity@@XZ",
+        "?CG_StartAmbient@@YAXXZ":
+            "?CG_StartAmbient@@YAHXZ",
+        "?CG_SetFrameInterpolation@@YAXXZ":
+            "?CG_SetFrameInterpolation@@YAHXZ",
+        "?CG_Argv@@YAPBDH@Z":
+            "?CG_Argv@@YAPADH@Z",
+        "?CG_ConfigString@@YAPBDH@Z":
+            "?CG_ConfigString@@YAPBDI@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
