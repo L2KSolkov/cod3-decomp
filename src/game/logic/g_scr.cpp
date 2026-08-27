@@ -2077,6 +2077,7 @@ void Broc::dyn_array<Broc::entity>::destroy_all()
     }
 }
 
+// ea: 0x00600050
 template <>
 Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
     unsigned int cap, unsigned int iSize)
@@ -2092,6 +2093,7 @@ Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
     return result;
 }
 
+// ea: 0x006000A0
 template <>
 Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
     unsigned int iNumber)
@@ -2106,6 +2108,7 @@ Broc::entity* Broc::dyn_array<Broc::entity>::construct_array(
     return result;
 }
 
+// ea: 0x006000F0
 template <>
 Broc::string* Broc::dyn_array<Broc::string>::construct_array(
     unsigned int cap, unsigned int iSize)
