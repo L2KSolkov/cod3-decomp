@@ -1540,10 +1540,12 @@ math::Dir3& math::Mat33::operator[](unsigned int i)
 {
     return reinterpret_cast<math::Dir3*>(this)[i];
 }
+// ea: 0x004A7100
 math::Mat33::Mat33(const math::Mat33& _m)
 {
     *this = _m;
 }
+// ea: 0x004A7180
 const math::Mat33& math::Mat33::operator=(const math::Mat33& _m)
 {
     x = _m.x;
@@ -1551,6 +1553,7 @@ const math::Mat33& math::Mat33::operator=(const math::Mat33& _m)
     z = _m.z;
     return *this;
 }
+// ea: 0x004A7200
 math::Mat43::Mat43(const math::Mat43::Packed& _p)
 {
     x = math::Dir3(_p.x);
@@ -1558,6 +1561,7 @@ math::Mat43::Mat43(const math::Mat43::Packed& _p)
     z = math::Dir3(_p.z);
     w = math::Position3(_p.w);
 }
+// ea: 0x004A7360
 math::Mat43::Mat43(const math::Mat33& _m, const math::Position3& _p)
 {
     x = _m.x;
@@ -1565,6 +1569,7 @@ math::Mat43::Mat43(const math::Mat33& _m, const math::Position3& _p)
     z = _m.z;
     w = _p;
 }
+// ea: 0x004A74A0
 const math::Mat43& math::Mat43::operator=(const math::Mat43& _m)
 {
     x = _m.x;
@@ -1573,34 +1578,42 @@ const math::Mat43& math::Mat43::operator=(const math::Mat43& _m)
     w = _m.w;
     return *this;
 }
+// ea: 0x004A7070
 const math::Dir3& math::Mat43::GetX() const
 {
     return x;
 }
+// ea: 0x004A7080
 const math::Dir3& math::Mat43::GetY() const
 {
     return y;
 }
+// ea: 0x004A7090
 const math::Dir3& math::Mat43::GetZ() const
 {
     return z;
 }
+// ea: 0x004A70A0
 const math::Position3& math::Mat43::GetW() const
 {
     return w;
 }
+// ea: 0x004A70B0
 math::Dir3& math::Mat43::GetX()
 {
     return x;
 }
+// ea: 0x004A70C0
 math::Dir3& math::Mat43::GetY()
 {
     return y;
 }
+// ea: 0x004A70D0
 math::Dir3& math::Mat43::GetZ()
 {
     return z;
 }
+// ea: 0x004A70E0
 math::Position3& math::Mat43::GetW()
 {
     return w;

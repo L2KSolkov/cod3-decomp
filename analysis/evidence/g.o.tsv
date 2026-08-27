@@ -265,3 +265,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A7040	?GetY@Mat33@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7040	Release returns the Mat33 y row address, matching source.
 0x004A7050	?GetZ@Mat33@math@@QBEABVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1522	Source returns the const Mat33 z row reference.
 0x004A7050	?GetZ@Mat33@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7050	Release returns the Mat33 z row address, matching source.
+0x004A7060	??0Mat43@math@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/core/math_types.h:321	Source default Mat43 constructor is intentionally empty and leaves matrix storage untouched.
+0x004A7060	??0Mat43@math@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7060	Release constructor returns this without stores, matching source.
+0x004A7070	?GetX@Mat43@math@@QBEABVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1581	Source returns the const Mat43 x row reference.
+0x004A7070	?GetX@Mat43@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7070	Release returns the Mat43 x row address unchanged.
+0x004A7080	?GetY@Mat43@math@@QBEABVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1586	Source returns the const Mat43 y row reference.
+0x004A7080	?GetY@Mat43@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7080	Release returns the Mat43 y row address, matching source.
+0x004A7090	?GetZ@Mat43@math@@QBEABVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1591	Source returns the const Mat43 z row reference.
+0x004A7090	?GetZ@Mat43@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7090	Release returns the Mat43 z row address, matching source.
+0x004A70A0	?GetW@Mat43@math@@QBEABVPosition3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1596	Source returns the const Mat43 translation row reference.
+0x004A70A0	?GetW@Mat43@math@@QBEABVPosition3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A70A0	Release returns the Mat43 w row address, matching source.
+0x004A70B0	?GetX@Mat43@math@@QAEAAVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1601	Source returns the mutable Mat43 x row reference.
+0x004A70B0	?GetX@Mat43@math@@QAEAAVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A70B0	Release returns this/x row address, matching source.
+0x004A70C0	?GetY@Mat43@math@@QAEAAVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1606	Source returns the mutable Mat43 y row reference.
+0x004A70C0	?GetY@Mat43@math@@QAEAAVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A70C0	Release returns the mutable Mat43 y row address, matching source.
+0x004A70D0	?GetZ@Mat43@math@@QAEAAVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1611	Source returns the mutable Mat43 z row reference.
+0x004A70D0	?GetZ@Mat43@math@@QAEAAVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A70D0	Release returns the mutable Mat43 z row address, matching source.
+0x004A70E0	?GetW@Mat43@math@@QAEAAVPosition3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1616	Source returns the mutable Mat43 translation row reference.
+0x004A70E0	?GetW@Mat43@math@@QAEAAVPosition3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A70E0	Release returns the mutable Mat43 w row address, matching source.
+0x004A70F0	??0Mat44@math@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/core/math_types.h:434	Source default Mat44 constructor is intentionally empty and leaves matrix storage untouched.
+0x004A70F0	??0Mat44@math@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A70F0	Release constructor returns this without stores, matching source.
+0x004A7100	??0Mat33@math@@QAE@ABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1543	Source copies the Mat33 value into the destination and returns it.
+0x004A7100	??0Mat33@math@@QAE@ABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7100	Release copies all Mat33 rows and returns this, matching source.
+0x004A7180	??4Mat33@math@@QAEABV01@ABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1548	Source assigns all Mat33 rows and returns the destination.
+0x004A7180	??4Mat33@math@@QAEABV01@ABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7180	Release copies all Mat33 rows and returns this, matching source.
+0x004A7200	??0Mat43@math@@QAE@ABUPacked@01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1556	Source expands Packed x/y/z and w into Mat43 rows, clearing each Dir3 w lane.
+0x004A7200	??0Mat43@math@@QAE@ABUPacked@01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7200	Release expands all packed rows and writes the same zero fourth lanes, matching source.
+0x004A7360	??0Mat43@math@@QAE@ABVMat33@1@ABVPosition3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1564	Source copies Mat33 x/y/z and Position3 translation into Mat43.
+0x004A7360	??0Mat43@math@@QAE@ABVMat33@1@ABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7360	Release copies all Mat33 rows and Position3 w row, matching source.
+0x004A74A0	??4Mat43@math@@QAEABV01@ABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1572	Source assigns all Mat43 rows and returns the destination.
+0x004A74A0	??4Mat43@math@@QAEABV01@ABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A74A0	Release copies all Mat43 rows and returns this, matching source.

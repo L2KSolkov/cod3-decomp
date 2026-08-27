@@ -317,6 +317,7 @@ inline math::Vector4 math::Position3::val34() const
 // ============================================================================
 class Mat43 {
 public:
+    // ea: 0x004A7060
     Mat43() {}
     Mat43(const Dir3& _x, const Dir3& _y, const Dir3& _z,
           const Position3& _w);            // ??0Mat43@math@@QAE@ABVDir3@1@00ABVPosition3@1@@Z (core.o 0x4DBB90)
@@ -429,6 +430,7 @@ public:
     Vector4 z;  // +0x20
     Vector4 w;  // +0x30
 
+    // ea: 0x004A70F0
     Mat44() {}
     Mat44(const Vector4& _x, const Vector4& _y, const Vector4& _z,
           const Vector4& _w);  // ??0Mat44@math@@QAE@ABVVector4@1@000@Z
