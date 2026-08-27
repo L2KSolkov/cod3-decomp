@@ -146,8 +146,8 @@ extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern int iLastCompassTime_0;
 extern int iLastCompassTime_1;
-extern float lastChange[4];
-extern int lastVehPos[4];
+int lastChange[4];
+int lastVehPos[4];
 extern float color[4];
 struct View_Window {
     float XPos;    // +0x00
@@ -406,6 +406,7 @@ float CG_GetViewFov()
 {
     Client* client =
         EntityManager::sInst->GetPlayer( currCl)->client;
+    const int clientIndex = currCl;
     float fPosLerp = client->ps.fWeaponPosFrac;
     if (dword_F6355C[1580 * currCl] != 0 || client->ps.pm_type >= 6)
         fPosLerp = 0.0f;
@@ -419,18 +420,19 @@ float CG_GetViewFov()
     bool vehicleBlocked = (client->ps.eFlags & 0x106000) != 0
                           && !BG_AllowPlayerWeaponAtVehiclePos(
                                  client->ps.vehType, client->ps.vehPos);
-    if (!(cg_altTankCam.integer != 0 && client->ps.vehType == 2
-          && (client->ps.eFlags & 0x106000) == 0)
-        && vehicleBlocked)
+    if (cg_altTankCam.integer != 0 && client->ps.vehType == 2)
     {
-        goto LABEL_26;
+        if ((client->ps.eFlags & 0x106000) != 0)
+            return cg_fov.value;
     }
+    else if (vehicleBlocked)
+        goto LABEL_26;
     if (BG_IsAimDownSightWeapon(client->ps.weapon) == 0)
         goto LABEL_26;
     if (fPosLerp == 1.0f)
     {
         fViewFov = dword_F63B8C[1580 * currCl][1600];
-        goto LABEL_27;
+        goto LABEL_26;
     }
     if (fPosLerp == 0.0f)
         goto LABEL_26;
@@ -458,7 +460,50 @@ float CG_GetViewFov()
         }
     }
 LABEL_26:
-    currCl = currCl;
+    {
+        const int time = cgGlobal_time;
+        if (cg_altTankCam.integer != 0 && client->ps.vehType == 2
+            && (client->ps.eFlags & 0x106000) == 0)
+        {
+            if (lastVehPos[clientIndex] > -1)
+            {
+                const int base = 1580 * clientIndex;
+                reinterpret_cast<float*>(&dword_F64154[base])[0] = 1.0f;
+                dword_F6415C[base] = time - 10;
+                dword_F64160[base] = 1;
+                if (dword_F6415C[base] + 1 <= time)
+                    dword_F64158[base] = dword_F64154[base];
+                lastChange[clientIndex] = time;
+            }
+            lastVehPos[clientIndex] = -1;
+        }
+        const int previousChange = lastChange[clientIndex];
+        if (previousChange > 0 && previousChange < time - 50)
+        {
+            const int base = 1580 * clientIndex;
+            dword_F64154[base] = 0;
+            dword_F6415C[base] = time - 1;
+            dword_F64160[base] = 700;
+            if (dword_F6415C[base] + 700 <= time)
+                dword_F64158[base] = dword_F64154[base];
+            lastChange[clientIndex] = -1;
+        }
+        weaponFileInfo_t* playerWeaponInfo = BG_GetPlayerWeaponInfo();
+        if (playerWeaponInfo != nullptr)
+        {
+            const char* infoBytes = reinterpret_cast<const char*>(playerWeaponInfo);
+            float adsZoomFov = 0.0f;
+            if (fPosLerp == 1.0f)
+                adsZoomFov = *reinterpret_cast<const float*>(infoBytes + 0x640);
+            else
+                adsZoomFov = *reinterpret_cast<const float*>(infoBytes + 0x8A0);
+            if (adsZoomFov > 0.0f)
+                fViewFov = adsZoomFov;
+        }
+        if (client->ps.vehType == 1 && client->ps.vehPos == 0
+            && (client->ps.eFlags & 0x100000) != 0)
+            return cg_fov.value;
+    }
 LABEL_27:
     return fViewFov;
 }
