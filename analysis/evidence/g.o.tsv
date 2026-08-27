@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x004835F0	?TossClientItems@@YAXPAVEntity@@@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_main.cpp:2630	Body is non-empty and uses the returned dropped-item handle.
+0x004835F0	?TossClientItems@@YAXPAVEntity@@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1003102	Release call sequence matches, including the three-argument RegisterDroppedItem return overload and handle value passed to DropWeapon.

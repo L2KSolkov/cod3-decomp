@@ -2649,8 +2649,9 @@ void TossClientItems(Entity* self)
                 Entity* v6 = v5;
                 if (v5 != nullptr)
                 {
-                    MultiplayerMgr::MPEntityHandle v16;
-                    MultiplayerMgr::sInst->RegisterDroppedItem((EDroppedItemTypes)1, v5, self, 0);
+                    ::MPEntityHandle v16 =
+                        MultiplayerMgr::sInst->RegisterDroppedItem(
+                            (EDroppedItemTypes)kItemTypeWeapons, v5, self);
                     math::Position3 v14;
                     v14 = native_to_cdl_pos3(v6->s.apos.trBase);
                     int count = v6->count;
@@ -2658,7 +2659,7 @@ void TossClientItems(Entity* self)
                     math::Dir3 v13 = native_to_cdl_dir3(v6->s.pos.trDelta);
                     math::Position3 v12;
                     v12 = native_to_cdl_pos3(v6->s.pos.trBase);
-                    MultiplayerMgr::sInst->DropWeapon(v3, v16.mVal, v12, v14,
+                    MultiplayerMgr::sInst->DropWeapon(v3, v16.mValue, v12, v14,
                                                       v13, count2, count);
                 }
             }
