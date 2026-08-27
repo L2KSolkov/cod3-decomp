@@ -5168,17 +5168,10 @@ void VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
     }
 }
 
-// Local Camera view (core.o Camera; 496-byte instances)
-struct LocalCamera {
-    uint8_t _pad[0x40];
-    math::Position3 mPrevAngles;   // +0x40
-    uint8_t _pad50[0x194 - 0x50];
-    int     mVehicleCamMode;       // +0x194
-    bool IsTweening() { return false; }
-};
-static LocalCamera* CameraAt(int idx)
+// Camera view uses the shared cg Camera object (stride 0x1F0).
+static Camera* CameraAt(int idx)
 {
-    return (LocalCamera*)((char*)&gCamera + idx * 496);
+    return &gCamera[idx];
 }
 
 // ea: 0x0048CE20

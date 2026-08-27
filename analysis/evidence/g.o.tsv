@@ -651,3 +651,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E97B0	??0hudelem@Broc@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x005E97B0	Release stores -1 in mHudIndex, matching source.
 0x005E97C0	??0hudelem@Broc@@QAE@I@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/broc/Broc.cpp:410	Source value constructor stores the supplied HUD index.
 0x005E97C0	??0hudelem@Broc@@QAE@I@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x005E97C0	Release stores v in mHudIndex, matching source.
+0x0047E030	?VEH_UpdateGunnerAim@@YAXPAVEntity@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5171	Source now uses the shared Camera object and its real IsTweening method instead of a local always-false placeholder.
+0x0047E030	?VEH_UpdateGunnerAim@@YAXPAVEntity@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0047E030;IDA:0x00424506	Release calls Camera::IsTweening on gCamera[playerIndex]; source now follows the same Camera::IsTweening path.
