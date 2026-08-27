@@ -559,38 +559,38 @@ public:
     bool mAlignFoot[2];              // +0x78
     bool mEnableTerrainMappingIK[2]; // +0x7A
 
-    AnimIK();  // ea: 0x4F60A0
-    ~AnimIK();  // ea: 0x4F60B0
+    AnimIK();
+    ~AnimIK();
     void GetGunAndHandMatrix(Entity* ent, nalGenericBoneHandle* gunHandle,
                              nalGenericBoneHandle* handHandle,
                              nalMatrix4x4* gunMat,
-                             nalMatrix4x4* handMat);   // ea: 0x4F6270
+                             nalMatrix4x4* handMat);
     void GetFootMatrices(nalMatrix4x4* leftFootMat,
-                         nalMatrix4x4* rightFootMat);  // ea: 0x4F62A0
+                         nalMatrix4x4* rightFootMat);
     float WeaponRecoilTimeScale(float fireTime, float duration,
-                                float force);          // ea: 0x4F6340
-    void ApplyLadderClimb(Entity* ent, nalMatrix4x4* leftFootMat,
-                          nalMatrix4x4* rightFootMat); // ea: 0x4F64C0
-    void Initialize();                                 // ea: 0x4FAE50
+                                float force);
+    void ApplyLadderClimb(Entity* ent, nalMatrix4x4& leftFootMat,
+                          nalMatrix4x4& rightFootMat);
+    void Initialize();
     void UpdateGunMatrix(nalGenericBoneHandle gunHandle,
                          nalGenericBoneHandle handHandle,
                          nalMatrix4x4* gunMat,
-                         nalMatrix4x4* handMat);        // ea: 0x4FB150
-    void ApplyFootIK(Entity* ent, nalMatrix4x4* leftFootMat,
-                     nalMatrix4x4* rightFootMat);       // ea: 0x4FB510
-    void ApplyHandIK(Entity* ent, nalMatrix4x4* leftMat,
-                     nalMatrix4x4* rightMat);           // ea: 0x4FBD10
-    void RotateBone(int boneIndex, const math::Dir3* rotation);  // ea: 0x4FC5B0
-    void ApplyPainFlinch(Entity* ent);                  // ea: 0x4FCA40
-    void ApplyTorsoRotations(Entity* ent);              // ea: 0x4FDDC0
-    void ApplyFire(Entity* ent);                        // ea: 0x4FFC30
-    void ApplyVehicleSteering(Entity* ent);             // ea: 0x504C90
-    void ApplyADS(Entity* ent);                         // ea: 0x5068F0
+                         nalMatrix4x4* handMat);
+    void ApplyFootIK(Entity* ent, nalMatrix4x4& leftFootMat,
+                     nalMatrix4x4& rightFootMat);
+    void ApplyHandIK(Entity* ent, nalMatrix4x4& leftMat,
+                     nalMatrix4x4& rightMat);
+    void RotateBone(int boneIndex, const math::Dir3& rotation);
+    void ApplyPainFlinch(Entity* ent);
+    void ApplyTorsoRotations(Entity* ent);
+    void ApplyFire(Entity* ent);
+    void ApplyVehicleSteering(Entity* ent);
+    void ApplyADS(Entity* ent);
     void ApplyTerrainMapping(Entity* ent,
-                             nalMatrix4x4* leftFootMat,
-                             nalMatrix4x4* rightFootMat);  // ea: 0x507EC0
+                             nalMatrix4x4& leftFootMat,
+                             nalMatrix4x4& rightFootMat);
     void Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
-                nalGeneric::nalGenericPose* inPose);   // ea: 0x50BBC0
+                nalGeneric::nalGenericPose* inPose);
 };
 static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
 
@@ -663,8 +663,9 @@ cvar_t* ik_ADS;                          // ?ik_ADS@@3PAUcvar_t@@A (game2.o)
 bool IKenabled = true;
 
 // ============================================================================
-// AnimIK::GetGunAndHandMatrix - ea: 0x4F6270
+// AnimIK::GetGunAndHandMatrix
 // ============================================================================
+// ea: 0x4F6270
 void AnimIK::GetGunAndHandMatrix(Entity* ent,
                                  nalGenericBoneHandle* gunHandle,
                                  nalGenericBoneHandle* handHandle,
@@ -676,8 +677,9 @@ void AnimIK::GetGunAndHandMatrix(Entity* ent,
 }
 
 // ============================================================================
-// AnimIK::GetFootMatrices - ea: 0x4F62A0
+// AnimIK::GetFootMatrices
 // ============================================================================
+// ea: 0x4F62A0
 void AnimIK::GetFootMatrices(nalMatrix4x4* leftFootMat,
                              nalMatrix4x4* rightFootMat)
 {
@@ -704,8 +706,9 @@ void AnimIK::GetFootMatrices(nalMatrix4x4* leftFootMat,
 }
 
 // ============================================================================
-// AnimIK::WeaponRecoilTimeScale - ea: 0x4F6340
+// AnimIK::WeaponRecoilTimeScale
 // ============================================================================
+// ea: 0x4F6340
 float AnimIK::WeaponRecoilTimeScale(float fireTime, float duration,
                                     float force)
 {
@@ -719,17 +722,19 @@ float AnimIK::WeaponRecoilTimeScale(float fireTime, float duration,
 }
 
 // ============================================================================
-// AnimIK::ApplyLadderClimb - ea: 0x4F64C0
+// AnimIK::ApplyLadderClimb
 // ============================================================================
-void AnimIK::ApplyLadderClimb(Entity* ent, nalMatrix4x4* leftFootMat,
-                              nalMatrix4x4* rightFootMat)
+// ea: 0x4F64C0
+void AnimIK::ApplyLadderClimb(Entity* ent, nalMatrix4x4& leftFootMat,
+                              nalMatrix4x4& rightFootMat)
 {
 }
 
 // ============================================================================
-// AnimIK::Initialize - ea: 0x4FAE50
+// AnimIK::Initialize
 // Fetch joint bone handles + precompute IK arm lengths.
 // ============================================================================
+// ea: 0x4FAE50
 // These are the 12 entries consumed by Initialize from the reference's
 // contiguous static bone-name block (F04A40..F04C00).
 const tlFixedString AnimIK_InitializeBoneNames[12] = {
@@ -790,9 +795,10 @@ void AnimIK::Initialize()
 }
 
 // ============================================================================
-// AnimIK::Update - ea: 0x50BBC0
+// AnimIK::Update
 // Main IK entry: refresh state, then run the apply passes.
 // ============================================================================
+// ea: 0x50BBC0
 extern float AnimIK_painFlinchAngle;      // game2.o
 extern float AnimIK_painLowBlowPelvisShift[2];  // game2.o
 extern float AnimIK_painLowBlowPelvisPow; // game2.o
@@ -865,16 +871,18 @@ void AnimIK::UpdateGunMatrix(nalGenericBoneHandle gunHandle,
         gunHandle, newHandPositionOrientation);
 }
 
-// Heavy IK apply passes (SEH-heavy, need nal matrix/pose machinery) - stubs
-void AnimIK::ApplyFootIK(Entity* ent, nalMatrix4x4* leftFootMat,
-                         nalMatrix4x4* rightFootMat)
+// ea: 0x004FB510
+void AnimIK::ApplyFootIK(Entity* ent, nalMatrix4x4& leftFootMat,
+                         nalMatrix4x4& rightFootMat)
 {
 }
-void AnimIK::ApplyHandIK(Entity* ent, nalMatrix4x4* leftMat,
-                         nalMatrix4x4* rightMat)
+// ea: 0x004FBD10
+void AnimIK::ApplyHandIK(Entity* ent, nalMatrix4x4& leftMat,
+                         nalMatrix4x4& rightMat)
 {
 }
-void AnimIK::RotateBone(int boneIndex, const math::Dir3* rotation)
+// ea: 0x004FC5B0
+void AnimIK::RotateBone(int boneIndex, const math::Dir3& rotation)
 {
     nalGenericBoneHandle boneHandle;
     boneHandle.Skeleton = nullptr;
@@ -889,7 +897,7 @@ void AnimIK::RotateBone(int boneIndex, const math::Dir3* rotation)
                                          &boneMatrix);
 
     nalMatrix4x4 rotationMatrix;
-    AnimIK_MatrixFromAngles(*rotation, &rotationMatrix);
+    AnimIK_MatrixFromAngles(rotation, &rotationMatrix);
     nalMatrix4x4 result;
     AnimIK_Multiply(boneMatrix, rotationMatrix, &result);
 
@@ -917,23 +925,29 @@ void AnimIK::RotateBone(int boneIndex, const math::Dir3* rotation)
     static_cast<nalGeneric::nalGenericPose*>(pose)->SetPoseBoneOrientation(
         boneHandle, nalQuaternionFromMatrix(resultMatrix));
 }
+// ea: 0x004FCA40
 void AnimIK::ApplyPainFlinch(Entity* ent)
 {
 }
+// ea: 0x004FDDC0
 void AnimIK::ApplyTorsoRotations(Entity* ent)
 {
 }
+// ea: 0x004FFC30
 void AnimIK::ApplyFire(Entity* ent)
 {
 }
+// ea: 0x00504C90
 void AnimIK::ApplyVehicleSteering(Entity* ent)
 {
 }
+// ea: 0x005068F0
 void AnimIK::ApplyADS(Entity* ent)
 {
 }
-void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4* leftFootMat,
-                                 nalMatrix4x4* rightFootMat)
+// ea: 0x00507EC0
+void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
+                                 nalMatrix4x4& rightFootMat)
 {
 }
 
@@ -1703,8 +1717,10 @@ extern void CL_GamepadEvent(int physicalAxis, int value, int time);  // cl.o
 
 void IN_Frame()
 {
+#if !defined(_WIN32)
     if (in_joystick->integer == 0)
         return;
+#endif
     controller* ctl = controller::inst();
     if (ctl == nullptr)
         return;
