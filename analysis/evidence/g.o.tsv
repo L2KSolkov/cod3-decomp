@@ -701,3 +701,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00448F00	?ClientInactivityTimer@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448F00	Release ignores its argument and returns 1, matching source.
 0x00448F10	?ClientSpectatorInactivityTimer@@YAHPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:488	Spectator inactivity timer is an intentional constant-one hook.
 0x00448F10	?ClientSpectatorInactivityTimer@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448F10	Release ignores its argument and returns 1, matching source.
+0x00448F20	?ClientIntermissionThink@@YAXPAVEntity@@PAUusercmd_s@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:479	Intermission input updates oldbuttons and buttons from the client command.
+0x00448F20	?ClientIntermissionThink@@YAXPAVEntity@@PAUusercmd_s@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448F20	Release copies client buttons to oldbuttons then assigns ucmd->buttons, matching source.
+0x00448F50	?IntermissionClientEndFrame@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:901	Intermission end-frame resets server flags, damage, contents, movement flags, pm type, eFlags, and entity type.
+0x00448F50	?IntermissionClientEndFrame@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448F50	Release field updates and masks match source exactly.
+0x00448FB0	?G_ClientCanSpectateTeam@@YAHPAVEntity@@W4team_t@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:506	Team spectate permission tests the corresponding noSpectate bit.
+0x00448FB0	?G_ClientCanSpectateTeam@@YAHPAVEntity@@W4team_t@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448FB0	Release returns ((1<<team)&noSpectate)==0, matching source.
+0x00448FE0	?GetFollowPlayerState@@YAHHPAVPlayerState@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:958	Follow-state getter validates the client, checks pm_flags, and copies PlayerState when following.
+0x00448FE0	?GetFollowPlayerState@@YAHHPAVPlayerState@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448FE0	Release client lookup, assert, pm_flags mask, copy, and return values match source.
+0x00449060	?G_GetActorProneInfo@@YAPAUactor_prone_info_t@@PAUactor_s@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_actor_prone.cpp:8	Actor prone info getter preserves the release bounds assert and returns ProneInfo.
+0x00449060	?G_GetActorProneInfo@@YAPAUactor_prone_info_t@@PAUactor_s@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449060	Release assert condition and returned member address match source.
+0x004490D0	?G_InitActorProneInfo@@YAXPAUactor_s@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_actor_prone.cpp:23	Actor prone initializer clears orientation, transition/time, and torso geometry fields.
+0x004490D0	?G_InitActorProneInfo@@YAXPAUactor_s@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004490D0	Release writes the same six zero values to ProneInfo.
+0x00449100	?G_ActorExitProne@@YAXPAUactor_s@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_actor_prone.cpp:34	Actor prone exit updates transition timing and preserves the release goal-prone assert.
+0x00449100	?G_ActorExitProne@@YAXPAUactor_s@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449100	Release prone-state branches, timing arithmetic, negative transition, and assert path match source.
+0x004491D0	?G_ReduceOriginError@@YAXQAM0M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1865	Origin-error reducer computes decay, clamps to zero, or applies the decayed error to origin.
+0x004491D0	?G_ReduceOriginError@@YAXQAM0M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004491D0	Release error norm, decay threshold, vector update, and origin accumulation match source.
