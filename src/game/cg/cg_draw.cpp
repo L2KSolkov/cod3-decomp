@@ -2766,7 +2766,7 @@ int CG_DrawScoreboard()
 }
 
 // ea: 0x006983C0
-int CG_DrawShellShockSavedScreenBlend(const void* parms, int start,
+int CG_DrawShellShockSavedScreenBlend(const shellshock_parms_t* parms, int start,
                                       int duration)
 {
     if (cg_shellshockblur.integer == 0)
@@ -3420,7 +3420,7 @@ void CG_DrawActive(float a1)
             dword_F63CA8[v1] = v2 & 0xFFFFFFEF;
         trap_R_RenderScene(CG_BuildRenderRefdef(currCl));
         CG_DrawShellShockSavedScreenBlend(
-            (void*)dword_F64164[1580 * currCl],
+            (const shellshock_parms_t*)dword_F64164[1580 * currCl],
             dword_F64168[1580 * currCl], dword_F6416C[1580 * currCl]);
         if (gRenderCG_2D != 0)
             CG_Draw2D(a1);
