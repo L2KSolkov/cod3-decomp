@@ -1818,31 +1818,37 @@ void GScr_FreeScripts()
 }
 
 // ea: 0x00450290
-void GScr_AddFieldsForEntity()
+bool GScr_AddFieldsForEntity()
 {
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_spawn.cpp";
     AeAssert::gCurrentLine = 617;
     AeAssert::gCurrentExpr = "0";
-    if (!AeAssert::IsIgnored())
+    bool result = AeAssert::IsIgnored();
+    if (!result)
     {
-        if (AeAssert::Assert("ma dead code"))
+        result = AeAssert::Assert("ma dead code");
+        if (result)
             __debugbreak();
     }
+    return result;
 }
 
 // ea: 0x004502E0
-void GScr_AddFieldsForRadiant()
+bool GScr_AddFieldsForRadiant()
 {
     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_spawn.cpp";
     AeAssert::gCurrentLine = 661;
     AeAssert::gCurrentExpr = "0";
-    if (!AeAssert::IsIgnored())
+    bool result = AeAssert::IsIgnored();
+    if (!result)
     {
-        if (AeAssert::Assert("ma dead code"))
+        result = AeAssert::Assert("ma dead code");
+        if (result)
             __debugbreak();
     }
+    return result;
 }
 
 // ea: 0x00450330

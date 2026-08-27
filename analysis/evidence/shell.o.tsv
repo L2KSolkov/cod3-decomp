@@ -99,3 +99,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005B7BC0	?Init@LoadingMenu@@UAEXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x005B7BC0;src/game/shell/loading_menu.cpp:283-286	Exact release/source empty-body match.
 0x005B8BC0	?Init@OverlayMenuBase@@UAEXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x005B8BC0;src/game/mpshell/session_menus.cpp:8189-8193	Release is an intentional empty overlay init hook; source body is empty and matches.
 0x005B8BC0	?Init@OverlayMenuBase@@UAEXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x005B8BC0;src/game/mpshell/session_menus.cpp:8189-8193	Exact release/source empty-body match.
+0x00564610	?ApplyDifficulty@StubData@@QAEXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x00564610;src/game/shell/stub_data.cpp	Release decompiles to an intentional empty data-hook method; source body is empty with no omitted side effects.
+0x00564610	?ApplyDifficulty@StubData@@QAEXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x00564610;src/game/shell/stub_data.cpp	Exact release/source empty-body match.
+0x00575C60	?format@GameSettings@@QAEXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x00575C60;src/game/shell/game_settings.cpp	Release decompiles to an intentional empty formatting hook; source body is empty with no omitted side effects.
+0x00575C60	?format@GameSettings@@QAEXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x00575C60;src/game/shell/game_settings.cpp	Exact release/source empty-body match.
+0x005AED10	?GetActivateKey@IGOFrontEnd@@QAEPBDXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x005AED10;src/game/shell/igo_widgets.cpp:5982	Release returns the activate_key member directly; source has the same direct accessor with no omitted side effects.
+0x005AED10	?GetActivateKey@IGOFrontEnd@@QAEPBDXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x005AED10;src/game/shell/igo_widgets.cpp:5982	Exact release/source member-return match.

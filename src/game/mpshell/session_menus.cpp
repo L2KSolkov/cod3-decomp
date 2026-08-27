@@ -5482,7 +5482,7 @@ void AARBaseMenu::OnL1(int c)
     }
 }
 
-// ea: 0x007A8E20
+// ea: 0x007A74E0
 bool AARMenuSystem::GetPanelFileUsers(
     const char* name, ae_sized_array<PanelFileUser*, 12>& array)
 {
@@ -5645,6 +5645,7 @@ void GameSettingsView::UpdateSplitScreenOptions(int last_highlighted)
     }
 }
 
+// ea: 0x007A8E20
 void GameSettingsView::SetPanelFile(PanelFile* pf)
 {
     if (_stricmp(pf->mName, "MP_SS_PM_options_view.PANEL") == 0)

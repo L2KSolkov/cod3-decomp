@@ -2243,7 +2243,7 @@ extern cvar_t* in_joyBallScale;
 extern cvar_t* in_debugJoystick;
 extern cvar_t* joy_threshold;
 bool g_waitingForPress;
-bool g_controllerConnectedGamePaused;
+extern bool g_controllerConnectedGamePaused[4];
 extern bool g_controllerConnectedErrorShown[];
 extern bool g_controllerConnected[4];
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
@@ -2431,8 +2431,11 @@ void IN_Init()
     joy_threshold = Cvar_Get("joy_threshold", "27", 1);
     ButtonMgr::InitKeyBindings(0);
     g_waitingForPress = false;
-    g_controllerConnectedGamePaused = false;
-    g_controllerConnectedErrorShown[0] = false;
+    for (int i = 0; i < 4; ++i)
+    {
+        g_controllerConnectedGamePaused[i] = false;
+        g_controllerConnectedErrorShown[i] = false;
+    }
     for (int i = 0; i < 4; ++i)
         g_controllerConnected[i] = true;
 }

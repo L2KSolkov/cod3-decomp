@@ -47,3 +47,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0052CE70	?CL_UpdateFog@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052CE70;src/game/cl/cl_keys.cpp:404-408	Exact release/source empty-body match.
 0x0052DA40	?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052DA40;src/game/cl/cl_parse.cpp:773-777	Release is an intentional empty packet-entity hook in this port target; source body is empty and matches.
 0x0052DA40	?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052DA40;src/game/cl/cl_parse.cpp:773-777	Exact release/source empty-body match.
+0x005295B0	?Con_DrawSubtitles@@YAXHHMW4msgwnd_mode_t@@@Z	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x005295B0;src/game/cl/cl_console.cpp:707-710	Release decompiles to an intentional empty subtitle draw hook; source body is empty with no omitted side effects.
+0x005295B0	?Con_DrawSubtitles@@YAXHHMW4msgwnd_mode_t@@@Z	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x005295B0;src/game/cl/cl_console.cpp:707-710	Exact release/source empty-body match.
+0x00529790	?Con_ClearSubtitles@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x00529790;src/game/cl/cl_console.cpp:713-715	Release decompiles to an intentional empty subtitle-clear hook; source body is empty with no omitted side effects.
+0x00529790	?Con_ClearSubtitles@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x00529790;src/game/cl/cl_console.cpp:713-715	Exact release/source empty-body match.
+0x004EBEB0	?IN_Shutdown@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x004EBEB0;src/game/cl/cl_input.cpp	Release decompiles to an intentional empty input shutdown hook; source body is empty with no omitted side effects.
+0x004EBEB0	?IN_Shutdown@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x004EBEB0;src/game/cl/cl_input.cpp	Exact release/source empty-body match.
