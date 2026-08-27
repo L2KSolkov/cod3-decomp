@@ -92,13 +92,13 @@ extern void nglDxInitPShader(const unsigned int* Microcode);
 // apsSimpleMeshRendererVertex.o)
 // ============================================================================
 namespace apsSimpleMeshRender {
-    extern unsigned long* VS;                  // ?VS@apsSimpleMeshRender@@3PAKA
+    extern unsigned long VS[1];                // ?VS@apsSimpleMeshRender@@3PAKA
     extern const unsigned long** VShaderTable; // ?VShaderTable@apsSimpleMeshRender@@3PAPBIA
     unsigned long GetVShader();                // ea: 0x812D40
     void RegisterVShader();   // ea: 0x8028C0
 }
 namespace apsSimpleMeshRenderPixel {
-    extern unsigned long** PS;                 // ?PS@apsSimpleMeshRenderPixel@@3PAPAKA
+    extern unsigned long* PS[1];               // ?PS@apsSimpleMeshRenderPixel@@3PAPAKA
     extern const unsigned long** PShaderTable; // ?PShaderTable@apsSimpleMeshRenderPixel@@3PAPBIA
     unsigned long* GetPShader();               // ea: 0x812D50
     void RegisterPShader();   // ea: 0x8028E0

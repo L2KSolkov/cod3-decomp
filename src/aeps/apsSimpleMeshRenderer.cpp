@@ -13,10 +13,24 @@
 #include <new>
 
 // APS shader static data definitions (aeps_xboxr)
-unsigned long* apsSimpleMeshRender::VS = nullptr;
-const unsigned long** apsSimpleMeshRender::VShaderTable = nullptr;
-unsigned long** apsSimpleMeshRenderPixel::PS = nullptr;
-const unsigned long** apsSimpleMeshRenderPixel::PShaderTable = nullptr;
+// The release object owns one shader-handle slot per shader.  The generated
+// microcode symbols are not present in the decompilation export, so retain a
+// stable one-word table entry until the extracted bytecode is available.
+static const unsigned long kSimpleMeshVertexShader[1] = { 0 };
+static const unsigned long kSimpleMeshPixelShader[1] = { 0 };
+static const unsigned long* const kSimpleMeshVertexShaderTable[1] = {
+    kSimpleMeshVertexShader
+};
+static const unsigned long* const kSimpleMeshPixelShaderTable[1] = {
+    kSimpleMeshPixelShader
+};
+
+unsigned long apsSimpleMeshRender::VS[1] = { 0 };
+const unsigned long** apsSimpleMeshRender::VShaderTable =
+    const_cast<const unsigned long**>(kSimpleMeshVertexShaderTable);
+unsigned long* apsSimpleMeshRenderPixel::PS[1] = { nullptr };
+const unsigned long** apsSimpleMeshRenderPixel::PShaderTable =
+    const_cast<const unsigned long**>(kSimpleMeshPixelShaderTable);
 
 // ea: 0x008028C0
 void apsSimpleMeshRender::RegisterVShader()
