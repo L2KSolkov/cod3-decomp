@@ -164,7 +164,7 @@ struct gdLight;
 class PoolAllocator;
 struct LightEffect;
 struct CameraShakeInstance;
-struct EndOnScriptNode;
+class EndOnScriptNode;
 struct DbStringHashTable;
 class DbTable;
 struct DbQuery;

@@ -491,6 +491,8 @@ public:
         void pop();
     };
 
+    class iterator;
+
     class const_iterator {
     public:
         const dlist_node* m_node;
@@ -498,6 +500,7 @@ public:
 
         const_iterator(const dlist_node* cur, const dlist_node* next);
         const_iterator(const reserved_dlist& dlist);
+        const_iterator(const iterator& it);
         const T* operator*() const;
         bool operator!=(const const_iterator& rhs) const;
         bool compare(const const_iterator& rhs) const;
@@ -648,6 +651,13 @@ reserved_dlist<T>::const_iterator::const_iterator(
         m_next = nullptr;
         m_node = nullptr;
     }
+}
+
+template <typename T>
+reserved_dlist<T>::const_iterator::const_iterator(
+    const typename reserved_dlist<T>::iterator& it)
+    : m_node(it.m_node), m_next(it.m_next)
+{
 }
 
 template <typename T>
@@ -901,6 +911,8 @@ template reserved_dlist<AeThreadState>::const_iterator::const_iterator(
     const reserved_dlist<AeThreadState>::dlist_node*);
 template reserved_dlist<AeThreadState>::const_iterator::const_iterator(
     const reserved_dlist<AeThreadState>&);
+template reserved_dlist<AeThread>::const_iterator::const_iterator(
+    const reserved_dlist<AeThread>::iterator&);
 template bool reserved_dlist<AeThreadState>::const_iterator::compare(
     const reserved_dlist<AeThreadState>::const_iterator&) const;
 template bool reserved_dlist<AeThread>::const_iterator::compare(
@@ -3692,7 +3704,7 @@ void AeThreadManager::ExecThread(AeThread* t)
 }
 
 // ea: 0x005EF600
-AeThread* AeThreadManager::DereferenceHandle(Handle h)
+AeThread* AeThreadManager::DereferenceHandle(Handle h) const
 {
     AeThreadManagerLayout* layout = (AeThreadManagerLayout*)this;
     HandleDb<AeThread, 256, SizedHandle<8, 24>>* db =

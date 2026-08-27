@@ -361,6 +361,33 @@ def debug_symbols() -> set[str]:
 
 def symbol_variants(name: str) -> set[str]:
     values = {name}
+    # The release map was produced with an older MSVC ABI spelling for a few
+    # pointer/reference and enum/class decorations.  IDA's release bodies
+    # confirm these are the same x86 call contracts; accept the current
+    # compiler's equivalent decorations without weakening body gates.
+    equivalent = {
+        "?MathFastSinCos@Broc@@YAXMAAM0@Z":
+            "?MathFastSinCos@Broc@@YAXMPAM0@Z",
+        "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
+            "?VecAnglesToUp@Broc@@YAXPAUvector@1@PBU21@@Z",
+        "?VecAnglesToRight@Broc@@YAXAAUvector@1@ABU21@@Z":
+            "?VecAnglesToRight@Broc@@YAXPAUvector@1@PBU21@@Z",
+        "?VecAnglesToForward@Broc@@YAXAAUvector@1@ABU21@@Z":
+            "?VecAnglesToForward@Broc@@YAXPAUvector@1@PBU21@@Z",
+        "?AddEndOn@EntityNotifySet@@QAEXPAVEndOnScriptNode@@@Z":
+            "?AddEndOn@EntityNotifySet@@QAEXPAUEndOnScriptNode@@@Z",
+        "?GetHandle@vehiclenode@Broc@@QBEHXZ":
+            "?GetHandle@vehiclenode@Broc@@QBE?AW4TVehiclenodeHandle@2@XZ",
+        "?get_dlist_node@AeThread@@QAEPAXXZ":
+            "?get_dlist_node@AeThread@@QAEPAV1@XZ",
+        "?MPScript_Obituary@BrocSys@@YAXIIABVstring@Broc@@H_N@Z":
+            "?MPScript_Obituary@BrocSys@@YAXIIPBVstring@Broc@@H_N@Z",
+    }
+    for release_name, current_name in equivalent.items():
+        if name == release_name:
+            values.add(current_name)
+        elif name == current_name:
+            values.add(release_name)
     # VC7's release map uses a compact back-reference for a repeated
     # by-value Broc::vector parameter.  Current MSVC spells the same ABI as
     # U23; undname confirms both forms are the identical vector-by-value
