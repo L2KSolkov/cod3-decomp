@@ -763,3 +763,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004499E0	?SP_sd_axis@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004499E0	release branch matches source.
 0x00449F60	?ChangePlayersMaxHealth@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:??	clamps max health, updates cvar, persistent maxHealth, stats, and entity health.
 0x00449F60	?ChangePlayersMaxHealth@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449F60	release clamp and all four updates match source.
+0x00449A30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:2772	Client origin setter preserves the null-client assert, origin/flag update, state conversion, NaN assert, and entity-origin synchronization.
+0x00449A30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449A30	Release instruction sequence matches source, including the +1 Z offset, eFlags toggle, NaN check, and trBase copy.
+0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:545	Client view-angle setter handles prone corrections, delta-angle encoding, current-angle storage, and viewangle copy.
+0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449BC0	Release prone thresholds, 182.04445 scaling/masks, delta-angle loop, angle storage, and PlayerState copy match source.
