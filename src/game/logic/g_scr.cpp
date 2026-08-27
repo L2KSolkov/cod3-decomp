@@ -148,7 +148,7 @@ public:
 
 namespace BrocSys {
 void HudSetDefaults(game_hudelem_s* hud);  // ?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z
-void HudSetClockInternal(unsigned int elemNum, he_type_t type, const char* cmdName,
+void HudSetClockInternal(int elemNum, he_type_t type, const char* cmdName,
                          const char* a4, float fTime, float fDur, int width,
                          int height);  // ?HudSetClockInternal@BrocSys@@YAXHW4he_type_t@@PBD1MMHH@Z
 }
@@ -2383,8 +2383,8 @@ void SoundStop(unsigned int handle)
             Handle(handle)));
 }
 
-// ea: 0x005C4C20
-void HudSetTimerInternal(unsigned int elemNum, he_type_t type,
+// ea: 0x005C4B10
+void HudSetTimerInternal(int elemNum, he_type_t type,
                          const char* /*cmdName*/, float fVal)
 {
     if (elemNum >= 0x10)
@@ -4221,7 +4221,7 @@ void ObjectiveChildAdd3(int iObjective, int iChild,
                         const Broc::string& pszString,
                         const char* display);  // 0x5C8E30
 void BrocDebugRender();  // 0x5BDEA0
-void* CreateExtendedEntity();  // 0x5BDF00
+void* CreateExtendedEntity(const char** keyvals, int numValuePairs);  // 0x5BDF00
 bool RecompileScript();  // 0x5BDFB0
 void GetJoyPos(int stickIndex, float& xPos, float& yPos);  // 0x5BF6A0
 void MPScript_ClearPlayerStats();  // 0x5C0B80
@@ -7061,7 +7061,7 @@ float BrocSys::GetAngleDelta(unsigned int anim, float startTime,
 }
 
 // ea: 0x005C4C50
-void BrocSys::HudSetClockInternal(unsigned int elemNum, he_type_t type,
+void BrocSys::HudSetClockInternal(int elemNum, he_type_t type,
                                   const char* texturename,
                                   const char* /*cmdName*/, const float fTime,
                                   const float fDur, int width, int height)
@@ -11003,13 +11003,13 @@ void BrocSys::BrocDebugRender()
 }
 
 // ea: 0x005BDF00
-void* BrocSys::CreateExtendedEntity()
+void* BrocSys::CreateExtendedEntity(const char** keyvals, int numValuePairs)
 {
     if (gpBrocAPI != nullptr)
     {
-        using CreateExtendedEntityFn = void* (*)();
+        using CreateExtendedEntityFn = void* (*)(const char**, int);
         return reinterpret_cast<CreateExtendedEntityFn>(
-            gpBrocAPI->mBrocExports.mCreateExtendedEntity)();
+            gpBrocAPI->mBrocExports.mCreateExtendedEntity)(keyvals, numValuePairs);
     }
     return nullptr;
 }

@@ -77,6 +77,12 @@ def main() -> int:
                     in ledger.symbol_variants(
                         "?ApplyFootIK@AnimIK@@QAEXPAVEntity@@AAVnalMatrix4x4@@1@Z"))
 
+            # The VC7 release map's compact repeated-vector spelling and the
+            # current MSVC U23 spelling demangle to the same ABI.
+            assert ("?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@U23@H@Z"
+                    in ledger.symbol_variants(
+                        "?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z"))
+
             # Missing source_ref is rejected rather than silently granting a gate.
             path.write_text("\t".join(ledger.EVIDENCE_FIELDS) + "\n" + row("PASS", source_ref="") + "\n", encoding="utf-8")
             _, errors = ledger.read_evidence()

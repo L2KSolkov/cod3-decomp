@@ -361,6 +361,14 @@ def debug_symbols() -> set[str]:
 
 def symbol_variants(name: str) -> set[str]:
     values = {name}
+    # VC7's release map uses a compact back-reference for a repeated
+    # by-value Broc::vector parameter.  Current MSVC spells the same ABI as
+    # U23; undname confirms both forms are the identical vector-by-value
+    # signature.  Accept both spellings for this one release export.
+    if name == "?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z":
+        values.add("?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@U23@H@Z")
+    elif name == "?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@U23@H@Z":
+        values.add("?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z")
     # Access control is encoded in the first member-function decoration byte
     # (A=private, Q=public, U=protected) but is not part of the V2 signature
     # contract.  The release PDB/map often reports private while the port's
