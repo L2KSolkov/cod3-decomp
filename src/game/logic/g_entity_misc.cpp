@@ -1864,6 +1864,7 @@ int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash)
     }
     return boneIndex < 0 && boneNameHash == tagOriginHash ? 0 : boneIndex;
 }
+// ea: 0x004A7A60
 team_t Sentient_EnemyTeam(team_t eTeam)
 {
     static const team_t enemyTeam[TEAM_NUM_TEAMS] = {

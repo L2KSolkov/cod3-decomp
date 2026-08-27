@@ -1704,6 +1704,7 @@ const math::Vector4& math::Mat44::operator[](unsigned int i) const
 // ============================================================================
 // Matrix free functions (g.o 0x4A75B0-0x4A82C0)
 // ============================================================================
+// ea: 0x004A75B0
 math::Position3 math::Mul(const math::Position3& _v, const math::Mat43& _m)
 {
     math::Position3 r;
@@ -1715,6 +1716,7 @@ math::Position3 math::Mul(const math::Position3& _v, const math::Mat43& _m)
                    _m.w.v));
     return r;
 }
+// ea: 0x004A76E0
 math::Position3 math::operator*(const math::Position3& _v, const math::Mat43& _m)
 {
     return math::Mul(_v, _m);
@@ -1744,6 +1746,7 @@ math::Position3 math::operator/(const math::Position3& _v, const math::Mat43& _m
     return r;
 }
 
+// ea: 0x004A77C0
 math::Mat33 math::Mul(const math::Mat33& _a, const math::Mat33& _b)
 {
     math::Mat33 r;
@@ -2164,10 +2167,12 @@ CollisionDesc::CollisionDesc(const math::Position3& c,
 // ============================================================================
 // Singleton Inst accessors (g.o 0x4A7540-0x4A9070)
 // ============================================================================
+// ea: 0x004A7540
 EffectEventSys* EffectEventSys::Inst()
 {
     return EffectEventSys::sInst;
 }
+// ea: 0x004A7550
 TaskSys* TaskSys::Inst()
 {
     return &TaskSys::sInst;
@@ -2189,6 +2194,7 @@ bool TestFPS::IsTesting()
     return mTesting;
 }
 
+// ea: 0x004A7560
 // PlayerStateEvents::Clear (g.o 0x4A7560)
 void PlayerStateEvents::Clear()
 {
@@ -2207,14 +2213,17 @@ void PlayerStateEvents::Clear()
 }
 
 // PathNodes::NodeHandle (g.o 0x4A75A0-0x4A76B0)
+// ea: 0x004A75A0
 PathNodes::NodeHandle::NodeHandle()
 {
     mValue = 0;
 }
+// ea: 0x004A7630
 PathNodes::NodeHandle::NodeHandle(int value)
 {
     mValue = (uint16_t)value;
 }
+// ea: 0x004A7650
 unsigned short PathNodes::NodeHandle::GetZoneIndex() const
 {
     return (unsigned short)(mValue - 1);
@@ -2229,20 +2238,24 @@ unsigned short PathNodes::NodeHandle::GetValue() const
 {
     return mValue;
 }
+// ea: 0x004A7660
 PathNodes::NodeHandle PathNodes::NodeHandle::NullHandle()
 {
     PathNodes::NodeHandle h;
     h.mValue = 0;
     return h;
 }
+// ea: 0x004A7670
 bool PathNodes::NodeHandle::IsAssigned() const
 {
     return mValue != 0 && mValue != 0xFFFF;
 }
+// ea: 0x004A7690
 bool PathNodes::NodeHandle::operator==(const PathNodes::NodeHandle& rhs) const
 {
     return mValue == rhs.mValue;
 }
+// ea: 0x004A76B0
 PathNodes::NodeHandle::operator bool() const
 {
     return mValue != 0 && mValue != 0xFFFF && operator->() != nullptr;

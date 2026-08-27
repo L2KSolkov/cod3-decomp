@@ -295,3 +295,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A7360	??0Mat43@math@@QAE@ABVMat33@1@ABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7360	Release copies all Mat33 rows and Position3 w row, matching source.
 0x004A74A0	??4Mat43@math@@QAEABV01@ABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1572	Source assigns all Mat43 rows and returns the destination.
 0x004A74A0	??4Mat43@math@@QAEABV01@ABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A74A0	Release copies all Mat43 rows and returns this, matching source.
+0x004A7540	?Inst@EffectEventSys@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2169	Non-empty source body returns the EffectEventSys singleton pointer.
+0x004A7540	?Inst@EffectEventSys@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7540	Release returns the sInst pointer directly, matching source.
+0x004A7550	?Inst@TaskSys@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2174	Non-empty source body returns the address of the TaskSys singleton object.
+0x004A7550	?Inst@TaskSys@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7550	Release returns the address of TaskSys::sInst, matching source.
+0x004A7560	?Clear@PlayerStateEvents@@QAEXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2196	Source clears all scalar event state and all four event/event-parameter slots.
+0x004A7560	?Clear@PlayerStateEvents@@QAEXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7560	Release zeroes the seven scalar fields and four event plus four parameter entries, matching source.
+0x004A75A0	??0NodeHandle@PathNodes@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2215	Source default constructor initializes mValue to zero.
+0x004A75A0	??0NodeHandle@PathNodes@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A75A0	Release stores zero to mValue and returns this, matching source.
+0x004A75B0	?Mul@math@@YA?AVPosition3@1@ABV21@ABVMat43@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1707	Source computes position times Mat43 with SIMD row products and translation.
+0x004A75B0	?Mul@math@@YA?AVPosition3@1@ABV21@ABVMat43@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A75B0	Release multiplies x/y/z rows by broadcast position lanes, adds w, and returns the result, matching source.
+0x004A7630	??0NodeHandle@PathNodes@@QAE@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2220	Source constructor stores the integer value in the 16-bit handle field.
+0x004A7630	??0NodeHandle@PathNodes@@QAE@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7630	Release truncates the constructor value to mValue and returns this, matching source.
+0x004A7650	?GetZoneIndex@NodeHandle@PathNodes@@QBEGXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2225	Source returns mValue minus one as the zone index.
+0x004A7650	?GetZoneIndex@NodeHandle@PathNodes@@QBEGXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7650	Release decrements mValue and returns the 16-bit result, matching source.
+0x004A7660	?NullHandle@NodeHandle@PathNodes@@SA?AV12@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2240	Source returns a NodeHandle with mValue set to zero.
+0x004A7660	?NullHandle@NodeHandle@PathNodes@@SA?AV12@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7660	Release constructs and returns a zero-valued handle, matching source.
+0x004A7670	?IsAssigned@NodeHandle@PathNodes@@QBE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2247	Source reports assigned only when mValue is neither zero nor 0xFFFF.
+0x004A7670	?IsAssigned@NodeHandle@PathNodes@@QBE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7670	Release tests mValue against zero and 0xFFFF, matching source.
+0x004A7690	??8NodeHandle@PathNodes@@QBE_NABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2252	Source compares the two 16-bit handle values for equality.
+0x004A7690	??8NodeHandle@PathNodes@@QBE_NABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7690	Release compares this->mValue with rhs.mValue, matching source.
+0x004A76B0	??BNodeHandle@PathNodes@@QBE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2258	Source bool conversion validates the sentinel values and a non-null dereferenced node.
+0x004A76B0	??BNodeHandle@PathNodes@@QBE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A76B0	Release rejects zero/0xFFFF, calls operator->, and tests the returned pointer, matching source.
+0x004A76E0	??Dmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1718	Source operator* delegates to the Mat43 position multiply implementation.
+0x004A76E0	??Dmath@@YA?AVPosition3@0@ABV10@ABVMat43@0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A76E0	Release contains the same SIMD position-by-matrix computation as Mul, matching source behavior.
+0x004A77C0	?Mul@math@@YA?AVMat33@1@ABV21@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1748	Source computes all three Mat33 result rows from broadcast input lanes and the right-hand rows.
+0x004A77C0	?Mul@math@@YA?AVMat33@1@ABV21@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A77C0	Release performs the full three-row SIMD matrix product, matching source.
+0x004A7920	?IsPlayerFullySeatedInVehicle@@YA_NPAVEntity@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:2258	Source asserts on an invalid player/client and then applies the eFlags, animation, and vehicle-position conditions.
+0x004A7920	?IsPlayerFullySeatedInVehicle@@YA_NPAVEntity@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7920	Release has the same invalid-player assertion and seated condition, matching source.
+0x004A7A60	?Sentient_EnemyTeam@@YA?AW4team_t@@W41@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_entity_misc.cpp:1867	Source maps free/allies/axis/dead teams through the release lookup table and asserts invalid values.
+0x004A7A60	?Sentient_EnemyTeam@@YA?AW4team_t@@W41@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7A60	Release uses the same five-entry enemy table and invalid-team assertion path, matching source.

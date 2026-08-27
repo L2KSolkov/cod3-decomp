@@ -351,6 +351,7 @@ def base_name(decorated: str) -> str:
             ("??G", "operator-"),
             ("??8", "operator=="),
             ("??9", "operator!="),
+            ("??B", "operator bool"),
             ("??H", "operator+"),
             ("??K", "operator/"),
             ("??_0", "operator/="),
