@@ -609,3 +609,31 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004AC910	??A?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBEABUbounded_proxy_obj_t@@H	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC910	Release matches the bounds guard, tlAssert metadata, and indexed return.
 0x004AC970	?get_count@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBE?BHXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:3171	Source returns m_alloc_count.
 0x004AC970	?get_count@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBE?BHXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004AC970	Release returns m_alloc_count, matching source.
+0x00449350	?GScr_GetStartOrigin@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:1698	Source intentionally implements the release no-op.
+0x00449350	?GScr_GetStartOrigin@@YAXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x00449350	Release function is an empty body, matching source.
+0x00449360	?GScr_GetStartAngles@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:1704	Source intentionally implements the release no-op.
+0x00449360	?GScr_GetStartAngles@@YAXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x00449360	Release function is an empty body, matching source.
+0x00449370	?GScr_GetCycleOriginOffset@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:1710	Source intentionally implements the release no-op.
+0x00449370	?GScr_GetCycleOriginOffset@@YAXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x00449370	Release function is an empty body, matching source.
+0x0044B120	?HudElem_UpdateClient@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:24	Source preserves the release no-op ABI and ignores its unused client arguments.
+0x0044B120	?HudElem_UpdateClient@@YAXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044B120	Release function has no state-changing instructions, matching source.
+0x0044CD70	?GScr_FixupBroAnimScriptHooks@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:1802	Source intentionally implements the release no-op.
+0x0044CD70	?GScr_FixupBroAnimScriptHooks@@YAXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044CD70	Release function is an empty body, matching source.
+0x0044CD90	?GScr_AddFieldsForVehicleNode@@YAXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:1808	Source intentionally implements the release no-op.
+0x0044CD90	?GScr_AddFieldsForVehicleNode@@YAXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044CD90	Release function is an empty body, matching source.
+0x0044F470	?G_FreeVehicleSeat@@YAXPAVEntity@@0H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5479	Source intentionally implements the release no-op.
+0x0044F470	?G_FreeVehicleSeat@@YAXPAVEntity@@0H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044F470	Release function is an empty body, matching source.
+0x0044F4B0	?Scr_Vehicle_OccupantStartEntering@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5505	Source intentionally implements the release no-op.
+0x0044F4B0	?Scr_Vehicle_OccupantStartEntering@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044F4B0	Release function is an empty body, matching source.
+0x0044F4C0	?Scr_Vehicle_OccupantIsSeat@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5512	Source intentionally implements the release no-op.
+0x0044F4C0	?Scr_Vehicle_OccupantIsSeat@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044F4C0	Release function is an empty body, matching source.
+0x0044F4D0	?Scr_Vehicle_OccupantStartExiting@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5518	Source intentionally implements the release no-op.
+0x0044F4D0	?Scr_Vehicle_OccupantStartExiting@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044F4D0	Release function is an empty body, matching source.
+0x0044F4E0	?Scr_Vehicle_OccupantIsOut@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr_vehicle.cpp:5525	Source intentionally implements the release no-op.
+0x0044F4E0	?Scr_Vehicle_OccupantIsOut@@YAXPAUscr_vehicle_t@@PBVEntity@@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044F4E0	Release function is an empty body, matching source.
+0x0044FF20	?G_SetEntityScriptVariable@@YAXPBD0PAVEntity@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:50	Source explicitly preserves this release no-op export.
+0x0044FF20	?G_SetEntityScriptVariable@@YAXPBD0PAVEntity@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044FF20	Release function is empty, matching source.
+0x004504C0	?Scr_FreeHudElem@@YAXPAUgame_hudelem_s@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:60	Source explicitly preserves this release no-op export.
+0x004504C0	?Scr_FreeHudElem@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004504C0	Release function is empty, matching source.
+0x004504D0	?Scr_AddHudElem@@YAXPAUgame_hudelem_s@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:67	Source explicitly preserves this release no-op export.
+0x004504D0	?Scr_AddHudElem@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004504D0	Release function is empty, matching source.
