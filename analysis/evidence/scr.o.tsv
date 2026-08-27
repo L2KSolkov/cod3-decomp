@@ -1,0 +1,17 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x005BC520	?SpecialEditionSkin@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3372	Non-empty body returns the global special-edition flag.
+0x005BC520	?SpecialEditionSkin@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177453	Release and source both return gCE with no additional control flow.
+0x005BC530	?IsHost@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3378	Non-empty body forwards the host query to MultiplayerMgr.
+0x005BC530	?IsHost@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177459	Release and source call MultiplayerMgr::IsHost on the singleton and return the result.
+0x005BC540	?IsRankedGame@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3384	Non-empty body returns the multiplayer ranked-game field.
+0x005BC540	?IsRankedGame@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177465	Release and source return MultiplayerMgr::sInst->mRankedGame with no additional control flow.
+0x005BC590	?SetTeamGame@BrocSys@@YAX_N@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3390	Non-empty body stores the team-game flag in cgGlobal.
+0x005BC590	?SetTeamGame@BrocSys@@YAX_N@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177471	Release and source assign the incoming boolean to cgGlobal.teamGame.
+0x005BC5A0	?SetShowScore@BrocSys@@YAX_N@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3396	Non-empty body stores the show-score flag in cgGlobal.
+0x005BC5A0	?SetShowScore@BrocSys@@YAX_N@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177477	Release and source assign the incoming boolean to cgGlobal.showScore.
+0x005BC5B0	?SetShowTime@BrocSys@@YAXM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:6301	Non-empty body stores game time and resets its start time.
+0x005BC5B0	?SetShowTime@BrocSys@@YAXM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177483	Release and source assign gameTime and set gameTimeStartTime from cgGlobal.time.
+0x005BC5E0	?GetTeamGame@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3402	Non-empty body returns cgGlobal.teamGame.
+0x005BC5E0	?GetTeamGame@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177490	Release and source return cgGlobal.teamGame with no additional control flow.
+0x005BC710	?PrintLn@BrocSys@@YAXPBD@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3420	Non-empty body prints the supplied text followed by a newline.
+0x005BC710	?PrintLn@BrocSys@@YAXPBD@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177542	Release and source call Com_Printf with the same "%s\\n" format and text argument.
