@@ -1,0 +1,99 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00819D70	?GetPos@RectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:143	Real position accessor returns the packed position at offset zero.
+0x00819D70	?GetPos@RectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819D70;src/aeps/apsBillboardNode.cpp:143	Release and source both return mPos.
+0x00819D80	?GetColor@RectangleParticle@@QAE?AVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:145	Real color accessor constructs opaque white with particle alpha.
+0x00819D80	?GetColor@RectangleParticle@@QAE?AVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819D80;src/aeps/apsBillboardNode.cpp:145	Release and source both return Vector4(1,1,1,mAlpha).
+0x00819DD0	?GetWidth@RectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:152	Real width accessor returns mWidth.
+0x00819DD0	?GetWidth@RectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819DD0;src/aeps/apsBillboardNode.cpp:152	Release and source both return mWidth.
+0x00819DE0	?GetHeight@RectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:154	Real height accessor returns mHeight.
+0x00819DE0	?GetHeight@RectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819DE0;src/aeps/apsBillboardNode.cpp:154	Release and source both return mHeight.
+0x00819DF0	?GetAngle@RectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:156	Real angle accessor returns mAngle.
+0x00819DF0	?GetAngle@RectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819DF0;src/aeps/apsBillboardNode.cpp:156	Release and source both return mAngle.
+0x00819E00	?GetFrame@RectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:158	Real frame accessor returns the fixed zero frame.
+0x00819E00	?GetFrame@RectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819E00;src/aeps/apsBillboardNode.cpp:158	Release and source both return 0.0f.
+0x00819E10	?GetVelocity@RectangleParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:160	Real velocity accessor returns mVelocity by reference.
+0x00819E10	?GetVelocity@RectangleParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00819E10;src/aeps/apsBillboardNode.cpp:160	Release and source both return mVelocity.
+0x00815190	?GetPos@ColorRectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:164	Real position accessor returns the packed position at offset zero.
+0x00815190	?GetPos@ColorRectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00815190;src/aeps/apsBillboardNode.cpp:164	Release and source both return mPos.
+0x008151A0	?GetColor@ColorRectangleParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:166	Real color accessor returns mColor by reference.
+0x008151A0	?GetColor@ColorRectangleParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008151A0;src/aeps/apsBillboardNode.cpp:166	Release and source both return &mColor.
+0x008151B0	?GetWidth@ColorRectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:168	Real width accessor returns mWidth.
+0x008151B0	?GetWidth@ColorRectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008151B0;src/aeps/apsBillboardNode.cpp:168	Release and source both return mWidth.
+0x008151C0	?GetHeight@ColorRectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:170	Real height accessor returns mHeight.
+0x008151C0	?GetHeight@ColorRectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008151C0;src/aeps/apsBillboardNode.cpp:170	Release and source both return mHeight.
+0x008151D0	?GetAngle@ColorRectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:172	Real angle accessor returns mAngle.
+0x008151D0	?GetAngle@ColorRectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008151D0;src/aeps/apsBillboardNode.cpp:172	Release and source both return mAngle.
+0x008151E0	?GetFrame@ColorRectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:174	Real frame accessor returns the fixed zero frame.
+0x008151E0	?GetFrame@ColorRectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008151E0;src/aeps/apsBillboardNode.cpp:174	Release and source both return 0.0f.
+0x008151F0	?GetVelocity@ColorRectangleParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:176	Real velocity accessor returns mVelocity by reference.
+0x008151F0	?GetVelocity@ColorRectangleParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008151F0;src/aeps/apsBillboardNode.cpp:176	Release and source both return mVelocity.
+0x008163E0	?GetPos@UVAParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:180	Real position accessor returns the packed position at offset zero.
+0x008163E0	?GetPos@UVAParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163E0;src/aeps/apsBillboardNode.cpp:180	Release and source both return mPos.
+0x008163F0	?GetColor@UVAParticle@@QAE?AVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:182	Real color accessor constructs opaque white with particle alpha.
+0x008163F0	?GetColor@UVAParticle@@QAE?AVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163F0;src/aeps/apsBillboardNode.cpp:182	Release and source both return Vector4(1,1,1,mAlpha).
+0x00816440	?GetWidth@UVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:189	Real width accessor returns mRadius.
+0x00816440	?GetWidth@UVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816440;src/aeps/apsBillboardNode.cpp:189	Release and source both return mRadius.
+0x00816450	?GetHeight@UVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:191	Real height accessor returns mRadius.
+0x00816450	?GetHeight@UVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816450;src/aeps/apsBillboardNode.cpp:191	Release and source both return mRadius.
+0x00816460	?GetAngle@UVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:193	Real angle accessor returns mAngle.
+0x00816460	?GetAngle@UVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816460;src/aeps/apsBillboardNode.cpp:193	Release and source both return mAngle.
+0x00816470	?GetFrame@UVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:195	Real frame accessor returns mFrame.
+0x00816470	?GetFrame@UVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816470;src/aeps/apsBillboardNode.cpp:195	Release and source both return mFrame.
+0x00816480	?GetVelocity@UVAParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:197	Real velocity accessor returns mVelocity by reference.
+0x00816480	?GetVelocity@UVAParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00816480;src/aeps/apsBillboardNode.cpp:197	Release and source both return mVelocity.
+0x00818A00	?GetPos@UVARectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:201	Real position accessor returns the packed position at offset zero.
+0x00818A00	?GetPos@UVARectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00818A00;src/aeps/apsBillboardNode.cpp:201	Release and source both return mPos.
+0x00818A10	?GetColor@UVARectangleParticle@@QAE?AVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:203	Real color accessor constructs opaque white with particle alpha.
+0x00818A10	?GetColor@UVARectangleParticle@@QAE?AVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00818A10;src/aeps/apsBillboardNode.cpp:203	Release and source both return Vector4(1,1,1,mAlpha).
+0x00818A60	?GetWidth@UVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:210	Real width accessor returns mWidth.
+0x00818A60	?GetWidth@UVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00818A60;src/aeps/apsBillboardNode.cpp:210	Release and source both return mWidth.
+0x00818A70	?GetHeight@UVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:212	Real height accessor returns mHeight.
+0x00818A70	?GetHeight@UVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00818A70;src/aeps/apsBillboardNode.cpp:212	Release and source both return mHeight.
+0x00818A80	?GetAngle@UVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:214	Real angle accessor returns mAngle.
+0x00818A80	?GetAngle@UVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00818A80;src/aeps/apsBillboardNode.cpp:214	Release and source both return mAngle.
+0x00818A90	?GetFrame@UVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:216	Real frame accessor returns mFrame.
+0x00818A90	?GetFrame@UVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00818A90;src/aeps/apsBillboardNode.cpp:216	Release and source both return mFrame.
+0x00818AA0	?GetVelocity@UVARectangleParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:218	Real velocity accessor returns mVelocity by reference.
+0x00818AA0	?GetVelocity@UVARectangleParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00818AA0;src/aeps/apsBillboardNode.cpp:218	Release and source both return mVelocity.
+0x0081B030	?GetPos@ColorUVAParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:222	Real position accessor returns the packed position at offset zero.
+0x0081B030	?GetPos@ColorUVAParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B030;src/aeps/apsBillboardNode.cpp:222	Release and source both return mPos.
+0x0081B040	?GetColor@ColorUVAParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:224	Real color accessor returns mColor by reference.
+0x0081B040	?GetColor@ColorUVAParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B040;src/aeps/apsBillboardNode.cpp:224	Release and source both return &mColor.
+0x0081B050	?GetWidth@ColorUVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:226	Real width accessor returns mRadius.
+0x0081B050	?GetWidth@ColorUVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B050;src/aeps/apsBillboardNode.cpp:226	Release and source both return mRadius.
+0x0081B060	?GetHeight@ColorUVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:228	Real height accessor returns mRadius.
+0x0081B060	?GetHeight@ColorUVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B060;src/aeps/apsBillboardNode.cpp:228	Release and source both return mRadius.
+0x0081B070	?GetAngle@ColorUVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:230	Real angle accessor returns mAngle.
+0x0081B070	?GetAngle@ColorUVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B070;src/aeps/apsBillboardNode.cpp:230	Release and source both return mAngle.
+0x0081B080	?GetFrame@ColorUVAParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:232	Real frame accessor returns mFrame.
+0x0081B080	?GetFrame@ColorUVAParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B080;src/aeps/apsBillboardNode.cpp:232	Release and source both return mFrame.
+0x0081B090	?GetVelocity@ColorUVAParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:234	Real velocity accessor returns mVelocity by reference.
+0x0081B090	?GetVelocity@ColorUVAParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B090;src/aeps/apsBillboardNode.cpp:234	Release and source both return mVelocity.
+0x00817750	?GetPos@ColorUVARectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:238	Real position accessor returns the packed position at offset zero.
+0x00817750	?GetPos@ColorUVARectangleParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00817750;src/aeps/apsBillboardNode.cpp:238	Release and source both return mPos.
+0x00817760	?GetColor@ColorUVARectangleParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:240	Real color accessor returns mColor by reference.
+0x00817760	?GetColor@ColorUVARectangleParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00817760;src/aeps/apsBillboardNode.cpp:240	Release and source both return &mColor.
+0x00817770	?GetWidth@ColorUVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:242	Real width accessor returns mWidth.
+0x00817770	?GetWidth@ColorUVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00817770;src/aeps/apsBillboardNode.cpp:242	Release and source both return mWidth.
+0x00817780	?GetHeight@ColorUVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:244	Real height accessor returns mHeight.
+0x00817780	?GetHeight@ColorUVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00817780;src/aeps/apsBillboardNode.cpp:244	Release and source both return mHeight.
+0x00817790	?GetAngle@ColorUVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:246	Real angle accessor returns mAngle.
+0x00817790	?GetAngle@ColorUVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00817790;src/aeps/apsBillboardNode.cpp:246	Release and source both return mAngle.
+0x008177A0	?GetFrame@ColorUVARectangleParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:248	Real frame accessor returns mFrame.
+0x008177A0	?GetFrame@ColorUVARectangleParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008177A0;src/aeps/apsBillboardNode.cpp:248	Release and source both return mFrame.
+0x008177B0	?GetVelocity@ColorUVARectangleParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:250	Real velocity accessor returns mVelocity by reference.
+0x008177B0	?GetVelocity@ColorUVARectangleParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008177B0;src/aeps/apsBillboardNode.cpp:250	Release and source both return mVelocity.
+0x0081C2E0	?GetPos@ColorBillboardParticle@@QAEAAUPacked@Dir3@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:254	Real position accessor returns the packed position at offset zero.
+0x0081C2E0	?GetPos@ColorBillboardParticle@@QAEAAUPacked@Dir3@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081C2E0;src/aeps/apsBillboardNode.cpp:254	Release and source both return mPos.
+0x0081C2F0	?GetColor@ColorBillboardParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:256	Real color accessor returns mColor by reference.
+0x0081C2F0	?GetColor@ColorBillboardParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081C2F0;src/aeps/apsBillboardNode.cpp:256	Release and source both return &mColor.
+0x0081C300	?GetWidth@ColorBillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:258	Real width accessor returns mRadius.
+0x0081C300	?GetWidth@ColorBillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081C300;src/aeps/apsBillboardNode.cpp:258	Release and source both return mRadius.
+0x0081C310	?GetHeight@ColorBillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:260	Real height accessor returns mRadius.
+0x0081C310	?GetHeight@ColorBillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081C310;src/aeps/apsBillboardNode.cpp:260	Release and source both return mRadius.
+0x0081C320	?GetAngle@ColorBillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:262	Real angle accessor returns mAngle.
+0x0081C320	?GetAngle@ColorBillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081C320;src/aeps/apsBillboardNode.cpp:262	Release and source both return mAngle.
+0x0081C330	?GetFrame@ColorBillboardParticle@@QAEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:264	Real frame accessor returns the fixed zero frame.
+0x0081C330	?GetFrame@ColorBillboardParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081C330;src/aeps/apsBillboardNode.cpp:264	Release and source both return 0.0f.
+0x0081C340	?GetVelocity@ColorBillboardParticle@@QAEAAVVector4@math@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsBillboardNode.cpp:266	Real velocity accessor returns mVelocity by reference.
+0x0081C340	?GetVelocity@ColorBillboardParticle@@QAEAAVVector4@math@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081C340;src/aeps/apsBillboardNode.cpp:266	Release and source both return mVelocity.

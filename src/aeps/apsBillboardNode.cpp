@@ -341,6 +341,133 @@ math::Vector4& BillboardParticle::GetVelocity()
     return mVelocity;
 }
 
+// RectangleParticle accessors (apsRectangleNode.o)
+// ea: 0x00819D70
+math::Dir3::Packed& RectangleParticle::GetPos() { return mPos; }
+// ea: 0x00819D80
+math::Vector4 RectangleParticle::GetColor()
+{
+    math::Vector4 result;
+    result.v = _mm_setr_ps(1.0f, 1.0f, 1.0f, mAlpha);
+    return result;
+}
+// ea: 0x00819DD0
+float RectangleParticle::GetWidth() { return mWidth; }
+// ea: 0x00819DE0
+float RectangleParticle::GetHeight() { return mHeight; }
+// ea: 0x00819DF0
+float RectangleParticle::GetAngle() { return mAngle; }
+// ea: 0x00819E00
+float RectangleParticle::GetFrame() { return 0.0f; }
+// ea: 0x00819E10
+math::Vector4& RectangleParticle::GetVelocity() { return mVelocity; }
+
+// ColorRectangleParticle accessors (apsColorRectangleNode.o)
+// ea: 0x00815190
+math::Dir3::Packed& ColorRectangleParticle::GetPos() { return mPos; }
+// ea: 0x008151A0
+math::Vector4& ColorRectangleParticle::GetColor() { return mColor; }
+// ea: 0x008151B0
+float ColorRectangleParticle::GetWidth() { return mWidth; }
+// ea: 0x008151C0
+float ColorRectangleParticle::GetHeight() { return mHeight; }
+// ea: 0x008151D0
+float ColorRectangleParticle::GetAngle() { return mAngle; }
+// ea: 0x008151E0
+float ColorRectangleParticle::GetFrame() { return 0.0f; }
+// ea: 0x008151F0
+math::Vector4& ColorRectangleParticle::GetVelocity() { return mVelocity; }
+
+// UVAParticle accessors (apsUVANode.o)
+// ea: 0x008163E0
+math::Dir3::Packed& UVAParticle::GetPos() { return mPos; }
+// ea: 0x008163F0
+math::Vector4 UVAParticle::GetColor()
+{
+    math::Vector4 result;
+    result.v = _mm_setr_ps(1.0f, 1.0f, 1.0f, mAlpha);
+    return result;
+}
+// ea: 0x00816440
+float UVAParticle::GetWidth() { return mRadius; }
+// ea: 0x00816450
+float UVAParticle::GetHeight() { return mRadius; }
+// ea: 0x00816460
+float UVAParticle::GetAngle() { return mAngle; }
+// ea: 0x00816470
+float UVAParticle::GetFrame() { return mFrame; }
+// ea: 0x00816480
+math::Vector4& UVAParticle::GetVelocity() { return mVelocity; }
+
+// UVARectangleParticle accessors (apsUVARectangleNode.o)
+// ea: 0x00818A00
+math::Dir3::Packed& UVARectangleParticle::GetPos() { return mPos; }
+// ea: 0x00818A10
+math::Vector4 UVARectangleParticle::GetColor()
+{
+    math::Vector4 result;
+    result.v = _mm_setr_ps(1.0f, 1.0f, 1.0f, mAlpha);
+    return result;
+}
+// ea: 0x00818A60
+float UVARectangleParticle::GetWidth() { return mWidth; }
+// ea: 0x00818A70
+float UVARectangleParticle::GetHeight() { return mHeight; }
+// ea: 0x00818A80
+float UVARectangleParticle::GetAngle() { return mAngle; }
+// ea: 0x00818A90
+float UVARectangleParticle::GetFrame() { return mFrame; }
+// ea: 0x00818AA0
+math::Vector4& UVARectangleParticle::GetVelocity() { return mVelocity; }
+
+// ColorUVAParticle accessors (apsColorUVANode.o)
+// ea: 0x0081B030
+math::Dir3::Packed& ColorUVAParticle::GetPos() { return mPos; }
+// ea: 0x0081B040
+math::Vector4& ColorUVAParticle::GetColor() { return mColor; }
+// ea: 0x0081B050
+float ColorUVAParticle::GetWidth() { return mRadius; }
+// ea: 0x0081B060
+float ColorUVAParticle::GetHeight() { return mRadius; }
+// ea: 0x0081B070
+float ColorUVAParticle::GetAngle() { return mAngle; }
+// ea: 0x0081B080
+float ColorUVAParticle::GetFrame() { return mFrame; }
+// ea: 0x0081B090
+math::Vector4& ColorUVAParticle::GetVelocity() { return mVelocity; }
+
+// ColorUVARectangleParticle accessors (apsColorUVARectangleNode.o)
+// ea: 0x00817750
+math::Dir3::Packed& ColorUVARectangleParticle::GetPos() { return mPos; }
+// ea: 0x00817760
+math::Vector4& ColorUVARectangleParticle::GetColor() { return mColor; }
+// ea: 0x00817770
+float ColorUVARectangleParticle::GetWidth() { return mWidth; }
+// ea: 0x00817780
+float ColorUVARectangleParticle::GetHeight() { return mHeight; }
+// ea: 0x00817790
+float ColorUVARectangleParticle::GetAngle() { return mAngle; }
+// ea: 0x008177A0
+float ColorUVARectangleParticle::GetFrame() { return mFrame; }
+// ea: 0x008177B0
+math::Vector4& ColorUVARectangleParticle::GetVelocity() { return mVelocity; }
+
+// ColorBillboardParticle accessors (apsColorBillboardNode.o)
+// ea: 0x0081C2E0
+math::Dir3::Packed& ColorBillboardParticle::GetPos() { return mPos; }
+// ea: 0x0081C2F0
+math::Vector4& ColorBillboardParticle::GetColor() { return mColor; }
+// ea: 0x0081C300
+float ColorBillboardParticle::GetWidth() { return mRadius; }
+// ea: 0x0081C310
+float ColorBillboardParticle::GetHeight() { return mRadius; }
+// ea: 0x0081C320
+float ColorBillboardParticle::GetAngle() { return mAngle; }
+// ea: 0x0081C330
+float ColorBillboardParticle::GetFrame() { return 0.0f; }
+// ea: 0x0081C340
+math::Vector4& ColorBillboardParticle::GetVelocity() { return mVelocity; }
+
 // apsBillboardRender::GetVShader - ea: 0x00813EB0
 unsigned long apsBillboardRender::GetVShader()
 {
