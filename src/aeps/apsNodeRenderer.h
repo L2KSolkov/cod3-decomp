@@ -14,9 +14,11 @@
 struct BillboardParticle;
 struct ColorBillboardParticle;
 struct RectangleParticle;
+struct ColorRectangleParticle;
 class apsBillboardNode;
 class apsColorBillboardNode;
 class apsRectangleNode;
+class apsColorRectangleNode;
 
 namespace apsRenderSort {
 template <typename Particle>
@@ -76,5 +78,14 @@ void cNodeRenderer<RectangleParticle, apsRectangleNode>::SetupDefaultShaders(
     const math::Mat43& localMatrix);
 template <>
 void cNodeRenderer<RectangleParticle, apsRectangleNode>::SetupShaders();
+
+template <>
+cNodeRenderer<ColorRectangleParticle, apsColorRectangleNode>::cNodeRenderer(
+    apsColorRectangleNode* node);
+template <>
+void cNodeRenderer<ColorRectangleParticle, apsColorRectangleNode>::SetupDefaultShaders(
+    const math::Mat43& localMatrix);
+template <>
+void cNodeRenderer<ColorRectangleParticle, apsColorRectangleNode>::SetupShaders();
 
 #endif // COD3_AEPS_APSNODERENDERER_H
