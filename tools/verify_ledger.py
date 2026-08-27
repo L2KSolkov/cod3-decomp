@@ -432,6 +432,8 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_CalcMuzzlePoint@@YAHIPAMPAD@Z",
         "?CG_WhizbySound@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QBM1@Z":
             "?CG_WhizbySound@@YAXIPBM0@Z",
+        "?CG_FilledBar@@YAXMMMMPBMPAM0MH@Z":
+            "?CG_FilledBar@@YAXMMMMPAM0PBMMF@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
