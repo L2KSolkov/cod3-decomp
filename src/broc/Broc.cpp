@@ -301,23 +301,23 @@ float length(const vector& v) {
 }
 
 // ea: 0x005E9690
-float length2(const vector* v) {
-    return v->x * v->x + v->y * v->y + v->z * v->z;
+float length2(const vector& v) {
+    return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
 // ea: 0x005E96C0
-float dot(const vector* a, const vector* b) {
-    return a->z * b->z + a->y * b->y + a->x * b->x;
+float dot(const vector& a, const vector& b) {
+    return a.z * b.z + a.y * b.y + a.x * b.x;
 }
 
 // ea: 0x005E96F0
-float VecDistance(const vector* v0, const vector* v1) {
-    return VectorDistance(&v0->x, &v1->x);
+float VecDistance(const vector& v0, const vector& v1) {
+    return VectorDistance(&v0.x, &v1.x);
 }
 
 // ea: 0x005E9710
-float VecDistanceSquared(const vector* v0, const vector* v1) {
-    return VectorDistanceSquared(&v0->x, &v1->x);
+float VecDistanceSquared(const vector& v0, const vector& v1) {
+    return VectorDistanceSquared(&v0.x, &v1.x);
 }
 
 vector& vector::operator+=(const vector& rhs)
@@ -362,9 +362,9 @@ vector operator/(const vector& lhs, float rhs)
 }
 
 // ea: 0x005E9730
-int VecCloser(const vector* vRef, const vector* vA, const vector* vB) {
-    float fDistASqrd = VectorDistanceSquared(&vA->x, &vRef->x);
-    return VectorDistanceSquared(&vB->x, &vRef->x) > fDistASqrd;
+int VecCloser(const vector& vRef, const vector& vA, const vector& vB) {
+    float fDistASqrd = VectorDistanceSquared(&vA.x, &vRef.x);
+    return VectorDistanceSquared(&vB.x, &vRef.x) > fDistASqrd;
 }
 
 // ea: 0x005EF680
@@ -373,32 +373,32 @@ void MathFastSinCos(float fAng, float* sin, float* cos) {
 }
 
 // ea: 0x005EE110
-void normalize(vector* v) {
-    float len = sqrtf(v->x * v->x + v->y * v->y + v->z * v->z);
+void normalize(vector& v) {
+    float len = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
     if (len != 0.0f)
     {
-        v->x = (1.0f / len) * v->x;
-        float z = (1.0f / len) * v->z;
-        v->y = (1.0f / len) * v->y;
-        v->z = z;
+        v.x = (1.0f / len) * v.x;
+        float z = (1.0f / len) * v.z;
+        v.y = (1.0f / len) * v.y;
+        v.z = z;
     }
 }
 
 // ea: 0x005EE1A0
-void VecNormalize(vector* vecOut, const vector* vecIn) {
-    *vecOut = *vecIn;
+void VecNormalize(vector& vecOut, const vector& vecIn) {
+    vecOut = vecIn;
     normalize(vecOut);
 }
 
 // ea: 0x005E9780
-void VecToAngles(vector* vecOut, const vector* vecIn) {
-    vectoangles(&vecIn->x, &vecOut->x);
+void VecToAngles(vector& vecOut, const vector& vecIn) {
+    vectoangles(&vecIn.x, &vecOut.x);
 }
 
 // ea: 0x005E97A0
-void VecAnglesToVectors(const vector* angles, vector* forward,
-                        vector* right, vector* up) {
-    AngleVectors(&angles->x, &forward->x, &right->x, &up->x);
+void VecAnglesToVectors(const vector& angles, vector& forward,
+                        vector& right, vector& up) {
+    AngleVectors(&angles.x, &forward.x, &right.x, &up.x);
 }
 
 // ea: 0x005E97B0
@@ -408,13 +408,13 @@ hudelem::hudelem()
 }
 
 // ea: 0x005E97C0
-hudelem::hudelem(unsigned int v)
+hudelem::hudelem(int v)
     : ___u0(v)
 {
 }
 
 // ea: 0x005E97E0
-unsigned int hudelem::GetIndex() const
+int hudelem::GetIndex() const
 {
     return ___u0;
 }

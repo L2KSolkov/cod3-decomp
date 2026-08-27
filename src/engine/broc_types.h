@@ -769,8 +769,8 @@ public:
     };
 
     hudelem();
-    hudelem(unsigned int v);
-    unsigned int GetIndex() const;
+    hudelem(int v);
+    int GetIndex() const;
 
     bool IsDefined() const;             // ?IsDefined@hudelem@Broc@@QBE_NXZ
     void SetUndefined();             // ea: 0x948420
@@ -1707,7 +1707,7 @@ float Distance(const Broc::vector* a, const Broc::vector* b);
 float VectorLength(const Broc::vector* v);
 float VectorDot(const Broc::vector* a, const Broc::vector* b);
 void VectorNormalize(Broc::vector* result, const Broc::vector* v);
-int VecCloser(const Broc::vector* a, const Broc::vector* b, const Broc::vector* c);
+int VecCloser(const Broc::vector& a, const Broc::vector& b, const Broc::vector& c);
 int IsPlayer(const Broc::entity& e);             // ea: 0x93BE30
 int IsAlive(const Broc::entity* e);              // ea: 0x92F320
 int IsVehicle(const Broc::entity* e);            // ea: 0x92F350

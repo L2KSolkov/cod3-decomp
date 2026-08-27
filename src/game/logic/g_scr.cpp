@@ -4153,7 +4153,7 @@ void SetReverb(unsigned int entityHandleVal, const Broc::string& pszReverb,
                float wetlevel, float fadetime);  // 0x5C5D10
 void PlayLocalSound(unsigned int entityHandleVal,
                     const Broc::string& pszSoundName);  // 0x5C5D50
-Broc::hudelem gHudElement = { 0xFFFFFFFFu };
+Broc::hudelem gHudElement = { -1 };
     // ?gHudElement@BrocSys@@3Vhudelem@Broc@@A (scr.o data, init -1 per IDA)
 void VM_Clear();  // ?VM_Clear@@YAXXZ (0x5C1DB0, global)
 void SetupLevelSpecificVariables();  // 0x5C20D0
@@ -26641,16 +26641,16 @@ extern void StopAllSceneAnims();                             // ?StopAllSceneAni
 // Script API externs referenced by the InitAPI table (sv.o/g.o; stored in the
 // API function-pointer table only - implementations may live in unported objs)
 namespace Broc {
-float VecDistance(const Broc::vector*, const Broc::vector*);        // 0x184
-float VecDistanceSquared(const Broc::vector*, const Broc::vector*); // 0x188
-float length2(const Broc::vector*);                                 // 0x190
-float dot(const Broc::vector*, const Broc::vector*);                // 0x198
-void VecNormalize(Broc::vector*, const Broc::vector*);              // 0x19C
-void VecToAngles(Broc::vector*, const Broc::vector*);               // 0x1A0
+float VecDistance(const Broc::vector&, const Broc::vector&);        // 0x184
+float VecDistanceSquared(const Broc::vector&, const Broc::vector&); // 0x188
+float length2(const Broc::vector&);                                 // 0x190
+float dot(const Broc::vector&, const Broc::vector&);                // 0x198
+void VecNormalize(Broc::vector&, const Broc::vector&);              // 0x19C
+void VecToAngles(Broc::vector&, const Broc::vector&);               // 0x1A0
 void VecAnglesToUp(Broc::vector*, const Broc::vector*);             // 0x1A4
 void VecAnglesToRight(Broc::vector*, const Broc::vector*);          // 0x1A8
 void VecAnglesToForward(Broc::vector*, const Broc::vector*);        // 0x1AC
-void VecAnglesToVectors(const Broc::vector*, Broc::vector*, Broc::vector*, Broc::vector*);  // 0x1B0
+void VecAnglesToVectors(const Broc::vector&, Broc::vector&, Broc::vector&, Broc::vector&);  // 0x1B0
 int MathsRandomInt(int);                                            // 0x140
 float MathsRandomFloat(float);                                      // 0x144
 int MathsRandomIntRange(int, int);                                  // 0x148
