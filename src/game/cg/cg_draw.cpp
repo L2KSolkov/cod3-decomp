@@ -435,7 +435,7 @@ extern void nglAddMeshSection(nglMesh* mesh, nglMeshSection* section,
                               nglMaterial* material, int flags);
 extern void* nglLockSectionIndices(nglMeshSection* section);
 extern void* nglLockSectionVertices(nglMeshSection* section);
-struct nglMeshParams;
+class nglMeshParams;
 struct nglShaderParamSet;
 class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* mesh,
@@ -498,7 +498,7 @@ extern void Camera_Update(void* self);
 extern void Camera_UpdatePostViewModels(void* self);
 namespace LocalClient { extern int FirstLocalClientIndex(void); }
 extern int G_GetServerSnapTime();
-extern int CG_UpdateCvars();
+extern void CG_UpdateCvars();
 extern int CG_ProcessSnapshots();
 extern void CG_PredictPlayerState_Internal();  // defined in cg_view.cpp
 struct shellshock_parms_t;

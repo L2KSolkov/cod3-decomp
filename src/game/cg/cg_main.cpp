@@ -347,9 +347,8 @@ void CG_RegisterCvars()
 }
 
 // ea: 0x0068B400
-int CG_UpdateCvars()
+void CG_UpdateCvars()
 {
-    int result = 0;
     for (int i = 0; i < 170; ++i)
     {
         void** row = &((void**)cvarTable)[4 * i];
@@ -362,9 +361,7 @@ int CG_UpdateCvars()
         {
             CG_ASSERT("cv", "c:\\cod\\code\\game\\cg_main.cpp", 924);
         }
-        result = i;
     }
-    return result;
 }
 
 // ea: 0x0068B480
