@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00663720	?OnLoading@StreamZoneManager@@QAEXW4TPakId@@@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00663720;src/game/streamer/pakmanager.cpp:11418	IDA release decompiles the entry point as an empty body; source preserves the TPakId ABI and no-op behavior.
+0x00663720	?OnLoading@StreamZoneManager@@QAEXW4TPakId@@@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00663720	Release and source both contain no state-changing instructions.
+0x006652B0	?DecodeGrassInfo@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x006652B0;src/game/streamer/pakmanager.cpp:14990	IDA release decompiles the entry point as an empty body; source preserves the buffer/TPakId/PakFile ABI and no-op behavior.
+0x006652B0	?DecodeGrassInfo@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x006652B0	Release and source both contain no state-changing instructions.
+0x00665A00	?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00665A00;src/game/streamer/pakmanager.cpp:3704	IDA release decompiles the entry point as an empty body; source preserves the TPakId ABI and no-op behavior.
+0x00665A00	?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00665A00	Release and source both contain no state-changing instructions.
