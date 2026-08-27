@@ -197,7 +197,7 @@ mem_lib_platform.o	11	11	0	0	0	0	0
 mp.o	1142	449	5	688	0	0	0
 mp_actors.o	436	71	0	365	0	0	0
 mp_anim_wad.o	430	239	189	2	0	0	0
-mp_level_wad.o	1062	1042	2	18	0	0	0
+mp_level_wad.o	1062	1042	2	15	0	3	0
 mp_shell.o	835	238	0	597	0	0	0
 mp_util_wad.o	1283	702	241	340	0	0	0
 mp_xbox.o	77	25	12	40	0	0	0
