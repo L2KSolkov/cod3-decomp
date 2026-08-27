@@ -717,3 +717,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00449100	?G_ActorExitProne@@YAXPAUactor_s@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449100	Release prone-state branches, timing arithmetic, negative transition, and assert path match source.
 0x004491D0	?G_ReduceOriginError@@YAXQAM0M@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1865	Origin-error reducer computes decay, clamps to zero, or applies the decayed error to origin.
 0x004491D0	?G_ReduceOriginError@@YAXQAM0M@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004491D0	Release error norm, decay threshold, vector update, and origin accumulation match source.
+0x00449380	?G_SetupSpawnPoint@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:500	spawn point schedules finish setup at level.time+200.
+0x00449380	?G_SetupSpawnPoint@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449380	G_SetupSpawnPoint release writes nextthink and think exactly.
+0x004493B0	?SP_info_player_start@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:891	info-player setup assigns deathmatch classname/hash, schedules think, and updates entity hash.
+0x004493B0	?SP_info_player_start@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004493B0	SP_info_player_start release assignments and calls match source.
+0x00449410	?SP_intermission@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:890	intermission spawn assigns classname and updates entity hash.
+0x00449410	?SP_intermission@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449410	SP_intermission release assigns spawn_intermission and updates hash.
+0x00449440	?SP_deathmatch@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:684	dm-only spawn registration or delete flag.
+0x00449440	?SP_deathmatch@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449440	SP_deathmatch release gametype branch matches source.
+0x00449490	?SP_teamdeathmatch@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:698	tdm-only spawn registration or delete flag.
+0x00449490	?SP_teamdeathmatch@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449490	SP_teamdeathmatch release branch matches source.
+0x004494E0	?SP_ctf_allies_primary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:712	ctf-only spawn registration or delete flag.
+0x004494E0	?SP_ctf_allies_primary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004494E0	SP_ctf_allies_primary release branch matches source.
+0x00449530	?SP_ctf_allies_secondary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:726	ctf-only spawn registration or delete flag.
+0x00449530	?SP_ctf_allies_secondary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449530	SP_ctf_allies_secondary release branch matches source.
+0x00449580	?SP_ctf_axis_primary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:740	ctf-only spawn registration or delete flag.
+0x00449580	?SP_ctf_axis_primary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449580	SP_ctf_axis_primary release branch matches source.
+0x004495D0	?SP_ctf_axis_secondary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:754	ctf-only spawn registration or delete flag.
+0x004495D0	?SP_ctf_axis_secondary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004495D0	SP_ctf_axis_secondary release branch matches source.
+0x00449620	?SP_hq_allies_primary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:768	hq-only spawn registration or delete flag.
+0x00449620	?SP_hq_allies_primary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449620	SP_hq_allies_primary release branch matches source.
+0x00449670	?SP_hq_allies_secondary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:782	hq-only spawn registration or delete flag.
+0x00449670	?SP_hq_allies_secondary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449670	SP_hq_allies_secondary release branch matches source.
+0x004496C0	?SP_hq_axis_primary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:796	hq-only spawn registration or delete flag.
+0x004496C0	?SP_hq_axis_primary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004496C0	SP_hq_axis_primary release branch matches source.
+0x00449710	?SP_hq_axis_secondary@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:810	hq-only spawn registration or delete flag.
+0x00449710	?SP_hq_axis_secondary@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449710	SP_hq_axis_secondary release branch matches source.
+0x00449760	?HQ_Point@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:824	hq-only point registration or delete flag.
+0x00449760	?HQ_Point@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449760	HQ_Point release branch and classname match source.
+0x004497B0	?SP_single_ctf_allies@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:878	single-ctf-only spawn registration or delete flag.
+0x004497B0	?SP_single_ctf_allies@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004497B0	SP_single_ctf_allies release branch matches source.
