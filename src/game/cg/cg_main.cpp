@@ -290,9 +290,25 @@ struct consoleCommand_t {
     void (*function)();
 };
 
+extern void CG_Printf(const char* msg, ...);
+extern float dword_F63C70[4 * 1580];
+extern float dword_F63C74[4 * 1580];
+extern float dword_F63C78[4 * 1580];
+extern float dword_F63CB4[4 * 1580];
+
+// Release cg.o @ 0x006946D0.
+static void CG_Viewpos_f()
+{
+    CG_Printf("(%i %i %i) : %i\n",
+              (int)dword_F63C70[1580 * currCl],
+              (int)dword_F63C74[1580 * currCl],
+              (int)dword_F63C78[1580 * currCl],
+              (int)dword_F63CB4[1580 * currCl]);
+}
+
 // console command table (commandsList / off_D0CD44)
 static const consoleCommand_t sCommandsList[] = {
-    {"viewpos", nullptr},
+    {"viewpos", CG_Viewpos_f},
     {nullptr, nullptr},
 };
 
