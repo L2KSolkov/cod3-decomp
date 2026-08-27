@@ -174,7 +174,7 @@ cdWorldVertexLitShader.o	25	21	0	4	0	0	0
 cdl_base.o	2	1	0	1	0	0	0
 cdl_common.o	16	7	5	4	0	0	0
 cdl_gjk.o	10	5	5	0	0	0	0
-cg.o	405	38	96	271	0	0	0
+cg.o	405	38	96	270	0	1	0
 cl.o	341	17	40	284	0	0	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
@@ -183,9 +183,9 @@ core.o	1437	728	76	633	0	0	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	708	0	762	0	0	0
+g.o	1470	708	0	761	0	1	0
 game.o	1158	515	10	633	0	0	0
-game2.o	1040	454	88	497	0	1	0
+game2.o	1040	454	88	488	8	2	0
 game_xbox.o	365	166	91	108	0	0	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
