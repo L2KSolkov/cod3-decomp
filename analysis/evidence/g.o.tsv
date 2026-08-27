@@ -875,3 +875,13 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044BA00	?G_RunPreFrame@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BA00	release three level-time/frame updates match source.
 0x0044BA30	?UpdateCVars@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:871	update helper brackets cvar-table iteration with the profile timer, updates VM cvars, and tracks modification counts.
 0x0044BA30	?UpdateCVars@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BA30	release timer start/stop, table loop, null VM guard, Cvar_Update, and modification-count tracking match source.
+0x0044BA90	?G_SendClientMessages@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:356	send-message helper updates level.snapTime and saves registered items when bRegisterItems is set.
+0x0044BA90	?G_SendClientMessages@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BA90	release snapTime assignment, registration flag branch, and SaveRegisteredItems call match source.
+0x0044BAB0	?GetScratchPad@@YAPAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:212	scratchpad accessor returns the global scratchpad buffer.
+0x0044BAB0	?GetScratchPad@@YAPAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BAB0	release g_scratchpadMem load and return match source.
+0x0044BAC0	?InvalidateTurretCaches@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_turret.cpp:71	invalidation helper clears the first turret obstruction cache entry.
+0x0044BAC0	?InvalidateTurretCaches@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BAC0	release dword_ED9E7C zeroing matches source turretInfo[0].obstruction alias.
+0x0044BAD0	?SP_sound_blend@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_spawn.cpp:48	sound-blend spawn initializes stationary trajectories, clears contents/event fields, sets type 8, and enables the sound flag.
+0x0044BAD0	?SP_sound_blend@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BAD0	release field writes, 0x20 svFlags OR, eType 8, and zero leanf match source.
+0x0044BB10	?G_InitTurrets@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_turret.cpp:77	turret initialization clears the first in-use flag and installs the turretInfo array in level.
+0x0044BB10	?G_InitTurrets@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BB10	release turretInfo[0].inuse clear and level.turrets assignment match source.
