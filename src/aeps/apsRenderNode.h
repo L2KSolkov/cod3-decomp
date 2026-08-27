@@ -55,7 +55,7 @@ public:
     apsLight::LightInfo   mLightInfo;       // +0x80 (48 bytes)
 
     apsRenderNode() { mFlags = 0; }                       // ea: 0x802B60
-    virtual ~apsRenderNode();                             // ea: 0x802C20
+    virtual ~apsRenderNode();                             // ea: 0x802820
     virtual void Render() = 0;                            // pure slot in apsRenderNode_vtbl
 
     void SetFlags(unsigned int flag) { mFlags |= flag; }  // ea: 0x8026E0

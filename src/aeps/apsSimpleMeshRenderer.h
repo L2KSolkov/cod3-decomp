@@ -38,6 +38,7 @@ static_assert(sizeof(apsSimpleMeshShader) == 0x10, "apsSimpleMeshShader size mis
 // ============================================================================
 class apsSimpleMeshNode : public apsRenderNode {
 public:
+    apsSimpleMeshNode();                                  // ea: 0x802BD0
     apsSimpleMeshRenderer* mRenderer;      // +0xB0
     nglLightContext*       mLightContext;  // +0xB4
     int                    mZBuffer;       // +0xB8

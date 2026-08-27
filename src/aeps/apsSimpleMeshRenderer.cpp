@@ -218,7 +218,7 @@ void apsRenderNode::SetParticles(int num, unsigned char* ref, int stride) {
     }
 }
 
-// apsRenderNode::~apsRenderNode — ea: 0x802C20
+// apsRenderNode::~apsRenderNode — ea: 0x802820
 apsRenderNode::~apsRenderNode() {
 }
 
@@ -237,6 +237,11 @@ tlFixedString apsSimpleMeshShader::GetName() {
 
 // apsSimpleMeshShader::AddNode — ea: 0x8028B0
 void apsSimpleMeshShader::AddNode(nglMeshNode* node, nglMeshSection* section, nglMaterial* material) {
+}
+
+// apsSimpleMeshNode::apsSimpleMeshNode — ea: 0x802BD0
+apsSimpleMeshNode::apsSimpleMeshNode() {
+    mFlags = 0;
 }
 
 // apsSimpleMeshNode::GetDesc — ea: 0x802BE0
