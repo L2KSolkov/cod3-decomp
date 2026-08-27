@@ -130,6 +130,9 @@ def main() -> int:
                         "?MPScript_Obituary@BrocSys@@YAXIIABVstring@Broc@@H_N@Z"))
             assert ("??2AeThreadState@@SAPAXI_N@Z"
                     in ledger.symbol_variants("??2AeThreadState@@SAPAXI_NPBDH@Z"))
+            assert ("??0apsSimpleMeshRenderer@@QAE@PBUcArgs@0@@Z"
+                    in ledger.symbol_variants(
+                        "??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z"))
             assert ("?GetOwner@AeThread@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ"
                     in ledger.symbol_variants(
                         "?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ"))

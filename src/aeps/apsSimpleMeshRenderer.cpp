@@ -48,12 +48,10 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // ea: 0x802920
 // ============================================================================
 void apsSimpleMeshRenderer::Init() {
-    if (apsSimpleMeshRender::VShaderTable != NULL)
-        nglDxRegisterVShader(apsSimpleMeshRender::VS,
-                             reinterpret_cast<const unsigned int*>(apsSimpleMeshRender::VShaderTable[0]));
-    if (apsSimpleMeshRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(apsSimpleMeshRenderPixel::PS,
-                             reinterpret_cast<const unsigned int*>(apsSimpleMeshRenderPixel::PShaderTable[0]));
+    nglDxRegisterVShader(apsSimpleMeshRender::VS,
+                         reinterpret_cast<const unsigned int*>(apsSimpleMeshRender::VShaderTable[0]));
+    nglDxRegisterPShader(apsSimpleMeshRenderPixel::PS,
+                         reinterpret_cast<const unsigned int*>(apsSimpleMeshRenderPixel::PShaderTable[0]));
 }
 
 // ============================================================================
