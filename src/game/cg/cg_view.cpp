@@ -249,7 +249,7 @@ float CG_GetNorthDirection()
 }
 
 // ea: 0x006893D0
-int CG_UpdateCompassOrientation()
+void CG_UpdateCompassOrientation()
 {
     float fTargetYaw =
         AngleNormalize360(*(float*)&dword_F63CB4[1580 * currCl]
@@ -264,12 +264,11 @@ int CG_UpdateCompassOrientation()
         int result = 1580 * v13;
         *(float*)&dword_F64144[result] = fTargetYaw;
         dword_F64148[result] = 0;
-        return result * 4;
+        return;
     }
     float v2 = *(float*)&dword_F64144[1580 * currCl];
     iLastCompassTime_0 = cgGlobal_time;
-    AngleSubtract(v2, fTargetYaw);
-    float fYawOffset = v2;
+    float fYawOffset = AngleSubtract(v2, fTargetYaw);
     float v3 = fYawOffset;
     if (v1 > 0)
     {
@@ -330,27 +329,26 @@ int CG_UpdateCompassOrientation()
             *v6 = v8;
             if (!v9)
                 *v6 = 0.0f;
-            float v10;
-            if (*v6 > 30000.0f || (*v6 < -30000.0f))
-                *v6 = *v6 > 30000.0f ? 1189765120 : -957718528;
+            if (*v6 > 30000.0f || *v6 < -30000.0f)
+                *v6 = *v6 > 30000.0f ? 30000.0f : -30000.0f;
             if (v1 <= 0)
             {
                 float v11 = AngleNormalize360(v3 + fTargetYaw);
                 int result = 1580 * currCl;
                 *(float*)&dword_F64144[1580 * currCl] = v11;
-                return result * 4;
+                return;
             }
         }
         int v13 = v4;
         int result = 1580 * v13;
         *(float*)&dword_F64144[result] = fTargetYaw;
         dword_F64148[result] = 0;
-        return result * 4;
+        return;
     }
     float v11 = AngleNormalize360(v3 + fTargetYaw);
     int result = 1580 * currCl;
     *(float*)&dword_F64144[1580 * currCl] = v11;
-    return result * 4;
+    return;
 }
 
 // ea: 0x0068C970
