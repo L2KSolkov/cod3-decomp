@@ -92,7 +92,8 @@ void HudElem_Free(game_hudelem_s* hud)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    if (hud->elem.type <= HE_TYPE_FREE || hud->elem.type >= HE_TYPE_COUNT)
+    if (hud->elem.type <= HE_TYPE_FREE
+        || hud->elem.type >= (HE_TYPE_COUNT | HE_TYPE_TIMER_UP))
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_hudelem.cpp";
