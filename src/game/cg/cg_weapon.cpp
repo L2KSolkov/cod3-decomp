@@ -235,7 +235,7 @@ extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
 extern const math::Mat43* DObj_GetMat(void* obj, int boneIndex);
-extern int CG_HoldBreathUpdate();
+extern void CG_HoldBreathUpdate();
 extern void CG_WeaponUpdateLoopingSound(Entity* entity);
 extern void CG_WeaponIKAddToFireQueue(Entity* attacker, int weapon);
 extern int CG_WeaponFireRecoil();
@@ -808,22 +808,22 @@ int CG_HoldBreathInit()
 // ea: 0x00692B10
 Client* CG_WeaponSlot_f()
 {
+    Client* result = (Client*)(unsigned int)currCl;
     if (dword_F62960[1580 * currCl] != 0)
     {
-        Client* client =
-            EntityManager::sInst->GetPlayer( currCl)->client;
-        if ((client->ps.pm_flags & 0x4000) == 0)
+        result = EntityManager::sInst->GetPlayer( currCl)->client;
+        if ((result->ps.pm_flags & 0x4000) == 0)
         {
-            client = EntityManager::sInst->GetPlayer( currCl)->client;
-            if ((client->ps.eFlags & 0x100000) == 0)
+            result = EntityManager::sInst->GetPlayer( currCl)->client;
+            if ((result->ps.eFlags & 0x100000) == 0)
             {
-                client = EntityManager::sInst->GetPlayer( currCl)->client;
-                if ((client->ps.pm_flags & 0x80000) != 0)
+                result = EntityManager::sInst->GetPlayer( currCl)->client;
+                if ((result->ps.pm_flags & 0x80000) != 0)
                 {
-                    if (cgGlobal_frametime - cg_aWeaponSelectTime[currCl]
+                    if (cgGlobal.time - cg_aWeaponSelectTime[currCl]
                            >= cg_weaponCycleDelay.integer)
                     {
-                        cg_aWeaponSelectTime[currCl] = cgGlobal_frametime;
+                        cg_aWeaponSelectTime[currCl] = cgGlobal.time;
                         const char* v1 = CG_Argv(1);
                         int v2 = BG_GetWeaponSlotForName(v1);
                         if (v2 == 0)
@@ -843,7 +843,7 @@ Client* CG_WeaponSlot_f()
             }
         }
     }
-    return nullptr;
+    return result;
 }
 
 // ea: 0x00692D50
@@ -1029,7 +1029,7 @@ void CG_OutOfAmmoChange()
 }
 
 // ea: 0x0069AE40
-int CG_HoldBreathUpdate()
+void CG_HoldBreathUpdate()
 {
     int v2 = currCl;
     if (dword_F641E8[1580 * currCl] > 0)
@@ -1113,7 +1113,6 @@ int CG_HoldBreathUpdate()
         dword_F641E4[result] = 0;
         dword_F641EC[result] = 0;
     }
-    return result;
 }
 
 static unsigned int sTagFlashInit = 0;
