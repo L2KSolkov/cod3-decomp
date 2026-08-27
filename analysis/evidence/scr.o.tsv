@@ -327,3 +327,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005C1940	?PrintObjectiveUpdate@BrocSys@@YA_NAAVstring@Broc@@HPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C1940	Release returns true unconditionally and matches source.
 0x005C5780	?CreateNanoForce@BrocSys@@YAIABVstring@Broc@@ABUvector@3@1@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2927	Implementation returns the release zero sentinel.
 0x005C5780	?CreateNanoForce@BrocSys@@YAIABVstring@Broc@@ABUvector@3@1@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5780	Release returns zero unconditionally and matches source.
+0x005BBCB0	?SetGamePhase@MemCount@@YAXW4eGamePhase@1@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2250	Source preserves the release no-op for the MemCount game-phase hook.
+0x005BBCB0	?SetGamePhase@MemCount@@YAXW4eGamePhase@1@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BBCB0	Release decompiles to an empty body, matching source.
+0x005BCD20	?GameSave@BrocSys@@YAXABVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3144	Source preserves the release no-op game-save hook.
+0x005BCD20	?GameSave@BrocSys@@YAXABVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCD20	Release decompiles to an empty body, matching source.
+0x005BCDD0	?MissionSuccess@BrocSys@@YAXABVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3160	Source preserves the release no-op mission-success hook.
+0x005BCDD0	?MissionSuccess@BrocSys@@YAXABVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCDD0	Release decompiles to an empty body, matching source.
+0x005BCED0	?ProfBegin@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3183	Source preserves the release no-op profiling hook.
+0x005BCED0	?ProfBegin@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCED0	Release decompiles to an empty body, matching source.
+0x005BCF20	?StartMemCheck@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3199	Source preserves the release no-op memory-check hook.
+0x005BCF20	?StartMemCheck@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCF20	Release decompiles to an empty body, matching source.
+0x005BD2C0	?ProfileStart@BrocSys@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3215	Source preserves the release no-op profiling hook.
+0x005BD2C0	?ProfileStart@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD2C0	Release decompiles to an empty body, matching source.
+0x005BD930	?SetMissionStat@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3248	Source preserves the release no-op mission-stat hook.
+0x005BD930	?SetMissionStat@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD930	Release decompiles to an empty body, matching source.
+0x005BD980	?UpdateMissionCompletionTime@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3275	Source preserves the release no-op completion-time hook.
+0x005BD980	?UpdateMissionCompletionTime@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD980	Release decompiles to an empty body, matching source.
+0x005BDAF0	?EnableNanoForces@BrocSys@@YAX_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3304	Source preserves the release no-op Nano-forces hook.
+0x005BDAF0	?EnableNanoForces@BrocSys@@YAX_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BDAF0	Release decompiles to an empty body, matching source.
+0x005C11C0	?MPScript_SetCompassVisibilty@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2888	Source preserves the release no-op compass visibility hook.
+0x005C11C0	?MPScript_SetCompassVisibilty@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C11C0	Release decompiles to an empty body, matching source.
+0x005C1A40	?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3067	Source preserves the release no-op NPC-to-vehicle hook.
+0x005C1A40	?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C1A40	Release decompiles to an empty body, matching source.
