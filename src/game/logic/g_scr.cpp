@@ -25966,6 +25966,13 @@ inline Broc::vector vnode_invalid_value<Broc::vector>()
     return value;
 }
 
+// ea: 0x005ED530
+// ea: 0x005ED690
+// ea: 0x005ED7F0
+// ea: 0x005ED940
+// ea: 0x005EDA90
+// ea: 0x005EDB90
+// ea: 0x005EDC90
 template <typename T, int OFF>
 void vnode_set_field(int handle, T val)
 {
@@ -25986,6 +25993,13 @@ void vnode_set_field(int handle, T val)
     }
 }
 
+// ea: 0x005ED5F0
+// ea: 0x005ED750
+// ea: 0x005ED880
+// ea: 0x005ED9D0
+// ea: 0x005EDB10
+// ea: 0x005EDC10
+// ea: 0x005EDD50
 template <typename T, int OFF>
 T vnode_get_field(int handle)
 {
