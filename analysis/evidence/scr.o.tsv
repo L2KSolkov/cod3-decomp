@@ -463,3 +463,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005C5C00	?SetWalkRunLoopAnimNode@BrocSys@@YAXII@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5C00	Release Actor_Get and non-null field store match source.
 0x005C5D10	?SetReverb@BrocSys@@YAXIABVstring@Broc@@MM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9726	Source preserves reverb command formatting and entity-targeted server command dispatch.
 0x005C5D10	?SetReverb@BrocSys@@YAXIABVstring@Broc@@MM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5D10	Release va("reverb \\\"%s\\\" %g %g") and SV_GameSendServerCommand call match source.
+0x005C5BB0	?SetExploderState@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9686	Source preserves the current-script-exploded indexed state store.
+0x005C5BB0	?SetExploderState@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5BB0	Release writes the unsigned-short state through CheckpointMgr at the same indexed array slot.
+0x005C5BE0	?IsExploded@BrocSys@@YAHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2455	Source returns the indexed current-script-exploded state.
+0x005C5BE0	?IsExploded@BrocSys@@YAHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5BE0	Release returns the same CheckpointMgr array element.
+0x005C5C20	?IsValidMoverType@BrocSys@@YA_NPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9693	Source preserves the three allowed class hashes, Scr_Error text, and false sentinel.
+0x005C5C20	?IsValidMoverType@BrocSys@@YA_NPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5C20	Release hash comparisons, error string, and return values match source.
+0x005C5C60	?GiveWeapon@BrocSys@@YAXPAVEntity@@PBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9709	Source preserves valid-client gating, weapon lookup, empty-slot error, spotter/overlay condition, and give call.
+0x005C5C60	?GiveWeapon@BrocSys@@YAXPAVEntity@@PBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5C60	Release control flow and all weapon API calls match source.
+0x005C5CF0	?CloseMenu1@BrocSys@@YAXI@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2473	Source forwards the entity handle and popupclose command.
+0x005C5CF0	?CloseMenu1@BrocSys@@YAXI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5CF0	Release is a direct popupclose SV_GameSendServerCommand thunk; source matches.
+0x005C5D50	?PlayLocalSound@BrocSys@@YAXIABVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9736	Source preserves nullable alias resolution, unknown-alias warning, alias-index lookup, and local-sound command formatting.
+0x005C5D50	?PlayLocalSound@BrocSys@@YAXIABVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5D50	Release FindWave warning path, G_SoundAliasIndex, va("ls %i"), and server command match source.
+0x005C5E10	?ObjectiveAdd3@BrocSys@@YAXHABVstring@Broc@@0PBDHHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9873	Source preserves objective/client bounds diagnostics, state-string conversion, and per-client state-table writes.
+0x005C5E10	?ObjectiveAdd3@BrocSys@@YAXHABVstring@Broc@@0PBDHHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5E10	Release index checks, warning/error paths, ObjectiveStateIndexFromString, and 176/3208-byte table addressing match source.
+0x005C5F50	?FindChildObjective@BrocSys@@YA?BHHH_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9923	Source preserves parent-range validation, configstring scan, pobj/order matching, not-found diagnostics, and -1 sentinel.
+0x005C5F50	?FindChildObjective@BrocSys@@YA?BHHH_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5F50	Release configstring loop, atoi comparisons, warning/error strings, and return branches match source.
+0x005C60B0	?ObjectiveChildDelete@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:9979	Source preserves positive-child lookup/deletion and non-positive child warning.
+0x005C60B0	?ObjectiveChildDelete@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C60B0	Release FindChildObjective, configstring clear, and warning metadata match source.
+0x005C6150	?ObjectiveDeleteChildren@BrocSys@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10006	Source preserves objective bounds warning and DeleteAllChildrenOfObjective dispatch.
+0x005C6150	?ObjectiveDeleteChildren@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C6150	Release bounds branch, warning metadata, and delete-all call match source.
+0x005C61D0	?ObjectiveDelete@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10028	Source preserves objective/client validation, per-client clear helper, and global raw-field clearing.
+0x005C61D0	?ObjectiveDelete@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C61D0	Release validation branches, _objectiveInfo_t::Clear path, and raw global objective field stores match source.
