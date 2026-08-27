@@ -309,3 +309,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005BD980	?UpdateMissionCompletionTime@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD980	Release body is a no-op and matches source.
 0x005BDAF0	?EnableNanoForces@BrocSys@@YAX_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3303	Body is intentionally empty.
 0x005BDAF0	?EnableNanoForces@BrocSys@@YAX_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BDAF0	Release body is a no-op and matches source.
+0x005BC1D0	?SetDepthOfField@@YAX_NMMMM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2289	Body is intentionally empty.
+0x005BC1D0	?SetDepthOfField@@YAX_NMMMM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC1D0	Release body is a no-op and matches source.
+0x005C11C0	?MPScript_SetCompassVisibilty@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2887	Body is intentionally empty.
+0x005C11C0	?MPScript_SetCompassVisibilty@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C11C0	Release body is a no-op and matches source.
+0x005C1A40	?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3066	Body is intentionally empty.
+0x005C1A40	?UpdateNPCtoVehicleMovement@BrocSys@@YAXII@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C1A40	Release body is a no-op and matches source.
+0x005C0C30	?MPScript_ClearTeamScores@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2874	Implementation clears team-score slots 2 and 1 as in the release body.
+0x005C0C30	?MPScript_ClearTeamScores@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C0C30	Release and source clear the same two cgGlobal team-score fields; IDA's int return is a decompiler artifact against the void map ABI.
+0x005C1110	?MPScript_ForceControllerErrorMessageDown@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2881	Implementation clears the controller-connected error latch.
+0x005C1110	?MPScript_ForceControllerErrorMessageDown@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C1110	Release and source perform the same single latch write.
+0x005C17E0	?DebugOut@BrocSys@@YAXPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2895	Debug output forwards the supplied string to tlPrintf.
+0x005C17E0	?DebugOut@BrocSys@@YAXPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C17E0	Release is a tail jump to tlPrintf, equivalent to the source forwarding body.
+0x005C17F0	?FreezeMovement@BrocSys@@YAX_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2901	Implementation stores the requested movement-freeze state.
+0x005C17F0	?FreezeMovement@BrocSys@@YAX_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C17F0	Release and source assign the same global latch.
+0x005C1940	?PrintObjectiveUpdate@BrocSys@@YA_NAAVstring@Broc@@HPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2910	Implementation returns the release sentinel true.
+0x005C1940	?PrintObjectiveUpdate@BrocSys@@YA_NAAVstring@Broc@@HPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C1940	Release returns true unconditionally and matches source.
+0x005C5780	?CreateNanoForce@BrocSys@@YAIABVstring@Broc@@ABUvector@3@1@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2927	Implementation returns the release zero sentinel.
+0x005C5780	?CreateNanoForce@BrocSys@@YAIABVstring@Broc@@ABUvector@3@1@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C5780	Release returns zero unconditionally and matches source.
