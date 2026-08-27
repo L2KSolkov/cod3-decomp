@@ -1,0 +1,15 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00934790	?AssertDefined@bint@@QBEXXZ	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/engine/broc_types.h:883	Source body is intentionally empty; this wrapper performs no state mutation.
+0x00934790	?AssertDefined@bint@@QBEXXZ	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1801026	Release body is a nullsub and matches the empty source body.
+0x0093B250	?AssertDefined@bfloat@@QBEXXZ	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/engine/broc_types.h:901	Source body is intentionally empty; this wrapper performs no state mutation.
+0x0093B250	?AssertDefined@bfloat@@QBEXXZ	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1804325	Release body is a nullsub and matches the empty source body.
+0x00943A00	?CallbackReviveFailed@_mp_common@@YAXVentity@Broc@@@Z	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/broc/mp_util_wad.cpp:9028	Source body is an intentional no-op callback.
+0x00943A00	?CallbackReviveFailed@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1809323	Release body is a nullsub and matches the source callback.
+0x0094AA60	?StopFollowing@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/broc/mp_util_wad.cpp:11508	Source body is an intentional no-op callback.
+0x0094AA60	?StopFollowing@_mp_common@@YAXVentity@Broc@@Ubbool@@@Z	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1813347	Release body is a nullsub and matches the source callback.
+0x00961150	?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/broc/mp_util_wad.cpp:12497	Source body is an intentional no-op script entry point.
+0x00961150	?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1825853	Release body is a nullsub and matches the source entry point.
+0x0096CCA0	?blur_view@_mp_shellshock@@YAXVentity@Broc@@Ubfloat@@@Z	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/broc/mp_util_wad.cpp:19738	Source body is an intentional no-op script entry point.
+0x0096CCA0	?blur_view@_mp_shellshock@@YAXVentity@Broc@@Ubfloat@@@Z	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1832165	Release body is a nullsub and matches the source entry point.
+0x00973690	?main@_mp_teambalance@@YAXVentity@Broc@@@Z	V3	PASS	direct-release-nullsub-20260827	2026-08-27	src/broc/mp_util_wad.cpp:20408	Source body is an intentional no-op script entry point.
+0x00973690	?main@_mp_teambalance@@YAXVentity@Broc@@@Z	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1835983	Release body is a nullsub and matches the source entry point.
