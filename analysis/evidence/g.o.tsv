@@ -637,3 +637,17 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004504C0	?Scr_FreeHudElem@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004504C0	Release function is empty, matching source.
 0x004504D0	?Scr_AddHudElem@@YAXPAUgame_hudelem_s@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:67	Source explicitly preserves this release no-op export.
 0x004504D0	?Scr_AddHudElem@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004504D0	Release function is empty, matching source.
+0x0044B0F0	?HudElem_Alloc@@YAPAUgame_hudelem_s@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:10	Source scans the 16-element pool, initializes the first free entry, and returns null when full.
+0x0044B0F0	?HudElem_Alloc@@YAPAUgame_hudelem_s@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044B0F0	Release scans g_hudelems[16], calls HudElem_SetDefaults on the first free slot, and returns null if none is free.
+0x0044CDE0	?Scr_ConstructMessageString@@YAXHHH@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:34	Source sets the same dead-code assertion metadata and breaks when enabled.
+0x0044CDE0	?Scr_ConstructMessageString@@YAXHHH@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044CDE0	Release sets author/file/line/expression and asserts \"ma dead code\", matching source.
+0x0044CE30	?Scr_LocalizationError@@YAXIPBD@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:45	Source forwards the parameter and message to Scr_ParamError.
+0x0044CE30	?Scr_LocalizationError@@YAXIPBD@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x0044CE30	Release forwards iParm and pszErrorMessage to Scr_ParamError, matching source.
+0x00457610	?HudElem_Free@@YAXPAUgame_hudelem_s@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:75	Source validates pointer/range/type with matching assertions and marks the element free.
+0x00457610	?HudElem_Free@@YAXPAUgame_hudelem_s@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x00457610	Release performs the same three guards and assigns HE_TYPE_FREE.
+0x00457720	?HudElem_DestroyAll@@YAHXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:109	Source frees all occupied HUD entries, clears the pool, and returns zero.
+0x00457720	?HudElem_DestroyAll@@YAHXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x00457720	Release iterates 16 entries, frees occupied entries, memset-clears the pool, and returns 0.
+0x005E97B0	??0hudelem@Broc@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/broc/Broc.cpp:404	Source default constructor initializes the HUD index to -1.
+0x005E97B0	??0hudelem@Broc@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x005E97B0	Release stores -1 in mHudIndex, matching source.
+0x005E97C0	??0hudelem@Broc@@QAE@I@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/broc/Broc.cpp:410	Source value constructor stores the supplied HUD index.
+0x005E97C0	??0hudelem@Broc@@QAE@I@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x005E97C0	Release stores v in mHudIndex, matching source.

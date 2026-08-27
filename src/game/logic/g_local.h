@@ -3870,7 +3870,7 @@ extern int gEnableMeshFlash;                         // g.o
 const float AngleNormalize360Accurate(float angle);        // core.o
 void  SV_DObjDisplayAnim(Entity* entity);            // sv.o
 void  j_nullsub_93(void);                            // g.o
-void  HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
+int   HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
 extern int TAG_WHEEL_FRONT_LEFT;                     // g.o enum
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 extern float r;                                      // g.o @ 0xDD8228

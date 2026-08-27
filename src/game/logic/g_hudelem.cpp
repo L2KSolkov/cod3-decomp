@@ -106,7 +106,7 @@ void HudElem_Free(game_hudelem_s* hud)
 }
 
 // ea: 0x00457720
-void HudElem_DestroyAll()
+int HudElem_DestroyAll()
 {
     game_hudelem_s* v0 = g_hudelems;
     for (int i = 16; i != 0; --i)
@@ -116,4 +116,5 @@ void HudElem_DestroyAll()
         ++v0;
     }
     memset(g_hudelems, 0, sizeof(g_hudelems));
+    return 0;
 }
