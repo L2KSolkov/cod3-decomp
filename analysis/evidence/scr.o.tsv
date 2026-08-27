@@ -523,6 +523,26 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005BCBB0	?SoundFadeIn@BrocSys@@YAXIM@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BCBB0;src/game/logic/g_scr.cpp:2926	Release and source match SoundDevice::CrossFade(0, handle, time).
 0x005BCBD0	?SoundFadeOut@BrocSys@@YAXIM@Z	V3	PASS	ida-manual-20260827b	2026-08-27	src/game/logic/g_scr.cpp:2932	Source cross-fades from the requested sound to handle zero.
 0x005BCBD0	?SoundFadeOut@BrocSys@@YAXIM@Z	V4	PASS	ida-manual-20260827b	2026-08-27	IDA:0x005BCBD0;src/game/logic/g_scr.cpp:2932	Release and source match SoundDevice::CrossFade(handle, 0, time).
+0x0044CB30	?Scr_FreeSentientFields@@YAXPAUsentient_s@@@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1740	Source forwards sentient field cleanup to Scr_FreeFields.
+0x0044CB30	?Scr_FreeSentientFields@@YAXPAUsentient_s@@@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x0044CB30;src/game/logic/g_scr.cpp:1740	Release and source match the sentientFields table and pSentient base pointer.
+0x0044CB50	?Scr_FreeActorFields@@YAXPAUactor_s@@@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1746	Source forwards actor field cleanup to Scr_FreeFields.
+0x0044CB50	?Scr_FreeActorFields@@YAXPAUactor_s@@@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x0044CB50;src/game/logic/g_scr.cpp:1746	Release and source match the actorFields table and pActor base pointer.
+0x0044CB70	?GScr_AllocHash@@YA?AVHashString@@PBD@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1752	Source computes and registers the hash before returning the HashString value.
+0x0044CB70	?GScr_AllocHash@@YA?AVHashString@@PBD@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x0044CB70;src/game/logic/g_scr.cpp:1752	Release and source match CalcHash, RegisterHashString, and result hash assignment.
+0x0044CBA0	?GScr_LoadConsts@@YAXXZ	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1761	Source lazily initializes all 173 script hash/string constants.
+0x0044CBA0	?GScr_LoadConsts@@YAXXZ	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x0044CBA0;src/game/logic/g_scr.cpp:1761	Release and source match the loaded guard, 173-entry loop, hash registration, hash table writes, and string assignments.
+0x0044CDD0	?GScr_FreeScripts@@YAXXZ	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1813	Source delegates script cleanup to Scr_FreePrecachedAnimTrees.
+0x0044CDD0	?GScr_FreeScripts@@YAXXZ	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x0044CDD0;src/game/logic/g_scr.cpp:1813	Release is a thunk to Scr_FreePrecachedAnimTrees; source performs the same delegation.
+0x00450330	?Scr_SetGenericField@@YAXPAEW4fieldtype_t@@H@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1847	Source preserves the release dead-code assertion path.
+0x00450330	?Scr_SetGenericField@@YAXPAEW4fieldtype_t@@H@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x00450330;src/game/logic/g_scr.cpp:1847	Release and source match g_spawn.cpp line 675, expression 0, and ma dead code assertion.
+0x00450380	?Scr_SetObjectField@@YAXIHH@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1858	Source preserves the release dead-code assertion path.
+0x00450380	?Scr_SetObjectField@@YAXIHH@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x00450380;src/game/logic/g_scr.cpp:1858	Release and source match g_spawn.cpp line 685, expression 0, and DEAD CODE assertion.
+0x004503D0	?Scr_GetEntityField@@YAXHH@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1869	Source preserves the release dead-code assertion path.
+0x004503D0	?Scr_GetEntityField@@YAXHH@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x004503D0;src/game/logic/g_scr.cpp:1869	Release and source match g_spawn.cpp line 695, expression 0, and ma dead code assertion.
+0x00450420	?Scr_GetObjectField@@YAXIHH@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1880	Source preserves the release dead-code assertion path.
+0x00450420	?Scr_GetObjectField@@YAXIHH@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x00450420;src/game/logic/g_scr.cpp:1880	Release and source match g_spawn.cpp line 705, expression 0, and ma dead code assertion.
+0x00450470	?Scr_FreeEntity@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827c	2026-08-27	src/game/logic/g_scr.cpp:1891	Source preserves the release dead-code assertion path.
+0x00450470	?Scr_FreeEntity@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827c	2026-08-27	IDA:0x00450470;src/game/logic/g_scr.cpp:1891	Release and source match g_spawn.cpp line 715, expression 0, and DEAD CODE assertion.
 0x005C6960	?ObjectivePosition@BrocSys@@YAXHABUvector@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10293	Source preserves client/objective validation and origin writes using release table strides.
 0x005C6960	?ObjectivePosition@BrocSys@@YAXHABUvector@Broc@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C6960	Release diagnostics and vOrigin x/y/z stores at 176/3208-byte offsets match source.
 0x005C6A80	?ObjectiveWorldState@BrocSys@@YAXHABVstring@Broc@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:10333	Source preserves client/objective validation, state conversion, empty-state clearing, and world-state stores.
