@@ -863,3 +863,15 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044B7D0	?G_Error@@YAXPBDZZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B7D0	release formatting, g_main.cpp:847 metadata, warning call, ignore gate, and debugbreak match source.
 0x0044B840	?G_Error_Localized@@YAXPBDZZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:484	localized error helper formats text and reports warning metadata at g_main.cpp:860.
 0x0044B840	?G_Error_Localized@@YAXPBDZZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B840	release formatting, g_main.cpp:860 metadata, warning call, ignore gate, and debugbreak match source.
+0x0044B8B0	?G_EndGame@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:206	end-game helper forwards ERR_ENDGAME and the literal "endgame" to Com_Error.
+0x0044B8B0	?G_EndGame@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B8B0	release Com_Error code and literal match source.
+0x0044B8C0	?G_RegisterCvars@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1239	cvar registration iterates the full table, records modification counts, and initializes four VM cvars to empty strings.
+0x0044B8C0	?G_RegisterCvars@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B8C0	release table stride/loop, Cvar_Register arguments, modification-count store, and four Cvar_VMSet calls match source.
+0x0044B950	?InitCvars@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1277	init helper preserves restart cvars, re-registers them, restores values, and resets ADS/weapon-select stance state.
+0x0044B950	?InitCvars@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B950	release restart saves/restores, G_RegisterCvars call, cvar writes, and four state resets match source.
+0x0044B9F0	?G_CheckReloadStatus@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_weapon.cpp:51	reload-status entry is an intentional no-op.
+0x0044B9F0	?G_CheckReloadStatus@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B9F0	release empty function body matches source.
+0x0044BA00	?G_RunPreFrame@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:348	pre-frame advances framenum, copies current time to previousTime, and adds msec to level.time.
+0x0044BA00	?G_RunPreFrame@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BA00	release three level-time/frame updates match source.
+0x0044BA30	?UpdateCVars@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:871	update helper brackets cvar-table iteration with the profile timer, updates VM cvars, and tracks modification counts.
+0x0044BA30	?UpdateCVars@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044BA30	release timer start/stop, table loop, null VM guard, Cvar_Update, and modification-count tracking match source.
