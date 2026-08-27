@@ -9,3 +9,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0052DED0	?SCR_DebugGraph@@YAXMH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DED0;src/game/cl/cl_scr.cpp:564	Disassembly is retn with no side effects and source has the same empty body.
 0x0052DEE0	?SCR_DrawDebugGraph@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:569	Release body is a deliberate one-instruction no-op; source preserves that body.
 0x0052DEE0	?SCR_DrawDebugGraph@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DEE0;src/game/cl/cl_scr.cpp:569	Disassembly is retn with no side effects and source has the same empty body.
+0x0052DAC0	?SCR_AdjustFrom640@@YAXPAM000@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:324	Source scales each non-null coordinate pointer by the release viewport factors.
+0x0052DAC0	?SCR_AdjustFrom640@@YAXPAM000@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DAC0	Release and source match all four null-guarded coordinate updates and constants 0.0015625/0.0020833334.
+0x0052DB40	?SCR_FillRect@@YAXMMMMPBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:339	Source sets the color, emits the scaled rectangle draw, then clears the color.
+0x0052DB40	?SCR_FillRect@@YAXMMMMPBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DB40	Release and source match color setup/reset, viewport scaling, zero UVs, and the white shader handle.
+0x0052DBD0	?SCR_DrawPic@@YAXMMMMPAUnglTexture@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:352	Source emits the scaled full-UV texture draw.
+0x0052DBD0	?SCR_DrawPic@@YAXMMMMPAUnglTexture@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DBD0	Release and source match scaled coordinates, full UVs, and texture argument.
+0x0052DC50	?SCR_AdjustTo640@@YAXPAM000@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:362	Source converts coordinates and text metrics back to the 640x480 space with null guards.
+0x0052DC50	?SCR_AdjustTo640@@YAXPAM000@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DC50	Release and source match all four inverse viewport conversions and pointer guards.
+0x0052DCE0	?SCR_DrawSmallChar@@YAXHHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:376	Source builds the white color, formats the character, and paints it with release font metrics.
+0x0052DCE0	?SCR_DrawSmallChar@@YAXHHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DCE0	Release and source match the %c formatting, offsets, scale factors, font, and paint parameters.
+0x0052DDB0	?SCR_DrawSmallStringExt@@YAXHHPBDQBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:543	Source paints the small string using release viewport and font parameters.
+0x0052DDB0	?SCR_DrawSmallStringExt@@YAXHHPBDQBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DDB0	Release and source match scaled coordinates, font 5, half-height scale, width scale, and alignment arguments.
+0x0052DE40	?SCR_DrawConsoleString@@YAXHHPBFHQBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:553	Source forwards the console string and limit through the scaled console paint path.
+0x0052DE40	?SCR_DrawConsoleString@@YAXHHPBFHQBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DE40	Release and source match console paint scaling, font parameters, limit, and alignment.
+0x0052DEF0	?SCR_Init@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:574	Source initializes the screen subsystem flag.
+0x0052DEF0	?SCR_Init@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0052DEF0	Release and source both assign scr_initialized = 1.
+0x00533D60	?SCR_DrawScreenField@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:392	Source covers loading, active, disconnected, menu, AAR, front-end, and console draw branches.
+0x00533D60	?SCR_DrawScreenField@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00533D60	Release control flow, state constants, assert context, menu dispatch, sound reset, and console draw match source.
+0x00533F20	?SCR_UpdateScreen@@YAXM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:470	Source updates frame state, rendering, menu systems, load-level dispatch, and in-scene IGO state.
+0x00533F20	?SCR_UpdateScreen@@YAXM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00533F20	Release and source match allocation guards, frame begin/end, spmap dispatch, menu priority, IGO update, and UpdateInScene.
+0x00534C20	?SCR_UpdateScreen@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:536	Source obtains the screen delta and delegates to the timed overload.
+0x00534C20	?SCR_UpdateScreen@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00534C20	Release and source match the Com_GetScreenTimeDelta call and overload delegation.

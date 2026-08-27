@@ -26,6 +26,7 @@ struct fe_menusys_view {
 
 struct IGOFrontEnd {
     virtual void Update(float time_inc);
+    virtual void UpdateInScene(float time_inc);
 };
 
 class InGameMenuSystem {
@@ -525,6 +526,8 @@ void SCR_UpdateScreen(float screen_time_inc)
                     g_femanager.IGO->Update(screen_time_inc);
                 }
             }
+            if (g_femanager.IGO != nullptr)
+                g_femanager.IGO->UpdateInScene(screen_time_inc);
         }
 scr_update_screen_finish:
         if (cls.state == 2)  // CA_ACTIVE
