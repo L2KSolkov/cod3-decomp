@@ -10,7 +10,7 @@
 extern int giFilesFound;  // ?giFilesFound@@3HA @ 0xF30AF0
 extern float sNaN;        // ?sNaN@@3MA @ 0x10F19D0
 void SE_R_ListFiles(const char* psExtension, const char* psDir,
-                    std::string* strResults);  // 0x0059BA20 (stub until ported)
+                    std::string* strResults);  // 0x0059BA20
 
 // ============================================================================
 // FloatingPQ - projected quad
