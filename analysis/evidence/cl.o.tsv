@@ -31,3 +31,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00533F20	?SCR_UpdateScreen@@YAXM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00533F20	Release and source match allocation guards, frame begin/end, spmap dispatch, menu priority, IGO update, and UpdateInScene.
 0x00534C20	?SCR_UpdateScreen@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/cl/cl_scr.cpp:536	Source obtains the screen delta and delegates to the timed overload.
 0x00534C20	?SCR_UpdateScreen@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00534C20	Release and source match the Com_GetScreenTimeDelta call and overload delegation.
+0x005288B0	?CL_CM_LoadMap@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x005288B0;src/game/cl/cl_debug.cpp:154-157	Release is an intentional empty client-map hook; source body is empty and matches.
+0x005288B0	?CL_CM_LoadMap@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x005288B0;src/game/cl/cl_debug.cpp:154-157	Exact release/source empty-body match.
+0x005295A0	?Con_DrawMiniConsole@@YAXHHM@Z	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x005295A0;src/game/cl/cl_console.cpp:702-705	Release is an intentional empty console hook; source body is empty and matches.
+0x005295A0	?Con_DrawMiniConsole@@YAXHHM@Z	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x005295A0;src/game/cl/cl_console.cpp:702-705	Exact release/source empty-body match.
+0x00529780	?Con_ClearMiniConsole@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x00529780;src/game/cl/cl_console.cpp:474-478	Release is an intentional empty console-clear hook; source body is empty and matches.
+0x00529780	?Con_ClearMiniConsole@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x00529780;src/game/cl/cl_console.cpp:474-478	Exact release/source empty-body match.
+0x0052C590	?Field_Paste@@YAXPAUfield_t@@@Z	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052C590;src/game/cl/cl_keys.cpp:105-108	Release is an intentional empty field-paste hook; source body is empty and matches.
+0x0052C590	?Field_Paste@@YAXPAUfield_t@@@Z	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052C590;src/game/cl/cl_keys.cpp:105-108	Exact release/source empty-body match.
+0x0052CD60	?CL_Setenv_f@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052CD60;src/game/cl/cl_keys.cpp:382-385	Release is an intentional unsupported-command hook; source body is empty and matches.
+0x0052CD60	?CL_Setenv_f@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052CD60;src/game/cl/cl_keys.cpp:382-385	Exact release/source empty-body match.
+0x0052CD70	?CL_Disconnect_f@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052CD70;src/game/cl/cl_keys.cpp:387-390	Release is an intentional no-op disconnect command hook; source body is empty and matches.
+0x0052CD70	?CL_Disconnect_f@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052CD70;src/game/cl/cl_keys.cpp:387-390	Exact release/source empty-body match.
+0x0052CE70	?CL_UpdateFog@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052CE70;src/game/cl/cl_keys.cpp:404-408	Release is an intentional empty fog-update hook; source body is empty and matches.
+0x0052CE70	?CL_UpdateFog@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052CE70;src/game/cl/cl_keys.cpp:404-408	Exact release/source empty-body match.
+0x0052DA40	?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052DA40;src/game/cl/cl_parse.cpp:773-777	Release is an intentional empty packet-entity hook in this port target; source body is empty and matches.
+0x0052DA40	?CL_ParsePacketEntities@@YAXPAUmsg_t@@PAUclSnapshot_t@@@Z	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x0052DA40;src/game/cl/cl_parse.cpp:773-777	Exact release/source empty-body match.
