@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x006F5B50	?UpdateJump@RBVehicleController@@AAEXAAVrb_vehicle@@@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x006F5B50;src/game/physics/g_physics.cpp:2385	IDA release decompiles the entry point as an empty body; source preserves the rb_vehicle pointer ABI and no-op behavior.
+0x006F5B50	?UpdateJump@RBVehicleController@@AAEXAAVrb_vehicle@@@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x006F5B50	Release and source both contain no state-changing instructions.
