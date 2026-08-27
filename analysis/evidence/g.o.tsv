@@ -65,3 +65,31 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00450290	?GScr_AddFieldsForEntity@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00450290;src/game/logic/g_scr.cpp:1821	Release and source match the g_spawn dead-code assertion path.
 0x004502E0	?GScr_AddFieldsForRadiant@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:1835	Dead-code Radiant field registration preserves the release assertion.
 0x004502E0	?GScr_AddFieldsForRadiant@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004502E0;src/game/logic/g_scr.cpp:1835	Release and source match the g_spawn dead-code assertion path.
+0x004A4FD0	?check_for_decal@trace_t@@QAEXM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:388	Source sets check_decal true and stores the supplied radius in decal_radius.
+0x004A4FD0	?check_for_decal@trace_t@@QAEXM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A4FD0	Release performs the same two member stores: check_decal=1 and decal_radius=radius.
+0x004A4FF0	?decal_ok@trace_t@@QAE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:394	Source returns the trace_t check_decal flag.
+0x004A4FF0	?decal_ok@trace_t@@QAE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A4FF0	Release returns the same check_decal byte with no additional control flow.
+0x004A5000	?Inst@CGBankManager@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:407	Source returns the CGBankManager singleton pointer.
+0x004A5000	?Inst@CGBankManager@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5000	Release loads and returns CGBankManager::sInst, matching the source singleton accessor.
+0x004A5570	?cdl_to_native@@YAQAMABVPosition3@math@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2031	Source returns the input Position3 object address as float storage.
+0x004A5570	?cdl_to_native@@YAQAMABVPosition3@math@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5570	Release returns the const Position3 argument address unchanged, with the mapped float-pointer ABI.
+0x004A5580	?cdl_to_native@@YAQAMABVDir3@math@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2036	Source returns the input Dir3 object address as float storage.
+0x004A5580	?cdl_to_native@@YAQAMABVDir3@math@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5580	Release returns the const Dir3 argument address unchanged, with the mapped float-pointer ABI.
+0x004A5590	?Sqrt@math@@YAMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:702	Source returns the single-argument square root.
+0x004A5590	?Sqrt@math@@YAMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5590	Release computes and returns sqrt(a), matching the source operation.
+0x004A55A0	?RSqrt@math@@YAMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:704	Source returns reciprocal square root as 1.0f divided by sqrt(a).
+0x004A55A0	?RSqrt@math@@YAMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A55A0	Release computes and returns 1.0/sqrt(a), matching the source reciprocal-square-root operation.
+0x004A58B0	?GetX@Position3@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:773	Source returns Position3 x lane.
+0x004A58B0	?GetX@Position3@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A58B0	Release returns the low float lane of Position3, matching source.
+0x004A58D0	?GetY@Position3@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:775	Source returns Position3 y lane.
+0x004A58D0	?GetY@Position3@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A58D0	Release shuffles and returns Position3 y lane, matching source.
+0x004A5930	?GetZ@Position3@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:780	Source returns Position3 z lane.
+0x004A5930	?GetZ@Position3@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5930	Release shuffles and returns Position3 z lane, matching source.
+0x004A5B80	?GetX@Vector4@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:816	Source returns Vector4 x lane.
+0x004A5B80	?GetX@Vector4@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5B80	Release returns the low float lane of Vector4, matching source.
+0x004A5BA0	?GetY@Vector4@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:818	Source returns Vector4 y lane.
+0x004A5BA0	?GetY@Vector4@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5BA0	Release shuffles and returns Vector4 y lane, matching source.
+0x004A5C10	?GetZ@Vector4@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:823	Source returns Vector4 z lane.
+0x004A5C10	?GetZ@Vector4@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5C10	Release shuffles and returns Vector4 z lane, matching source.
+0x004A5C80	?GetW@Vector4@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:828	Source returns Vector4 w lane.
+0x004A5C80	?GetW@Vector4@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5C80	Release shuffles and returns Vector4 w lane, matching source.

@@ -384,11 +384,13 @@ const math::Position3& Entity::GetPosition()
 // ============================================================================
 // trace_t helpers (g.o 0x4A4FD0 / 0x4A4FF0)
 // ============================================================================
+// ea: 0x004A4FD0
 void trace_t::check_for_decal(float radius)
 {
     check_decal = true;
     decal_radius = radius;
 }
+// ea: 0x004A4FF0
 bool trace_t::decal_ok()
 {
     return check_decal;
@@ -401,6 +403,7 @@ XModelManager* XModelManager::Inst()
 {
     return XModelManager::sInst;
 }
+// ea: 0x004A5000
 CGBankManager* CGBankManager::Inst()
 {
     return (CGBankManager*)CGBankManager::sInst;
@@ -695,7 +698,9 @@ float pow(float x, float y) { return (float)pow((double)x, (double)y); }
 float ceil(float x) { return (float)ceil((double)x); }
 
 namespace math {
+// ea: 0x004A5590
 float Sqrt(float a) { return (float)sqrt((double)a); }
+// ea: 0x004A55A0
 float RSqrt(float a) { return 1.0f / (float)sqrt((double)a); }
 }
 
@@ -764,11 +769,14 @@ math::Position3::Position3(float _x)
     v.m128_f32[2] = _x;
     v.m128_f32[3] = 0.0f;
 }
+// ea: 0x004A58B0
 float math::Position3::GetX() const { return v.m128_f32[0]; }
+// ea: 0x004A58D0
 float math::Position3::GetY() const
 {
     return _mm_shuffle_ps(v, v, 0x55).m128_f32[0];
 }
+// ea: 0x004A5930
 float math::Position3::GetZ() const
 {
     return _mm_shuffle_ps(v, v, 0xAA).m128_f32[0];
@@ -804,15 +812,19 @@ math::Vector4::Vector4(float _x)
 {
     v = _mm_set1_ps(_x);
 }
+// ea: 0x004A5B80
 float math::Vector4::GetX() const { return v.m128_f32[0]; }
+// ea: 0x004A5BA0
 float math::Vector4::GetY() const
 {
     return _mm_shuffle_ps(v, v, 0x55).m128_f32[0];
 }
+// ea: 0x004A5C10
 float math::Vector4::GetZ() const
 {
     return _mm_shuffle_ps(v, v, 0xAA).m128_f32[0];
 }
+// ea: 0x004A5C80
 float math::Vector4::GetW() const
 {
     return _mm_shuffle_ps(v, v, 0xFF).m128_f32[0];
@@ -2015,10 +2027,12 @@ unsigned int* tlFixedString::value()
     return (unsigned int*)this;
 }
 
+// ea: 0x004A5570
 float* cdl_to_native(const math::Position3& v)
 {
     return (float*)&v;
 }
+// ea: 0x004A5580
 float* cdl_to_native(const math::Dir3& v)
 {
     return (float*)&v;
