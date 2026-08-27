@@ -753,15 +753,15 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00449850	?SP_dom_allies@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449850	release branch matches source.
 0x004498A0	?SP_dom_axis@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:658	dom-axis spawn registration or delete flag.
 0x004498A0	?SP_dom_axis@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004498A0	release branch matches source.
-0x004498F0	?SP_war_allies@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:??	war-allies spawn registration or delete flag.
+0x004498F0	?SP_war_allies@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:642	war-allies spawn registration or delete flag.
 0x004498F0	?SP_war_allies@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004498F0	release branch matches source.
-0x00449940	?SP_war_axis@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:??	war-axis spawn registration or delete flag.
+0x00449940	?SP_war_axis@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:656	war-axis spawn registration or delete flag.
 0x00449940	?SP_war_axis@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449940	release branch matches source.
-0x00449990	?SP_sd_allies@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:??	sd-allies spawn registration or delete flag.
+0x00449990	?SP_sd_allies@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:670	sd-allies spawn registration or delete flag.
 0x00449990	?SP_sd_allies@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449990	release branch matches source.
-0x004499E0	?SP_sd_axis@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:??	sd-axis spawn registration or delete flag.
+0x004499E0	?SP_sd_axis@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:552	sd-axis spawn registration or delete flag.
 0x004499E0	?SP_sd_axis@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x004499E0	release branch matches source.
-0x00449F60	?ChangePlayersMaxHealth@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:??	clamps max health, updates cvar, persistent maxHealth, stats, and entity health.
+0x00449F60	?ChangePlayersMaxHealth@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1347	clamps max health, updates cvar, persistent maxHealth, stats, and entity health.
 0x00449F60	?ChangePlayersMaxHealth@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449F60	release clamp and all four updates match source.
 0x00449A30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:2772	Client origin setter preserves the null-client assert, origin/flag update, state conversion, NaN assert, and entity-origin synchronization.
 0x00449A30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449A30	Release instruction sequence matches source, including the +1 Z offset, eFlags toggle, NaN check, and trBase copy.
