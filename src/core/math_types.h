@@ -373,6 +373,7 @@ public:
     Dir3 y;  // +0x10
     Dir3 z;  // +0x20
 
+    // ea: 0x004A6FA0
     Mat33() {}
     Mat33(const Mat33& _m);        // ??0Mat33@math@@QAE@ABV01@@Z (g.o 0x4A7100)
     Mat33(const Dir3& _x, const Dir3& _y, const Dir3& _z);  // ??0Mat33@math@@QAE@ABVDir3@1@00@Z (g.o 0x4A6FB0)

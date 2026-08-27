@@ -1405,12 +1405,14 @@ math::Position3 math::Max(const math::Position3& _a, const math::Position3& _b)
 }
 
 // DeclareUnit / Unitize / Zero (g.o 0x4A6E70-0x4A6F60)
+// ea: 0x004A6E70
 math::Dir3 math::DeclareUnit(const math::Dir3& _v)
 {
     math::Dir3 r;
     r.v = _v.v;
     return r;
 }
+// ea: 0x004A6EA0
 math::Dir3 math::Unitize(const math::Dir3& _v)
 {
     __m128 v2 = _mm_mul_ps(_v.v, _v.v);
@@ -1421,12 +1423,14 @@ math::Dir3 math::Unitize(const math::Dir3& _v)
     r.v = _mm_div_ps(_v.v, _mm_set1_ps(len));
     return r;
 }
+// ea: 0x004A6F20
 math::Dir3 math::Dir3_Zero()
 {
     math::Dir3 r;
     r.v = _mm_setzero_ps();
     return r;
 }
+// ea: 0x004A6F60
 math::Position3 math::Position3_Zero()
 {
     math::Position3 r;
@@ -1435,6 +1439,7 @@ math::Position3 math::Position3_Zero()
 }
 
 // Compound math ops (g.o 0x4A6CF0-0x4A6E30)
+// ea: 0x004A6CF0
 const math::Dir3& math::Dir3::operator/=(float _v)
 {
     v = _mm_div_ps(v, _mm_set1_ps(_v));
@@ -1450,26 +1455,31 @@ const math::Dir3& math::Dir3::operator*=(float _v)
     v = _mm_mul_ps(v, _mm_set1_ps(_v));
     return *this;
 }
+// ea: 0x004A6D30
 const math::Position3& math::Position3::operator+=(const math::Dir3& _v)
 {
     v = _mm_add_ps(v, _v.v);
     return *this;
 }
+// ea: 0x004A6D70
 const math::Position3& math::Position3::operator+=(const math::Position3& _v)
 {
     v = _mm_add_ps(v, _v.v);
     return *this;
 }
+// ea: 0x004A6DB0
 const math::Position3& math::Position3::operator*=(float _v)
 {
     v = _mm_mul_ps(v, _mm_set1_ps(_v));
     return *this;
 }
+// ea: 0x004A6DF0
 const math::Position3& math::Position3::operator/=(float _v)
 {
     v = _mm_div_ps(v, _mm_set1_ps(_v));
     return *this;
 }
+// ea: 0x004A6E30
 const math::Vector4& math::Vector4::operator-=(const math::Vector4& _v)
 {
     v = _mm_sub_ps(v, _v.v);
@@ -1492,20 +1502,24 @@ const math::Vector4& math::Vector4::operator/=(float _v)
 }
 
 // Mat33 / Mat43 (g.o 0x4A6FB0-0x4A74A0)
+// ea: 0x004A6FB0
 math::Mat33::Mat33(const math::Dir3& _x, const math::Dir3& _y, const math::Dir3& _z)
 {
     x = _x;
     y = _y;
     z = _z;
 }
+// ea: 0x004A7030
 const math::Dir3& math::Mat33::GetX() const
 {
     return x;
 }
+// ea: 0x004A7040
 const math::Dir3& math::Mat33::GetY() const
 {
     return y;
 }
+// ea: 0x004A7050
 const math::Dir3& math::Mat33::GetZ() const
 {
     return z;

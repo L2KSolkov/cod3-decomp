@@ -64,6 +64,10 @@ def main() -> int:
             assert ledger.base_name("??9math@@YA_NABVPosition3@0@0@Z") == "operator!="
             assert ledger.base_name("??Hmath@@YA?AVDir3@0@ABV10@ABVPosition3@0@@Z") == "operator+"
             assert ledger.base_name("??Kmath@@YA?AVDir3@0@ABV10@M@Z") == "operator/"
+            assert ledger.base_name("??_0Dir3@math@@QAEABV01@M@Z") == "operator/="
+            assert ledger.base_name("??YPosition3@math@@QAEABV01@ABVDir3@1@@Z") == "operator+="
+            assert ledger.base_name("??XPosition3@math@@QAEABV01@M@Z") == "operator*="
+            assert ledger.base_name("??ZVector4@math@@QAEABV01@ABV01@@Z") == "operator-="
 
             # Definition comments may carry a descriptive function name
             # before the EA; marker parsing must retain that address.

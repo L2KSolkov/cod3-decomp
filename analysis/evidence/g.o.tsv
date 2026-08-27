@@ -235,3 +235,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A6C70	?Min@math@@YA?AVPosition3@1@ABV21@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6C70	Release applies _mm_min_ps to both Position3 vectors and returns the result.
 0x004A6CB0	?Max@math@@YA?AVPosition3@1@ABV21@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1399	Source applies componentwise maximum to two Position3 values.
 0x004A6CB0	?Max@math@@YA?AVPosition3@1@ABV21@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6CB0	Release applies _mm_max_ps to both Position3 vectors and returns the result.
+0x004A6CF0	??_0Dir3@math@@QAEABV01@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1442	Source divides all Dir3 lanes by the scalar and returns the destination.
+0x004A6CF0	??_0Dir3@math@@QAEABV01@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6CF0	Release broadcasts the divisor, applies _mm_div_ps, and returns this, matching source.
+0x004A6D30	??YPosition3@math@@QAEABV01@ABVDir3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1458	Source adds the Dir3 SIMD value into Position3 and returns the destination.
+0x004A6D30	??YPosition3@math@@QAEABV01@ABVDir3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6D30	Release adds Dir3.v to Position3.v and returns this, matching source.
+0x004A6D70	??YPosition3@math@@QAEABV01@ABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1464	Source adds another Position3 SIMD value and returns the destination.
+0x004A6D70	??YPosition3@math@@QAEABV01@ABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6D70	Release adds the source Position3 vector and returns this, matching source.
+0x004A6DB0	??XPosition3@math@@QAEABV01@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1470	Source multiplies all Position3 lanes by the scalar and returns the destination.
+0x004A6DB0	??XPosition3@math@@QAEABV01@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6DB0	Release broadcasts the scalar, applies _mm_mul_ps, and returns this, matching source.
+0x004A6DF0	??_0Position3@math@@QAEABV01@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1476	Source divides all Position3 lanes by the scalar and returns the destination.
+0x004A6DF0	??_0Position3@math@@QAEABV01@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6DF0	Release broadcasts the divisor, applies _mm_div_ps, and returns this, matching source.
+0x004A6E30	??ZVector4@math@@QAEABV01@ABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1482	Source subtracts the input Vector4 SIMD value and returns the destination.
+0x004A6E30	??ZVector4@math@@QAEABV01@ABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6E30	Release applies _mm_sub_ps to the destination and source Vector4 values and returns this.
+0x004A6E70	?DeclareUnit@math@@YA?AVDir3@1@ABV21@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1408	Source copies the Dir3 value without normalization and returns it.
+0x004A6E70	?DeclareUnit@math@@YA?AVDir3@1@ABV21@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6E70	Release copies the input Dir3 vector into the result and returns it, matching source.
+0x004A6EA0	?Unitize@math@@YA?AVDir3@1@ABV21@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1415	Source divides Dir3 by its Euclidean length and returns the unit vector.
+0x004A6EA0	?Unitize@math@@YA?AVDir3@1@ABV21@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6EA0	Release computes the squared length, square root, broadcasts it, divides the vector, and returns the result.
+0x004A6F20	?Dir3_Zero@math@@YA?AVDir3@1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1426	Source returns a Dir3 with all SIMD lanes zero.
+0x004A6F20	?Dir3_Zero@math@@YA?AVDir3@1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6F20	Release stores Float4_Zero into the result and returns it.
+0x004A6F60	?Position3_Zero@math@@YA?AVPosition3@1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1433	Source returns a Position3 with all SIMD lanes zero.
+0x004A6F60	?Position3_Zero@math@@YA?AVPosition3@1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6F60	Release stores Float4_Zero into the result and returns it.
+0x004A6FA0	??0Mat33@math@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/core/math_types.h:377	Source default Mat33 constructor is intentionally empty and leaves the matrix storage untouched.
+0x004A6FA0	??0Mat33@math@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6FA0	Release constructor returns this without stores, matching the empty source constructor.
+0x004A6FB0	??0Mat33@math@@QAE@ABVDir3@1@00@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1505	Source copies the three Dir3 arguments into Mat33 x, y, and z.
+0x004A6FB0	??0Mat33@math@@QAE@ABVDir3@1@00@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6FB0	Release stores all three Dir3 vectors into Mat33 and returns this.
+0x004A7030	?GetX@Mat33@math@@QBEABVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1512	Source returns the const Mat33 x row reference.
+0x004A7030	?GetX@Mat33@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7030	Release returns the Mat33 x row address unchanged.
+0x004A7040	?GetY@Mat33@math@@QBEABVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1517	Source returns the const Mat33 y row reference.
+0x004A7040	?GetY@Mat33@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7040	Release returns the Mat33 y row address, matching source.
+0x004A7050	?GetZ@Mat33@math@@QBEABVDir3@2@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1522	Source returns the const Mat33 z row reference.
+0x004A7050	?GetZ@Mat33@math@@QBEABVDir3@2@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A7050	Release returns the Mat33 z row address, matching source.
