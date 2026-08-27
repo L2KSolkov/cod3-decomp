@@ -346,12 +346,30 @@ def body_class(body: str) -> str:
     return "REAL_BODY"
 
 
+def canonical_hit(function: Function, hits: list[Marker]) -> Marker | None:
+    """Select the definition marker when a declaration marker precedes it."""
+    if not hits:
+        return None
+    base = base_name(function.name)
+    matching = [hit for hit in hits
+                if hit.candidate and (base in hit.candidate or
+                                      hit.candidate.endswith(base))]
+    definitions = [hit for hit in matching
+                   if body_class(hit.body) == "REAL_BODY"]
+    if len(definitions) == 1:
+        return definitions[0]
+    if matching:
+        return matching[0]
+    return hits[0]
+
+
 def compute_level(function: Function, hits: list[Marker], symbols: set[str],
                   evidence: dict[tuple[str, str, str], dict[str, str]]) -> tuple[dict[str, str], str]:
     """Apply gates for one function without inheriting object/file status."""
-    located = len(hits) == 1 and bool(hits[0].candidate)
+    hit = canonical_hit(function, hits)
+    located = hit is not None and bool(hit.candidate)
     if located:
-        candidate = hits[0].candidate
+        candidate = hit.candidate
         located = (base_name(function.name) in candidate or
                    candidate.endswith(base_name(function.name)))
     signature = bool(symbols) and bool(symbol_variants(function.name) & symbols)
@@ -464,12 +482,13 @@ def main() -> int:
     rows: list[dict[str, str]] = []
     for function in in_scope:
         hits = marker_by_ea.get(function.ida_ea, [])
+        hit = canonical_hit(function, hits)
         gate_state, level = compute_level(function, hits, symbols, evidence)
         key_base = (f"0x{function.ida_ea:08X}", function.name)
         rows.append({
             "kind": "function", "ida_ea": key_base[0], "name": function.name,
             "obj": function.obj, "lib": function.lib, "class": function.cls,
-            "source": hits[0].path if hits else "", "marker_line": str(hits[0].line) if hits else "",
+            "source": hit.path if hit else "", "marker_line": str(hit.line) if hit else "",
             "V1": gate_state["V1"], "V2": gate_state["V2"], "V3": gate_state["V3"],
             "V4": gate_state["V4"], "V5": gate_state["V5"], "level": level,
             "updated": today,
@@ -483,20 +502,24 @@ def main() -> int:
                               "detail": f"line {marker.line}"})
     for function in in_scope:
         hits = marker_by_ea.get(function.ida_ea, [])
-        if len(hits) > 1:
+        hit = canonical_hit(function, hits)
+        if len(hits) > 1 and not (hit is not None and
+                                  body_class(hit.body) == "REAL_BODY" and
+                                  sum(1 for item in hits
+                                      if body_class(item.body) == "REAL_BODY") == 1):
             anomalies.append({"kind": "DUPLICATE_MARKER", "ida_ea": f"0x{function.ida_ea:08X}",
                               "name": function.name, "source": hits[0].path,
                               "detail": f"{len(hits)} source markers"})
-        if len(hits) == 1 and hits[0].candidate:
+        if hit is not None and hit.candidate:
             base = base_name(function.name)
-            if base not in hits[0].candidate and not hits[0].candidate.endswith(base):
+            if base not in hit.candidate and not hit.candidate.endswith(base):
                 anomalies.append({"kind": "MARKER_NAME_MISMATCH", "ida_ea": f"0x{function.ida_ea:08X}",
-                                  "name": function.name, "source": hits[0].path,
-                                  "detail": f"source candidate {hits[0].candidate}"})
-        if hits and body_class(hits[0].body) in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}:
+                                  "name": function.name, "source": hit.path,
+                                  "detail": f"source candidate {hit.candidate}"})
+        if hit is not None and body_class(hit.body) in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}:
             anomalies.append({"kind": "EMPTY_OR_CAST_BODY", "ida_ea": f"0x{function.ida_ea:08X}",
-                              "name": function.name, "source": hits[0].path,
-                              "detail": body_class(hits[0].body)})
+                              "name": function.name, "source": hit.path,
+                              "detail": body_class(hit.body)})
     for name, detail in global_conflicts():
         anomalies.append({"kind": "GLOBAL_TYPE_CONFLICT", "ida_ea": "", "name": name,
                           "source": "src", "detail": detail})
