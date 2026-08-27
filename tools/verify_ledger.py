@@ -328,7 +328,26 @@ def base_name(decorated: str) -> str:
     if decorated.startswith("??"):
         # ??0Class and ??1Class are constructor/destructor decorations.
         match = re.match(r"\?\?[01]([^@]+)", decorated)
-        return match.group(1) if match else decorated
+        if match:
+            return match.group(1)
+        # Template and operator decorations carry the readable function name
+        # after the decoration. Normalize these so source markers for the
+        # actual definition are not treated as orphan/mismatched markers.
+        match = re.match(r"\?\?\$([^@]+)", decorated)
+        if match:
+            return match.group(1)
+        for decoration, readable in (
+            ("??2", "operator new"),
+            ("??3", "operator delete"),
+            ("??4", "operator="),
+            ("??D", "operator*"),
+        ):
+            if decorated.startswith(decoration):
+                return readable
+        match = re.match(r"\?\?_[EG]([^@]+)", decorated)
+        if match:
+            return match.group(1)
+        return decorated
     if decorated.startswith("?"):
         match = re.match(r"\?([^@]+)", decorated)
         return match.group(1) if match else decorated

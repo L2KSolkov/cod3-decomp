@@ -387,3 +387,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E9900	??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005E9900	Release calls PoolAllocator::Allocate on Block::sAllocator with the same two arguments.
 0x005E9960	??0Block@BackupStack@AeThread@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:1040	Source constructor initializes mNext to nullptr.
 0x005E9960	??0Block@BackupStack@AeThread@@QAE@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005E9960	Release constructor writes mNext=nullptr and returns this.
+0x005E95E0	??$IsDefined@I@@YA_NI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:5806	Source returns false only for the release undefined sentinel 0xFEFEFEFE.
+0x005E95E0	??$IsDefined@I@@YA_NI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005E95E0	Release compares the unsigned value against -16843010 (0xFEFEFEFE), matching the source template instantiation.

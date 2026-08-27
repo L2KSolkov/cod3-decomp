@@ -47,6 +47,9 @@ def main() -> int:
             # Explicit V4 release evidence is sufficient to clear an empty
             # body from the unreviewed-stub anomaly class.
             assert evidence[("0X0040C000", "fn", "V4")]["result"] == "PASS"
+            assert ledger.base_name("??$IsDefined@I@@YA_NI@Z") == "IsDefined"
+            assert ledger.base_name("??2AeThreadState@@SAPAXI_NPBDH@Z") == "operator new"
+            assert ledger.base_name("??4_objectiveInfo_t@@QAEAAU0@ABU0@@Z") == "operator="
 
             # Definition comments may carry a descriptive function name
             # before the EA; marker parsing must retain that address.
