@@ -767,3 +767,23 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00449A30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449A30	Release instruction sequence matches source, including the +1 Z offset, eFlags toggle, NaN check, and trBase copy.
 0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:545	Client view-angle setter handles prone corrections, delta-angle encoding, current-angle storage, and viewangle copy.
 0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449BC0	Release prone thresholds, 182.04445 scaling/masks, delta-angle loop, angle storage, and PlayerState copy match source.
+0x0044A000	?G_SetPlayerSize@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_active.cpp:51	player bounds setter writes half width and standing height.
+0x0044A000	?G_SetPlayerSize@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A000	release writes the same five player bound components.
+0x0044A050	?G_AddLean@@YAXPAVEntity@@QAM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:2399	lean helper preserves null-client assert and calls AddLeanToPosition with yaw, lean fraction, 16,20.
+0x0044A050	?G_AddLean@@YAXPAVEntity@@QAM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A050	release assert and five AddLeanToPosition arguments match source.
+0x0044A190	?G_FindInvalidatedNode@@YAHPAVEntity@@PBUPathNode@PathNodes@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_dobj.cpp:27	invalidated-node lookup preserves assert, guards, bounded scan, and index result.
+0x0044A190	?G_FindInvalidatedNode@@YAHPAVEntity@@PBUPathNode@PathNodes@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A190	release guards, node comparison, and bounded loop match source.
+0x0044A240	?CheatsOk@@YAHPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:350	cheat/alive checks send the correct command and return status.
+0x0044A240	?CheatsOk@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A240	release command strings, handle, health check, and returns match source.
+0x0044A290	?ConcatArgs@@YAPADH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:366	argument concatenation copies bounded arguments into line with spaces.
+0x0044A290	?ConcatArgs@@YAPADH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A290	release empty case, 255-byte bound, copy, spacing, and termination match source.
+0x0044A340	?SanitizeString@@YAXPAD0@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:399	sanitizer removes color escapes, lowercases printable characters, and terminates output.
+0x0044A340	?SanitizeString@@YAXPAD0@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A340	release escape handling, printable filter, lowercase conversion, and termination match source.
+0x0044A390	?Cmd_Take_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:977	take command handles cheats, health, weapons, ammo, and allammo paths.
+0x0044A390	?Cmd_Take_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A390	release branch graph, command strings, weapon/ammo updates, and clamps match source.
+0x0044A780	?Cmd_Invinc_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:328	invincibility command performs the release player lookup hook.
+0x0044A780	?Cmd_Invinc_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A780	release calls EntityManager::GetPlayer(currCl) and discards the result.
+0x0044A7A0	?Cmd_God_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1486	god command toggles flags/state and emits the matching status command.
+0x0044A7A0	?Cmd_God_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A7A0	release cheat/alive gates, flag toggle, globals, strings, and send call match source.
+0x0044A850	?Cmd_Notarget_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1518	notarget command toggles flags/state and emits the matching status command.
+0x0044A850	?Cmd_Notarget_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A850	release cheat/alive gates, flag toggle, globals, strings, and send call match source.
