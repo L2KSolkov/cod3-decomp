@@ -15,3 +15,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005BC5E0	?GetTeamGame@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177490	Release and source return cgGlobal.teamGame with no additional control flow.
 0x005BC710	?PrintLn@BrocSys@@YAXPBD@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3420	Non-empty body prints the supplied text followed by a newline.
 0x005BC710	?PrintLn@BrocSys@@YAXPBD@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177542	Release and source call Com_Printf with the same "%s\\n" format and text argument.
+0x005BC660	?ActiveMenu@BrocSys@@YAHXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:6308	Non-empty body checks the active in-game menu system and returns its active menu or -1.
+0x005BC660	?ActiveMenu@BrocSys@@YAHXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177510;IDA:0x005BC660	Source matches release null/system-active guard, FEManager lookup, and GetActiveMenu return.
+0x005BC890	?Assert@BrocSys@@YA_NPBDH0@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:7791	Non-empty body populates AeAssert context and forwards the assertion result.
+0x005BC890	?Assert@BrocSys@@YA_NPBDH0@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177622	Source matches release context assignments, IsIgnored gate, and AeAssert::Assert call.
+0x005BC8E0	?Warning@BrocSys@@YA_NPBDH0@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:7801	Non-empty body populates AeAssert context and forwards the warning result.
+0x005BC8E0	?Warning@BrocSys@@YA_NPBDH0@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177632	Source matches release context assignments, IsIgnored gate, and AeAssert::Warning call.
+0x005BC970	?CVarGetString@BrocSys@@YAXAAVstring@Broc@@PBD@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:7811	Non-empty body reads the cvar into a fixed buffer and assigns the Broc string.
+0x005BC970	?CVarGetString@BrocSys@@YAXAAVstring@Broc@@PBD@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177652	Source matches release 128-byte Cvar_VariableStringBuffer and Broc::string assignment.
+0x005BC9D0	?CVarSetString@BrocSys@@YAXPBD0@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:7819	Non-empty body sanitizes the value buffer and registers/sets the named cvar.
+0x005BC9D0	?CVarSetString@BrocSys@@YAXPBD0@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177673	Source matches release 1024-byte sanitization loop, quote replacement, and Cvar_Register/Cvar_Set calls.
+0x005BCA50	?CVarSetInt@BrocSys@@YAXPBDH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:7838	Non-empty body formats, sanitizes, registers, and sets an integer cvar.
+0x005BCA50	?CVarSetInt@BrocSys@@YAXPBDH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177700	Source matches release integer formatting, 1024-byte sanitization loop, and cvar calls.
+0x005BCAE0	?CVarSetFloat@BrocSys@@YAXPBDM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:7857	Non-empty body formats, sanitizes, registers, and sets a float cvar.
+0x005BCAE0	?CVarSetFloat@BrocSys@@YAXPBDM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177722	Source matches release float formatting, 1024-byte sanitization loop, and cvar calls.
+0x005BCD10	?GetNorthYaw@BrocSys@@YAMXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3120	Non-empty thunk returns the compass north direction.
+0x005BCD10	?GetNorthYaw@BrocSys@@YAMXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BCD10	IDA release thunk forwards directly to CG_GetNorthDirection; source has the same forwarding behavior and map float ABI.
