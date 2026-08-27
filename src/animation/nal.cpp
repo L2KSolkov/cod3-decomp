@@ -31083,7 +31083,9 @@ InteractState* InteractionController::CreateState(const char* stateName,
                         break;
                     }
                 }
-                if (state == nullptr && interactType <= 0x18)
+                // Release reaches the assert only for an unknown state type;
+                // a valid type that failed allocation simply returns null.
+                if (state == nullptr && interactType > 0x18)
                 {
                     XANIM_ASSERT(
                         "0", "c:\\cod\\code\\game\\InteractionController.cpp",
