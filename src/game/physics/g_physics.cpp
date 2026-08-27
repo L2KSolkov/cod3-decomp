@@ -1462,7 +1462,7 @@ public:
     int GetBoneIndex(const char* name) const;
     int GetBoneIndexInternal(unsigned int nameHash) const;  // ?GetBoneIndexInternal@DObj@@QBEHI@Z (render.o)
     int GetHighLOD();  // ?GetHighLOD@DObj@@QAEHXZ (physics.o inline 0x71C360)
-    int GetBoneParent(int boneIndex);  // ?GetBoneParent@DObj@@QAEHH@Z (render.o; stub)
+    int GetBoneParent(int boneIndex);  // ?GetBoneParent@DObj@@QAEHH@Z (render.o)
 };
 const math::Mat43& DObj::GetMat(int boneIndex)
 {
