@@ -537,7 +537,9 @@ extern Entity* GetPlayerTarget();
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern int BG_GetWeaponForInfo(weaponFileInfo_t* pWeapInfo);
-extern void CG_DrawWeapReticle();
+extern float CG_DrawWeapReticle();
+extern void CG_CalcReticleColor(const float* baseColor, float* reticleColor,
+                                float alpha);
 extern void CG_CalcCrosshairColor(float alpha, int* color);
 extern void CG_CalcCrosshairPosition(float* pfX, float* pfY);
 extern void CG_DrawReticleHitIndicator(void* weapDef, int weapIndex,
@@ -550,8 +552,7 @@ extern void CG_DrawAdsAimIndicator(void* weapDef, int weapIndex, int* color,
                                    float transScale);
 extern void CG_DrawReticleName(int* color);
 extern void CG_DrawReticleCenter(void* weapDef, int weapIndex, int* color,
-                                 float centerX, float centerY,
-                                 float transScale);
+                                 float centerX, float centerY);
 extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float centerX, float centerY,
                                 float transScale);
@@ -1228,7 +1229,7 @@ void CG_DrawDamageDirectionIndicators()
 
 // ea: 0x00694E00 (release cg.o)
 void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
-                          float centerX, float centerY, float)
+                          float centerX, float centerY)
 {
     if (weapDefArg == nullptr || baseColor == nullptr || weapIndex < 0)
         return;
@@ -1245,14 +1246,8 @@ void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
         0.0f};
     float zoomFraction = 0.0f;
     CG_GetWeapReticleZoom(&zoomFraction);
-    const char* ps = reinterpret_cast<const char*>(
-        &EntityManager::sInst->GetPlayer(currCl)->client->ps);
-    float alpha = (1.0f - *reinterpret_cast<const float*>(ps + 0x534)
-                             * 0.0039215689f)
-                  * s_cgCvarStorage[32].value * (1.0f - zoomFraction);
-    if (s_cgCvarStorage[33].value > alpha)
-        alpha = s_cgCvarStorage[33].value;
-    reticleColor[3] = alpha;
+    CG_CalcReticleColor(reinterpret_cast<const float*>(baseColor),
+                        reticleColor, 1.0f - zoomFraction);
 
     const float scaledX = unk_F6A278[802 * currCl] * centerX;
     const float scaledY = unk_F6A27C[802 * currCl] * centerY;
@@ -1346,7 +1341,7 @@ void CG_DrawReticleHitIndicator(void* weapDefArg, int weapIndex, int* baseColor,
 }
 
 // ea: 0x0069B580 (release cg.o)
-void CG_DrawWeapReticle()
+float CG_DrawWeapReticle()
 {
     float zoomFraction = 0.0f;
     if (!CG_GetWeapReticleZoom(&zoomFraction))
@@ -1356,14 +1351,14 @@ void CG_DrawWeapReticle()
             g_femanager.mDontDrawHud = false;
             lastFrameRenderedOverlay = false;
         }
-        return;
+        return 1.0f;
     }
 
     const int base = 1580 * currCl;
     weaponFileInfo_t* weapDef = reinterpret_cast<weaponFileInfo_t*>(
         dword_F63B8C[base]);
     if (weapDef == nullptr)
-        return;
+        return 1.0f;
     const int weapIndex = BG_GetWeaponForInfo(weapDef);
 
     float centerX;
@@ -1471,6 +1466,7 @@ void CG_DrawWeapReticle()
         break;
     }
     trap_R_SetColor(nullptr);
+    return 1.0f - zoomFraction;
 }
 
 // ea: 0x006881E0 (release cg.o)
@@ -1560,13 +1556,10 @@ void CG_DrawReticleSides(void* weapDefArg, int weapIndex, int* baseColor,
     if (reticleSide == nullptr || reticleSide[0] == 0)
         return;
 
-    float zoomFraction = 1.0f;
-    float zoom;
-    if (CG_GetWeapReticleZoom(&zoom))
-        zoomFraction = zoom;
+    const float reticleAlpha = CG_DrawWeapReticle();
     float reticleColor[4];
     CG_CalcReticleColor(reinterpret_cast<const float*>(baseColor),
-                        reticleColor, zoomFraction);
+                        reticleColor, reticleAlpha);
     const float drawSize = *(const int*)(weapDef + 0x4E4) * transScale;
     const float drawSizePair[2] = {drawSize, drawSize};
     float spread[2];
@@ -3180,9 +3173,9 @@ void CG_DrawCrosshair(float transScaleArg)
                             (weaponFileInfo_t*)dword_F63B8C[1580 * currCl]);
                     if (!CG_ForceDebugCrosshair())
                     {
-                        CG_DrawWeapReticle();
+                        const float reticleAlpha = CG_DrawWeapReticle();
+                        CG_CalcCrosshairColor(reticleAlpha, color);
                         float centerY = value;
-                        CG_CalcCrosshairColor(value, color);
                         if (value >= 0.0099999998f
                             && CG_AllowedToDrawCrosshair())
                         {
@@ -3229,8 +3222,7 @@ void CG_DrawCrosshair(float transScaleArg)
                                     int v10 = weapnum;
                                     CG_DrawReticleCenter(
                                         dword_F63B8C[1580 * currCl], weapnum,
-                                        color, centerX, v6,
-                                        transScaleArg);
+                                        color, centerX, v6);
                                     CG_DrawReticleSides(
                                         dword_F63B8C[1580 * currCl], v10,
                                         color, v9, v6, fTransScale);
