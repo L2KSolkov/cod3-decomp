@@ -245,3 +245,67 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005EF600	?DereferenceHandle@AeThreadManager@@QBEPAVAeThread@@VHandle@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x005EF600	Release index/key lookup and null fallback match source; the method is emitted with the release const member decoration.
 0x005EF680	?MathFastSinCos@Broc@@YAXMAAM0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/broc/Broc.cpp:371	Non-empty trigonometric helper forwards the angle and output pointers to FastSinCos.
 0x005EF680	?MathFastSinCos@Broc@@YAXMAAM0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x005EF680	Release wrapper is a direct FastSinCos forward; current pointer decoration is normalized as an ABI-equivalent spelling.
+0x005BBC50	?Init@MemCount@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2234	Body is intentionally empty and has no placeholder control flow.
+0x005BBC50	?Init@MemCount@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BBC50	Release body is a no-op and matches the empty source implementation.
+0x005BBC60	?RenderTotals@MemCount@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2239	Body is intentionally empty.
+0x005BBC60	?RenderTotals@MemCount@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BBC60	Release body is a no-op and matches source.
+0x005BBC70	?ReportTotals@MemCount@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2244	Body is intentionally empty.
+0x005BBC70	?ReportTotals@MemCount@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BBC70	Release body is a no-op and matches source.
+0x005BBC90	?CheckForMapChangeLeaks@MemCount@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2255	Body is intentionally empty.
+0x005BBC90	?CheckForMapChangeLeaks@MemCount@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BBC90	Release body is a no-op and matches source.
+0x005BBCA0	?CheckForRoundtripLeaks@MemCount@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2260	Body is intentionally empty.
+0x005BBCA0	?CheckForRoundtripLeaks@MemCount@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BBCA0	Release body is a no-op and matches source.
+0x005BBCC0	?SetSafeAlloc@MemCount@@YAX_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2269	Body is intentionally empty.
+0x005BBCC0	?SetSafeAlloc@MemCount@@YAX_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BBCC0	Release body is a no-op and matches source despite the decompiler omitting the unused bool.
+0x005BCD30	?GameLoad@BrocSys@@YAXABVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3148	Body is intentionally empty.
+0x005BCD30	?GameLoad@BrocSys@@YAXABVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCD30	Release body is a no-op and matches source.
+0x005BCEE0	?ProfEnd@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3187	Body is intentionally empty.
+0x005BCEE0	?ProfEnd@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCEE0	Release body is a no-op and matches source.
+0x005BCF30	?EndMemCheck@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3202	Body is intentionally empty.
+0x005BCF30	?EndMemCheck@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCF30	Release body is a no-op and matches source.
+0x005BD2D0	?ProfileStop@BrocSys@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3219	Body is intentionally empty.
+0x005BD2D0	?ProfileStop@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD2D0	Release body is a no-op and matches source.
+0x005BD2E0	?ProfileSetVal@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3224	Body is intentionally empty.
+0x005BD2E0	?ProfileSetVal@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD2E0	Release body is a no-op and matches source.
+0x005BD940	?IncMissionStat@BrocSys@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3252	Body is intentionally empty.
+0x005BD940	?IncMissionStat@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD940	Release body is a no-op and matches source.
+0x005BD950	?DecMissionStat@BrocSys@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3257	Body is intentionally empty.
+0x005BD950	?DecMissionStat@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD950	Release body is a no-op and matches source.
+0x005BD990	?SetPlayerWeaponUsed@BrocSys@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3279	Body is intentionally empty.
+0x005BD990	?SetPlayerWeaponUsed@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD990	Release body is a no-op and matches source.
+0x005BEF90	?AddFakeFriendly@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2801	Body is intentionally empty.
+0x005BEF90	?AddFakeFriendly@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BEF90	Release body is a no-op and matches source.
+0x005BEFA0	?RemoveFakeFriendly@BrocSys@@YAXI@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2806	Body is intentionally empty.
+0x005BEFA0	?RemoveFakeFriendly@BrocSys@@YAXI@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BEFA0	Release body is a no-op and matches source.
+0x005BF800	?DronesStop@BrocSys@@YAXPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2834	Body is intentionally empty.
+0x005BF800	?DronesStop@BrocSys@@YAXPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BF800	Release body is a no-op and matches source.
+0x005BF810	?DronesDelete@BrocSys@@YAXPBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2840	Body is intentionally empty.
+0x005BF810	?DronesDelete@BrocSys@@YAXPBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BF810	Release body is a no-op and matches source.
+0x005BEDF0	?AnimScripted2@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I_NMM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2788	Body is intentionally empty.
+0x005BEDF0	?AnimScripted2@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I_NMM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BEDF0	Release body is a no-op and matches source.
+0x005BEEA0	?StartScriptedAnim@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2795	Body is intentionally empty.
+0x005BEEA0	?StartScriptedAnim@BrocSys@@YAXIIABUvector@Broc@@0IABVstring@3@I@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BEEA0	Release body is a no-op and matches source.
+0x005BF730	?SaveCheckpoint@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2818	Body is intentionally empty.
+0x005BF730	?SaveCheckpoint@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BF730	Release body is a no-op and matches source.
+0x005BF7F0	?DronesStart@BrocSys@@YAXPBD0HHHMM_N1@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2829	Body is intentionally empty.
+0x005BF7F0	?DronesStart@BrocSys@@YAXPBD0HHHMM_N1@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BF7F0	Release body is a no-op and matches source.
+0x005BFB20	?SetDroneScriptControl@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2844	Body is intentionally empty.
+0x005BFB20	?SetDroneScriptControl@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BFB20	Release body is a no-op and matches source.
+0x005BFBE0	?SetZFog@BrocSys@@YAXMMM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:2863	Body is intentionally empty.
+0x005BFBE0	?SetZFog@BrocSys@@YAXMMM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BFBE0	Release body is a no-op and matches source.
+0x005BCD20	?GameSave@BrocSys@@YAXABVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3143	Body is intentionally empty.
+0x005BCD20	?GameSave@BrocSys@@YAXABVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCD20	Release body is a no-op and matches source.
+0x005BCDD0	?MissionSuccess@BrocSys@@YAXABVstring@Broc@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3159	Body is intentionally empty.
+0x005BCDD0	?MissionSuccess@BrocSys@@YAXABVstring@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCDD0	Release body is a no-op and matches source.
+0x005BCED0	?ProfBegin@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3182	Body is intentionally empty.
+0x005BCED0	?ProfBegin@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCED0	Release body is a no-op and matches source.
+0x005BCF20	?StartMemCheck@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3198	Body is intentionally empty.
+0x005BCF20	?StartMemCheck@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BCF20	Release body is a no-op and matches source.
+0x005BD2C0	?ProfileStart@BrocSys@@YAXH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3214	Body is intentionally empty.
+0x005BD2C0	?ProfileStart@BrocSys@@YAXH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD2C0	Release body is a no-op and matches source.
+0x005BD930	?SetMissionStat@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3247	Body is intentionally empty.
+0x005BD930	?SetMissionStat@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD930	Release body is a no-op and matches source.
+0x005BD980	?UpdateMissionCompletionTime@BrocSys@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3274	Body is intentionally empty.
+0x005BD980	?UpdateMissionCompletionTime@BrocSys@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD980	Release body is a no-op and matches source.
+0x005BDAF0	?EnableNanoForces@BrocSys@@YAX_N@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:3303	Body is intentionally empty.
+0x005BDAF0	?EnableNanoForces@BrocSys@@YAX_N@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BDAF0	Release body is a no-op and matches source.
