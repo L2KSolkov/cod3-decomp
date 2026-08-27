@@ -11526,7 +11526,7 @@ void BrocSys::SetSpectateSeconds(int seconds, int viewport)
 {
     InGameMenuSystem* IGMS = g_femanager.GetIGMS(viewport);
     SpectateMenu* v2 = (SpectateMenu*)IGMS->menus[12];
-    *(int*)((char*)v2 + 0x10) = seconds;  // mSeconds (+0x10 per IDA type)
+    *(int*)((char*)v2 + 0x50) = seconds;
     v2->UpdateSeconds();
 }
 
