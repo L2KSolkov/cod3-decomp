@@ -74,12 +74,14 @@ void CG_PriorityCenterPrint(const char* str, float y, int charWidth,
 {
     int v4 = 0;
     int cl = currCl;
-    if (sCenterTime[cl] == 0 || priority >= sCenterPriority[cl])
+    int stateIndex = 1580 * cl;
+    if (sCenterTime[stateIndex] == 0
+        || priority >= sCenterPriority[stateIndex])
     {
         const char* v5 =
             SEH_LocalizeTextMessage(str, "Center Print");
         Q_strncpyz(sCenterText[cl], v5, 512);
-        sCenterPriority[cl] = priority;
+        sCenterPriority[stateIndex] = priority;
         char* s = sCenterText[cl];
         int v7 = 0;
         while (*s != 0)
@@ -105,10 +107,10 @@ void CG_PriorityCenterPrint(const char* str, float y, int charWidth,
                 v7 = 0;
             }
         }
-        sCenterTime[cl] = cgGlobal.time;
-        sCenterPriority[cl] = priority;
-        sCenterCharWidth[cl] = charWidth;
-        sCenterLines[cl] = 1;
+        sCenterTime[stateIndex] = cgGlobal.time;
+        sCenterPriority[stateIndex] = priority;
+        sCenterCharWidth[stateIndex] = charWidth;
+        sCenterLines[stateIndex] = 1;
         s = sCenterText[cl];
         while (*s != 0)
         {
@@ -116,11 +118,11 @@ void CG_PriorityCenterPrint(const char* str, float y, int charWidth,
                 SEH_ReadCharFromString((const char**)&s, nullptr);
             if (v10 == 10)
             {
-                ++sCenterLines[cl];
+                ++sCenterLines[stateIndex];
             }
             else if (v10 == 92 && *s == 110)
             {
-                ++sCenterLines[cl];
+                ++sCenterLines[stateIndex];
                 ++s;
             }
         }
