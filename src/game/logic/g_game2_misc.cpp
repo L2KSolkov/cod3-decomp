@@ -2249,7 +2249,6 @@ extern bool g_controllerConnected[4];
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
 
 // ============================================================================
-// IN_Frame - ea: 0x501000
 // Controller poll + button dispatch (game2.o IN_Init/controller glue).
 // ============================================================================
 class controller { public:
@@ -2293,15 +2292,12 @@ extern void CL_BackUpKeys();     // cl.o
 extern void CL_ClearKeysForAll(); // cl.o
 extern void CL_GamepadEvent(int physicalAxis, int value, int time);  // cl.o
 
+// ea: 0x00501000
 void IN_Frame()
 {
-#if !defined(_WIN32)
     if (in_joystick->integer == 0)
         return;
-#endif
     controller* ctl = controller::inst();
-    if (ctl == nullptr)
-        return;
     ctl->poll();
     if (ctl->is_locked)
     {
@@ -2311,7 +2307,6 @@ void IN_Frame()
             g_controllerConnected[ctl->locked_port] = false;
             ctl->button_pressed_clear_all(ctl->locked_port);
             CL_ClearKeysForAll();
-            currCl = NS_CLIENT;
             return;
         }
         g_controllerConnected[ctl->locked_port] = true;
