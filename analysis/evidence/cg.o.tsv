@@ -97,3 +97,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x006893B0	?CG_GetNorthDirection@@YAMXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1297020	Release and source return the same client-indexed dword_F64140 value; the decompiler emits a wider floating return while the map/source ABI is float.
 0x006887E0	?CG_CalcPlayerHealth@@YAMXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_view.cpp:210	Non-empty body computes and clamps the active player's health fraction.
 0x006887E0	?CG_CalcPlayerHealth@@YAMXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296569	Corrected the port's integer-division truncation; source now computes the floating health ratio and matches the release clamp branches.
+0x00687B40	?CG_SizeUp_f@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_misc.cpp:158	Added release-backed body that formats cg_viewsize plus ten and sets the cvar.
+0x00687B40	?CG_SizeUp_f@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296090	Source matches the release va format, +10 adjustment, cvar name, and Cvar_Set call.
+0x00687B70	?CG_SizeDown_f@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_misc.cpp:165	Added release-backed body that formats cg_viewsize minus ten and sets the cvar.
+0x00687B70	?CG_SizeDown_f@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296099	Source matches the release va format, -10 adjustment, cvar name, and Cvar_Set call.
+0x00687BA0	?CG_ScoresUp_f@@YAHXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_misc.cpp:172	Added release-backed body that queries the R3 controller button.
+0x00687BA0	?CG_ScoresUp_f@@YAHXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296108	Source matches the release controller singleton, controller zero, and R3 button query and return.

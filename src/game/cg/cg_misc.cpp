@@ -125,6 +125,9 @@ extern int currCl;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern nglTexture* cgsGlobal_media_whiteShader;
+extern vmCvar_t cg_viewsize;
+extern char* va(const char* fmt, ...);
+extern void Cvar_Set(const char* var_name, const char* value);
 class FEManager; extern FEManager g_femanager;
 
 extern void trap_R_SetColor(const float* rgba);
@@ -150,6 +153,26 @@ extern int controller_button_pressed(void* self, int i_controller_num,
                                      int i_button);
 extern void* FEManager_GetIGMS(void* self, int client);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
+
+// ea: 0x00687B40
+void CG_SizeUp_f()
+{
+    char* value = va("%i", cg_viewsize.integer + 10);
+    Cvar_Set("cg_viewsize", value);
+}
+
+// ea: 0x00687B70
+void CG_SizeDown_f()
+{
+    char* value = va("%i", cg_viewsize.integer - 10);
+    Cvar_Set("cg_viewsize", value);
+}
+
+// ea: 0x00687BA0
+int CG_ScoresUp_f()
+{
+    return controller_button_value(controller::inst(), 0, 11 /* R3 */);
+}
 
 extern vmCvar_t hud_healthOverlay_phaseEnd_toAlpha;  // 0x00F60258
 extern vmCvar_t cg_hudAlpha;                          // 0x00F5FC80
