@@ -26161,6 +26161,7 @@ template <typename T, int OFF, int IDX>
 // ea: 0x005FE180
 // ea: 0x005FE3B0
 // ea: 0x005FE5F0
+// ea: 0x005FED60
 void entity_set_sentient_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26209,6 +26210,7 @@ void entity_set_sentient_field(unsigned int handle, T val)
 // ea: 0x005FE290
 // ea: 0x005FE4D0
 // ea: 0x005FE710
+// ea: 0x005FEE80
 template <typename T, int OFF, int IDX>
 T entity_get_sentient_field(unsigned int handle)
 {
