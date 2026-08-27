@@ -94,6 +94,8 @@ void cNodeRenderer<UVAParticle, apsUVANode>::SetupDefaultShaders(
     const math::Mat43& localMatrix);
 template <>
 void cNodeRenderer<UVAParticle, apsUVANode>::SetupShaders();
+template <>
+void cNodeRenderer<UVAParticle, apsUVANode>::Render();
 
 template <>
 cNodeRenderer<ColorUVAParticle, apsColorUVANode>::cNodeRenderer(
