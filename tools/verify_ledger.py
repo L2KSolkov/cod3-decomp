@@ -281,7 +281,9 @@ def scan_markers() -> list[Marker]:
     # used throughout the port (``// FunctionName - ea:``).  The address is
     # still the only marker payload; candidate resolution below decides which
     # definition a declaration annotation belongs to.
-    pattern = re.compile(r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)")
+    # A file banner may describe a range (``ea: 0x854490-0x878100``), not a
+    # function marker.  Do not turn the range's first address into a marker.
+    pattern = re.compile(r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)(?!\s*-)")
     for path in source_files():
         lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
         for number, line in enumerate(lines):
