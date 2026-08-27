@@ -408,6 +408,14 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_WeaponSlot_f@@YAPAUClient@@XZ",
         "?CG_ClampAngles@@YAXAAVPosition3@math@@QBM11@Z":
             "?CG_ClampAngles@@YAXPAVPosition3@math@@PBM11@Z",
+        "?trap_R_DrawStretchPicGradient@@YAXMMMMMMMMPAUnglTexture@@PBMH@Z":
+            "?trap_R_DrawStretchPicGradient@@YAXMMMMMMMMPAXPBMH@Z",
+        "?trap_R_DrawStretchPicRotate@@YAXMMMMMMMMMPAUnglTexture@@@Z":
+            "?trap_R_DrawStretchPicRotate@@YAXMMMMMMMMMPAX@Z",
+        "?trap_R_DrawQuadPic@@YAXPAY01$$CBM0PAUnglTexture@@@Z":
+            "?trap_R_DrawQuadPic@@YAXPAY01$$CBM0PAX@Z",
+        "?trap_R_TrackStatistics@@YAXPAUtrStatistics_t@@@Z":
+            "?trap_R_TrackStatistics@@YAXPAX@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":

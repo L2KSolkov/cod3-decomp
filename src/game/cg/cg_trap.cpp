@@ -5,6 +5,7 @@
 #include "game/cg/cg_local.h"
 
 extern void CG_DrawInformation();
+struct trStatistics_t;
 
 // ea: 0x0068C870
 void trap_R_SetCullDist(float dist)
@@ -28,7 +29,7 @@ void trap_R_SaveScreen()
 // ea: 0x0068C8A0
 void trap_R_DrawStretchPicGradient(float x, float y, float w, float h,
                                    float s1, float t1, float s2, float t2,
-                                   void* tex, const float* gradientColor,
+                                   nglTexture* tex, const float* gradientColor,
                                    int gradientType)
 {
     re.DrawStretchPicGradient(x, y, w, h, s1, t1, s2, t2, tex, gradientColor,
@@ -38,30 +39,31 @@ void trap_R_DrawStretchPicGradient(float x, float y, float w, float h,
 // ea: 0x0068C8B0
 void trap_R_DrawStretchPicRotate(float x, float y, float w, float h, float s1,
                                  float t1, float s2, float t2, float fRot,
-                                 void* tex)
+                                 nglTexture* tex)
 {
     re.DrawStretchPicRotate(x, y, w, h, s1, t1, s2, t2, fRot, tex);
 }
 
 // ea: 0x0068C8C0
 void trap_R_DrawQuadPic(const float (*vVerts)[2], const float (*vST)[2],
-                        void* tex)
+                        nglTexture* tex)
 {
     re.DrawQuadPic(vVerts, vST, tex);
 }
 
 // ea: 0x0068C8D0
-void trap_R_TrackStatistics(void* stats)
+void trap_R_TrackStatistics(trStatistics_t* stats)
 {
     re.TrackStatistics(stats);
 }
 
 // ea: 0x0068C8E0
-int trap_R_PickShader(const float* org, const float* dir, char* pszName,
+int trap_R_PickShader(const math::Position3& org, const math::Position3& dir,
+                      char* pszName,
                       char* pszSurfaceFlags, char* pszContents, int iMaxChars)
 {
-    return re.PickShader(org, dir, pszName, pszSurfaceFlags, pszContents,
-                         iMaxChars);
+    return re.PickShader(org.v.m128_f32, dir.v.m128_f32, pszName,
+                         pszSurfaceFlags, pszContents, iMaxChars);
 }
 
 // ea: 0x006986C0
