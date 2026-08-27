@@ -687,3 +687,17 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00448B30	?GetTickMSec@ServerTime@@QBEHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448B30	Release returns this->mTickMSec, matching source.
 0x00448B40	?GetTickDelta@ServerTime@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:44	ServerTime getter returns mTickDelta.
 0x00448B40	?GetTickDelta@ServerTime@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448B40	Release returns this->mTickDelta; IDA's double display is a decompiler presentation artifact for the float ABI.
+0x00448B50	?Init@StatusBar@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:367	StatusBar initialization registers the statusbar cvar and stores the returned pointer.
+0x00448B50	?Init@StatusBar@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448B50	Release calls Cvar_Get("statusbar","1",256) and stores the result in sStatusBarActive, matching source.
+0x00448BB0	?Player_CheckFriendlyFireUse@@YA_NPAVPlayerState@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:458	Friendly-fire check is an intentional constant-true compatibility hook.
+0x00448BB0	?Player_CheckFriendlyFireUse@@YA_NPAVPlayerState@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448BB0	Release ignores its argument and returns 1, matching source.
+0x00448BD0	?G_SetClientSound@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:470	Client sound setup explicitly clears the entity loop sound.
+0x00448BD0	?G_SetClientSound@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448BD0	Release stores zero to ent->s.loopSound, matching source.
+0x00448BE0	?GetEntityTouchTriggerType@@YAHPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_trigger.cpp:41	Trigger-content classification handles vehicle, body, client, and all supported teams.
+0x00448BE0	?GetEntityTouchTriggerType@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448BE0	Release branch and constants match source; IDA pointer-shaped displays are scalar constant artifacts.
+0x00448E50	?G_SetClientContents@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_active.cpp:24	Client contents setter includes the release null-client assert and noclip/ufo/player-state content selection.
+0x00448E50	?G_SetClientContents@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448E50	Release assert, branch conditions, and content constants match source exactly.
+0x00448F00	?ClientInactivityTimer@@YAHPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:482	Client inactivity timer is an intentional constant-one hook.
+0x00448F00	?ClientInactivityTimer@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448F00	Release ignores its argument and returns 1, matching source.
+0x00448F10	?ClientSpectatorInactivityTimer@@YAHPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:488	Spectator inactivity timer is an intentional constant-one hook.
+0x00448F10	?ClientSpectatorInactivityTimer@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00448F10	Release ignores its argument and returns 1, matching source.
