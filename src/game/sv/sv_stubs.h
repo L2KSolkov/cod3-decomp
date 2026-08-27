@@ -2040,9 +2040,11 @@ protected:
                           int row, int col, bool doStopAnim, float alpha,
                           float speed, bool force, bool force_val);  // ?PlayAnimFlagAnim@MPPlayer@@IAEXPAVDObj@@IHHH_NMM11@Z (mp.o 0x72D100)
 };
-// ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ (mp.o; stub)
+// ea: 0x004A9F30
 inline Entity* MPPlayer::GetEntity()
 {
+    if (mClientIndex >= 0)
+        return EntityManager::sInst->GetPlayer(mClientIndex);
     return nullptr;
 }
 

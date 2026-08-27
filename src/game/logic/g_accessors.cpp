@@ -2485,30 +2485,37 @@ const float (&CheckpointMgr::GetPlayerPosition() const)[3]
 {
     return *(const float (*)[3])&mOrigin;
 }
+// ea: 0x004A9D40
 EntityHandleDb* EntityHandleDb::Inst()
 {
     return &EntityHandleDb::sInst;
 }
+// ea: 0x004A9D50
 const ae_sized_array<Entity*, 4096>& EntityHandleDb::GetActiveList() const
 {
     return *(const ae_sized_array<Entity*, 4096>*)&mActiveList;
 }
+// ea: 0x004A9D60
 TimerRenderBars* TimerRenderBars::Inst()
 {
     return &TimerRenderBars::sInst;
 }
+// ea: 0x004A9D70
 void TimerRenderBars::ToggleActive()
 {
     mActive ^= 1;
 }
+// ea: 0x004A9D80
 int TimerRenderBars::IsActive() const
 {
     return mActive;
 }
+// ea: 0x004A9D90
 ConfigStringManager* ConfigStringManager::Inst()
 {
     return ConfigStringManager::sInst;
 }
+// ea: 0x004A9E40
 SceneManager* SceneManager::Inst()
 {
     return SceneManager::sInst;
@@ -2519,14 +2526,17 @@ void* SceneManager::operator new(size_t size, void* p)
     (void)size;
     return p;
 }
+// ea: 0x004A9E50
 InplaceVector<unsigned char>* SceneManager::GetPersistantStorage()
 {
     return mPersistantStorage;
 }
+// ea: 0x004A9E60
 PlayerAnimMgr* PlayerAnimMgr::Inst()
 {
     return PlayerAnimMgr::sInst;
 }
+// ea: 0x004A9E70
 DynamicDecalMgr* DynamicDecalMgr::Inst()
 {
     return (DynamicDecalMgr*)DynamicDecalMgr::sInst;
@@ -2559,38 +2569,47 @@ const float rigid_body_constraint_wheel::get_wheel_vel() const
 {
     return m_wheel_vel;
 }
+// ea: 0x004A9E80
 float rb_vehicle::get_throttle() const
 {
     return m_throttle;
 }
+// ea: 0x004A9E90
 float rb_vehicle::get_steer_factor() const
 {
     return m_steer_factor;
 }
+// ea: 0x004A9EA0
 float rb_vehicle::get_forward_vel() const
 {
     return m_forward_vel;
 }
+// ea: 0x004A9EB0
 vehicle_rb_parameter* rb_vehicle::get_parameter() const
 {
     return m_parameter;
 }
+// ea: 0x004A9EC0
 const rb_extra_info* rb_vehicle::get_chassis_rbinf() const
 {
     return (const rb_extra_info*)m_chassis_rbinf;
 }
+// ea: 0x004A9EF0
 rigid_body_constraint_wheel* rb_vehicle::get_wheel(int i)
 {
     return m_wheels[i];
 }
+// ea: 0x004A9F10
 const unsigned int rb_vehicle::get_braking() const
 {
     return m_state_flags & 2;
 }
+// ea: 0x004A9F20
 const float rb_vehicle::get_max_speed() const
 {
     return m_parameter->m_speed_max;
 }
+// ea: 0x004A9ED0
 const unsigned int rb_vehicle::get_flag(rb_vehicle_model_flags_e f) const
 {
     return f & m_state_flags;

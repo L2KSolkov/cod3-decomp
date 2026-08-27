@@ -481,3 +481,43 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A99C0	?get_hitp_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A99C0	Release copies m_b2_hitp_loc to the result and returns it, matching source.
 0x004A99F0	?get_wheel_vel@rigid_body_constraint_wheel@@QBE?BMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2557	Source returns m_wheel_vel.
 0x004A99F0	?get_wheel_vel@rigid_body_constraint_wheel@@QBE?BMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A99F0	Release returns m_wheel_vel, matching source.
+0x004A9D40	?Inst@EntityHandleDb@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2489	Source returns the address of EntityHandleDb::sInst.
+0x004A9D40	?Inst@EntityHandleDb@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9D40	Release returns &EntityHandleDb::sInst, matching source.
+0x004A9D50	?GetActiveList@EntityHandleDb@@QBEABV?$ae_sized_array@PAVEntity@@$0BAAA@@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2494	Source returns the active entity array member.
+0x004A9D50	?GetActiveList@EntityHandleDb@@QBEABV?$ae_sized_array@PAVEntity@@$0BAAA@@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9D50	Release returns &mActiveList, matching source.
+0x004A9D60	?Inst@TimerRenderBars@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2499	Source returns the address of TimerRenderBars::sInst.
+0x004A9D60	?Inst@TimerRenderBars@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9D60	Release returns &TimerRenderBars::sInst, matching source.
+0x004A9D70	?ToggleActive@TimerRenderBars@@QAEXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2504	Source toggles mActive with xor one.
+0x004A9D70	?ToggleActive@TimerRenderBars@@QAEXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9D70	Release toggles mActive ^= 1, matching source.
+0x004A9D80	?IsActive@TimerRenderBars@@QBEHXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2509	Source returns mActive.
+0x004A9D80	?IsActive@TimerRenderBars@@QBEHXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9D80	Release returns mActive, matching source.
+0x004A9D90	?Inst@ConfigStringManager@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2514	Source returns ConfigStringManager::sInst.
+0x004A9D90	?Inst@ConfigStringManager@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9D90	Release returns ConfigStringManager::sInst, matching source.
+0x004A9E40	?Inst@SceneManager@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2519	Source returns SceneManager::sInst.
+0x004A9E40	?Inst@SceneManager@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9E40	Release returns SceneManager::sInst, matching source.
+0x004A9E50	?GetPersistantStorage@SceneManager@@QAEPAV?$InplaceVector@E@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2530	Source returns mPersistantStorage.
+0x004A9E50	?GetPersistantStorage@SceneManager@@QAEPAV?$InplaceVector@E@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9E50	Release returns mPersistantStorage, matching source.
+0x004A9E60	?Inst@PlayerAnimMgr@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2535	Source returns PlayerAnimMgr::sInst.
+0x004A9E60	?Inst@PlayerAnimMgr@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9E60	Release returns PlayerAnimMgr::sInst, matching source.
+0x004A9E70	?Inst@DynamicDecalMgr@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2540	Source returns DynamicDecalMgr::sInst.
+0x004A9E70	?Inst@DynamicDecalMgr@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9E70	Release returns DynamicDecalMgr::sInst, matching source.
+0x004A9E80	?get_throttle@rb_vehicle@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2573	Source returns m_throttle.
+0x004A9E80	?get_throttle@rb_vehicle@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9E80	Release returns m_throttle, matching source.
+0x004A9E90	?get_steer_factor@rb_vehicle@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2578	Source returns m_steer_factor.
+0x004A9E90	?get_steer_factor@rb_vehicle@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9E90	Release returns m_steer_factor, matching source.
+0x004A9EA0	?get_forward_vel@rb_vehicle@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2583	Source returns m_forward_vel.
+0x004A9EA0	?get_forward_vel@rb_vehicle@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9EA0	Release returns m_forward_vel, matching source.
+0x004A9EB0	?get_parameter@rb_vehicle@@QBEPAVvehicle_rb_parameter@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2588	Source returns m_parameter.
+0x004A9EB0	?get_parameter@rb_vehicle@@QBEPAVvehicle_rb_parameter@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9EB0	Release returns m_parameter, matching source.
+0x004A9EC0	?get_chassis_rbinf@rb_vehicle@@QBEPBVrb_extra_info@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2593	Source returns the chassis rb_extra_info pointer.
+0x004A9EC0	?get_chassis_rbinf@rb_vehicle@@QBEPBVrb_extra_info@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9EC0	Release returns m_chassis_rbinf, matching source.
+0x004A9ED0	?get_flag@rb_vehicle@@ABE?BIW4rb_vehicle_model_flags_e@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2613	Source returns the requested model flag bits.
+0x004A9ED0	?get_flag@rb_vehicle@@ABE?BIW4rb_vehicle_model_flags_e@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9ED0	Release returns f & m_state_flags, matching source.
+0x004A9EF0	?get_wheel@rb_vehicle@@QAEPAVrigid_body_constraint_wheel@@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2598	Source returns m_wheels[i].
+0x004A9EF0	?get_wheel@rb_vehicle@@QAEPAVrigid_body_constraint_wheel@@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9EF0	Release indexes m_wheels[i], matching source.
+0x004A9F10	?get_braking@rb_vehicle@@QBE?BIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2603	Source returns the braking state bit.
+0x004A9F10	?get_braking@rb_vehicle@@QBE?BIXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9F10	Release returns m_state_flags & 2, matching source.
+0x004A9F20	?get_max_speed@rb_vehicle@@QBE?BMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2608	Source returns m_parameter->m_speed_max.
+0x004A9F20	?get_max_speed@rb_vehicle@@QBE?BMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9F20	Release loads m_parameter->m_speed_max, matching source.
+0x004A9F30	?GetEntity@MPPlayer@@QAEPAVEntity@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/sv/sv_stubs.h:2043	Source returns EntityManager::sInst->GetPlayer(mClientIndex) for assigned clients and null otherwise.
+0x004A9F30	?GetEntity@MPPlayer@@QAEPAVEntity@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9F30	Release checks mClientIndex >= 0, calls GetPlayer, and otherwise returns null; source now matches.
