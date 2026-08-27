@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00687CB0	?CG_DrawTimer@@YAMM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:851	Body is non-empty and contains the timer formatting and render calls.
+0x00687CB0	?CG_DrawTimer@@YAMM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1296171	Control flow, constants, string literal, callee sequence, and local roles match the release body; the release dump's decompiler return type is double while the map ABI is float.
