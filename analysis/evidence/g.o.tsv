@@ -767,6 +767,26 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00449A30	?SetClientOrigin@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449A30	Release instruction sequence matches source, including the +1 Z offset, eFlags toggle, NaN check, and trBase copy.
 0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_client.cpp:545	Client view-angle setter handles prone corrections, delta-angle encoding, current-angle storage, and viewangle copy.
 0x00449BC0	?SetClientViewAngle@@YAXPAVEntity@@QBM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00449BC0	Release prone thresholds, 182.04445 scaling/masks, delta-angle loop, angle storage, and PlayerState copy match source.
+0x0044AC10	?Cmd_TextureTiling_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:183	texture-tiling command toggles texture-tiling and normal debug modes.
+0x0044AC10	?Cmd_TextureTiling_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AC10	Release mode comparison and SetDebugRenderMode calls match source.
+0x0044AC30	?Cmd_ToggleShader_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:270	toggle-shader command handles argc 2 with a 256-byte name and argc 1 null name.
+0x0044AC30	?Cmd_ToggleShader_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AC30	Release argc branches, buffer, and ToggleShader arguments match source.
+0x0044AC90	?Cmd_TestFPS@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:192	TestFPS command selects StopTest or Test based on mTesting.
+0x0044AC90	?Cmd_TestFPS@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AC90	Release branch and singleton calls match source.
+0x0044ACB0	?Cmd_KillSound@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:285	kill-sound command forwards to SoundDevice::StopAllSounds.
+0x0044ACB0	?Cmd_KillSound@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044ACB0	Release is the same singleton call.
+0x0044ACC0	?Cmd_MemPools_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:838	memory-pools command prints three headings and reports each allocator.
+0x0044ACC0	?Cmd_MemPools_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044ACC0	Release print strings and allocator report order match source.
+0x0044AD10	?Cmd_ShotProf_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:849	shot-prof command initializes render state and starts the shot profiler once.
+0x0044AD10	?Cmd_ShotProf_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AD10	Release null guard, state resets, timer toggle, and profiler start match source.
+0x0044AD60	?Cmd_BuilderTest_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:291	builder test toggles the complete shader-name sequence and 2D render flag.
+0x0044AD60	?Cmd_BuilderTest_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AD60	Release shader strings, order, and gRenderCG_2D toggle match source.
+0x0044ADE0	?Cmd_ClientCommandCompletion@@YAXP6AXPBD@Z@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:863	completion callback walks 24 primary and 15 secondary command entries.
+0x0044ADE0	?Cmd_ClientCommandCompletion@@YAXP6AXPBD@Z@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044ADE0	Release loop bounds, lists, and callback calls match source.
+0x0044AE40	?Cmd_EntityStats_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:314	entity-stats command parses argc 2 and updates the render flag.
+0x0044AE40	?Cmd_EntityStats_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AE40	Release buffer, strcmp, flag assignment, and fallback match source.
+0x0044AEA0	?Cmd_PFXStats_f@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:944	PFX-stats command parses argc 2 and updates the render flag.
+0x0044AEA0	?Cmd_PFXStats_f@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AEA0	Release buffer, strcmp, flag assignment, and fallback match source.
 0x0044A900	?Cmd_Noclip_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1603	noclip command checks cheats/alive, toggles client noclip and global state, and sends status.
 0x0044A900	?Cmd_Noclip_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A900	Release gates, toggle, globals, strings, and server command match source.
 0x0044A9C0	?Cmd_UFO_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1303	UFO command checks cheats/alive, toggles client UFO, and sends status.
