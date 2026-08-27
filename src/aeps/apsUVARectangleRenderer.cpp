@@ -66,9 +66,10 @@ apsRenderer::eRenderResult apsUVARectangleRenderer::Render(const apsRendererRend
 }
 
 // ============================================================================
-// apsUVARectangleNode::GetDesc — ea: 0x804F00 (inline COMDAT)
+// apsUVARectangleNode::GetDesc — ea: 0x805080 (inline COMDAT)
 // ============================================================================
 void apsUVARectangleNode::GetDesc(char* buf) {
+    strcpy(buf, "apsUVARectangleNode");
 }
 
 // ============================================================================

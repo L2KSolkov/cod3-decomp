@@ -19,3 +19,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00812D30	?Mesh@apsSimpleMeshRenderer@@QBEPAUnglMesh@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D30;src/aeps/apsSimpleMeshNode.cpp:58	Release and source both return mMesh.
 0x00812D60	??0MeshParticleContext@@QAE@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshNode.cpp:76	Explicit empty constructor body is a real release no-op.
 0x00812D60	??0MeshParticleContext@@QAE@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00812D60;src/aeps/apsSimpleMeshNode.cpp:76	Release constructor only returns this; source constructor is intentionally empty.
+0x00802BE0	?GetDesc@apsSimpleMeshNode@@UAEXPAD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsSimpleMeshRenderer.cpp:243	Node description writes the canonical simple-mesh node name.
+0x00802BE0	?GetDesc@apsSimpleMeshNode@@UAEXPAD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00802BE0;src/aeps/apsSimpleMeshRenderer.cpp:243	Release and source both copy apsSimpleMeshNode into the caller buffer.

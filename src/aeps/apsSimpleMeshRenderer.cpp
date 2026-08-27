@@ -239,8 +239,9 @@ tlFixedString apsSimpleMeshShader::GetName() {
 void apsSimpleMeshShader::AddNode(nglMeshNode* node, nglMeshSection* section, nglMaterial* material) {
 }
 
-// apsSimpleMeshNode::GetDesc — ea: 0x8028E0
+// apsSimpleMeshNode::GetDesc — ea: 0x802BE0
 void apsSimpleMeshNode::GetDesc(char* buf) {
+    strcpy(buf, "apsSimpleMeshNode");
 }
 
 // ============================================================================

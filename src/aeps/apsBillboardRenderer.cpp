@@ -280,9 +280,10 @@ float apsBillboardRenderer::GetChanceToRemove() const {
 }
 
 // ============================================================================
-// apsBillboardNode::GetDesc — ea: 0x8048E0 (inline COMDAT)
+// apsBillboardNode::GetDesc — ea: 0x804A30 (inline COMDAT)
 // ============================================================================
 void apsBillboardNode::GetDesc(char* buf) {
+    strcpy(buf, "apsBillboardNode");
 }
 
 // ============================================================================

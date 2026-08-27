@@ -13,3 +13,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008163A0	?InvWidthFrames@apsUVARenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163A0;src/aeps/apsUVANode.cpp:30	Release and source both return mInvWidthFrames.
 0x008163B0	?InvHeightFrames@apsUVARenderer@@QBEMXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVANode.cpp:36	Real UVA inverse-height accessor returns mInvHeightFrames.
 0x008163B0	?InvHeightFrames@apsUVARenderer@@QBEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x008163B0;src/aeps/apsUVANode.cpp:36	Release and source both return mInvHeightFrames.
+0x00804DA0	?GetDesc@apsUVANode@@UAEXPAD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsUVARenderer.cpp:76	Node description writes the canonical UVA node name.
+0x00804DA0	?GetDesc@apsUVANode@@UAEXPAD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00804DA0;src/aeps/apsUVARenderer.cpp:76	Release and source both copy apsUVANode into the caller buffer.

@@ -180,9 +180,10 @@ apsRenderer::eRenderResult apsShrimpRenderer::Render(const apsRendererRenderInfo
 }
 
 // ============================================================================
-// apsShrimpNode::GetDesc — ea: 0x802FA0 (inline COMDAT)
+// apsShrimpNode::GetDesc — ea: 0x804840 (inline COMDAT)
 // ============================================================================
 void apsShrimpNode::GetDesc(char* buf) {
+    strcpy(buf, "apsShrimpNode");
 }
 
 // ============================================================================

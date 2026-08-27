@@ -94,9 +94,10 @@ void apsRectangleRenderPixel::InitPShader()
 }
 
 // ============================================================================
-// apsRectangleNode::GetDesc — ea: 0x804EA0 (inline COMDAT)
+// apsRectangleNode::GetDesc — ea: 0x805310 (inline COMDAT)
 // ============================================================================
 void apsRectangleNode::GetDesc(char* buf) {
+    strcpy(buf, "apsRectangleNode");
 }
 
 // ============================================================================

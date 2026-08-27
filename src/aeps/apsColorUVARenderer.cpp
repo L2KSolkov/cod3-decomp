@@ -57,9 +57,10 @@ apsRenderer::eRenderResult apsColorUVARenderer::Render(const apsRendererRenderIn
 }
 
 // ============================================================================
-// apsColorUVANode::GetDesc — ea: 0x8053F0 (inline COMDAT)
+// apsColorUVANode::GetDesc — ea: 0x805580 (inline COMDAT)
 // ============================================================================
 void apsColorUVANode::GetDesc(char* buf) {
+    strcpy(buf, "apsColorUVANode");
 }
 
 // ============================================================================

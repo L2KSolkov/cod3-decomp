@@ -45,3 +45,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00813930	?GetAngle@ShrimpParticle@@QAEMXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813930;src/aeps/apsShrimpNode.cpp:135	Release and source both return mAngle with non-const this ABI.
 0x00813940	?Set@SpriteVertex@apsVertexBuffer@@QAEXABVDir3@math@@IMM@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsVertexBuffer.cpp:15	Real vertex setter writes xyz, u, diffuse, and v fields.
 0x00813940	?Set@SpriteVertex@apsVertexBuffer@@QAEXABVDir3@math@@IMM@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00813940;src/aeps/apsVertexBuffer.cpp:15	Release and source store position xyz, u, rgba, and v in the same fields/order.
+0x00804840	?GetDesc@apsShrimpNode@@UAEXPAD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsShrimpRenderer.cpp:185	Node description writes the canonical shrimp node name.
+0x00804840	?GetDesc@apsShrimpNode@@UAEXPAD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00804840;src/aeps/apsShrimpRenderer.cpp:185	Release and source both copy apsShrimpNode into the caller buffer.

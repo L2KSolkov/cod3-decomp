@@ -3,3 +3,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0081B010	?GetVShader@apsColorUVARender@@YAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B010;src/aeps/apsColorUVANode.cpp:13	Release and source both return VS[0].
 0x0081B020	?GetPShader@apsColorUVARenderPixel@@YAPAKXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVANode.cpp:20	Emitted getter body returns the registered pixel shader handle.
 0x0081B020	?GetPShader@apsColorUVARenderPixel@@YAPAKXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0081B020;src/aeps/apsColorUVANode.cpp:20	Release and source both return PS[0].
+0x00805580	?GetDesc@apsColorUVANode@@UAEXPAD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARenderer.cpp:62	Node description emits the canonical color-UVA node name.
+0x00805580	?GetDesc@apsColorUVANode@@UAEXPAD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805580;src/aeps/apsColorUVARenderer.cpp:62	Release byte stores spell apsColorUVANode and source copies the same string.
