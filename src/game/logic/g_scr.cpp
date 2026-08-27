@@ -4307,8 +4307,7 @@ void WeaponType(Broc::string& outStr,
 void BadPlaceDelete(const Broc::string& placeName);  // 0x5C4640
 void BadPlaceCylinder(const Broc::string& placeName, float dur,
                       const Broc::vector& ori, float rad,
-                      float height,
-                      const Broc::string& pszTeamName);  // 0x5C46B0 (unused trailing param per PDB mangle)
+                      float height);  // 0x5C46B0
 void BadPlaceArcs(const Broc::string& placeName, float dur,
                   const Broc::vector& ori, float rad, float height,
                   const Broc::vector& ang, float fVal1, float fVal2,
@@ -11967,10 +11966,10 @@ extern int XAnimGetFrameCount(AnimTree* anims,
                               unsigned int animIndex);  // anim.o
 extern IVPointer<XModel> SV_XModelGet(const char* name);  // ?SV_XModelGet@@YA?AV?$IVPointer@VXModel@@@@PBD@Z (sv_game.cpp)
 
-// Release no-op callbacks in the binary
-static void BadPlaceRegister(const Broc::string* /*placeName*/) {}
-static void BadPlaceRender(const Broc::string* /*placeName*/, int /*dur*/,
-                           int /*teamFlags*/, BadPlaceArc* /*arc*/) {}
+extern void Path_RemoveBadPlace(const Broc::string& placeName);
+extern void Path_MakeArcBadPlace(const Broc::string& placeName,
+                                 int duration, int teamFlags,
+                                 BadPlaceArc* arc);
 
 // ea: 0x005C2280
 void BrocSys::Print3D(const Broc::vector& pos, const Broc::string& text,
@@ -12148,7 +12147,7 @@ void BrocSys::BadPlaceDelete(const Broc::string& placeName)
         && placeName.mBlock != (Broc::string::Block*)-12
         && *(char*)(placeName.mBlock + 1) != 0)
     {
-        BadPlaceRegister(&placeName);
+        Path_RemoveBadPlace(placeName);
     }
     else
     {
@@ -12166,10 +12165,8 @@ void BrocSys::BadPlaceDelete(const Broc::string& placeName)
 // ea: 0x005C46B0
 void BrocSys::BadPlaceCylinder(const Broc::string& placeName, float dur,
                                const Broc::vector& ori, float rad,
-                               float height,
-                               const Broc::string& pszTeamName)
+                               float height)
 {
-    (void)pszTeamName;  // unused trailing param (never read in the binary)
     double v5 = dur * 1000.0;
     BadPlaceArc arc;
     arc.origin[0] = ori.z;
@@ -12181,7 +12178,7 @@ void BrocSys::BadPlaceCylinder(const Broc::string& placeName, float dur,
     arc.angle1 = 360.0f;
     Broc::string s("badplace_cylinder");
     int TeamFlags = GetTeamFlags(placeName, s);
-    BadPlaceRender(&placeName, (int)ceil(v5), TeamFlags, &arc);
+    Path_MakeArcBadPlace(placeName, (int)ceil(v5), TeamFlags, &arc);
 }
 
 // ea: 0x005C47A0
@@ -12241,7 +12238,7 @@ void BrocSys::BadPlaceArcs(const Broc::string& placeName, float dur,
     }
     Broc::string s("badplace_arc");
     int TeamFlags = GetTeamFlags(pszTeamName, s);
-    BadPlaceRender(&placeName, v10, TeamFlags, &arc);
+    Path_MakeArcBadPlace(placeName, v10, TeamFlags, &arc);
 }
 
 // ea: 0x005C8040
