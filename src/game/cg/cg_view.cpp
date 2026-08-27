@@ -215,7 +215,8 @@ float CG_CalcPlayerHealth()
     char* v2 = (char*)v0 + 16;
     if (v1 != 0 && *(int*)(v2 + 316) != 0 && *(int*)(v2 + 36) != 6)
     {
-        float v4 = v1 / *(int*)(v2 + 316);
+        float v4 = static_cast<float>(v1)
+                   / static_cast<float>(*(int*)(v2 + 316));
         if (v4 < 0.0f)
             return 0.0f;
         if (v4 > 1.0f)
