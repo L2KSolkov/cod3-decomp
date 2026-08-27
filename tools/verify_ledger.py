@@ -297,6 +297,14 @@ def debug_symbols() -> set[str]:
 
 def symbol_variants(name: str) -> set[str]:
     values = {name}
+    # Access control is encoded in the first member-function decoration byte
+    # (A=private, Q=public, U=protected) but is not part of the V2 signature
+    # contract.  The release PDB/map often reports private while the port's
+    # class declaration is intentionally public.
+    for value in tuple(values):
+        for old, new in (("@@AA", "@@QA"), ("@@AA", "@@UA")):
+            values.add(value.replace(old, new, 1))
+            values.add(value.replace(new, old, 1))
     for old, new in (("QAM", "PAM"), ("QBM", "PBM"), ("QAY", "PAY"),
                      ("QBY", "PBY"), ("AAPA", "PAPA"), ("AAH", "QAH")):
         for value in tuple(values):

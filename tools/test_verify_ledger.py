@@ -37,6 +37,13 @@ def main() -> int:
             states, level = ledger.compute_level(function, [marker], {"fn"}, evidence)
             assert states["V4"] == "UNVERIFIED" and level == "V2"
 
+            # Release map symbols may carry private member access (AA) while
+            # the port exposes the same signature publicly (QA).  Access is
+            # not a V2 signature mismatch.
+            assert ("?ApplyFootIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z"
+                    in ledger.symbol_variants(
+                        "?ApplyFootIK@AnimIK@@QAEXPAVEntity@@AAVnalMatrix4x4@@1@Z"))
+
             # Missing source_ref is rejected rather than silently granting a gate.
             path.write_text("\t".join(ledger.EVIDENCE_FIELDS) + "\n" + row("PASS", source_ref="") + "\n", encoding="utf-8")
             _, errors = ledger.read_evidence()
