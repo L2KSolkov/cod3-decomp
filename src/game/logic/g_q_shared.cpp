@@ -676,6 +676,7 @@ static float (*LittleFloatPtr)(float);
 
 // ea: 0x006105A0
 short BigShort(short l) { return BigShortPtr(l); }
+// ea: 0x004A9A90
 short LittleShort(short l) { return LittleShortPtr(l); }
 
 // ea: 0x00610610
@@ -747,6 +748,7 @@ float FloatNoSwap(float f)
 
 // ea: 0x006105B0
 int BigLong(int l) { return BigLongPtr(l); }
+// ea: 0x004A9AA0
 int LittleLong(int l) { return LittleLongPtr(l); }
 // ea: 0x006105C0
 qint64 BigLong64(qint64 l) { return BigLong64Ptr(l); }
@@ -754,6 +756,7 @@ qint64 BigLong64(qint64 l) { return BigLong64Ptr(l); }
 qint64 LittleLong64(qint64 l) { return LittleLong64Ptr(l); }
 // ea: 0x00610600
 float BigFloat(float l) { return BigFloatPtr(l); }
+// ea: 0x004A9AB0
 float LittleFloat(float l) { return LittleFloatPtr(l); }
 
 // ea: 0x00610720

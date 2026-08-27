@@ -47,6 +47,7 @@ extern double VectorDistanceSquared(const float* const p1,
                                     const float* const p2);  // core.o
 extern int g_doDontLinkCheck;              // ?g_doDontLinkCheck@@3HA @ 0xE37A1C (pathnodemgr.cpp)
 
+// ea: 0x004A9BB0
 // ea: 0x8990B0 (g.o inline) - returns the null hash (0)
 unsigned int HashString::NullHash()
 {

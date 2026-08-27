@@ -687,6 +687,7 @@ string::~string() {
 // string accessors
 // ============================================================================
 
+// ea: 0x004A9CB0
 const char* string::c_str() const {
     if (!mBlock)
         return defaultFileName;

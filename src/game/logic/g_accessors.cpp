@@ -2608,19 +2608,23 @@ DbLinkedHandle<EntityHandleDb, Entity> DObj::GetHandle() const
 }
 
 // Scalar helpers (g.o 0x4A9A00-0x4A9A70)
+// ea: 0x004A9A00
 bool IS_NAN(const float& x)
 {
     return (_fpclass((double)x) & 0x297) != 0;
 }
+// ea: 0x004A9A50
 int FastRound(float x)
 {
     return (int)(x + 0.5f);
 }
+// ea: 0x004A9A70
 float Q_fabs(float f)
 {
     return (float)fabs((double)f);
 }
 
+// ea: 0x004A9AC0
 // usercmd_s::Clear (g.o 0x4A9AC0)
 void usercmd_s::Clear()
 {
@@ -2640,6 +2644,7 @@ void usercmd_s::Clear()
     gunZOfs = 0.0f;
 }
 
+// ea: 0x004A9B10
 // trajectory_t ctor (g.o 0x4A9B10)
 trajectory_t::trajectory_t()
 {
@@ -2654,54 +2659,66 @@ trajectory_t::trajectory_t()
 }
 
 // HashString (g.o 0x4A9B60-0x4A9C50)
+// ea: 0x004A9B60
 HashString::HashString(const char* str)
 {
     mHash = HashString::CalcHash(str);
 }
+// ea: 0x004A9B90
 HashString::HashString(int hash)
 {
     mHash = (unsigned int)hash;
 }
+// ea: 0x004A9BC0
 unsigned int HashString::GetHash() const
 {
     return mHash;
 }
+// ea: 0x004A9BD0
 bool HashString::Compare(const HashString& lhs, const HashString& rhs)
 {
     return lhs.mHash == rhs.mHash;
 }
+// ea: 0x004A9BF0
 bool operator==(const HashString& lhs, const HashString& rhs)
 {
     return lhs.mHash == rhs.mHash;
 }
+// ea: 0x004A9C10
 bool operator!=(const HashString& lhs, const HashString& rhs)
 {
     return lhs.mHash != rhs.mHash;
 }
+// ea: 0x004A9C30
 bool operator==(const HashString& lhs, unsigned int rhs)
 {
     return lhs.mHash == rhs;
 }
+// ea: 0x004A9C50
 bool operator!=(const HashString& lhs, unsigned int rhs)
 {
     return lhs.mHash != rhs;
 }
 
 // Broc::string helpers (g.o 0x4A9C70-0x4A9D20)
+// ea: 0x004A9C70
 char* Broc::string::Block::GetBuff()
 {
     return (char*)(this + 1);
 }
+// ea: 0x004A9C80
 char Broc::string::operator[](unsigned int idx)
 {
     if (mBlock != nullptr && idx < mBlock->mLength)
         return *(mBlock->GetBuff() + idx);
     return 0;
 }
+// ea: 0x004A9CD0
 bool Broc::string::IsDefined() const
 {
     return mBlock != nullptr;
 }
+// ea: 0x004A9CE0
 void Broc::string::SetUndefined()
 {
     if (mBlock != nullptr)
@@ -2710,6 +2727,7 @@ void Broc::string::SetUndefined()
         mBlock = nullptr;
     }
 }
+// ea: 0x004A9D20
 bool Broc::operator!=(const Broc::string& lhs, const Broc::string& rhs)
 {
     return !Broc::operator==(lhs, rhs);

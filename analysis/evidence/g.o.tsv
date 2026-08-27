@@ -391,6 +391,56 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A9670	??0nalPositionOrientation@@QAE@ABVDir3@math@@ABVQuaternion@2@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9670	Release copies o and p SIMD values and returns this, matching source.
 0x004A96D0	??0nalPositionOrientation@@QAE@ABVnalMatrix4x4@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2897	Source derives orientation from the matrix and copies its w row into position.
 0x004A96D0	??0nalPositionOrientation@@QAE@ABVnalMatrix4x4@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A96D0	Release calls nalQuaternionFromMatrix for o, copies m.w to p, and returns this.
+0x004A9A00	?IS_NAN@@YA_NABM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2611	Source classifies the float with _fpclass and tests the release NaN/infinite mask.
+0x004A9A00	?IS_NAN@@YA_NABM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9A00	Release calls the floating-point classifier and tests mask 0x297, matching source.
+0x004A9A30	?random@@YAMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_entity_misc.cpp:1895	Source scales rand() by 1/32768 to produce the game random float.
+0x004A9A30	?random@@YAMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9A30	Release returns rand() multiplied by 0.000030517578, matching source.
+0x004A9A50	?FastRound@@YAHM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2616	Source returns the integer conversion of x + 0.5.
+0x004A9A50	?FastRound@@YAHM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9A50	Release returns x + 0.5 converted to int, matching source.
+0x004A9A70	?Q_fabs@@YAMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2621	Source returns the absolute value of the float.
+0x004A9A70	?Q_fabs@@YAMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9A70	Release calls fabs and returns the absolute value, matching source.
+0x004A9A90	?LittleShort@@YAFF@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_q_shared.cpp:679	Source little-short dispatch resolves to ShortNoSwap after Swap_Init, the release identity behavior.
+0x004A9A90	?LittleShort@@YAFF@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9A90	Release returns the input short unchanged, matching the initialized source dispatch.
+0x004A9AA0	?LittleLong@@YAHH@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_q_shared.cpp:751	Source little-long dispatch resolves to LongNoSwap after Swap_Init, the release identity behavior.
+0x004A9AA0	?LittleLong@@YAHH@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9AA0	Release returns the input int unchanged, matching the initialized source dispatch.
+0x004A9AB0	?LittleFloat@@YAMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_q_shared.cpp:759	Source little-float dispatch resolves to FloatNoSwap after Swap_Init, the release identity behavior.
+0x004A9AB0	?LittleFloat@@YAMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9AB0	Release returns the input float unchanged, matching the initialized source dispatch.
+0x004A9AC0	?Clear@usercmd_s@@QAEXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2627	Source clears all user-command scalar, angle, movement, and gun-offset fields.
+0x004A9AC0	?Clear@usercmd_s@@QAEXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9AC0	Release zeroes the same command fields, matching source.
+0x004A9B10	??0trajectory_t@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2647	Source initializes stationary trajectory type, timing/gravity fields, and base/delta vectors.
+0x004A9B10	??0trajectory_t@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9B10	Release performs the same stationary/default zero initialization and returns this.
+0x004A9B50	??0HashString@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/engine/broc_types.h:64	Source inline default constructor initializes mHash to zero.
+0x004A9B50	??0HashString@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9B50	Release stores zero in mHash and returns this, matching source.
+0x004A9B60	??0HashString@@QAE@PBD@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2662	Source constructor hashes the input string into mHash.
+0x004A9B60	??0HashString@@QAE@PBD@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9B60	Release calls HashString::CalcHash and stores the result, matching source.
+0x004A9B90	??0HashString@@QAE@H@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2667	Source stores the integer hash value in mHash.
+0x004A9B90	??0HashString@@QAE@H@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9B90	Release stores hash and returns this, matching source.
+0x004A9BB0	?NullHash@HashString@@SAIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/mpactors/sentient.cpp:50	Source returns the static zero null-hash value.
+0x004A9BB0	?NullHash@HashString@@SAIXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9BB0	Release returns the function-local static null hash, matching source.
+0x004A9BC0	?GetHash@HashString@@QBEIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2672	Source returns mHash.
+0x004A9BC0	?GetHash@HashString@@QBEIXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9BC0	Release returns mHash directly, matching source.
+0x004A9BD0	?Compare@HashString@@SA_NABV1@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2677	Source compares the two hash values for equality.
+0x004A9BD0	?Compare@HashString@@SA_NABV1@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9BD0	Release compares rhs.mHash and lhs.mHash, matching source.
+0x004A9BF0	??8@YA_NABVHashString@@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2682	Source compares HashString mHash fields for equality.
+0x004A9BF0	??8@YA_NABVHashString@@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9BF0	Release compares rhs.mHash and lhs.mHash, matching source.
+0x004A9C10	??9@YA_NABVHashString@@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2687	Source compares HashString mHash fields for inequality.
+0x004A9C10	??9@YA_NABVHashString@@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9C10	Release compares lhs.mHash and rhs.mHash for inequality, matching source.
+0x004A9C30	??8@YA_NABVHashString@@I@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2692	Source compares mHash to an unsigned integer.
+0x004A9C30	??8@YA_NABVHashString@@I@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9C30	Release compares lhs.mHash with rhs, matching source.
+0x004A9C50	??9@YA_NABVHashString@@I@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2697	Source compares mHash to an unsigned integer for inequality.
+0x004A9C50	??9@YA_NABVHashString@@I@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9C50	Release compares lhs.mHash and rhs for inequality, matching source.
+0x004A9C70	?GetBuff@Block@string@Broc@@QAEPADXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2704	Source instance helper returns the byte buffer immediately after the Block header.
+0x004A9C70	?GetBuff@Block@string@Broc@@QAEPADXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9C70	Release returns this + 1, matching source.
+0x004A9C80	??Astring@Broc@@QAEDI@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2709	Source bounds-checks the string block and returns zero for null/out-of-range indices.
+0x004A9C80	??Astring@Broc@@QAEDI@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9C80	Release performs the same block/length checks and indexed byte return.
+0x004A9CB0	?c_str@string@Broc@@QBEPBDXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/broc/Broc.cpp:690	Source returns the block buffer or defaultFileName when undefined.
+0x004A9CB0	?c_str@string@Broc@@QBEPBDXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9CB0	Release returns mBlock+1 for defined strings and defaultFileName otherwise, matching source.
+0x004A9CD0	?IsDefined@string@Broc@@QBE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2716	Source reports whether mBlock is non-null.
+0x004A9CD0	?IsDefined@string@Broc@@QBE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9CD0	Release tests mBlock against null, matching source.
+0x004A9CE0	?SetUndefined@string@Broc@@QAEXXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2721	Source decrements a defined block reference and clears mBlock.
+0x004A9CE0	?SetUndefined@string@Broc@@QAEXXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9CE0	Release decrements the block count and clears mBlock under the same null check.
+0x004A9D20	??9Broc@@YA_NABVstring@0@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2730	Source negates Broc::string equality for inequality.
+0x004A9D20	??9Broc@@YA_NABVstring@0@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9D20	Release calls Broc::operator== and negates the result, matching source.
 0x004A9700	??0MPEntityHandle@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2362	Source default constructor initializes mValue to zero.
 0x004A9700	??0MPEntityHandle@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9700	Release stores zero in mValue and returns this, matching source.
 0x004A9710	??0MPEntityHandle@@QAE@ABV0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2389	Source copy constructor copies the packed handle value.

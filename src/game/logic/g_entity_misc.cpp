@@ -1892,6 +1892,7 @@ int R_CellForPoint(const float* pos)
 {
     return R_CellForPoint(reinterpret_cast<const math::Position3*>(pos));
 }
+// ea: 0x004A9A30
 float random()
 {
     return static_cast<float>(rand()) * 0.000030517578125f;

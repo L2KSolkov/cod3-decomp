@@ -61,6 +61,7 @@ struct LocalFields;
 class HashString {
 public:
     unsigned int mHash;  // +0x00
+    // ea: 0x004A9B50
     HashString() : mHash(0) {}
     HashString(Broc::string& str);  // ea: 0x004C1450
     HashString(const char* str);    // ??0HashString@@QAE@PBD@Z (g.o 0x4A9B60)
