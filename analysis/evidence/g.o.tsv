@@ -831,3 +831,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044A7A0	?Cmd_God_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A7A0	release cheat/alive gates, flag toggle, globals, strings, and send call match source.
 0x0044A850	?Cmd_Notarget_f@@YAXPAVEntity@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:1518	notarget command toggles flags/state and emits the matching status command.
 0x0044A850	?Cmd_Notarget_f@@YAXPAVEntity@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044A850	release cheat/alive gates, flag toggle, globals, strings, and send call match source.
+0x0044AF20	?CheckArmor@@YAHPAVEntity@@HH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_combat.cpp:118	armor wrapper returns zero for zero damage or missing actor and delegates nonzero damage to Actor_CheckArmor.
+0x0044AF20	?CheckArmor@@YAHPAVEntity@@HH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AF20	release damage/actor guards, Actor_CheckArmor delegation, and zero fallback match source.
+0x0044AF50	?G_GetHitLocationString@@YAIW4hitLocation_t@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:428	hit-location range assertion initializes the matching AeAssert fields and returns the indexed constant-name entry.
+0x0044AF50	?G_GetHitLocationString@@YAIW4hitLocation_t@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AF50	release HITLOC_NUM guard, assertion metadata/call, debugbreak gate, and table return match source.
