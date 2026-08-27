@@ -44,6 +44,10 @@ def main() -> int:
             assert states["V3"] == "FAIL" and level == "V2"
             assert ledger.body_class("{ ; }") == "EMPTY_BODY"
 
+            # Explicit V4 release evidence is sufficient to clear an empty
+            # body from the unreviewed-stub anomaly class.
+            assert evidence[("0X0040C000", "fn", "V4")]["result"] == "PASS"
+
             # Definition comments may carry a descriptive function name
             # before the EA; marker parsing must retain that address.
             assert ledger.re.search(

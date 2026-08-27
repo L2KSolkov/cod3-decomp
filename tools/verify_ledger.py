@@ -587,7 +587,10 @@ def main() -> int:
                 anomalies.append({"kind": "MARKER_NAME_MISMATCH", "ida_ea": f"0x{function.ida_ea:08X}",
                                   "name": function.name, "source": hit.path,
                                   "detail": f"source candidate {hit.candidate}"})
-        if hit is not None and body_class(hit.body) in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}:
+        empty_body = hit is not None and body_class(hit.body) in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}
+        release_empty_confirmed = bool(evidence.get(
+            (f"0x{function.ida_ea:08X}".upper(), function.name, "V4"), {}).get("result") == PASS)
+        if empty_body and not release_empty_confirmed:
             anomalies.append({"kind": "EMPTY_OR_CAST_BODY", "ida_ea": f"0x{function.ida_ea:08X}",
                               "name": function.name, "source": hit.path,
                               "detail": body_class(hit.body)})
