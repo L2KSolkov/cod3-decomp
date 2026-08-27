@@ -7063,7 +7063,7 @@ void GetSurfaceTypeSounds(const char* pszType,
 // ============================================================================
 // EntityManager - ea: 0x612420..0x612630 (inline COMDATs from g.o 0x4A6990)
 // ============================================================================
-extern int dword_F6A28C[];  // game.o data
+extern int dword_F6A28C[4 * 802];  // game.o data
 
 // ea: 0x00612420
 EntityManager::EntityManager()

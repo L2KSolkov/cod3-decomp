@@ -28,7 +28,7 @@ extern int currCl;
 extern int dword_106000;
 extern cvar_t* cl_freelook;
 extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A
-extern int dword_F6A28C[];     // ?dword_F6A28C (per-client port array)
+extern int dword_F6A28C[4 * 802];     // ?dword_F6A28C (per-client port array)
 namespace BrocSys { void GiveWeapon(Entity* pSelf, const char* pszWeaponName); }
 
 // Client layout fields used by the IDA input routines.  Client is opaque in

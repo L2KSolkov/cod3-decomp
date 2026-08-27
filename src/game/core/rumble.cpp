@@ -286,7 +286,7 @@ struct GamePause {
     static GamePauseData mData;  // ?mData@GamePause@@0UGamePauseData@1@A
 };
 extern int cls_state;
-extern int dword_F6A28C[];
+extern int dword_F6A28C[4 * 802];
 int gSaveGameData_mVibration[4 * 7156];  // ?gSaveGameData_mVibration (game2.o)
 extern int AnimHeap_sInst;
 extern void* PoolAllocator_Allocate(void* allocator, unsigned int s,

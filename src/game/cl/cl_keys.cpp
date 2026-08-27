@@ -37,7 +37,7 @@ extern int cvar_modifiedFlags;
 extern int key_overstrikeMode;
 extern int dword_F0D1F4[2];
 extern int dword_F0D1F8[2];
-extern char byte_F0D1FC[];
+extern char byte_F0D1FC[4 * 19528];
 extern int dword_F171D0;
 extern int dword_F171C0;
 extern int dword_F171C4;

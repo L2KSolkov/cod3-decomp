@@ -130,7 +130,7 @@ extern int dword_F0D1F4[2];
 extern int dword_F0D1F8[2];
 extern int dword_F0F1FC[2];
 extern int dword_F0F200[2];
-extern char byte_F0D1FC[];
+extern char byte_F0D1FC[4 * 19528];
 // netadr_t (20 bytes; same layout as sv/server_types.h, local to avoid
 // pulling the full server type set into the cl TU)
 struct netadr_t {

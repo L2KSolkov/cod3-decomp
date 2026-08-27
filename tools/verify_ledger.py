@@ -739,10 +739,9 @@ def global_conflicts() -> list[tuple[str, str]]:
             declarations[match.group("name")].add(declaration)
     conflicts = []
     for name, values in sorted(declarations.items()):
-        # An extern T name[] declaration is intentionally incomplete and is
-        # compatible with a sized definition elsewhere in the port.
-        if len(values) > 1 and any("[]" not in value for value in values):
-            values = {value for value in values if "[]" not in value}
+        # An unsized extern is not proof that the sized definition is correct;
+        # the extent is part of the ABI/layout contract and must stay visible
+        # in the anomaly queue for manual adjudication.
         if len(values) > 1:
             conflicts.append((name, " | ".join(sorted(values))))
     return conflicts

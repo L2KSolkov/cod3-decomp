@@ -2468,7 +2468,7 @@ extern EntityManager*   EntityManager_sInst(void);
 extern int              currCl;      // ?currCl@@3HA
 extern bool             gExitGame;   // ?gExitGame@@3_NA
 extern int              dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
-extern int              dword_F641E0[];
+extern int              dword_F641E0[4 * 1580];
 extern unsigned int     ValidAddress[];  // ?ValidAddress@@3PAIA @ 0xE36DD0
 
 // ============================================================================

@@ -17,7 +17,7 @@ extern void mem_heap_free(void* ptr);            // core.o
 extern FEManager g_femanager;
 extern FEMenuColorScheme color_schemes[];  // 0xDF3AE0
 extern int currCl;                       // ?currCl@@3HA @ 0xF1579C
-extern int dword_F6A28C[];               // @ 0xF6A28C
+extern int dword_F6A28C[4 * 802];        // @ 0xF6A28C
 
 // ============================================================================
 // FEMenuEntry

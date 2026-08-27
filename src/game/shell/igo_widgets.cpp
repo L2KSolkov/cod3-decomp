@@ -17,7 +17,7 @@ extern int currCl;                                // ?currCl@@3HA @ 0xF1579C
 extern int cg_aWeaponSelectTime[4];               // ?cg_aWeaponSelectTime@@3PAHA
 extern DbLinkedHandle<EntityHandleDb, Entity> GetPlayersTank();
 extern FEManager g_femanager;
-extern int dword_F62960[];                        // @ 0xF62960 (cg client base)
+extern int dword_F62960[4 * 1580];                // @ 0xF62960 (cg client base)
 
 extern PlayerState& GetPlayerState(int idx);       // ?GetPlayerState@@YAAAVPlayerState@@H@Z
 vmCvar_t g_stanceFadeTime = {};
@@ -49,12 +49,12 @@ extern int CG_GetGrenadeCount();                // cg.o
 extern int CG_GetSpecialGrenadeCount();         // cg.o
 vmCvar_t g_grenadeFadeTime = {};
 vmCvar_t g_grenadeSolidTime = {};
-extern int dword_F6419C[];  // @ 0xF6419C (special weapon type)
-extern int dword_F641A0[];  // @ 0xF641A0 (special weapon end time)
-extern int dword_F641A4[];  // @ 0xF641A4 (special weapon duration)
+extern int dword_F6419C[4 * 1580];  // @ 0xF6419C (special weapon type)
+extern int dword_F641A0[4 * 1580];  // @ 0xF641A0 (special weapon end time)
+extern int dword_F641A4[4 * 1580];  // @ 0xF641A4 (special weapon duration)
 float percentToTrimBottom = 0.1f;  // @ 0xDF4460
 float percentToTrimTop = 0.2f;     // @ 0xDF445C
-extern int dword_F6355C[];   // @ 0xF6355C
+extern int dword_F6355C[4 * 1580];   // @ 0xF6355C
 int dword_F63F5C[4 * 1580] = {};   // @ 0xF63F5C (hint icon)
 int dword_F63F60[4 * 1580] = {};   // @ 0xF63F60 (hint start time)
 int dword_F63F64[4 * 1580] = {};   // @ 0xF63F64 (hint fade time)
@@ -247,7 +247,7 @@ struct vehicle_info_t {
     int hudIndex;     // +0x48
 };
 extern vehicle_info_t* VEH_GetVehicleInfo(int iIndex);  // g.o
-extern float dword_F63CB4[];  // @ 0xF63CB4
+extern float dword_F63CB4[4 * 1580];  // @ 0xF63CB4
 float COMPASS_STOP_OFFSET = 0.0001f;  // @ 0xDF4464
 extern int cg_aWeaponSelect[];  // ?cg_aWeaponSelect@@3PAHA @ 0xF5D078
 vmCvar_t g_ammoFadeTime = {};
@@ -257,14 +257,14 @@ extern int BG_GetTotalAmmoReserve(const PlayerState* pPS,
                                   int iWeaponIndex);  // game.o
 extern const float vectoyaw(const float* const vec);      // core.o
 extern const float AngleNormalize360(float angle);  // core.o
-extern float dword_F63560[];  // @ 0xF63560 (client origin x)
-extern float dword_F63564[];  // @ 0xF63564 (client origin y)
-extern float dword_F63568[];  // @ 0xF63568 (client origin z)
-extern float dword_F63640[];  // @ 0xF63640 (client view height)
-extern float dword_F63C50[];  // @ 0xF63C50 (screen x0)
-extern float dword_F63C54[];  // @ 0xF63C54 (screen y0)
-extern float dword_F63C58[];  // @ 0xF63C58 (screen w)
-extern float dword_F63C5C[];  // @ 0xF63C5C (screen h)
+extern float dword_F63560[4 * 1580];  // @ 0xF63560 (client origin x)
+extern float dword_F63564[4 * 1580];  // @ 0xF63564 (client origin y)
+extern float dword_F63568[4 * 1580];  // @ 0xF63568 (client origin z)
+extern float dword_F63640[4 * 1580];  // @ 0xF63640 (client view height)
+extern float dword_F63C50[4 * 1580];  // @ 0xF63C50 (screen x0)
+extern float dword_F63C54[4 * 1580];  // @ 0xF63C54 (screen y0)
+extern float dword_F63C58[4 * 1580];  // @ 0xF63C58 (screen w)
+extern float dword_F63C5C[4 * 1580];  // @ 0xF63C5C (screen h)
 extern float unk_F63634[];    // @ 0xF63634 (client yaw)
 extern float unk_F6A280[];    // @ 0xF6A280 (previous viewport)
 int dword_F64198[4 * 1580] = {};    // @ 0xF64198
@@ -303,12 +303,12 @@ vmCvar_t cg_hudObjectiveMaxHeight = {};
 extern vmCvar_t mp_objectiveSize;         // @ 0xEABD78
 extern vmCvar_t mp_objectiveFarAlpha;     // @ 0xEAC8B8
 vmCvar_t gCvarShowEnemy = {};
-extern float dword_F63C70[];  // @ 0xF63C70 (client origin x)
-extern float dword_F63C74[];  // @ 0xF63C74 (client origin y)
-extern float dword_F63C78[];  // @ 0xF63C78 (client origin z)
-extern int   dword_F64140[];  // @ 0xF64140
+extern float dword_F63C70[4 * 1580];  // @ 0xF63C70 (client origin x)
+extern float dword_F63C74[4 * 1580];  // @ 0xF63C74 (client origin y)
+extern float dword_F63C78[4 * 1580];  // @ 0xF63C78 (client origin z)
+extern int   dword_F64140[4 * 1580];  // @ 0xF64140
 extern int   iLastCompassTime[];  // @ 0xF3A4C4
-extern int   dword_F62964[];  // @ 0xF62964
+extern int   dword_F62964[4 * 1580];  // @ 0xF62964
 extern float unk_F6A2B0[];    // @ 0xF6A2B0 (objective world data block)
 extern const float AngleSubtract(float a1, float a2);   // core.o
 extern const float AngleNormalize180(float angle);       // core.o

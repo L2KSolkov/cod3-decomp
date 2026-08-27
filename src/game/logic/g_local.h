@@ -2754,7 +2754,7 @@ bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);  // game.o 0x604
 int  irand(int min, int max);
 void G_AddLean(Entity* ent, float* point);
 extern float delta;          // 0xDD7FE4 (mine test standoff distance)
-extern float dword_F63C70[];  // 0xF63C70 (per-client muzzle offsets)
+extern float dword_F63C70[4 * 1580];  // 0xF63C70 (per-client muzzle offsets)
 extern unsigned char bulletPriorityMap[];  // 0xDD55D0
 extern unsigned char riflePriorityMap[];   // g.o .rdata
 extern float gTriggerLookAtOverride;       // @ 0xDF4914
@@ -3516,9 +3516,9 @@ struct kuju_sTime {
 };
 extern kuju::knet::sTime g_MPAARTimer;   // ?g_MPAARTimer@@3VsTime@knet@kuju@@A @ 0xF99870
 extern int g_MPAARTotalTime;      // ?g_MPAARTotalTime@@3HA @ 0xE38468
-extern unsigned char byte_F64194[];  // 0xF64194
-extern int dword_F641D0[];           // 0xF641D0
-extern int dword_F641D4[];           // 0xF641D4
+extern unsigned char byte_F64194[4 * 6320];  // 0xF64194
+extern int dword_F641D0[4 * 1580];           // 0xF641D0
+extern int dword_F641D4[4 * 1580];           // 0xF641D4
 
 // Broc::TVehiclenodeHandle (IDA type 566)
 enum TVehiclenodeHandle : int {

@@ -88,7 +88,7 @@ extern struct cvar_t* fx_debug;
 extern struct cvar_t* fx_count;
 extern int dword_F0F200[2];
 int dword_F0F204[2];
-extern char byte_F0F208[];
+extern char byte_F0F208[4 * 19528];
 extern int dword_F170F8;
 extern int scr_initialized;
 extern int dword_F6A28C[4 * 802];
