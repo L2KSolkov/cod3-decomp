@@ -1551,20 +1551,20 @@ void UpdateEntityHash(Entity* ent)
     ent->mClassNameHash = HashString(ent->mClassName);
     ent->mGroupNameHash = HashString::CalcHash(
         ent->mGroupName.mBlock != nullptr ? (const char*)(ent->mGroupName.mBlock + 1)
-                                          : (const char*)&"");
+                                          : &defaultFileName[0]);
     ent->targetnameHash = HashString::CalcHash(
         ent->targetname.mBlock != nullptr ? (const char*)(ent->targetname.mBlock + 1)
-                                          : (const char*)&"");
+                                          : &defaultFileName[0]);
     ent->mTargetHash = HashString::CalcHash(
         ent->mTarget.mBlock != nullptr ? (const char*)(ent->mTarget.mBlock + 1)
-                                       : (const char*)&"");
+                                       : &defaultFileName[0]);
     ent->mScriptNoteworthyHash = HashString::CalcHash(
         ent->mScriptNoteworthy.mBlock != nullptr
             ? (const char*)(ent->mScriptNoteworthy.mBlock + 1)
-            : (const char*)&"");
+            : &defaultFileName[0]);
     ent->mAnimNameHash = HashString::CalcHash(
         ent->mAnimName.mBlock != nullptr ? (const char*)(ent->mAnimName.mBlock + 1)
-                                         : (const char*)&"");
+                                         : &defaultFileName[0]);
 }
 
 // ============================================================================
