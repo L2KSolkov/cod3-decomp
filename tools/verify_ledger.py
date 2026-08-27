@@ -446,6 +446,10 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_AdjustPositionForMover@@YAXPBVPosition3@math@@IHHPAV12@PAM@Z",
         "?CG_DamageFeedback@@YAXHHH@Z":
             "?CG_DamageFeedback@@YAXHHM@Z",
+        "?CG_FxTest@@YAXXZ":
+            "?CG_FxTest@@YAHXZ",
+        "?CanInterrupt@@YA_NPAVXAnimTree@@PAUcgs_t@@@Z":
+            "?CanInterrupt@@YA_NPAVXAnimTree@@PAX@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":

@@ -4100,10 +4100,13 @@ void FixupGunModelParts(XModelParts* xmp)
         unsigned int v4 = (unsigned int)v2 < (unsigned int)mSize ? v2 : 0;
         if (_stricmp(xmp->mHierarchyList[v4].mStr, "tag_b") == 0)
         {
-            unsigned int idx = (unsigned int)v2
-                               < (unsigned int)xmp->mMeshPtrsSize
-                                   ? v2
-                                   : 0;
+            unsigned int idx = v2;
+            if (idx >= (unsigned int)xmp->mMeshPtrsSize)
+            {
+                CG_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h",
+                          91);
+                idx = 0;
+            }
             bulletMesh = xmp->mMeshPtrsList[idx];
         }
     }
@@ -4114,12 +4117,23 @@ void FixupGunModelParts(XModelParts* xmp)
             unsigned int v9 = (unsigned int)v7 < (unsigned int)mSize ? v7 : 0;
             if (_strnicmp(xmp->mHierarchyList[v9].mStr, "tag_b", 5) == 0)
             {
-                unsigned int v10 =
-                    (unsigned int)v7 < (unsigned int)xmp->mMeshPtrsSize
-                        ? v7
-                        : 0;
+                unsigned int v10 = v7;
+                if (v10 >= (unsigned int)xmp->mMeshPtrsSize)
+                {
+                    CG_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h",
+                              81);
+                    v10 = 0;
+                }
                 if (xmp->mMeshPtrsList[v10] == nullptr)
+                {
+                    if (v7 >= (unsigned int)xmp->mMeshPtrsSize)
+                    {
+                        CG_ASSERT("index < mSize",
+                                  "../ae\\inplace/InplaceVector.h", 81);
+                        v10 = 0;
+                    }
                     xmp->mMeshPtrsList[v10] = bulletMesh;
+                }
             }
         }
     }
