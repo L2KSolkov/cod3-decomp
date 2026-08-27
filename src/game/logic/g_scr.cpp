@@ -1621,13 +1621,10 @@ int Scr_GetAnimsIndex(AnimTree* anims)
     return index;
 }
 
-// ea: 0x005C75F0
+// ea: 0x005C76A0
 AnimTree* Scr_GetAnims(int index)
 {
     AnimBank* bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
-    if (bank == nullptr || index < 0
-        || static_cast<unsigned int>(index) >= bank->anims.mSize)
-        return nullptr;
     return &bank->anims[index];
 }
 

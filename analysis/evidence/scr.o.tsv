@@ -629,3 +629,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005EA360	??Econst_iterator@?$reserved_dlist@VAeThreadState@@@@QAEAAV01@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EA360;src/game/core/core_systems.h:489	Release and source match the null assertion and two-pointer advance.
 0x005EDF90	??$min_val@I@Broc@@YAIABI0@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/engine/broc_types.h:243	Unsigned min helper returns the lesser pointed-to value.
 0x005EDF90	??$min_val@I@Broc@@YAIABI0@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005EDF90;src/engine/broc_types.h:243	Release and source match the pointer comparison and selected return value.
+0x005C76A0	?Scr_GetAnims@@YAPAVAnimTree@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:1625	Animation lookup obtains the PAK bank and directly indexes its animation vector.
+0x005C76A0	?Scr_GetAnims@@YAPAVAnimTree@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C76A0;src/game/logic/g_scr.cpp:1625	Release and source both call GetBank(PAK_ID_MIN) and return the indexed AnimTree without an outer guard.
+0x005C76C0	?Scr_GetAnimTreeByName@@YAPAVAnimTree@@PBD@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:1585	Animation name lookup scans bank entries beginning at index one.
+0x005C76C0	?Scr_GetAnimTreeByName@@YAPAVAnimTree@@PBD@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005C76C0;src/game/logic/g_scr.cpp:1585	Release and source match null-name handling, bank-size cutoff, case-insensitive scan, and null-on-miss.
