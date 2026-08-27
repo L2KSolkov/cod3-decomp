@@ -2429,7 +2429,7 @@ void CG_DrawSubtitles()
 }
 
 // ea: 0x006958B0
-int CG_DrawPerformanceWarnings()
+void CG_DrawPerformanceWarnings()
 {
     int v0 = Sys_Milliseconds();
     const statmonitor_s* stats;
@@ -2456,7 +2456,6 @@ int CG_DrawPerformanceWarnings()
             y += 34.0f;
         }
     }
-    return statCount;
 }
 
 // ea: 0x00695F90

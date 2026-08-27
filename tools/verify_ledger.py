@@ -396,6 +396,8 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_Respawn@@YAHXZ",
         "?CG_HoldBreathInit@@YAXXZ":
             "?CG_HoldBreathInit@@YAHXZ",
+        "?CG_DrawPerformanceWarnings@@YAXXZ":
+            "?CG_DrawPerformanceWarnings@@YAHXZ",
         "?CG_WeaponSelectable@@YAHH@Z":
             "?CG_WeaponSelectable@@YA_NH@Z",
         "?CG_Weapon_f@@YAXXZ":
