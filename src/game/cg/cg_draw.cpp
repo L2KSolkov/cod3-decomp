@@ -435,7 +435,7 @@ extern void nglAddMeshSection(nglMesh* mesh, nglMeshSection* section,
                               nglMaterial* material, int flags);
 extern void* nglLockSectionIndices(nglMeshSection* section);
 extern void* nglLockSectionVertices(nglMeshSection* section);
-class nglMeshParams;
+struct nglMeshParams;
 struct nglShaderParamSet;
 class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* mesh,
