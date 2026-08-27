@@ -1633,7 +1633,7 @@ extern PlayerState& GetPlayerState(int idx);
 extern int CG_OffsetFirstPersonView();
 extern void CG_OffsetThirdPersonView();
 extern void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_hash);
-extern int CG_CalcPassengerViewPos();
+extern void CG_CalcPassengerViewPos();
 extern void CG_CalcTurretViewValues();
 struct scr_vehicle_t;
 extern vehicle_info_t* G_GetVehicleInfo(scr_vehicle_t* scr_vehicle);

@@ -4246,7 +4246,7 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
     angoffset[0] = AngleNormalize180(angoffset[0]);
     angle[1580 * currCl] = angoffset[0];
     dword_F63CB4[1580 * currCl] = angoffset[1];
-    dword_F63CB8[1580 * currCl] = 0.0f;
+    dword_F63CB8[1580 * currCl] = angoffset[2];
     if (crouched)
     {
         angle[1580 * currCl] = 0.0f;
@@ -4352,7 +4352,7 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
 }
 
 // ea: 0x006A5680
-int CG_CalcPassengerViewPos()
+void CG_CalcPassengerViewPos()
 {
     Client* client =
         EntityManager::sInst->GetPlayer( currCl)->client;
@@ -4393,7 +4393,6 @@ int CG_CalcPassengerViewPos()
         dword_F63CB4[1580 * currCl] = client->ps.viewangles[1];
         dword_F63CB8[1580 * currCl] = client->ps.viewangles[2];
     }
-    return v4;
 }
 
 // ea: 0x006AB800
