@@ -2125,6 +2125,7 @@ Broc::string* Broc::dyn_array<Broc::string>::construct_array(
 }
 
 template <>
+// ea: 0x006009A0
 void Broc::dyn_array<Broc::entity>::reserve(unsigned int cap)
 {
     if (cap <= this->mCapacity)
@@ -2148,6 +2149,7 @@ void Broc::dyn_array<Broc::entity>::reserve(unsigned int cap)
 }
 
 template <>
+// ea: 0x00600A60
 void Broc::dyn_array<Broc::entity>::resize(
     unsigned int newSize, unsigned int newCapacity)
 {
@@ -2190,6 +2192,7 @@ void Broc::dyn_array<Broc::entity>::resize(unsigned int newSize)
 }
 
 template <>
+// ea: 0x00600B60
 void Broc::dyn_array<Broc::entity>::push_back(const Broc::entity& iElement)
 {
     if (this->mSize >= this->mCapacity)
