@@ -279,7 +279,7 @@ phys_constraint_solver_multithreaded.o	184	143	33	8	0	0	0
 phys_contact_manifold.o	26	8	12	6	0	0	0
 phys_gjk.o	37	32	3	2	0	0	0
 phys_util.o	11	3	8	0	0	0	0
-physics.o	747	475	24	247	0	1	0
+physics.o	747	475	24	246	0	2	0
 physics_system.o	313	277	30	6	0	0	0
 physics_system_internal.o	154	117	27	10	0	0	0
 rb_ragdoll_model.o	92	62	15	15	0	0	0

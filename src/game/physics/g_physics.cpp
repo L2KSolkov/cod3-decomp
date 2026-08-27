@@ -4870,21 +4870,40 @@ void rb_vehicle::update_from_network(const math::Position3& position,
     }
 }
 
-// DCGSet (sv_stubs.h view; local copy - objects array + aabb)
+// DCGSet (cgbank.h / cdl_mem.h view; release layout).
+struct cdl_array_view {
+    int   m_count;
+    void* m_elements;
+};
+struct dcg_position_view {
+    float x, y, z, w;
+};
+
+#pragma pack(push, 4)
 class DCGSet {
 public:
-    uint16_t nboxes;           // +0x00
-    uint16_t _pad02;           // +0x02
-    int   objects_m_count;     // +0x04
-    void* objects_m_elements;  // +0x08
-    int   brushes_m_count;     // +0x0C
-    void* brushes_m_elements;  // +0x10
-    uint8_t _pad14[0x1C - 0x14];
-    int   brush_sides_m_count;  // +0x1C
-    void* brush_sides_m_elements;  // +0x20
-    uint8_t _pad24[0x30 - 0x24];
-    math::Position3 min;       // +0x30
-    math::Position3 max;       // +0x40
+    uint16_t nboxes;            // +0x00
+    uint16_t nbrushes;          // +0x02
+    union {
+        cdl_array_view objects; // +0x04
+        struct { int objects_m_count; void* objects_m_elements; };
+    };
+    union {
+        cdl_array_view brushes; // +0x0C
+        struct { int brushes_m_count; void* brushes_m_elements; };
+    };
+    cdl_array_view gjk_brushes; // +0x14
+    union {
+        cdl_array_view brush_sides; // +0x1C
+        struct { int brush_sides_m_count; void* brush_sides_m_elements; };
+    };
+    cdl_array_view brush_verts; // +0x24
+    dcg_position_view min;      // +0x2C
+    dcg_position_view max;      // +0x3C
+    dcg_position_view center;   // +0x4C
+    float radius;               // +0x5C
+    float radius2;              // +0x60
+    int id;                     // +0x64
 
     // get_type - ea: 0x718570 (physics.o inline COMDAT); 1 = brush, 0 = box
     int get_type(unsigned int index) const
@@ -4901,6 +4920,8 @@ public:
         return index >= nboxes;
     }
 };
+static_assert(sizeof(DCGSet) == 0x68, "DCGSet size mismatch");
+#pragma pack(pop)
 
 // cdl_brush_t (cdl_mem.h view; objects[] element - center +0x08, half
 // extents +0x14, 36 bytes)
@@ -4942,14 +4963,14 @@ void rb_vehicle::update_from_scene_anim(const math::Position3& position,
         // no chassis: encode the DCGSet aabb into m_prev_rb_mat rows
         DCGSet* bmodel = (DCGSet*)m_owner->r.bmodel;
         float mn[4], mx[4];
-        mn[0] = bmodel->min.v.m128_f32[0];
-        mn[1] = bmodel->min.v.m128_f32[1];
-        mn[2] = bmodel->min.v.m128_f32[2];
-        mn[3] = bmodel->min.v.m128_f32[3];
-        mx[0] = bmodel->max.v.m128_f32[0];
-        mx[1] = bmodel->max.v.m128_f32[1];
-        mx[2] = bmodel->max.v.m128_f32[2];
-        mx[3] = bmodel->max.v.m128_f32[3];
+        mn[0] = bmodel->min.x;
+        mn[1] = bmodel->min.y;
+        mn[2] = bmodel->min.z;
+        mn[3] = bmodel->min.w;
+        mx[0] = bmodel->max.x;
+        mx[1] = bmodel->max.y;
+        mx[2] = bmodel->max.z;
+        mx[3] = bmodel->max.w;
         m_prev_rb_mat.x.v = _mm_setr_ps(mx[0], mx[1], mx[2], mx[3]);
         m_prev_rb_mat.y.v = _mm_setr_ps(mn[0], mn[1], mn[2], mn[3]);
         m_prev_rb_mat.z.v = _mm_setzero_ps();
@@ -6665,7 +6686,6 @@ unsigned int make_unique_id(Entity* ent, unsigned int object_id)
     return (unsigned int)(uintptr_t)ent + object_id;
 }
 
-// ea: 0x6FEDB0
 class gjk_geom_database {
 public:
     gjk_geom_info* m_tree_root;  // +0x00 (m_ggi_search_tree.m_tree_root)
@@ -6793,6 +6813,7 @@ gjk_geom_info* gjk_geom_database::add_to_sorted_list(void* gjk_geom,
     return v5;
 }
 
+// ea: 0x6FEDB0
 phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
 {
     if (ent == nullptr
@@ -6839,11 +6860,26 @@ phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
             if ((obj->cflags & 0x241) != 0)
             {
                 void* v12;
-                if (dcg_type_is_brush(bmodel, v7))
+                if (bmodel->get_type(v7) == 1)
                 {
                     ++m_brush_count;
-                    // brush: vert-list geometry
-                    v12 = phys_gjk_geom_vert_list::create(0, bmodel, (int)v7);
+                    unsigned int brush_index = v7 - (unsigned int)bmodel->nboxes;
+                    if (brush_index >= (unsigned int)bmodel->gjk_brushes.m_count
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                               "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                    cdl_vinfo_t* vinfo =
+                        &((cdl_vinfo_t*)bmodel->gjk_brushes.m_elements)[brush_index];
+                    int num_verts = vinfo->num_verts;
+                    phys_gjk_geom_vert_list* vert_list =
+                        phys_gjk_geom_vert_list::create(num_verts, bmodel, (int)v7);
+                    if (vert_list == nullptr)
+                        return nullptr;
+                    unpack(*vinfo,
+                           *(cdl_array<vi4>*)&bmodel->brush_verts,
+                           vert_list->m_vert_list);
+                    v12 = vert_list;
                 }
                 else
                 {
