@@ -400,13 +400,13 @@ int AeThreadState::get_dlist_node_offset()
     return 4;
 }
 
-// ea: 0x005E9430
+// AeThreadState::operator new - ea: 0x005E9430
 void* AeThreadState::operator new(size_t size, bool forceHeapAlloc)
 {
     return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
 }
 
-// ea: 0x005E9450
+// AeThreadState::operator delete - ea: 0x005E9450
 void AeThreadState::operator delete(void* ptr)
 {
     sAllocator->Release(ptr);
@@ -1036,20 +1036,20 @@ static_assert(sizeof(AeThread::BackupStack::Block) == 0x100,
 
 PoolAllocator* AeThread::BackupStack::Block::sAllocator;
 
-// ea: 0x005E9960
+// AeThread::BackupStack::Block::Block - ea: 0x005E9960
 AeThread::BackupStack::Block::Block()
     : mNext(nullptr)
 {
 }
 
-// ea: 0x005E9900
+// AeThread::BackupStack::Block::operator new - ea: 0x005E9900
 void* AeThread::BackupStack::Block::operator new(size_t size,
                                                   bool forceHeapAlloc)
 {
     return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
 }
 
-// ea: 0x005E9920 / 0x005E9940
+// AeThread::BackupStack::Block::operator delete - ea: 0x005E9920 / 0x005E9940
 void AeThread::BackupStack::Block::operator delete(void* ptr)
 {
     sAllocator->Release(ptr);
@@ -3799,13 +3799,13 @@ AeThread* AeThread::get_dlist_node()
     return this;
 }
 
-// ea: 0x005E9870
+// AeThread::operator new - ea: 0x005E9870
 void* AeThread::operator new(size_t size, bool forceHeapAlloc)
 {
     return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
 }
 
-// ea: 0x005E9890 / 0x005E98B0
+// AeThread::operator delete - ea: 0x005E9890 / 0x005E98B0
 void AeThread::operator delete(void* ptr)
 {
     sAllocator->Release(ptr);
@@ -5155,7 +5155,7 @@ void* AeThread::BrocObjCreated::operator new(size_t size)
     return result;
 }
 
-// ea: 0x005EE230
+// AeThread::BrocObjCreated::operator delete - ea: 0x005EE230
 void AeThread::BrocObjCreated::operator delete(void* ptr)
 {
     if (gBrocPool->InPool(ptr))
@@ -5734,13 +5734,13 @@ void* EndOnScriptNode::get_dlist_node()
     return this;
 }
 
-// ea: 0x005E94E0
+// EndOnScriptNode::operator new - ea: 0x005E94E0
 void* EndOnScriptNode::operator new(size_t size, bool forceHeapAlloc)
 {
     return sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
 }
 
-// ea: 0x005E9500
+// EndOnScriptNode::operator delete - ea: 0x005E9500
 void EndOnScriptNode::operator delete(void* ptr)
 {
     sAllocator->Release(ptr);
@@ -5801,7 +5801,7 @@ HashString AeThreadEntityNotifyState::GetNotify() const
     return mNotifyStr;
 }
 
-// ea: 0x005E95E0
+// IsDefined - ea: 0x005E95E0
 template <typename T>
 bool IsDefined(T t)
 {
@@ -23448,7 +23448,7 @@ void AeThreadEntityNotifyMatchState::GetDebugTxt(
     }
 }
 
-// ea: 0x005BE180 (rep stosd 0x8C dwords = 0x230 bytes = 70 entries)
+// BrocHelper::Init - ea: 0x005BE180 (rep stosd 0x8C dwords = 0x230 bytes = 70 entries)
 BrocHelper::brocFunctionLookup BrocHelper::broFuncLookupTable[70];
 void BrocHelper::Init()
 {
@@ -25253,7 +25253,7 @@ no_barrel:
 // scr.o batch 13 - GetEnt* entity-lookup family (BrocEntity.cpp)
 // ============================================================================
 
-// ea: 0x005DCE70 (mangle YAIHIPAIH: int, uint, uint*, int)
+// BrocSys::GetEntByFieldAndHash - ea: 0x005DCE70 (mangle YAIHIPAIH: int, uint, uint*, int)
 static const char* BrocSysHashLookup(unsigned int hash);
 
 unsigned int BrocSys::GetEntByFieldAndHash(int offsetIntoEnt,

@@ -4931,7 +4931,7 @@ snapshot_t::snapshot_t()
 extern itemInfo_t cg_items[256];
 extern weaponInfo_s cg_weapons[92];
 extern vmCvar_t fs_debug_vm;
-// ea: 0x006BB6C0
+// InteractionController::GetHandsAngles - ea: 0x006BB6C0
 const float (&InteractionController::GetHandsAngles() const)[3]
 {
     if ((mFlags & 1) == 0)
@@ -4947,7 +4947,7 @@ const float (&InteractionController::GetHandsAngles() const)[3]
     return mHandsAngles;
 }
 
-// ea: 0x006BB730
+// InteractionController::GetHandsOrigin - ea: 0x006BB730
 const float (&InteractionController::GetHandsOrigin() const)[3]
 {
     if ((mFlags & 1) == 0)

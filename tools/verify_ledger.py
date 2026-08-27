@@ -178,7 +178,8 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
             # accidentally attach this address to an unrelated body.
             return None
         matches = list(re.finditer(
-            r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator[^\s(]+)|"
+            r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+(?:new|delete|[~A-Za-z_][A-Za-z0-9_]*))|"
+            r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator[^\s(]+)|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*))\s*\(", text))
         if matches and "{" in text:
             valid = []
@@ -193,7 +194,8 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
                 # without a return-type prefix (including inline ``T() {}``
                 # bodies).  A call/expression without an opening brace is
                 # still rejected below by the definition check.
-                if (candidate in {"if", "for", "while", "switch", "catch", "return", "new"}
+                if (candidate in {"if", "for", "while", "switch", "catch", "return", "new", "delete",
+                                  "void", "bool", "char", "short", "int", "long", "float", "double"}
                         or (not prefix and "{" not in text)
                         or prefix.endswith((".", "->", "="))):
                     continue
@@ -565,6 +567,16 @@ def symbol_variants(name: str) -> set[str]:
             "?get_dlist_node@AeThread@@QAEPAV1@XZ",
         "?MPScript_Obituary@BrocSys@@YAXIIABVstring@Broc@@H_N@Z":
             "?MPScript_Obituary@BrocSys@@YAXIIPBVstring@Broc@@H_N@Z",
+        "?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ":
+            "?GetOwner@AeThread@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ",
+        "??2AeThreadState@@SAPAXI_NPBDH@Z": "??2AeThreadState@@SAPAXI_N@Z",
+        "??3AeThreadState@@SAXPAX_NPBDH@Z": "??3AeThreadState@@SAXPAX@Z",
+        "??2EndOnScriptNode@@SAPAXI_NPBDH@Z": "??2EndOnScriptNode@@SAPAXI_N@Z",
+        "??3EndOnScriptNode@@SAXPAX_NPBDH@Z": "??3EndOnScriptNode@@SAXPAX@Z",
+        "??2AeThread@@SAPAXI_NPBDH@Z": "??2AeThread@@SAPAXI_N@Z",
+        "??3AeThread@@SAXPAX_NPBDH@Z": "??3AeThread@@SAXPAX@Z",
+        "??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z": "??2Block@BackupStack@AeThread@@SAPAXI_N@Z",
+        "??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z": "??3Block@BackupStack@AeThread@@SAXPAX@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:

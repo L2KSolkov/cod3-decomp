@@ -73,6 +73,18 @@ def main() -> int:
             candidate = ledger.function_candidate(inline_ctor, 0)
             assert candidate and candidate[0] == "refdef_s"
 
+            operator_new = ["// AeThreadState::operator new - ea: 0x005E9430",
+                            "void* AeThreadState::operator new(size_t size, bool forceHeapAlloc)",
+                            "{ return sAllocator->Allocate((unsigned int)size, forceHeapAlloc); }"]
+            candidate = ledger.function_candidate(operator_new, 0)
+            assert candidate and candidate[0] == "AeThreadState::operator new"
+
+            array_return = ["// InteractionController::GetHandsAngles - ea: 0x006BB6C0",
+                            "const float (&InteractionController::GetHandsAngles() const)[3]",
+                            "{ return mHandsAngles; }"]
+            candidate = ledger.function_candidate(array_return, 0)
+            assert candidate and candidate[0] == "InteractionController::GetHandsAngles"
+
             # Release map symbols may carry private member access (AA) while
             # the port exposes the same signature publicly (QA).  Access is
             # not a V2 signature mismatch.
@@ -108,6 +120,11 @@ def main() -> int:
             assert ("?MPScript_Obituary@BrocSys@@YAXIIPBVstring@Broc@@H_N@Z"
                     in ledger.symbol_variants(
                         "?MPScript_Obituary@BrocSys@@YAXIIABVstring@Broc@@H_N@Z"))
+            assert ("??2AeThreadState@@SAPAXI_N@Z"
+                    in ledger.symbol_variants("??2AeThreadState@@SAPAXI_NPBDH@Z"))
+            assert ("?GetOwner@AeThread@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ"
+                    in ledger.symbol_variants(
+                        "?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ"))
             assert ("?CG_DrawFriendlyFire@@YAPAVEntity@@XZ"
                     in ledger.symbol_variants("?CG_DrawFriendlyFire@@YAXXZ"))
             assert ("?CG_StartAmbient@@YAHXZ"
