@@ -577,6 +577,8 @@ def symbol_variants(name: str) -> set[str]:
         "??3AeThread@@SAXPAX_NPBDH@Z": "??3AeThread@@SAXPAX@Z",
         "??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z": "??2Block@BackupStack@AeThread@@SAPAXI_N@Z",
         "??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z": "??3Block@BackupStack@AeThread@@SAXPAX@Z",
+        "??2EntityNotifySet@@SAPAXI_NPBDH@Z": "??2EntityNotifySet@@SAPAXI_N@Z",
+        "??3EntityNotifySet@@SAXPAX_NPBDH@Z": "??3EntityNotifySet@@SAXPAX@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:
