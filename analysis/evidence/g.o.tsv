@@ -205,3 +205,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A6800	?GetPakId@Entity@@QBE?AW4TPakId@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6800	Release tests PAK_ID_INVALID, calls CurPakId on the invalid path, and otherwise returns mPakId.
 0x004A6820	?GetDObj@Entity@@QAEPAVDObj@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2032	Source returns Entity::mDObj.
 0x004A6820	?GetDObj@Entity@@QAEPAVDObj@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6820	Release loads and returns mDObj unchanged, matching source.
+0x004A6830	??Dmath@@YA?AVDir3@0@ABV10@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1311	Source broadcasts the scalar and multiplies every Dir3 lane.
+0x004A6830	??Dmath@@YA?AVDir3@0@ABV10@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6830	Release applies _mm_mul_ps to Dir3.v and a broadcast scalar, matching source.
+0x004A6870	??Dmath@@YA?AVDir3@0@MABV10@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1318	Source broadcasts the scalar and multiplies every Dir3 lane with reversed operands.
+0x004A6870	??Dmath@@YA?AVDir3@0@MABV10@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6870	Release multiplies Dir3.v by the broadcast scalar and returns the result, matching source.
+0x004A68B0	?SetDestructible@Entity@@QAEXV?$IVPointer@VDestructible@@@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2048	Source stores the destructible pointer and enables takedamage.
+0x004A68B0	?SetDestructible@Entity@@QAEXV?$IVPointer@VDestructible@@@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A68B0	Release performs the same mDestructible store and takedamage=1.
+0x004A68E0	?GetDestructible@Entity@@QAE?AV?$IVPointer@VDestructible@@@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2054	Source copies mDestructible into the value-return result.
+0x004A68E0	?GetDestructible@Entity@@QAE?AV?$IVPointer@VDestructible@@@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A68E0	Release writes mDestructible to the ABI result and returns it, matching source.
+0x004A6910	??Dmath@@YA?AVPosition3@0@ABV10@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1325	Source broadcasts the scalar and multiplies every Position3 lane.
+0x004A6910	??Dmath@@YA?AVPosition3@0@ABV10@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6910	Release applies _mm_mul_ps to Position3.v and a broadcast scalar, matching source.
+0x004A6950	??Dmath@@YA?AVPosition3@0@MABV10@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1332	Source broadcasts the scalar and multiplies every Position3 lane with reversed operands.
+0x004A6950	??Dmath@@YA?AVPosition3@0@MABV10@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6950	Release multiplies Position3.v by the broadcast scalar and returns the result, matching source.
+0x004A69A0	??Dmath@@YAMABVDir3@0@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1341	Source computes the Dir3 dot product over x/y/z lanes.
+0x004A69A0	??Dmath@@YAMABVDir3@0@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A69A0	Release multiplies Dir3 lanes and sums lanes 0/1/2, matching source.
+0x004A6A00	??Dmath@@YAMABVDir3@0@ABVPosition3@0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1349	Source computes the Dir3/Position3 dot product over x/y/z lanes.
+0x004A6A00	??Dmath@@YAMABVDir3@0@ABVPosition3@0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6A00	Release multiplies the two vectors and sums lanes 0/1/2, matching source.
+0x004A6B10	??Dmath@@YAMABVPosition3@0@ABVDir3@0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1357	Source computes the Position3/Dir3 dot product over x/y/z lanes.
+0x004A6B10	??Dmath@@YAMABVPosition3@0@ABVDir3@0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6B10	Release multiplies the two vectors and sums lanes 0/1/2, matching source.
+0x004A6B90	?GetWorld@@YAPAVEntity@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2061	Source returns EntityManager::sInst->mWorld.
+0x004A6B90	?GetWorld@@YAPAVEntity@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6B90	Release loads the EntityManager singleton world pointer and returns it.
+0x004A6BA0	?GetPlayerIndex@@YAHPAVEntity@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2066	Source forwards the player lookup to EntityManager::GetPlayerIndex.
+0x004A6BA0	?GetPlayerIndex@@YAHPAVEntity@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6BA0	Release calls EntityManager::GetPlayerIndex on sInst with the player argument, matching source.
+0x004A6BC0	?Mul@math@@YA?AVVector4@1@ABV21@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1375	Source multiplies corresponding Vector4 lanes.
+0x004A6BC0	?Mul@math@@YA?AVVector4@1@ABV21@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6BC0	Release applies _mm_mul_ps to the two Vector4 values and returns the result.
+0x004A6C00	?Cross@math@@YA?AVDir3@1@ABV21@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1382	Source computes the SIMD cross product of two Dir3 values.
+0x004A6C00	?Cross@math@@YA?AVDir3@1@ABV21@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6C00	Release performs the same 9/18 shuffle cross-product sequence and returns the result.
+0x004A6C70	?Min@math@@YA?AVPosition3@1@ABV21@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1392	Source applies componentwise minimum to two Position3 values.
+0x004A6C70	?Min@math@@YA?AVPosition3@1@ABV21@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6C70	Release applies _mm_min_ps to both Position3 vectors and returns the result.
+0x004A6CB0	?Max@math@@YA?AVPosition3@1@ABV21@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1399	Source applies componentwise maximum to two Position3 values.
+0x004A6CB0	?Max@math@@YA?AVPosition3@1@ABV21@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6CB0	Release applies _mm_max_ps to both Position3 vectors and returns the result.

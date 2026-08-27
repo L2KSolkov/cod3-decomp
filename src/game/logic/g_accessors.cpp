@@ -1308,24 +1308,28 @@ math::Vector4::Vector4(const math::Vector4::Constant& _c)
 // ============================================================================
 // Scalar-multiply free functions (g.o 0x4A6830-0x4A6950)
 // ============================================================================
+// ea: 0x004A6830
 math::Dir3 math::operator*(const math::Dir3& _a, float _b)
 {
     math::Dir3 r;
     r.v = _mm_mul_ps(_a.v, _mm_set1_ps(_b));
     return r;
 }
+// ea: 0x004A6870
 math::Dir3 math::operator*(float _a, const math::Dir3& _b)
 {
     math::Dir3 r;
     r.v = _mm_mul_ps(_b.v, _mm_set1_ps(_a));
     return r;
 }
+// ea: 0x004A6910
 math::Position3 math::operator*(const math::Position3& _a, float _b)
 {
     math::Position3 r;
     r.v = _mm_mul_ps(_a.v, _mm_set1_ps(_b));
     return r;
 }
+// ea: 0x004A6950
 math::Position3 math::operator*(float _a, const math::Position3& _b)
 {
     math::Position3 r;
@@ -1334,6 +1338,7 @@ math::Position3 math::operator*(float _a, const math::Position3& _b)
 }
 
 // Dot products (g.o 0x4A69A0-0x4A6B10)
+// ea: 0x004A69A0
 float math::operator*(const math::Dir3& _a, const math::Dir3& _b)
 {
     __m128 v2 = _mm_mul_ps(_a.v, _b.v);
@@ -1341,6 +1346,7 @@ float math::operator*(const math::Dir3& _a, const math::Dir3& _b)
            + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
               + _mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]);
 }
+// ea: 0x004A6A00
 float math::operator*(const math::Dir3& _a, const math::Position3& _b)
 {
     __m128 v2 = _mm_mul_ps(_a.v, _b.v);
@@ -1348,6 +1354,7 @@ float math::operator*(const math::Dir3& _a, const math::Position3& _b)
            + (_mm_shuffle_ps(v2, v2, 0x55).m128_f32[0]
               + _mm_shuffle_ps(v2, v2, 0xAA).m128_f32[0]);
 }
+// ea: 0x004A6B10
 float math::operator*(const math::Position3& _a, const math::Dir3& _b)
 {
     __m128 v2 = _mm_mul_ps(_a.v, _b.v);
@@ -1365,12 +1372,14 @@ float math::operator*(const math::Position3& _a,
 }
 
 // Named vector ops (g.o 0x4A6BC0-0x4A6CB0)
+// ea: 0x004A6BC0
 math::Vector4 math::Mul(const math::Vector4& _a, const math::Vector4& _b)
 {
     math::Vector4 r;
     r.v = _mm_mul_ps(_a.v, _b.v);
     return r;
 }
+// ea: 0x004A6C00
 math::Dir3 math::Cross(const math::Dir3& _a, const math::Dir3& _b)
 {
     math::Dir3 r;
@@ -1380,12 +1389,14 @@ math::Dir3 math::Cross(const math::Dir3& _a, const math::Dir3& _b)
                                 _mm_shuffle_ps(_b.v, _b.v, 9)));
     return r;
 }
+// ea: 0x004A6C70
 math::Position3 math::Min(const math::Position3& _a, const math::Position3& _b)
 {
     math::Position3 r;
     r.v = _mm_min_ps(_a.v, _b.v);
     return r;
 }
+// ea: 0x004A6CB0
 math::Position3 math::Max(const math::Position3& _a, const math::Position3& _b)
 {
     math::Position3 r;
@@ -2034,21 +2045,25 @@ DObj* Entity::GetDObj()
 {
     return mDObj;
 }
+// ea: 0x004A68B0
 void Entity::SetDestructible(IVPointer<Destructible> d)
 {
     mDestructible = d;
     takedamage = 1;
 }
+// ea: 0x004A68E0
 IVPointer<Destructible> Entity::GetDestructible()
 {
     return mDestructible;
 }
 
 // Free EntityManager helpers (g.o 0x4A6B90 / 0x4A6BA0)
+// ea: 0x004A6B90
 Entity* GetWorld()
 {
     return EntityManager::sInst->mWorld;
 }
+// ea: 0x004A6BA0
 int GetPlayerIndex(Entity* player)
 {
     return EntityManager::sInst->GetPlayerIndex(player);
