@@ -116,6 +116,8 @@ void cNodeRenderer<ColorUVARectangleParticle, apsColorUVARectangleNode>::SetupDe
     const math::Mat43& localMatrix);
 template <>
 void cNodeRenderer<ColorUVARectangleParticle, apsColorUVARectangleNode>::SetupShaders();
+template <>
+void cNodeRenderer<ColorUVARectangleParticle, apsColorUVARectangleNode>::Render();
 
 template <>
 cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::cNodeRenderer(
@@ -125,6 +127,8 @@ void cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::SetupDefaultShade
     const math::Mat43& localMatrix);
 template <>
 void cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::SetupShaders();
+template <>
+void cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::Render();
 
 template <>
 cNodeRenderer<ColorRectangleParticle, apsColorRectangleNode>::cNodeRenderer(

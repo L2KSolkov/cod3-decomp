@@ -7,6 +7,7 @@
 #include "apsUVARectangleRenderer.h"
 #include "apsNodeRenderer.h"
 #include "apsParticleTypes.h"
+#include "apsUVARectangleRenderCommon.h"
 #include "ngl/ngl_gpu_debug.h"
 
 extern void nglDxInitShaders(bool registerShaders);
@@ -136,4 +137,11 @@ unsigned long* apsUVARectangleRenderPixel::GetPShader()
 void apsUVARectangleNode::Render() {
     cNodeRenderer<UVARectangleParticle, apsUVARectangleNode> renderer(this);
     renderer.Render();
+}
+
+// cNodeRenderer<UVARectangleParticle,apsUVARectangleNode>::Render - ea: 0x00818E00
+template <>
+void cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::Render()
+{
+    apsUVARectangleRenderCommon::Render(this);
 }
