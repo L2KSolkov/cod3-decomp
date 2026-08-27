@@ -5058,10 +5058,10 @@ AbstractEffectParticle::AbstractEffectParticle()
     mEffectName = Broc::string((Broc::string::Block*)nullptr);
     mEntity.mHandle.mVal = 0;
     mCodeFlags.mVal = 0;
-    mDelayTrigger = mDelayTrigger;
-    mPakId = mPakId;
+    this->mDelayTrigger = mDelayTrigger;
+    this->mPakId = mPakId;
     mEntity.mHandle.mVal = mVal;
-    mFlags = mFlags;
+    this->mFlags = mFlags;
     mPoPtr = nullptr;
     mDelayCount = 0.0f;
     mCountSinceStarted = 0;

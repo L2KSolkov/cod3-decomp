@@ -1516,8 +1516,15 @@ sysEvent_t Com_GetRealEvent()
     void* buffer = nullptr;
     if (com_journal->integer == 2)
     {
-        if (FS_Read((unsigned char*)&ev, 24, com_journalFile) != 24)
+        sysEvent_t journalEvent{};
+        if (FS_Read((unsigned char*)&journalEvent, 24, com_journalFile) != 24)
             Com_Error((errorParm_t)0, "EXE_ERR_JOURNAL_FILE_READ");
+        ev = journalEvent.evTime;
+        evType = journalEvent.evType;
+        evValue = journalEvent.evValue;
+        evValue2 = journalEvent.evValue2;
+        size = (unsigned int)journalEvent.evPtrLength;
+        buffer = journalEvent.evPtr;
         unsigned int evPtrLength = size;
         if (size)
         {
@@ -1532,8 +1539,6 @@ sysEvent_t Com_GetRealEvent()
             if (v4 != (int)size)
                 Com_Error((errorParm_t)0, "EXE_ERR_JOURNAL_FILE_READ");
         }
-        evType = (sysEventType_t)evValue2;
-        evValue = evValue;
     }
     else
     {
