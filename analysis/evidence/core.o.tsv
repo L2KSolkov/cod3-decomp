@@ -11,3 +11,31 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004BC8D0	?FS_PureServerSetReferencedPaks@@YAXPBD0@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x004BC8D0	Release and source both contain no state-changing instructions.
 0x004DF340	?AdjustEffect_Scale@AbstractEffectLight@@UAEXPBDM@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x004DF340;src/game/core/effect_events.cpp:3075	IDA release decompiles the entry point as an empty body; source preserves the const-string/float ABI and no-op behavior.
 0x004DF340	?AdjustEffect_Scale@AbstractEffectLight@@UAEXPBDM@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x004DF340	Release and source both contain no state-changing instructions.
+0x004DF350	?PlayQueuedEffect@AbstractEffectLight@@UAEXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/effect_events.cpp:3082	Intentional empty light-effect queue hook.
+0x004DF350	?PlayQueuedEffect@AbstractEffectLight@@UAEXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DF350	Release body is empty; source preserves the no-op virtual hook.
+0x004DF360	?StopEffect@AbstractEffectLight@@UAEXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/effect_events.cpp:3087	Intentional empty light-effect stop hook.
+0x004DF360	?StopEffect@AbstractEffectLight@@UAEXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DF360	Release body is empty; source preserves the no-op virtual hook.
+0x004DF430	??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/configstring.cpp:230	Stores callback search type/callback and computes type length.
+0x004DF430	??0TypeCallbackSearch@@QAE@PBDP6AX0PBVConfigString@@@Z@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004DF430	Release member stores, strlen(type), and constructor return match source.
+0x004E3200	?StopEffect@AbstractEffectParticle@@UAEXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/effect_events.cpp:2890	Intentional empty particle-effect stop hook.
+0x004E3200	?StopEffect@AbstractEffectParticle@@UAEXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E3200	Release body is empty; source preserves the no-op virtual hook.
+0x004E32B0	??1AnimCacheHeap@@UAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/anim_heap.cpp:63	Destructor delegates to ae_heap_base teardown.
+0x004E32B0	??1AnimCacheHeap@@UAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E32B0	Release thunk to ae_heap_base::~ae_heap_base matches source.
+0x004E5CF0	??0DestructibleBankManager@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/physics/g_physics.cpp:12900	Constructs the InplaceAssetBankSet base.
+0x004E5CF0	??0DestructibleBankManager@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E5CF0	Release base constructor, derived vftable assignment, and return match source.
+0x004E5D40	??1DestructibleBankManager@@UAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/physics/g_physics.cpp:12906	Destructor restores base and releases AssetBankSet state.
+0x004E5D40	??1DestructibleBankManager@@UAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E5D40	Release base vftable assignment and AssetBankSet destructor call match source.
+0x004E5E20	??0PhysDataBankManager@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/physics/g_physics.cpp:12839	Constructs the InplaceAssetBankSet base.
+0x004E5E20	??0PhysDataBankManager@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E5E20	Release base constructor, derived vftable assignment, and return match source.
+0x004E5E70	??1PhysDataBankManager@@UAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/physics/g_physics.cpp:12845	Destructor restores base and releases AssetBankSet state.
+0x004E5E70	??1PhysDataBankManager@@UAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E5E70	Release base vftable assignment and AssetBankSet destructor call match source.
+0x004E5F80	??0DbTablesetMgr@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/streamer/pakmanager.cpp:2497	Constructs the InplaceAssetBankSet base.
+0x004E5F80	??0DbTablesetMgr@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E5F80	Release base constructor, derived vftable assignment, and return match source.
+0x004E5FD0	??1DbTablesetMgr@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/streamer/pakmanager.cpp:2503	Destructor restores base and releases AssetBankSet state.
+0x004E5FD0	??1DbTablesetMgr@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E5FD0	Release base vftable assignment and AssetBankSet destructor call match source.
+0x004E7F20	??0DbQuery@@QAE@ABVDbTable@@@Z	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/db.cpp:360	Initializes DbQuery table pointer, empty constraints, automatic-fail false, and position zero.
+0x004E7F20	??0DbQuery@@QAE@ABVDbTable@@@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E7F20	Release vftable, mDb, DbFieldSet construction, mAutomaticFail=false, and mConstraintPos=0 match source.
+0x004E8CF0	??0?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/ctor_dtor.cpp:1149	Clears free-index bits, initializes all 512 elements, clears debug callback, and adds every free index.
+0x004E8CF0	??0?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E8CF0	Release 16-word bit clear, 512 null/key-one element stores, callback clear, and 512 BitSet::Add calls match source.
+0x004E9520	?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/effect_events.cpp:3288	Intentional empty shake/rumble queue hook.
+0x004E9520	?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E9520	Release body is empty; source preserves the no-op virtual hook.
