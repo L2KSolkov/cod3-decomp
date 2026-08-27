@@ -39,3 +39,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004E8CF0	??0?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E8CF0	Release 16-word bit clear, 512 null/key-one element stores, callback clear, and 512 BitSet::Add calls match source.
 0x004E9520	?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ	V3	PASS	ida-manual-2026-08-27	2026-08-27	src/game/core/effect_events.cpp:3288	Intentional empty shake/rumble queue hook.
 0x004E9520	?PlayQueuedEffect@AbstractEffectShakeAndRumble@@UAEXXZ	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x004E9520	Release body is empty; source preserves the no-op virtual hook.
+0x004EAAC0	??0FourCC@@QAE@H@Z	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x004EAAC0;src/core/fourcc.h	Release constructor stores the integer argument into mVal and returns this; source constructor matches.
+0x004EAAC0	??0FourCC@@QAE@H@Z	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x004EAAC0;src/core/fourcc.h	Exact release/source body match.
