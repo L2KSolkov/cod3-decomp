@@ -163,7 +163,7 @@ int InteractionController_CanRunWeaponAnims(void* self)
                 & 0x100u)
                != 0);
 }
-void* PlayerAnimMgr_sInst = nullptr;  // cg.o artifact (PlayerAnimMgr*)
+extern bool PlayerAnimMgr_IsInstantiated();
 extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
                                Entity* entity, int bDrawGun);
 extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
@@ -1352,7 +1352,7 @@ void CG_AddViewWeapon(PlayerState* ps)
                 weaponInfo_s* v4 = &((weaponInfo_s*)cg_weapons)[ps->weapon];
                 void* v5 = InteractionController::Inst(currCl);
                 if (InteractionController_CanRunWeaponAnims(v5) == 0
-                    || PlayerAnimMgr_sInst != nullptr)
+                    || PlayerAnimMgr_IsInstantiated())
                     dword_F6A2A8[802 * currCl] = -1;
                 else
                     CG_WeaponRunXModelAnims(ps, v4);

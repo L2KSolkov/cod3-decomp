@@ -191,13 +191,11 @@ public:
 };
 
 PoolAllocator* SceneAnimInfo::sAllocator = nullptr;  // @ 0xF25A30
-extern void* SceneAnimInfo_sAllocator;
 
 // ea: 0x004B5160
 void SceneAnimInfo::SetAllocator(PoolAllocator* allocator)
 {
     SceneAnimInfo::sAllocator = allocator;
-    SceneAnimInfo_sAllocator = allocator;
 }
 
 // ea: 0x0055F1F0
@@ -8677,9 +8675,15 @@ public:
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void mem_heap_free(void* ptr);
-extern void* PlayerAnimMgr_sInst;  // cg.o artifact mirror
 
 PlayerAnimMgr* PlayerAnimMgr::sInst = nullptr;
+
+// Cross-translation-unit query for CG code; the release reads the class
+// singleton directly rather than maintaining a second mirror variable.
+bool PlayerAnimMgr_IsInstantiated()
+{
+    return PlayerAnimMgr::sInst != nullptr;
+}
 
 // ea: 0x004DE860
 PlayerAnimMgr* PlayerAnimMgr::CreateInst()
@@ -8701,11 +8705,9 @@ PlayerAnimMgr* PlayerAnimMgr::CreateInst()
     {
         PlayerAnimMgr* result = new (memory) PlayerAnimMgr();
         PlayerAnimMgr::sInst = result;
-        PlayerAnimMgr_sInst = result;
         return result;
     }
     PlayerAnimMgr::sInst = nullptr;
-    PlayerAnimMgr_sInst = nullptr;
     return nullptr;
 }
 
@@ -8737,7 +8739,6 @@ void PlayerAnimMgr::DeleteInst()
         mem_heap_free(instance);
     }
     PlayerAnimMgr::sInst = nullptr;
-    PlayerAnimMgr_sInst = nullptr;
 }
 
 // ea: 0x0053DF90
@@ -24231,9 +24232,6 @@ int XAnimGetFrameCount(AnimTree* anims, unsigned int animIndex)
     return *(int*)((char*)anim + 0x3C);  // FrameCount
 }
 
-// SceneAnimInfo::sAllocator (anim.o data)
-void* SceneAnimInfo_sAllocator = nullptr;
-
 void SceneAnimInfo_SetAllocator(PoolAllocator* allocator)
 {
     SceneAnimInfo::SetAllocator(allocator);
@@ -24255,7 +24253,7 @@ void KillSceneAnim(SceneAnimInfo* info)
         ((DtorFn)((void**)*(void**)mInst)[0])(mInst, 1);
     }
     nflCloseFile((nflFileID)info->mFileID);
-    PoolAllocator_Release(SceneAnimInfo_sAllocator, info);
+    PoolAllocator_Release(SceneAnimInfo::sAllocator, info);
 }
 
 // ea: 0x00552D50
@@ -27008,7 +27006,7 @@ unsigned int QueueSceneAnim(const char* name, unsigned int notify,
             __debugbreak();
     }
     const char* mBuff = pakFile->mPath;
-    void* v16 = PoolAllocator_Allocate(SceneAnimInfo_sAllocator, 0x48, false);
+    void* v16 = PoolAllocator_Allocate(SceneAnimInfo::sAllocator, 0x48, false);
     if (v16 != nullptr)
     {
         SceneAnimInfo* info = (SceneAnimInfo*)v16;
