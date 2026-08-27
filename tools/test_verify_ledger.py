@@ -37,6 +37,12 @@ def main() -> int:
             states, level = ledger.compute_level(function, [marker], {"fn"}, evidence)
             assert states["V4"] == "UNVERIFIED" and level == "V2"
 
+            # Definition comments may carry a descriptive function name
+            # before the EA; marker parsing must retain that address.
+            assert ledger.re.search(
+                r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)",
+                "// AnimIK::ApplyFootIK - ea: 0x004FB510")
+
             # Release map symbols may carry private member access (AA) while
             # the port exposes the same signature publicly (QA).  Access is
             # not a V2 signature mismatch.

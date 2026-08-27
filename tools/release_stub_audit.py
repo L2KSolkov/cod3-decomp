@@ -99,8 +99,18 @@ def release_functions() -> dict[int, tuple[str, str]]:
 def main() -> int:
     release = release_functions()
     markers = verify_ledger.scan_markers()
-    rows: list[dict[str, str]] = []
+    marker_by_ea: dict[int, list[verify_ledger.Marker]] = {}
     for marker in markers:
+        marker_by_ea.setdefault(marker.address, []).append(marker)
+    rows: list[dict[str, str]] = []
+    functions = [function for function in verify_ledger.parse_map(
+        next(path for path in verify_ledger.MAP_CANDIDATES if path.exists()))
+                 if function.cls in {"game", "engine"}]
+    for function in functions:
+        marker = verify_ledger.canonical_hit(function,
+                                             marker_by_ea.get(function.ida_ea, []))
+        if marker is None:
+            continue
         source_class = verify_ledger.body_class(marker.body)
         if source_class not in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}:
             continue

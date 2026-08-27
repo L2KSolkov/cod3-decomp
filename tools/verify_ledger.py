@@ -236,7 +236,11 @@ def matching_body(lines: list[str], brace_line: int) -> str:
 
 def scan_markers() -> list[Marker]:
     markers: list[Marker] = []
-    pattern = re.compile(r"//\s*ea:\s*(0x[0-9A-Fa-f]+)")
+    # Accept both the canonical ``// ea:`` form and the descriptive form
+    # used throughout the port (``// FunctionName - ea:``).  The address is
+    # still the only marker payload; candidate resolution below decides which
+    # definition a declaration annotation belongs to.
+    pattern = re.compile(r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)")
     for path in source_files():
         lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
         for number, line in enumerate(lines):
