@@ -1483,6 +1483,7 @@ public:
                                                sentient_s* pClaimer);  // ?RunToFirstReserveNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@PAU23@PAUsentient_s@@@Z
     void DissociateSentient(sentient_s* pSentient);  // ?DissociateSentient@PathNodeMgr@@QAEXPAUsentient_s@@@Z
     // PathNodeMgr.h inline (@ 0x4A9860)
+    // ea: 0x004A9860
     PathNodes::PathNode* GetNode(const PathNodes::NodeHandle& handle)
     {
         uint16_t mValue = handle.mValue;

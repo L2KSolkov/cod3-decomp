@@ -2359,6 +2359,7 @@ bool operator==(Handle lhs, Handle rhs)
 // ============================================================================
 
 // MPEntityHandle global class (g.o 0x4A9760) - definition lives in sv_stubs.h
+// ea: 0x004A9700
 MPEntityHandle::MPEntityHandle()
 {
     mValue = 0;
@@ -2385,22 +2386,27 @@ MPEntityHandle::MPEntityHandle(unsigned short peerId, unsigned short index)
     }
     mValue = (unsigned short)(index | ((peerId + 1) << 11));
 }
+// ea: 0x004A9710
 MPEntityHandle::MPEntityHandle(const MPEntityHandle& value)
 {
     mValue = value.mValue;
 }
+// ea: 0x004A9730
 unsigned short MPEntityHandle::GetPeerEntityIndex() const
 {
     return mValue & 0x7FF;
 }
+// ea: 0x004A9740
 unsigned short MPEntityHandle::GetValue() const
 {
     return mValue;
 }
+// ea: 0x004A9750
 bool MPEntityHandle::IsAssigned() const
 {
     return mValue != 0;
 }
+// ea: 0x004A9760
 MPEntityHandle& MPEntityHandle::operator=(const MPEntityHandle& other)
 {
     mValue = other.mValue;
@@ -2408,6 +2414,7 @@ MPEntityHandle& MPEntityHandle::operator=(const MPEntityHandle& other)
 }
 
 // Manager singletons (g.o 0x4A9780-0x4A9E70)
+// ea: 0x004A9780
 MultiplayerMgr* MultiplayerMgr::Inst()
 {
     return MultiplayerMgr::sInst;
@@ -2418,10 +2425,12 @@ bool MultiplayerMgr::IsRankedGame()
 {
     return this->mRankedGame;
 }
+// ea: 0x004A9790
 MPPeer* MultiplayerMgr::GetPeer()
 {
     return mPeer;
 }
+// ea: 0x004A97D0
 PathNodeMgr* PathNodeMgr::Inst()
 {
     return PathNodeMgr::sInst;
@@ -2432,6 +2441,7 @@ void* PathNodeMgr::operator new(size_t size, void* p)
     (void)size;
     return p;
 }
+// ea: 0x004A97E0
 int PathNodeMgr::GetTotalNodeCount() const
 {
     if (mLevelTOC != nullptr)
@@ -2449,6 +2459,7 @@ int PathNodeMgr::GetTotalNodeCount() const
     }
     return mLevelTOC->mNodeCount;
 }
+// ea: 0x004A9920
 CheckpointMgr* CheckpointMgr::Inst()
 {
     return CheckpointMgr::sInst;
@@ -2459,14 +2470,17 @@ void* CheckpointMgr::operator new(size_t size, void* p)
     (void)size;
     return p;
 }
+// ea: 0x004A9930
 bool CheckpointMgr::CheckpointSaveExists()
 {
     return mCheckpointSaveExists;
 }
+// ea: 0x004A9940
 bool CheckpointMgr::IsRestoringCheckpoint() const
 {
     return mCheckpointSaveExists && mUsingCheckpoints;
 }
+// ea: 0x004A9960
 const float (&CheckpointMgr::GetPlayerPosition() const)[3]
 {
     return *(const float (*)[3])&mOrigin;
@@ -2519,23 +2533,28 @@ DynamicDecalMgr* DynamicDecalMgr::Inst()
 }
 
 // Physics accessors (g.o 0x4A9970-0x4A9F20)
+// ea: 0x004A9970
 const unsigned int rigid_body::get_flag(unsigned int f) const
 {
     return f & m_flags;
 }
+// ea: 0x004A9990
 const unsigned int rigid_body::is_stable() const
 {
     return m_flags & 4;
 }
+// ea: 0x004A99A0
 const unsigned int rigid_body_constraint_wheel::get_wheel_flag(
     rigid_body_constraint_wheel::wheel_flags_e f) const
 {
     return f & m_wheel_flags;
 }
+// ea: 0x004A99C0
 const math::Dir3 rigid_body_constraint_wheel::get_hitp_loc() const
 {
     return m_b2_hitp_loc;
 }
+// ea: 0x004A99F0
 const float rigid_body_constraint_wheel::get_wheel_vel() const
 {
     return m_wheel_vel;

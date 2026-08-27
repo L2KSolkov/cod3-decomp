@@ -391,3 +391,43 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A9670	??0nalPositionOrientation@@QAE@ABVDir3@math@@ABVQuaternion@2@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9670	Release copies o and p SIMD values and returns this, matching source.
 0x004A96D0	??0nalPositionOrientation@@QAE@ABVnalMatrix4x4@@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2897	Source derives orientation from the matrix and copies its w row into position.
 0x004A96D0	??0nalPositionOrientation@@QAE@ABVnalMatrix4x4@@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A96D0	Release calls nalQuaternionFromMatrix for o, copies m.w to p, and returns this.
+0x004A9700	??0MPEntityHandle@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2362	Source default constructor initializes mValue to zero.
+0x004A9700	??0MPEntityHandle@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9700	Release stores zero in mValue and returns this, matching source.
+0x004A9710	??0MPEntityHandle@@QAE@ABV0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2389	Source copy constructor copies the packed handle value.
+0x004A9710	??0MPEntityHandle@@QAE@ABV0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9710	Release copies value->mValue and returns this, matching source.
+0x004A9730	?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2394	Source masks mValue to its low 11-bit peer entity index.
+0x004A9730	?GetPeerEntityIndex@MPEntityHandle@@QBEGXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9730	Release returns mValue & 0x7FF, matching source.
+0x004A9740	?GetValue@MPEntityHandle@@QBEGXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2399	Source returns the packed 16-bit handle value.
+0x004A9740	?GetValue@MPEntityHandle@@QBEGXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9740	Release returns mValue directly, matching source.
+0x004A9750	?IsAssigned@MPEntityHandle@@QBE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2404	Source reports assignment when mValue is nonzero.
+0x004A9750	?IsAssigned@MPEntityHandle@@QBE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9750	Release compares mValue to zero, matching source.
+0x004A9760	??4MPEntityHandle@@QAEAAV0@ABV0@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2409	Source assignment copies the packed value and returns the destination reference.
+0x004A9760	??4MPEntityHandle@@QAEAAV0@ABV0@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9760	Release copies the 16-bit value and returns this, matching source ABI behavior.
+0x004A9780	?Inst@MultiplayerMgr@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2417	Non-empty source body returns the MultiplayerMgr singleton pointer.
+0x004A9780	?Inst@MultiplayerMgr@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9780	Release returns MultiplayerMgr::sInst directly, matching source.
+0x004A9790	?GetPeer@MultiplayerMgr@@QAEPAVMPPeer@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2428	Source returns the manager's mPeer pointer.
+0x004A9790	?GetPeer@MultiplayerMgr@@QAEPAVMPPeer@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9790	Release returns this->mPeer, matching source.
+0x004A97D0	?Inst@PathNodeMgr@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2433	Non-empty source body returns the PathNodeMgr singleton pointer.
+0x004A97D0	?Inst@PathNodeMgr@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A97D0	Release returns PathNodeMgr::sInst directly, matching source.
+0x004A97E0	?GetTotalNodeCount@PathNodeMgr@@QBEHXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2444	Source returns mLevelTOC node count and preserves the release null-TOC assertion path.
+0x004A97E0	?GetTotalNodeCount@PathNodeMgr@@QBEHXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A97E0	Release has matching mLevelTOC fast path, assertion metadata, ignored/asserted branches, and node-count return.
+0x004A9860	?GetNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/sv/sv_stubs.h:1486	Source inline helper rejects null/sentinel handles, checks TOC and bounds, asserts invalid indices, and returns the indexed node.
+0x004A9860	?GetNode@PathNodeMgr@@QAEPAUPathNode@PathNodes@@ABVNodeHandle@3@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9860	Release performs the same handle checks, TOC null check, bounds assertion, and node address calculation.
+0x004A9920	?Inst@CheckpointMgr@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2462	Non-empty source body returns the CheckpointMgr singleton pointer.
+0x004A9920	?Inst@CheckpointMgr@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9920	Release returns CheckpointMgr::sInst directly, matching source.
+0x004A9930	?CheckpointSaveExists@CheckpointMgr@@QAE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2473	Source returns the mCheckpointSaveExists flag.
+0x004A9930	?CheckpointSaveExists@CheckpointMgr@@QAE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9930	Release returns mCheckpointSaveExists, matching source.
+0x004A9940	?IsRestoringCheckpoint@CheckpointMgr@@QBE_NXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2478	Source requires both checkpoint-save and using-checkpoints flags.
+0x004A9940	?IsRestoringCheckpoint@CheckpointMgr@@QBE_NXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9940	Release ANDs the same two flags, matching source.
+0x004A9960	?GetPlayerPosition@CheckpointMgr@@QBEAAY02$$CBMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2483	Source returns a const reference to the three-float origin array.
+0x004A9960	?GetPlayerPosition@CheckpointMgr@@QBEAAY02$$CBMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9960	Release returns mOrigin, matching source.
+0x004A9970	?get_flag@rigid_body@@QBE?BII@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2536	Source returns the requested bits from m_flags.
+0x004A9970	?get_flag@rigid_body@@QBE?BII@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9970	Release returns f & m_flags, matching source.
+0x004A9990	?is_stable@rigid_body@@QBE?BIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2541	Source returns the rigid-body stable flag bit (m_flags & 4).
+0x004A9990	?is_stable@rigid_body@@QBE?BIXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A9990	Release returns m_flags & 4, matching source.
+0x004A99A0	?get_wheel_flag@rigid_body_constraint_wheel@@QBE?BIW4wheel_flags_e@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2546	Source returns the requested wheel flag bits.
+0x004A99A0	?get_wheel_flag@rigid_body_constraint_wheel@@QBE?BIW4wheel_flags_e@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A99A0	Release returns f & m_wheel_flags, matching source.
+0x004A99C0	?get_hitp_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2552	Source returns the wheel hit-point location vector.
+0x004A99C0	?get_hitp_loc@rigid_body_constraint_wheel@@QBE?BVDir3@math@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A99C0	Release copies m_b2_hitp_loc to the result and returns it, matching source.
+0x004A99F0	?get_wheel_vel@rigid_body_constraint_wheel@@QBE?BMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:2557	Source returns m_wheel_vel.
+0x004A99F0	?get_wheel_vel@rigid_body_constraint_wheel@@QBE?BMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A99F0	Release returns m_wheel_vel, matching source.
