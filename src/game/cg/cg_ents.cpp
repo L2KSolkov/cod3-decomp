@@ -355,9 +355,9 @@ void CG_AddScaleFade(localEntity_t* le)
 }
 
 // ea: 0x00697B40
-void CG_CrosshairPlayer(unsigned int* result)
+DbLinkedHandle<EntityHandleDb, Entity> CG_CrosshairPlayer()
 {
-    *result = 0;
+    return DbLinkedHandle<EntityHandleDb, Entity>();
 }
 
 struct refEntity_t2 {
