@@ -32,6 +32,18 @@ math::Dir3::Packed& apsSphere::Center()
     return *reinterpret_cast<math::Dir3::Packed*>(&mSphere.v.m128_f32[0]);
 }
 
+// apsSphere::Center const - ea: 0x008025E0
+const math::Dir3::Packed& apsSphere::Center() const
+{
+    return *reinterpret_cast<const math::Dir3::Packed*>(&mSphere.v.m128_f32[0]);
+}
+
+// apsSphere::Radius const - ea: 0x008025F0
+const float& apsSphere::Radius() const
+{
+    return mSphere.v.m128_f32[3];
+}
+
 // apsRenderNode::Matrix - ea: 0x00812CD0
 const math::Mat43& apsRenderNode::Matrix() const
 {
