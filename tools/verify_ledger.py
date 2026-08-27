@@ -448,6 +448,8 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_DamageFeedback@@YAXHHM@Z",
         "?CG_RailTrail@@YAXQBM0H@Z":
             "?CG_RailTrail@@YAXPBM0M@Z",
+        "?CG_StartAnimBlend@@YAHHPAVDObj@@HHM@Z":
+            "?CG_StartAnimBlend@@YAHHPAVDObj@@HIM@Z",
         "?CG_FxTest@@YAXXZ":
             "?CG_FxTest@@YA_NXZ",
         "?CanInterrupt@@YA_NPAVXAnimTree@@PAUcgs_t@@@Z":
