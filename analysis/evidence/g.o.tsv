@@ -853,3 +853,13 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044B630	?RegisterItem@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B630	release bound assertion, registration guard, weapon alternate-index cycle, asset flag, and update flag match source.
 0x0044B6F0	?IsItemRegistered@@YAHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_items.cpp:114	registered-item query asserts the item bound and returns the registration table entry.
 0x0044B6F0	?IsItemRegistered@@YAHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B6F0	release bound assertion, metadata, and itemRegistered lookup match source.
+0x0044B750	?G_GetServerSnapTime@@YAHXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_main.cpp:200	server snapshot accessor returns level.snapTime.
+0x0044B750	?G_GetServerSnapTime@@YAHXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B750	release level.snapTime load and return match source.
+0x0044B760	?G_Printf@@YAXPBDZZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:443	printf helper formats varargs into a 1024-byte local buffer and forwards it to Com_Printf.
+0x0044B760	?G_Printf@@YAXPBDZZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B760	release local buffer, vsprintf, and Com_Printf sequence matches source; va_end is non-observable on the x86 ABI.
+0x0044B790	?G_DPrintf@@YAXPBDZZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:454	developer printf formats and emits only when g_developer.integer is nonzero.
+0x0044B790	?G_DPrintf@@YAXPBDZZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B790	release developer gate, formatting, and Com_Printf path match source; va_end is non-observable on the x86 ABI.
+0x0044B7D0	?G_Error@@YAXPBDZZ	V3	PASS	ida-manual-20260827	2026-08-27	error helper formats text, installs g_main warning metadata, and invokes AeAssert::Warning with the debugbreak gate.
+0x0044B7D0	?G_Error@@YAXPBDZZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B7D0	release formatting, g_main.cpp:847 metadata, warning call, ignore gate, and debugbreak match source.
+0x0044B840	?G_Error_Localized@@YAXPBDZZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:484	localized error helper formats text and reports warning metadata at g_main.cpp:860.
+0x0044B840	?G_Error_Localized@@YAXPBDZZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B840	release formatting, g_main.cpp:860 metadata, warning call, ignore gate, and debugbreak match source.
