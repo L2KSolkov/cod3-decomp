@@ -388,6 +388,8 @@ def symbol_variants(name: str) -> set[str]:
             "?CG_LoadMenus@@YAXXZ",
         "?CG_CheckAmmo@@YAXXZ":
             "?CG_CheckAmmo@@YAHXZ",
+        "?CG_DObjCalcPose@@YAXPAVEntity@@PAVDObj@@QAH@Z":
+            "?CG_DObjCalcPose@@YAXPAVEntity@@PAVDObj@@PAH@Z",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
