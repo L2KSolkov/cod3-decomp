@@ -2194,8 +2194,9 @@ float GetXScalingForWindow(int window, bool normal_aspect)
 }
 
 // ea: 0x00693E60
-float GetYScalingForWindow(int window)
+float GetYScalingForWindow(int window, bool normal_aspect)
 {
+    (void)normal_aspect;
     switch (window)
     {
     case 3:
@@ -2277,7 +2278,7 @@ float GetYScalingForHUD(int window)
 }
 
 // ea: 0x00694010
-float GetPreviousHUDXPos(float pos, int window, char justification,
+float GetPreviousHUDXPos(float pos, int window, int justification,
                          float width)
 {
     float screensafe_size = get_screensafe_left();
@@ -2324,7 +2325,7 @@ float GetPreviousHUDXPos(float pos, int window, char justification,
 }
 
 // ea: 0x00694100
-float GetCurrentHUDXPos(float pos, int window, char justification, float width)
+float GetCurrentHUDXPos(float pos, int window, int justification, float width)
 {
     float screensafe_size = get_screensafe_left();
     float v4 = screensafe_size * 0.5f;
@@ -2362,7 +2363,7 @@ float GetCurrentHUDXPos(float pos, int window, char justification, float width)
 }
 
 // ea: 0x006941F0
-float GetCurrentHUDYPos(float pos, int window, char justification, float height)
+float GetCurrentHUDYPos(float pos, int window, int justification, float height)
 {
     float screensafe_size = get_screensafe_top();
     float v5 = scalar4View;
@@ -2394,7 +2395,7 @@ float GetCurrentHUDYPos(float pos, int window, char justification, float height)
 }
 
 // ea: 0x006942C0
-float GetPreviousHUDYPos(float pos, int window, char justification,
+float GetPreviousHUDYPos(float pos, int window, int justification,
                          float height)
 {
     float screensafe_size = get_screensafe_top();

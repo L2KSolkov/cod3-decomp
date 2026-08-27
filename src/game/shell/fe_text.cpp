@@ -25,13 +25,13 @@ extern FEManager g_femanager;
 namespace View {
 float GetXScalingForHUD(int window);   // cg.o
 float GetYScalingForHUD(int window);   // cg.o
-float GetPreviousHUDXPos(float pos, int window, char justification,
+float GetPreviousHUDXPos(float pos, int window, int justification,
                          float width);   // cg.o
-float GetCurrentHUDXPos(float pos, int window, char justification,
+float GetCurrentHUDXPos(float pos, int window, int justification,
                         float width);    // cg.o
-float GetCurrentHUDYPos(float pos, int window, char justification,
+float GetCurrentHUDYPos(float pos, int window, int justification,
                         float height);   // cg.o
-float GetPreviousHUDYPos(float pos, int window, char justification,
+float GetPreviousHUDYPos(float pos, int window, int justification,
                          float height);  // cg.o
 }
 extern float GetYScalingForWindow(int window);  // fe_util.cpp

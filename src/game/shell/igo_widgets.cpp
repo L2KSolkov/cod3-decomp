@@ -420,13 +420,13 @@ public:
 namespace View {
 float GetXScalingForHUD(int window);       // cg.o
 float GetYScalingForHUD(int window);       // cg.o
-float GetPreviousHUDXPos(float pos, int window, char justification,
+float GetPreviousHUDXPos(float pos, int window, int justification,
                          float width);    // cg.o
-float GetPreviousHUDYPos(float pos, int window, char justification,
+float GetPreviousHUDYPos(float pos, int window, int justification,
                          float height);   // cg.o
-float GetCurrentHUDXPos(float pos, int window, char justification,
+float GetCurrentHUDXPos(float pos, int window, int justification,
                         float width);     // cg.o
-float GetCurrentHUDYPos(float pos, int window, char justification,
+float GetCurrentHUDYPos(float pos, int window, int justification,
                         float height);    // cg.o
 }
 

@@ -38,8 +38,10 @@ struct cgs_t {
 enum { kLocalPlayerStateUnused = 0 };
 cgs_t cgs[2] = {};  // ?cgs@@3PAUcgs_t@@A (cg.o @ 0x13596D8)
 
+namespace View {
+
 // ea: 0x00693BC0
-bool View_compare_controller_sort(const cgs_t* elem1, const cgs_t* elem2)
+bool compare_controller_sort(const cgs_t* elem1, const cgs_t* elem2)
 {
     if (elem1->state == kLocalPlayerStateUnused)
         return false;
@@ -48,6 +50,8 @@ bool View_compare_controller_sort(const cgs_t* elem1, const cgs_t* elem2)
     int controller = elem1->controller;
     return controller >= 0 && controller < elem2->controller;
 }
+
+} // namespace View
 
 // ea: 0x00693D40
 int View_GetClientController(int clientIndex)
