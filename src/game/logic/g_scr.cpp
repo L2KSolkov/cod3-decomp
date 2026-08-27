@@ -2185,6 +2185,7 @@ void Broc::dyn_array<Broc::entity>::resize(
     this->mSize = newSize;
 }
 
+// ea: 0x00600F10
 template <>
 void Broc::dyn_array<Broc::entity>::resize(unsigned int newSize)
 {
