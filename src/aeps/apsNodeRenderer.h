@@ -18,6 +18,7 @@ struct ColorRectangleParticle;
 struct UVAParticle;
 struct ColorUVAParticle;
 struct ColorUVARectangleParticle;
+struct UVARectangleParticle;
 class apsBillboardNode;
 class apsColorBillboardNode;
 class apsRectangleNode;
@@ -25,6 +26,7 @@ class apsColorRectangleNode;
 class apsUVANode;
 class apsColorUVANode;
 class apsColorUVARectangleNode;
+class apsUVARectangleNode;
 
 namespace apsRenderSort {
 template <typename Particle>
@@ -110,6 +112,15 @@ void cNodeRenderer<ColorUVARectangleParticle, apsColorUVARectangleNode>::SetupDe
     const math::Mat43& localMatrix);
 template <>
 void cNodeRenderer<ColorUVARectangleParticle, apsColorUVARectangleNode>::SetupShaders();
+
+template <>
+cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::cNodeRenderer(
+    apsUVARectangleNode* node);
+template <>
+void cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::SetupDefaultShaders(
+    const math::Mat43& localMatrix);
+template <>
+void cNodeRenderer<UVARectangleParticle, apsUVARectangleNode>::SetupShaders();
 
 template <>
 cNodeRenderer<ColorRectangleParticle, apsColorRectangleNode>::cNodeRenderer(
