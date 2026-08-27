@@ -1,0 +1,13 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00778910	?Select@JoinGameMenu@@UAEXH@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778910;src/game/mp/MPMainMenuXBox.cpp:320	IDA release decompiles the entry point as an empty body; source preserves the entry-index ABI and no-op behavior.
+0x00778910	?Select@JoinGameMenu@@UAEXH@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778910	Release and source both contain no state-changing instructions.
+0x00778D90	?OnL1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778D90;src/game/mp/MPMainMenuXBox.cpp:813	IDA release decompiles the entry point as an empty body; source preserves the controller ABI and no-op behavior.
+0x00778D90	?OnL1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778D90	Release and source both contain no state-changing instructions.
+0x00778DA0	?OnR1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778DA0;src/game/mp/MPMainMenuXBox.cpp:819	IDA release decompiles the entry point as an empty body; source preserves the controller ABI and no-op behavior.
+0x00778DA0	?OnR1@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778DA0	Release and source both contain no state-changing instructions.
+0x00778EF0	?OnCircle@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778EF0;src/game/mp/MPMainMenuXBox.cpp:883	IDA release decompiles the entry point as an empty body; source preserves the controller ABI and no-op behavior.
+0x00778EF0	?OnCircle@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778EF0	Release and source both contain no state-changing instructions.
+0x00778F00	?OnSquare@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778F00;src/game/mp/MPMainMenuXBox.cpp:889	IDA release decompiles the entry point as an empty body; source preserves the controller ABI and no-op behavior.
+0x00778F00	?OnSquare@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778F00	Release and source both contain no state-changing instructions.
+0x00778F10	?OnStart@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V3	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778F10;src/game/mp/MPMainMenuXBox.cpp:895	IDA release decompiles the entry point as an empty body; source preserves the controller ABI and no-op behavior.
+0x00778F10	?OnStart@XBoxLiveIngameOptionsCOD3@@UAEXH@Z	V4	PASS	ida-nullsub-audit-20260827	2026-08-27	IDA:0x00778F10	Release and source both contain no state-changing instructions.
