@@ -4274,8 +4274,8 @@ void SP_worldspawn(void)
     else
         SV_SetConfigstring(11, "0");
     Entity* mWorld = EntityManager::sInst->mWorld;
-    mWorld->mClassName = "worldspawn";
-    mWorld->mClassNameHash.mHash = HashString::CalcHash(mWorld->mClassName.c_str());
+    mWorld->mClassName = str_const.worldspawn;
+    mWorld->mClassNameHash = HashString(mWorld->mClassName);
     UpdateEntityHash(mWorld);
 }
 
