@@ -1136,7 +1136,7 @@ bool IsVehicleCameraFadeMode(ECameraModes mode)
 void Camera::UpdateViewBob()
 {
     Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
-    dword_F641D8[1580 * mClient] = (float)(client->ps.bobCycle & 0xFF)
+    dword_F641D8[1580 * mClient] = (float)client->ps.bobCycle
                                        * 0.024639944f
                                    + 6.2831855f;
     if ((client->ps.pm_flags & 0x10) != 0)
@@ -1162,11 +1162,11 @@ void Camera::SetPlayerAngles(float* newAngles)
 {
     Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     client->ps.delta_angles[0] +=
-        (int)((*newAngles - client->ps.viewangles[0]) * 182.04445f) & 0xFFFF;
+        (*newAngles - client->ps.viewangles[0]) * 182.04445f;
     client->ps.delta_angles[1] +=
-        (int)((newAngles[1] - client->ps.viewangles[1]) * 182.04445f) & 0xFFFF;
+        (newAngles[1] - client->ps.viewangles[1]) * 182.04445f;
     client->ps.delta_angles[2] +=
-        (int)((newAngles[2] - client->ps.viewangles[2]) * 182.04445f) & 0xFFFF;
+        (newAngles[2] - client->ps.viewangles[2]) * 182.04445f;
     client->ps.viewangles[0] = newAngles[0];
     client->ps.viewangles[1] = newAngles[1];
     client->ps.viewangles[2] = newAngles[2];
@@ -1176,11 +1176,11 @@ void Camera::SetPlayerAngles(float* newAngles)
 void Camera::AdjustPlayerAngles(float* deltaAngles)
 {
     Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
-    client->ps.delta_angles[0] += (int)(*deltaAngles * 182.04445f) & 0xFFFF;
+    client->ps.delta_angles[0] += *deltaAngles * 182.04445f;
     client->ps.delta_angles[1] +=
-        (int)(deltaAngles[1] * 182.04445f) & 0xFFFF;
+        deltaAngles[1] * 182.04445f;
     client->ps.delta_angles[2] +=
-        (int)(deltaAngles[2] * 182.04445f) & 0xFFFF;
+        deltaAngles[2] * 182.04445f;
     client->ps.viewangles[0] += *deltaAngles;
     client->ps.viewangles[1] += deltaAngles[1];
     client->ps.viewangles[2] += deltaAngles[2];
