@@ -371,3 +371,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005BD7A0	?Destroy@BrocSys@@YAXABVhudelem@Broc@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD7A0	Release validation and conditional free behavior match source.
 0x005BD810	?ValidateApiSize@BrocSys@@YAXHH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:8250	Source preserves the release API-size checks, assert metadata, and expected 456/4924 constants.
 0x005BD810	?ValidateApiSize@BrocSys@@YAXHH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BD810	Release checks BrocExports=456 and BrocAPI=4924 with matching error strings and break behavior.
+0x005BC800	?Line@BrocSys@@YAXABUvector@Broc@@00MH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:8109	Source preserves the release no-op ABI body and consumes all five parameters.
+0x005BC800	?Line@BrocSys@@YAXABUvector@Broc@@00MH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BC800	Release decompilation is a single retn; source is an equivalent no-op.
+0x005BE180	?Init@BrocHelper@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:23453	Source clears all 70 bro-function entries and resets m_treeCount as in release.
+0x005BE180	?Init@BrocHelper@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005BE180	Release performs memset of the 0x230-byte lookup table, sets m_treeCount=0, and returns.
+0x005DCE70	?GetEntByFieldAndHash@BrocSys@@YAIHIPAIH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_scr.cpp:25259	Source scans the active entity list, supports array and single-result modes, marks vehicle sound, and preserves the duplicate-entity assert.
+0x005DCE70	?GetEntByFieldAndHash@BrocSys@@YAIHIPAIH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x005DCE70	Release control flow and BrocEntity.cpp:394 assert metadata match the reconstructed implementation; release ignores capacity in this helper.
