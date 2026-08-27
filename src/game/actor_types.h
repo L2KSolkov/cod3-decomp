@@ -167,7 +167,13 @@ struct ai_transition_cmd_t {
 // scr_anim_s — script animation handle (4 bytes)
 // ============================================================================
 struct scr_anim_s {
-    uint32_t mHandle;  // +0x00
+    union {
+        uint32_t mHandle;  // packed index/tree handle used by engine calls
+        struct {
+            uint16_t index;  // +0x00
+            uint16_t tree;   // +0x02
+        };
+    };
 };
 static_assert(sizeof(scr_anim_s) == 4, "scr_anim_s size mismatch");
 

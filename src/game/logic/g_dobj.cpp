@@ -141,7 +141,8 @@ void G_UpdateInvalidatedNode(Entity* /*pEnt*/)
 scr_anim_s g_XAnimGetRoot(XAnimTree* tree)
 {
     scr_anim_s anim;
-    anim.mHandle = (uint16_t)Scr_GetAnimsIndex(XAnimGetAnims(tree));
+    anim.index = 0;
+    anim.tree = (uint16_t)Scr_GetAnimsIndex(XAnimGetAnims(tree));
     return anim;
 }
 
