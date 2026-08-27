@@ -199,11 +199,9 @@ void CG_ResetLowHealthOverlay(int client)
 {
     int v1 = 1580 * client;
     dword_F641B0[v1] = *(int*)&hud_healthOverlay_phaseEnd_toAlpha.value;
-    dword_F641AC[v1] = dword_F641B0[v1];
     byte_F641C0[v1 * 4] = 0;
     dword_F641B8[v1] = 0;
     dword_F641BC[v1] = 0;
-    dword_F641C4[v1] = 0;
     dword_F641CC[v1] = 0;
     dword_F641C8[v1] = 1065353216;  // 1.0f
 }
