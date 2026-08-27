@@ -1057,6 +1057,7 @@ void AeThread::BackupStack::Block::operator delete(void* ptr)
     sAllocator->Release(ptr);
 }
 
+// ea: 0x004A6330
 PoolAllocator* AeThread::BackupStack::Block::GetAllocator()
 {
     return AeThread::BackupStack::Block::sAllocator;

@@ -57,7 +57,7 @@ apsUVARectangleRenderer.o	11	4	1	2	0	4	0
 apsUVARenderer.o	7	1	1	2	0	3	0
 apsVFC.o	3	0	0	3	0	0	0
 apsVertexBuffer.o	13	9	2	2	0	0	0
-bdAddr.obj	19	10	3	6	0	0	0
+bdAddr.obj	19	9	4	6	0	0	0
 bdAddressMap-xbox.obj	7	0	3	4	0	0	0
 bdAlignedOffsetMemory.obj	4	3	0	1	0	0	0
 bdBitBuffer.obj	41	39	0	2	0	0	0
@@ -183,7 +183,7 @@ core.o	1437	621	82	726	4	4	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	654	0	721	0	95	0
+g.o	1470	637	0	721	0	112	0
 game.o	1158	461	12	681	4	0	0
 game2.o	1040	420	94	512	8	6	0
 game_xbox.o	365	152	93	110	0	10	0
@@ -194,12 +194,12 @@ jobqueue.o	26	8	0	18	0	0	0
 jobqueue_legacy.o	11	8	0	3	0	0	0
 mem_lib.o	47	33	2	12	0	0	0
 mem_lib_platform.o	11	11	0	0	0	0	0
-mp.o	1142	405	5	730	2	0	0
+mp.o	1142	404	5	731	2	0	0
 mp_actors.o	436	64	0	370	1	1	0
 mp_anim_wad.o	430	239	189	1	0	1	0
 mp_level_wad.o	1062	1041	2	15	0	4	0
 mp_shell.o	835	175	0	617	8	35	0
-mp_util_wad.o	1283	665	254	360	0	4	0
+mp_util_wad.o	1283	661	255	363	0	4	0
 mp_xbox.o	77	20	12	39	0	6	0
 nal_anim.o	29	20	5	4	0	0	0
 nal_cache.o	7	0	4	3	0	0	0

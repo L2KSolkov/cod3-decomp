@@ -60,6 +60,7 @@ def main() -> int:
             assert ledger.base_name("??4_objectiveInfo_t@@QAEAAU0@ABU0@@Z") == "operator="
             assert ledger.base_name("??ADir3@math@@QAEAAMI@Z") == "operator[]"
             assert ledger.base_name("??Gmath@@YA?AVDir3@0@ABV10@@Z") == "operator-"
+            assert ledger.base_name("??8math@@YA_NABVPosition3@0@0@Z") == "operator=="
 
             # Definition comments may carry a descriptive function name
             # before the EA; marker parsing must retain that address.

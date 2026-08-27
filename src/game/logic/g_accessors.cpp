@@ -1033,18 +1033,21 @@ float math::Dot(const math::Dir3& _a, const math::Dir3& _b)
            + (_mm_shuffle_ps(v2, v2, 85).m128_f32[0]
               + _mm_shuffle_ps(v2, v2, 170).m128_f32[0]);
 }
+// ea: 0x004A5FF0
 math::Position3 math::operator-(const math::Position3& _v)
 {
     math::Position3 r;
     r.v = _mm_xor_ps(_mm_set1_ps(-0.0f), _v.v);
     return r;
 }
+// ea: 0x004A6030
 math::Vector4 math::operator-(const math::Vector4& _v)
 {
     math::Vector4 r;
     r.v = _mm_xor_ps(_mm_set1_ps(-0.0f), _v.v);
     return r;
 }
+// ea: 0x004A6070
 float math::Length(const math::Dir3& _v)
 {
     __m128 v1 = _mm_mul_ps(_v.v, _v.v);
@@ -1052,6 +1055,7 @@ float math::Length(const math::Dir3& _v)
                                 + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
                                    + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0])));
 }
+// ea: 0x004A60D0
 float math::AbsSquared(const math::Dir3& _v)
 {
     __m128 v1 = _mm_mul_ps(_v.v, _v.v);
@@ -1059,6 +1063,7 @@ float math::AbsSquared(const math::Dir3& _v)
            + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
               + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0]);
 }
+// ea: 0x004A6130
 float math::AbsSquared(const math::Position3& _v)
 {
     __m128 v1 = _mm_mul_ps(_v.v, _v.v);
@@ -1066,6 +1071,7 @@ float math::AbsSquared(const math::Position3& _v)
            + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
               + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0]);
 }
+// ea: 0x004A6190
 float math::Abs(const math::Dir3& _v)
 {
     __m128 v1 = _mm_mul_ps(_v.v, _v.v);
@@ -1073,6 +1079,7 @@ float math::Abs(const math::Dir3& _v)
                                 + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
                                    + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0])));
 }
+// ea: 0x004A61F0
 float math::Abs(const math::Position3& _v)
 {
     __m128 v1 = _mm_mul_ps(_v.v, _v.v);
@@ -1080,6 +1087,7 @@ float math::Abs(const math::Position3& _v)
                                 + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
                                    + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0])));
 }
+// ea: 0x004A62A0
 math::Vector4 math::AbsValue(const math::Vector4& _v)
 {
     math::Vector4 r;
@@ -1092,6 +1100,7 @@ math::Dir3 math::AbsValue(const math::Dir3& _v)
     r.v = _mm_andnot_ps(_mm_set1_ps(-0.0f), _v.v);
     return r;
 }
+// ea: 0x004A62E0
 math::Vector4 math::Ceil(const math::Vector4& _v)
 {
     static const __m128 FloorMagic = _mm_set1_ps(8388608.0f);
@@ -1099,6 +1108,7 @@ math::Vector4 math::Ceil(const math::Vector4& _v)
     r.v = _mm_add_ps(_mm_sub_ps(_v.v, FloorMagic), FloorMagic);
     return r;
 }
+// ea: 0x004A6350
 bool math::operator==(const math::Position3& _a, const math::Position3& _b)
 {
     return _a.v.m128_f32[0] == _b.v.m128_f32[0]
@@ -1932,16 +1942,19 @@ void Broc::vector::Set(float X, float Y, float Z)
     z = Z;
 }
 // Broc::entity ctors (g.o 0x4A6250/0x4A6270)
+// ea: 0x004A6250
 Broc::entity::entity(unsigned int v)
 {
     ___u0 = v;
 }
+// ea: 0x004A6270
 Broc::entity::entity(const Broc::entity& rhs)
 {
     ___u0 = rhs.___u0;
 }
 
 // ScriptEventParams ctor (g.o 0x4A6430)
+// ea: 0x004A6430
 class ScriptEventParams {
 public:
     int ent1;
@@ -1962,10 +1975,12 @@ ScriptEventParams::ScriptEventParams()
     v1.z = (float)NAN;
 }
 
+// ea: 0x004A6340
 AeThreadManager* AeThreadManager::Inst()
 {
     return &AeThreadManager::sInst;
 }
+// ea: 0x004A6590
 DestructibleBankManager* DestructibleBankManager::Inst()
 {
     return DestructibleBankManager::sInst;

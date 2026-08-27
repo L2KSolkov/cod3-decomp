@@ -419,7 +419,8 @@ public:
     entity() : ___u0(0) {}
 
     void UndefineEEField(unsigned int key);
-    unsigned int GetHandle() const { return ___u0; }  // ea: 0x92F170
+    // ea: 0x004A6290
+    unsigned int GetHandle() const { return ___u0; }
     bool IsDefined() const { return ___u0 != 0; }     // ea: 0x92F170
     const ExtendedEntity* GetEE() const;
     mp_util_wad::LocalFields* LocalEE() const;

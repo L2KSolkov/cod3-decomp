@@ -141,3 +141,37 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A5F80	??0Vector4@math@@QAE@ABUConstant@01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5F80	Release copies the four Constant floats into the Vector4 SIMD value and returns this.
 0x004A5FB0	??Gmath@@YA?AVDir3@0@ABV10@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:981	Source returns the sign-bit-negated Dir3 value.
 0x004A5FB0	??Gmath@@YA?AVDir3@0@ABV10@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5FB0	Release XORs the Dir3 vector with Float4_SignMask and returns it, matching source.
+0x004A5FF0	??Gmath@@YA?AVPosition3@0@ABV10@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1037	Source returns the sign-bit-negated Position3 value.
+0x004A5FF0	??Gmath@@YA?AVPosition3@0@ABV10@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5FF0	Release XORs Position3.v with Float4_SignMask and returns it, matching source.
+0x004A6030	??Gmath@@YA?AVVector4@0@ABV10@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1044	Source returns the sign-bit-negated Vector4 value.
+0x004A6030	??Gmath@@YA?AVVector4@0@ABV10@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6030	Release XORs Vector4.v with Float4_SignMask and returns it, matching source.
+0x004A6070	?Length@math@@YAMABVDir3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1051	Source sums the squared Dir3 x/y/z lanes and returns their square root.
+0x004A6070	?Length@math@@YAMABVDir3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6070	Release multiplies the vector by itself, sums lanes 0/1/2, and applies sqrt, matching source.
+0x004A60D0	?AbsSquared@math@@YAMABVDir3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1059	Source returns the sum of squared Dir3 x/y/z lanes.
+0x004A60D0	?AbsSquared@math@@YAMABVDir3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A60D0	Release multiplies Dir3.v and sums lanes 0/1/2, matching source.
+0x004A6130	?AbsSquared@math@@YAMABVPosition3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1067	Source returns the sum of squared Position3 x/y/z lanes.
+0x004A6130	?AbsSquared@math@@YAMABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6130	Release multiplies Position3.v and sums lanes 0/1/2, matching source.
+0x004A6190	?Abs@math@@YAMABVDir3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1075	Source returns the Euclidean magnitude of Dir3 x/y/z.
+0x004A6190	?Abs@math@@YAMABVDir3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6190	Release squares and sums Dir3 lanes 0/1/2 then applies sqrt, matching source.
+0x004A61F0	?Abs@math@@YAMABVPosition3@1@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1083	Source returns the Euclidean magnitude of Position3 x/y/z.
+0x004A61F0	?Abs@math@@YAMABVPosition3@1@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A61F0	Release squares and sums Position3 lanes 0/1/2 then applies sqrt, matching source.
+0x004A6250	??0entity@Broc@@QAE@I@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1946	Source stores the supplied entity handle in Broc::entity.
+0x004A6250	??0entity@Broc@@QAE@I@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6250	Release stores the constructor handle in mEntityHandle and returns this.
+0x004A6270	??0entity@Broc@@QAE@ABV01@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1951	Source copies the handle from another Broc::entity.
+0x004A6270	??0entity@Broc@@QAE@ABV01@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6270	Release copies rhs.mEntityHandle and returns this, matching source.
+0x004A6290	?GetHandle@entity@Broc@@QBEIXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/engine/broc_types.h:423	Source returns the stored Broc::entity handle value.
+0x004A6290	?GetHandle@entity@Broc@@QBEIXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6290	Release returns mEntityHandle unchanged, matching the inline source accessor.
+0x004A62A0	?AbsValue@math@@YA?AVVector4@1@ABV21@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1091	Source clears the sign bit of every Vector4 lane.
+0x004A62A0	?AbsValue@math@@YA?AVVector4@1@ABV21@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A62A0	Release applies Float4_SignMask with andnot to Vector4.v and returns it, matching source.
+0x004A62E0	?Ceil@math@@YA?AVVector4@1@ABV21@@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1104	Source applies the release FloorMagic add/subtract ceiling operation to all Vector4 lanes.
+0x004A62E0	?Ceil@math@@YA?AVVector4@1@ABV21@@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A62E0	Release performs Vector4 minus FloorMagic followed by plus FloorMagic, matching source.
+0x004A6330	?GetAllocator@Block@BackupStack@AeThread@@SAPAVPoolAllocator@@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_scr.cpp:1061	Source returns the BackupStack Block allocator singleton.
+0x004A6330	?GetAllocator@Block@BackupStack@AeThread@@SAPAVPoolAllocator@@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6330	Release returns Block::sAllocator, matching source.
+0x004A6340	?Inst@AeThreadManager@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1979	Source returns the address of the AeThreadManager singleton object.
+0x004A6340	?Inst@AeThreadManager@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6340	Release returns &AeThreadManager::sInst, matching source.
+0x004A6350	??8math@@YA_NABVPosition3@0@0@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1112	Source compares Position3 x/y/z lanes for equality.
+0x004A6350	??8math@@YA_NABVPosition3@0@0@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6350	Release compares the three Position3 lanes and returns the conjunction, matching source.
+0x004A6430	??0ScriptEventParams@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1966	Source zero-initializes entity fields and fills all float/vector fields with NaN sentinels.
+0x004A6430	??0ScriptEventParams@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6430	Release constructor writes the same zero entity fields and NaN float/vector sentinels.
+0x004A6590	?Inst@DestructibleBankManager@@SAPAV1@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:1984	Source returns the DestructibleBankManager singleton pointer.
+0x004A6590	?Inst@DestructibleBankManager@@SAPAV1@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A6590	Release loads and returns DestructibleBankManager::sInst, matching source.
