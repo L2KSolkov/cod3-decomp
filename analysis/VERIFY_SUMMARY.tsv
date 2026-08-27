@@ -290,7 +290,7 @@ rbc_def_ragdoll.o	38	19	5	14	0	0	0
 rbc_def_vehicle.o	46	33	6	7	0	0	0
 render.o	1038	707	2	329	0	0	0
 rigid_body.o	13	5	1	7	0	0	0
-scr.o	1540	660	34	826	0	20	0
+scr.o	1540	660	34	813	0	33	0
 shell.o	2214	989	25	1200	0	0	0
 streamer.o	730	399	83	248	0	0	0
 sv.o	148	15	7	126	0	0	0

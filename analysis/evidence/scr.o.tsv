@@ -31,3 +31,29 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005BCAE0	?CVarSetFloat@BrocSys@@YAXPBDM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177722	Source matches release float formatting, 1024-byte sanitization loop, and cvar calls.
 0x005BCD10	?GetNorthYaw@BrocSys@@YAMXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3120	Non-empty thunk returns the compass north direction.
 0x005BCD10	?GetNorthYaw@BrocSys@@YAMXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BCD10	IDA release thunk forwards directly to CG_GetNorthDirection; source has the same forwarding behavior and map float ABI.
+0x005BC550	?IsLanGame@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3061	Non-empty thunk forwards the LAN-game query.
+0x005BC550	?IsLanGame@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BC550	IDA release thunk calls MPUIInterface::IsLANGame; source matches.
+0x005BC560	?IsOnlineGame@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3067	Non-empty thunk forwards the online-game query.
+0x005BC560	?IsOnlineGame@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BC560	IDA release thunk calls MPUIInterface::IsOnlineGame; source matches.
+0x005BC570	?IsLocalGame@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3073	Non-empty thunk forwards the local-game query.
+0x005BC570	?IsLocalGame@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BC570	IDA release thunk calls MPUIInterface::IsLocalGame; source matches.
+0x005BC580	?IsSplitScreen@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3055	Non-empty thunk forwards the split-screen query.
+0x005BC580	?IsSplitScreen@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BC580	IDA release thunk calls View::IsSplitScreen; source matches.
+0x005BC5F0	?ScreenFadeToBlack@BrocSys@@YAXIH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:8104	Non-empty body hides tutorial text and starts a black screen fade.
+0x005BC5F0	?ScreenFadeToBlack@BrocSys@@YAXIH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177497	Source matches release IGO tutorial call and CG_Fade black/opaque parameters.
+0x005BC630	?ScreenFadeUp@BrocSys@@YAXIH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:2465	Non-empty body starts a transparent screen fade.
+0x005BC630	?ScreenFadeUp@BrocSys@@YAXIH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177504	Source matches release CG_Fade transparent parameters and duration/viewport forwarding.
+0x005BC6C0	?NextRoundMapChanges@BrocSys@@YA_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:8343	Non-empty thunk forwards the next-round map-change query.
+0x005BC6C0	?NextRoundMapChanges@BrocSys@@YA_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BC6C0	IDA release thunk calls MPUIInterface::NextRoundMapChanges; source matches.
+0x005BC6D0	?QuitGame@BrocSys@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3408	Non-empty thunk forwards the game-exit request.
+0x005BC6D0	?QuitGame@BrocSys@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005BC6D0	Release tail thunk calls MPUIInterface::ExitGame; source forwards the same call under the map void ABI.
+0x005BC730	?GetAnimName@BrocSys@@YA_NIPADH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:8065	Non-empty body resolves an animation name, bounds copies, terminates the output, and reports success.
+0x005BC730	?GetAnimName@BrocSys@@YA_NIPADH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177549	Source matches release resolver-null handling, bounded strncpy, terminator, and boolean return.
+0x005BCC80	?GetTime@BrocSys@@YAIXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3109	Non-empty body returns level.time.
+0x005BCC80	?GetTime@BrocSys@@YAIXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177798	Source returns the same level.time value as release.
+0x005BCC90	?GetDeltaTime@BrocSys@@YAMXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3115	Non-empty body returns ServerTime tick delta.
+0x005BCC90	?GetDeltaTime@BrocSys@@YAMXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177804;IDA:0x005BCC90	Source returns ServerTime::sInst.mTickDelta; map/source float ABI supersedes decompiler widening.
+0x005BCCA0	?GetDifficulty@BrocSys@@YAXAAVstring@Broc@@@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:7876	Non-empty body asserts invalid difficulty values and assigns the difficulty string.
+0x005BCCA0	?GetDifficulty@BrocSys@@YAXAAVstring@Broc@@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177810	Source matches release range assertion context/string and difficultyStrings assignment.
+0x005BCE90	?DrawCompassFriendlies@BrocSys@@YAX_N@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_scr.cpp:3154	Non-empty body stores the compass-friendlies flag.
+0x005BCE90	?DrawCompassFriendlies@BrocSys@@YAX_N@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1177887	Source assigns the same incoming bool to level.bDrawCompassFriendlies.
