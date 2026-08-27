@@ -42,12 +42,13 @@ extern int currCl;  // ?currCl@@3HA
 extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
 
 // ============================================================================
-// NGLPreSceneCallBack - ea: 0x006C2120
+// NGLPreSceneCallBack
 // ============================================================================
 static void j_nullsub_123(void*)
 {
 }
 
+// ea: 0x006C2120
 void NGLPreSceneCallBack(void* Data)
 {
     (void)Data;

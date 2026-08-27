@@ -87,7 +87,12 @@ def release_functions() -> dict[int, tuple[str, str]]:
             signature = ""
             signature_line = -1
             continue
-        name = names[-1].group(1)
+        # Prefer the qualified function token.  Function-pointer parameter
+        # declarations (for example `void (__cdecl *callback)(...)`) can
+        # otherwise appear after the actual C++ function name and make a
+        # constructor look like a function named `void`.
+        qualified = [match.group(1) for match in names if "::" in match.group(1)]
+        name = qualified[0] if qualified else names[-1].group(1)
         body = matching_body(lines, signature_line)
         functions.setdefault(ea, (name, body))
         ea = None
@@ -134,7 +139,13 @@ def main() -> int:
         else:
             release_name, release_body = release_entry
             release_class = verify_ledger.body_class(release_body)
-            if release_class == "REAL_BODY" and not is_constructor(release_name):
+            if release_class == "REAL_BODY" and implicit_cleanup(release_name, release_body):
+                # The release compiler emits reference-count teardown for
+                # by-value bdReference callback parameters, and emits base /
+                # member teardown in virtual destructors.  An empty source
+                # body is correct when C++ performs that work implicitly.
+                result = "IMPLICIT_CLEANUP"
+            elif release_class == "REAL_BODY" and not is_constructor(release_name):
                 result = "CONFIRMED_REAL_RELEASE_BODY"
             elif release_class == "REAL_BODY":
                 # C++ constructors can legitimately have an empty body while
@@ -170,6 +181,17 @@ def main() -> int:
 def is_constructor(name: str) -> bool:
     parts = [part for part in name.split("::") if part]
     return len(parts) >= 2 and parts[-1] == parts[-2]
+
+
+def implicit_cleanup(name: str, body: str) -> bool:
+    """Recognize compiler-emitted destructor/reference cleanup bodies."""
+    if name.startswith("~") or "::~" in name:
+        return True
+    # bdReference-by-value callbacks decompile to only a refcount decrement;
+    # there is no user-visible callback work to reconstruct.
+    return "releaseRef" not in body and "--" in body and (
+        "a2: 1" in body or "(*(a1 + 4))--" in body
+    )
 
 
 if __name__ == "__main__":

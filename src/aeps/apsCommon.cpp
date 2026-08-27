@@ -67,7 +67,7 @@ public:
 };
 
 extern void* gApsHeap;
-extern void mem_break();
+extern bool mem_break();
 
 // ============================================================================
 // Data statics (apsCommon.o). Initial values verified against IDA:

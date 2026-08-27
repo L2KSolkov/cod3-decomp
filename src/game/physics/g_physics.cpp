@@ -14468,7 +14468,7 @@ void rb_capsule_pair::do_test(void* const col_resp_group)
     }
 }
 
-void mem_break();  // mem_heap.cpp
+bool mem_break();  // mem_heap.cpp
 
 // ea: 0x6FB740 - segment-segment closest points + capsule overlap test.
 // Reconstructed from the SIMD disassembly (Ericson segment-distance form).

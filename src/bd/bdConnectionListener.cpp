@@ -22,19 +22,22 @@ bdConnectionListener::~bdConnectionListener() {
 // ============================================================================
 // bdConnectionListener::onConnect - ea: 0x9ED000
 // ============================================================================
-void bdConnectionListener::onConnect(bdReference<bdConnection>) {
+void bdConnectionListener::onConnect(bdReference<bdConnection> connection) {
+    (void)connection;
 }
 
 // ============================================================================
 // bdConnectionListener::onConnectFailed - ea: 0x9ED030
 // ============================================================================
-void bdConnectionListener::onConnectFailed(bdReference<bdConnection>) {
+void bdConnectionListener::onConnectFailed(bdReference<bdConnection> connection) {
+    (void)connection;
 }
 
 // ============================================================================
 // bdConnectionListener::onDisconnect - ea: 0x9ED060
 // ============================================================================
-void bdConnectionListener::onDisconnect(bdReference<bdConnection>) {
+void bdConnectionListener::onDisconnect(bdReference<bdConnection> connection) {
+    (void)connection;
 }
 
 // ============================================================================

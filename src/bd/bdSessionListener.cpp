@@ -27,7 +27,8 @@ void bdSessionListener::onSessionJoinAccepted() {
 // ============================================================================
 // bdSessionListener::onSessionJoinRefused - ea: 0x8B5C00
 // ============================================================================
-void bdSessionListener::onSessionJoinRefused(bdReference<bdBitBuffer>) {
+void bdSessionListener::onSessionJoinRefused(bdReference<bdBitBuffer> userData) {
+    (void)userData;
 }
 
 // ============================================================================
@@ -45,13 +46,15 @@ void bdSessionListener::onSessionConnectSuccess() {
 // ============================================================================
 // bdSessionListener::onSessionConnect - ea: 0x8B5C20
 // ============================================================================
-void bdSessionListener::onSessionConnect(bdReference<bdConnection>) {
+void bdSessionListener::onSessionConnect(bdReference<bdConnection> connection) {
+    (void)connection;
 }
 
 // ============================================================================
 // bdSessionListener::onSessionDisconnect - ea: 0x8B5C40
 // ============================================================================
-void bdSessionListener::onSessionDisconnect(bdReference<bdConnection>) {
+void bdSessionListener::onSessionDisconnect(bdReference<bdConnection> connection) {
+    (void)connection;
 }
 
 // ============================================================================
