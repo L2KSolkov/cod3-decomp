@@ -263,7 +263,7 @@ void TraceSphereFull(const proximity_data_t* proximity_data,
                      const collision_context_t* context);  // sv_world.cpp
 
 namespace BrocSys {
-void InitMPCallbacks();  // ?InitMPCallbacks@BrocSys@@YAXXZ (0x5BDBA0)
+int InitMPCallbacks();   // ?InitMPCallbacks@BrocSys@@YAHXZ (0x5BDBA0)
 }
 namespace View {
 void UpdateViewports(int client);  // ?UpdateViewports@View@@YAXH@Z (cg.o)

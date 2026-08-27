@@ -182,7 +182,7 @@ public:
 
 namespace BrocSys {
 void ExecuteScriptThreads(AeThreadManager* manager, float deltaT);
-void InitMPCallbacks();
+int InitMPCallbacks();
 }
 extern cdl_proftimer cdl_proftimer_aethread;
 extern BrocAPI* gpBrocAPI;

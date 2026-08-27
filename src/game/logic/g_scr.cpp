@@ -4272,7 +4272,7 @@ void SetSpectateSeconds(int seconds, int viewport);  // 0x5C1780
 void SetSpectateMedic(int medic, int viewport);  // 0x5C17B0
 void SettleMapVote();  // 0x5BC450
 void SettleGameModeVote();  // 0x5BC470
-void InitMPCallbacks();  // ?InitMPCallbacks@BrocSys@@YAXXZ (0x5BDBA0)
+int InitMPCallbacks();   // ?InitMPCallbacks@BrocSys@@YAHXZ (0x5BDBA0)
 unsigned int Spawn(const Broc::string& classname, const Broc::vector& origin,
                    TPakInfo pakInfo);  // 0x5C2340
 unsigned int SpawnWithFlag(const Broc::string& classname,
@@ -11572,7 +11572,7 @@ void AeThreadManager::UnloadScript(void* p)
 }
 
 // ea: 0x005BDBA0
-void BrocSys::InitMPCallbacks()
+int BrocSys::InitMPCallbacks()
 {
     if (gpBrocAPI != nullptr)
     {
@@ -11640,6 +11640,7 @@ void BrocSys::InitMPCallbacks()
         e.mCallbackPlayerTotalScore = nullptr;
         e.mCallbackDebugRender = nullptr;
     }
+    return 0;
 }
 
 // ea: 0x005C2340
