@@ -11079,22 +11079,26 @@ void BrocHelper::AnimationValidator(int numTrees)
 // ea: 0x005BF6A0
 void BrocSys::GetJoyPos(int stickIndex, float& xPos, float& yPos)
 {
+    float* v3 = &xPos;
+    float* v4 = &yPos;
+    int x = 0;
+    int y = 0;
     xPos = 0.0f;
     yPos = 0.0f;
     if (controller::inst()->is_locked)
     {
         controller::inst()->stick_value((controller::StickIndex)stickIndex,
-                                        (int*)&xPos, (int*)&yPos, nullptr);
+                                        &x, &y, nullptr);
     }
     else
     {
         int v7 = dword_F6A28C[802 * currCl];
         controller::inst()->stick_value(v7,
                                         (controller::StickIndex)stickIndex,
-                                        (int*)&xPos, (int*)&yPos);
+                                        &x, &y);
     }
-    xPos *= 0.0078740157f;
-    yPos *= 0.0078740157f;
+    *v3 = x * 0.0078740157f;
+    *v4 = y * 0.0078740157f;
 }
 
 // ea: 0x005C0B80
