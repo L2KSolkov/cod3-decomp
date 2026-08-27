@@ -1721,6 +1721,7 @@ math::Position3 math::operator*(const math::Position3& _v, const math::Mat43& _m
 {
     return math::Mul(_v, _m);
 }
+// ea: 0x004A82C0
 math::Position3 math::operator/(const math::Position3& _v, const math::Mat43& _m)
 {
     math::Position3 r;
@@ -1771,6 +1772,7 @@ math::Mat33 math::Mul(const math::Mat33& _a, const math::Mat33& _b)
         _mm_mul_ps(_mm_shuffle_ps(v6, v6, 0xAA), v3));
     return r;
 }
+// ea: 0x004A7F60
 const math::Mat33& math::Mat33::operator*=(const math::Mat33& _m)
 {
     math::Mat33 r = math::Mul(*this, _m);
@@ -1778,6 +1780,7 @@ const math::Mat33& math::Mat33::operator*=(const math::Mat33& _m)
     return *this;
 }
 
+// ea: 0x004A7BC0
 math::Mat43 math::Mul(const math::Mat43& _a, const math::Mat43& _b)
 {
     math::Mat43 r;
@@ -1807,11 +1810,13 @@ math::Mat43 math::Mul(const math::Mat43& _a, const math::Mat43& _b)
                    _b.w.v));
     return r;
 }
+// ea: 0x004A7D90
 math::Mat43 math::operator*(const math::Mat43& _a, const math::Mat43& _b)
 {
     return math::Mul(_a, _b);
 }
 
+// ea: 0x004A80A0
 math::Mat43 math::Inv(const math::Mat43& _m)
 {
     math::Mat43 r;
@@ -1833,6 +1838,7 @@ math::Mat43 math::Inv(const math::Mat43& _m)
     return r;
 }
 
+// ea: 0x004A83C0
 // Vector4 cos approximation (g.o 0x4A83C0)
 math::Vector4 math::Cos(const math::Vector4& radians, const math::Vector4& frequency)
 {
@@ -1867,6 +1873,7 @@ math::Vector4 math::Cos(const math::Vector4& radians, const math::Vector4& frequ
     return r;
 }
 
+// ea: 0x004A84D0
 bool math::Compare_all_lt(const math::Position3& _a, const math::Position3& _b)
 {
     return (_mm_movemask_ps(_mm_cmplt_ps(_a.v, _b.v)) & 7) == 7;
@@ -1891,9 +1898,11 @@ bool math::Compare_any_ge(const math::Position3& _a,
 }
 
 // Quaternion ctors / ops (g.o 0x4A8530-0x4A8620)
+// ea: 0x004A8530
 math::Quaternion::Quaternion()
 {
 }
+// ea: 0x004A8540
 math::Quaternion::Quaternion(float _x, float _y, float _z, float _w)
 {
     x = _x;
@@ -1901,6 +1910,7 @@ math::Quaternion::Quaternion(float _x, float _y, float _z, float _w)
     z = _z;
     w = _w;
 }
+// ea: 0x004A85B0
 math::Quaternion math::operator*(const math::Quaternion& _a, float _b)
 {
     math::Quaternion r;
@@ -1910,6 +1920,7 @@ math::Quaternion math::operator*(const math::Quaternion& _a, float _b)
     r.w = _a.w * _b;
     return r;
 }
+// ea: 0x004A85F0
 math::Quaternion math::DeclareUnit(const math::Quaternion& _q)
 {
     math::Quaternion r;
@@ -1919,6 +1930,7 @@ math::Quaternion math::DeclareUnit(const math::Quaternion& _q)
     r.w = _q.w;
     return r;
 }
+// ea: 0x004A8620
 math::Quaternion math::GetQuaternion(const math::Mat33& rot)
 {
     float v2 = rot.z.v.m128_f32[2];
@@ -2177,10 +2189,12 @@ TaskSys* TaskSys::Inst()
 {
     return &TaskSys::sInst;
 }
+// ea: 0x004A8520
 SoundDevice* SoundDevice::Inst()
 {
     return SoundDevice::sInst;
 }
+// ea: 0x004A83B0
 SmokeGrenadeMgr* SmokeGrenadeMgr::Inst()
 {
     return (SmokeGrenadeMgr*)SmokeGrenadeMgr::sInst;
@@ -2272,10 +2286,12 @@ void scr_vehicle_t::LerpedVariables::Clear()
 }
 
 // InteractionController accessors (g.o 0x4A8260-0x4A82A0)
+// ea: 0x004A8260
 int InteractionController::IsInteracting() const
 {
     return mCurState != nullptr;
 }
+// ea: 0x004A8270
 void InteractionController::SetFlag(unsigned int f, int enable)
 {
     if (enable != 0)
@@ -2283,6 +2299,7 @@ void InteractionController::SetFlag(unsigned int f, int enable)
     else
         mFlags &= ~f;
 }
+// ea: 0x004A82A0
 int InteractionController::IsFlagged(unsigned int f) const
 {
     return (f & mFlags) != 0;
