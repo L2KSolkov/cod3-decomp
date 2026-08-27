@@ -205,6 +205,8 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005EE1A0	?VecNormalize@Broc@@YAXAAUvector@1@ABU21@@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005EE1A0	IDA release body matches vector copy, normalize call, and output/input reference ABI.
 0x005E97C0	??0hudelem@Broc@@QAE@H@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/broc/Broc.cpp:411	Non-empty HUD element constructor initializes the stored HUD index from its argument.
 0x005E97C0	??0hudelem@Broc@@QAE@H@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005E97C0	IDA release constructor stores the supplied index directly and returns this; source has the exact int constructor ABI.
+0x005E97B0	??0hudelem@Broc@@QAE@XZ	V3	PASS	direct-release-hud-review-20260827	2026-08-27	src/broc/Broc.cpp:401	Default HUD element constructor initializes the index to the undefined sentinel.
+0x005E97B0	??0hudelem@Broc@@QAE@XZ	V4	PASS	direct-release-hud-review-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1202577	Release constructor stores -1 in the HUD index; source initializer matches exactly.
 0x005E97E0	?GetIndex@hudelem@Broc@@QBEHXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/broc/Broc.cpp:417	Non-empty HUD element accessor returns the stored index.
 0x005E97E0	?GetIndex@hudelem@Broc@@QBEHXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005E97E0	IDA release accessor returns mHudIndex and source matches the signed-int return ABI.
 0x005E9A70	?IsLoaded@BspCell@@QBE_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/render/tr_dpvs.cpp:214	Non-empty const accessor reports whether the BspCell mesh file is present.
