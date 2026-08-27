@@ -22692,10 +22692,15 @@ void AeThread::ProcessState()
                     reinterpret_cast<unsigned char*>(current) - 4);
                 AeThreadState::EAction action = state->NewAction(*self);
                 if (action == AeThreadState::kActionWakeUp)
-                    goto wake;
-                if (action == AeThreadState::kActionTerminate)
-                    break;
-            debug:
+                {
+                    // The reference marks a waking state as having completed
+                    // this execution pass and clears the sleep bit before
+                    // running the common debug/delete path.
+                    self->mFlags.mMask |= 8u;
+                    self->mFlags.mMask |= 0x40u;
+                    self->mFlags.mMask |= 4u;
+                    self->mFlags.mMask &= ~0x10u;
+                }
                 if (action != AeThreadState::kActionNone)
                 {
                     // The reference frame reserves 0x44 bytes for this
@@ -22731,13 +22736,6 @@ void AeThread::ProcessState()
                 m_node = next;
                 m_next = next->mNext;
             }
-            self->mFlags.mMask |= 8;
-            self->mFlags.mMask |= 0x48;
-        wake:
-            self->mFlags.mMask |= 4;
-            self->mFlags.mMask &= 0xFFFFFFEB;
-            self->mFlags.mMask |= 4;
-            goto debug;
         }
     }
     else
