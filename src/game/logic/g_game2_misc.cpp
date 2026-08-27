@@ -744,7 +744,6 @@ void AnimIK::ApplyLadderClimb(Entity* ent, nalMatrix4x4& leftFootMat,
 // AnimIK::Initialize
 // Fetch joint bone handles + precompute IK arm lengths.
 // ============================================================================
-// ea: 0x4FAE50
 // These are the 12 entries consumed by Initialize from the reference's
 // contiguous static bone-name block (F04A40..F04C00).
 const tlFixedString AnimIK_InitializeBoneNames[12] = {
@@ -763,6 +762,7 @@ const tlFixedString AnimIK_InitializeBoneNames[12] = {
 };
 const tlFixedString AnimIK_ParentNames[8] = {};   // ?AnimIK_ParentNames (game2.o @ 0xF05318+)
 
+// ea: 0x4FAE50
 void AnimIK::Initialize()
 {
     nalGenericBoneHandle handles[12];
@@ -2499,7 +2499,7 @@ bool SmokeGrenadeMgr::EntityCanSeeEntity(const Entity* ent,
 }
 
 // ============================================================================
-// SmokeGrenadeMgr::Update - ea: 0x4F9CC0
+// SmokeGrenadeMgr::Update
 // ============================================================================
 extern void ae_vector_erase(void* self, int idx);  // ?erase@?$ae_vector@USmokeGrenadeInfo
 void ae_vector_erase(void* self, int idx)
@@ -2507,6 +2507,7 @@ void ae_vector_erase(void* self, int idx)
     (void)self; (void)idx;
 }
 
+// ea: 0x4F9CC0
 void SmokeGrenadeMgr::Update(float deltaT)
 {
     if (deltaT == 0.0f)
