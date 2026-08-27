@@ -1,0 +1,4 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00854360	??1nalInitListAnimType@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:3195	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (nalInitListAnimType::~nalInitListAnimType); no user logic is omitted.
+0x00854430	??1nalGenericAnim@nalGeneric@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:3007	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (nalGeneric::nalGenericAnim::~nalGenericAnim); no user logic is omitted.
+0x00854480	??1nalAnimHeap@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:1128	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (nalAnimHeap::~nalAnimHeap); no user logic is omitted.

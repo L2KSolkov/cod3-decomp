@@ -1,0 +1,2 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008391E0	??1nglDebugLineNode@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:450	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (nglDebugLineNode::~nglDebugLineNode); no user logic is omitted.

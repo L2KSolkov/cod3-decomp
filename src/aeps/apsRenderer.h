@@ -83,6 +83,7 @@ public:
     int          mPriority;          // +0x08
     unsigned int mIsDynamicallyLit;  // +0x0C
 
+    void SetRequiredParticleFields(unsigned int fields) { mFields = fields; }  // ea: 0x802850
     unsigned int GetRequiredParticleFields() const { return mFields; }  // ?GetRequiredParticleFields@apsRenderer@@QBEIXZ (inline COMDAT)
 };
 

@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00567CF0	??1IGOCompassWidget@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:6067	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (IGOCompassWidget::~IGOCompassWidget); no user logic is omitted.
+0x00568F90	??1IGOHeadIcons@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:2732	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (IGOHeadIcons::~IGOHeadIcons); no user logic is omitted.
+0x005691D0	??1IGOItemIcons@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:3083	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (IGOItemIcons::~IGOItemIcons); no user logic is omitted.
+0x005B6A70	??1SE_Entry_s@@QAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:332	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (SE_Entry_s::~SE_Entry_s); no user logic is omitted.

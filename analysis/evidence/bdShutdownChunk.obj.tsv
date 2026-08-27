@@ -1,0 +1,2 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008AC380	??1bdShutdownChunk@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:19	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdShutdownChunk::~bdShutdownChunk); no user logic is omitted.

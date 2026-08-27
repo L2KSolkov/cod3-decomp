@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00612470	??1EntityManager@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:7077	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (EntityManager::~EntityManager); no user logic is omitted.
+0x0061F780	??1CurveManager@@AAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:1138	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (CurveManager::~CurveManager); no user logic is omitted.
+0x0061F790	??1GdbFileManager@@EAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:9935	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (GdbFileManager::~GdbFileManager); no user logic is omitted.
+0x00661870	??1rtree_visitor_t@@QAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:631	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (rtree_visitor_t::~rtree_visitor_t); no user logic is omitted.
