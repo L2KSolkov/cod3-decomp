@@ -4920,7 +4920,7 @@ void SetFlaggedAnimAligned(unsigned int entityHandleVal,
                            const Broc::vector& angles,
                            unsigned int broanim);  // 0x5CC890
 void InitEntity();  // 0x5DD690 (void mangle)
-BrocAPI* InitAPI(); // 0x5DFDB0 (void mangle)
+void InitAPI(); // 0x5DFDB0 (void mangle)
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -5107,7 +5107,7 @@ void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
 // BrocInitEntity (0x5C5790) - global
 void BrocInitEntity(
     Entity* ent,
-    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>&
         keyValuePairs);
 // VM_Restart (0x5C7940) - global
 vm_s* VM_Restart(vm_s* vm);
@@ -12556,7 +12556,7 @@ void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
 // ea: 0x005C5790
 void BrocInitEntity(
     Entity* ent,
-    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>&
         keyValuePairs)
 {
     void* v3 = nullptr;
@@ -12564,10 +12564,10 @@ void BrocInitEntity(
         && Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity != nullptr)
     {
         const char** pKey = nullptr;
-        if (keyValuePairs->mSize != 0)
-            pKey = (const char**)&keyValuePairs->mList[0].mKey.mStr;
+        if (keyValuePairs.mSize != 0)
+            pKey = (const char**)&keyValuePairs.mList[0].mKey.mStr;
         v3 = Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity(
-            pKey, keyValuePairs->mSize);
+            pKey, keyValuePairs.mSize);
     }
     ent->mBrocExtendedEntity = v3;
     UpdateEntityHash(ent);
@@ -23214,12 +23214,12 @@ public:
 BrocSysHashStrings sHashStrings;
 
 // ea: 0x005DFD30
-unsigned int BrocSys::RegisterHashString(const char* txt)
+int BrocSys::RegisterHashString(const char* txt)
 {
     if (txt == nullptr)
         return 0;
     tlFixedString string(txt);
-    unsigned int hash = string.hash;
+    int hash = (int)string.hash;
     BrocSys::RegisterHashString((int)hash, txt);
     return hash;
 }
@@ -26811,7 +26811,7 @@ static const struct { unsigned int off1; void (*fn1)();
     { 0x132C, (void (*)())cdOceanGlobals::SetWaveTimescale, 0x5DC, (void (*)())BrocSys::ProfTick },
 };
 // ea: 0x005DFDB0
-BrocAPI* BrocSys::InitAPI()
+void BrocSys::InitAPI()
 {
     // gpBrocAPI->mPrint = 0xBFBFBFBF (release sentinel per disasm)
     *(void**)((char*)&gpBrocAPI->mBrocExports + 0x000) = (void*)0xBFBFBFBF;
@@ -26906,7 +26906,6 @@ BrocAPI* BrocSys::InitAPI()
         cdOceanGlobals::SetWavePhase;
     gpBrocAPI->mBrocExports.mOceanSetWaveTimescale =
         cdOceanGlobals::SetWaveTimescale;
-    return gpBrocAPI;
 }
 
 // ea: 0x005CBA30

@@ -3088,7 +3088,7 @@ extern void G_ReplaceSpawnVars(
         keyValuePairs);  // g.o (g_spawn.cpp)
 extern void BrocInitEntity(
     Entity* ent,
-    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>&
         keyValuePairs);  // scr.o
 struct VehicleNode {
     InplaceString name;               // +0x00
@@ -5656,7 +5656,7 @@ void SceneManager::ProcessEntity(TPakId pakId, int entIdx)
     G_SetAngle(v32, v32->r.currentAngles);
     BrocInitEntity(
         v32,
-        (const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*)
+        *(const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*)
             keyValuePairs);
     if (auto_thread != nullptr)
         BrocAddEntityThread(v32, auto_thread);

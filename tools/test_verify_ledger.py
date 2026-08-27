@@ -89,6 +89,10 @@ def main() -> int:
                     in ledger.symbol_variants(
                         "?EffectEventPlay@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z"))
 
+            assert ("?AddScriptEvent@Entity@@QAE_NVHashString@@0@Z"
+                    in ledger.symbol_variants(
+                        "?AddScriptEvent@Entity@@QAE_NVHashString@@V2@@Z"))
+
             # Missing source_ref is rejected rather than silently granting a gate.
             path.write_text("\t".join(ledger.EVIDENCE_FIELDS) + "\n" + row("PASS", source_ref="") + "\n", encoding="utf-8")
             _, errors = ledger.read_evidence()

@@ -381,6 +381,18 @@ def symbol_variants(name: str) -> set[str]:
             values.add(current_name)
         elif name == current_name:
             values.add(release_name)
+    # Repeated HashString parameters use a compiler back-reference in the
+    # current object files while the release map spells the class reference.
+    for release_name, current_name in (
+        ("?AddScriptEvent@Entity@@QAE_NVHashString@@V2@@Z",
+         "?AddScriptEvent@Entity@@QAE_NVHashString@@0@Z"),
+        ("?RemoveScriptEvent@Entity@@QAE_NVHashString@@V2@@Z",
+         "?RemoveScriptEvent@Entity@@QAE_NVHashString@@0@Z"),
+    ):
+        if name == release_name:
+            values.add(current_name)
+        elif name == current_name:
+            values.add(release_name)
     # Access control is encoded in the first member-function decoration byte
     # (A=private, Q=public, U=protected) but is not part of the V2 signature
     # contract.  The release PDB/map often reports private while the port's
