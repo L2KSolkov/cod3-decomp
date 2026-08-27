@@ -916,10 +916,11 @@ float AnimIK::WeaponRecoilTimeScale(float fireTime, float duration,
     float recoilScale = (level.time - fireTime) / (duration * 1000.0f);
     if (recoilScale > 1.0f || recoilScale < 0.0f)
         return 0.0f;
-    float v = powf(recoilScale, 1.0f / force);
-    if (v > 0.5f)
-        v = 0.5f - (v - 0.5f);
-    return v + v;
+    float recoilScalea =
+        static_cast<float>(pow(recoilScale, 1.0f / force));
+    if (recoilScalea > 0.5f)
+        recoilScalea = 0.5f - (recoilScalea - 0.5f);
+    return recoilScalea + recoilScalea;
 }
 
 // ============================================================================
