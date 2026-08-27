@@ -416,6 +416,8 @@ def symbol_variants(name: str) -> set[str]:
             "?trap_R_DrawQuadPic@@YAXPAY01$$CBM0PAX@Z",
         "?trap_R_TrackStatistics@@YAXPAUtrStatistics_t@@@Z":
             "?trap_R_TrackStatistics@@YAXPAX@Z",
+        "?CG_RegisterItems@@YAXXZ":
+            "?CG_RegisterItems@@YAHXZ",
         "?MathFastSinCos@Broc@@YAXMAAM0@Z":
             "?MathFastSinCos@Broc@@YAXMPAM0@Z",
         "?VecAnglesToUp@Broc@@YAXAAUvector@1@ABU21@@Z":
