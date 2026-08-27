@@ -1,4 +1,6 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x004F64C0	?ApplyLadderClimb@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	V3	PASS	release-nullsub-review-20260826	2026-08-26	IDA MCP decompile 0x004F64C0	Release is a nullsub; empty source body is intentional.
+0x004F64C0	?ApplyLadderClimb@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	V4	PASS	release-nullsub-review-20260826	2026-08-26	IDA MCP decompile 0x004F64C0	Release is a nullsub; source body matches.
 0x004FB510	?ApplyFootIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1065293	Source body is empty; release body is real.
 0x004FBD10	?ApplyHandIK@AnimIK@@AAEXPAVEntity@@AAVnalMatrix4x4@@1@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1065582	Source body is empty; release body is real.
 0x004FCA40	?ApplyPainFlinch@AnimIK@@AAEXPAVEntity@@@Z	V3	FAIL	release-stub-audit-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1066051	Source body is empty; release body is real.
