@@ -114,6 +114,18 @@ def main() -> int:
         source_class = verify_ledger.body_class(marker.body)
         if source_class not in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}:
             continue
+        if source_class == "NO_BODY":
+            rows.append({
+                "ida_ea": f"0x{marker.address:08X}",
+                "source": marker.path,
+                "line": str(marker.line),
+                "source_candidate": marker.candidate,
+                "source_class": source_class,
+                "release_name": "",
+                "release_class": "UNKNOWN",
+                "result": "SOURCE_NOT_INDEXED",
+            })
+            continue
         release_entry = release.get(marker.address)
         if release_entry is None:
             result = "RELEASE_NOT_INDEXED"
@@ -122,9 +134,15 @@ def main() -> int:
         else:
             release_name, release_body = release_entry
             release_class = verify_ledger.body_class(release_body)
-            result = ("CONFIRMED_REAL_RELEASE_BODY"
-                      if release_class == "REAL_BODY" else
-                      "RELEASE_ALSO_EMPTY")
+            if release_class == "REAL_BODY" and not is_constructor(release_name):
+                result = "CONFIRMED_REAL_RELEASE_BODY"
+            elif release_class == "REAL_BODY":
+                # C++ constructors can legitimately have an empty body while
+                # doing all work in an initializer list; keep these separate
+                # from function stubs for manual layout/source review.
+                result = "CONSTRUCTOR_REVIEW"
+            else:
+                result = "RELEASE_ALSO_EMPTY"
         rows.append({
             "ida_ea": f"0x{marker.address:08X}",
             "source": marker.path,
@@ -147,6 +165,11 @@ def main() -> int:
                                 sorted(Counter(row["result"] for row in rows).items())))
     print(f"report: {REPORT.relative_to(ROOT)}")
     return 0
+
+
+def is_constructor(name: str) -> bool:
+    parts = [part for part in name.split("::") if part]
+    return len(parts) >= 2 and parts[-1] == parts[-2]
 
 
 if __name__ == "__main__":
