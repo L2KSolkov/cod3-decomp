@@ -184,6 +184,7 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
         matches = list(re.finditer(
             r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+(?:new|delete|[~A-Za-z_][A-Za-z0-9_]*))|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator[^\s(]+)|"
+            r"(?:operator[^\s(]+)|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*))\s*\(", text))
         if matches and "{" in text:
             valid = []
