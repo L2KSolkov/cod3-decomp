@@ -28,13 +28,14 @@ class apsEffect;
 // ============================================================================
 // apsVirtualBase — vtable-only root of the action/domain hierarchy (4 bytes).
 // vtable: [0]=~dtor (apsRegister.o COMDATs). Accessors:
-//   GetVtable ea:0x7F0940, SetVtable ea:0x808020, dtor/ctor ea:0x7F0930/0x7F0CE0.
+//   GetVtable @0x7F0940, SetVtable @0x808020, dtor/ctor @0x7F0930/0x7F0CE0.
 // The vtable pointer is implicit (virtual dtor); it sits at +0x00.
 // ============================================================================
 class apsVirtualBase {
 public:
     virtual ~apsVirtualBase() {}    // ??1apsVirtualBase@@UAE@XZ
 
+    // ea: 0x7F0940
     unsigned int GetVtable() const { return *(const unsigned int*)this; }  // ?GetVtable@apsVirtualBase@@QBEIXZ
     void         SetVtable(unsigned int tbl) { *(unsigned int*)this = tbl; }  // ?SetVtable@apsVirtualBase@@QAEXI@Z
 };

@@ -89,9 +89,9 @@ public:
     virtual bool accept(bdReceivedMessage& message);
 
     // bdConnectionListener
-    virtual void onConnect(const bdReference<bdConnection>& connection);
-    virtual void onConnectFailed(const bdReference<bdConnection>& connection);
-    virtual void onDisconnect(const bdReference<bdConnection>& connection);
+    virtual void onConnect(bdReference<bdConnection> connection);
+    virtual void onConnectFailed(bdReference<bdConnection> connection);
+    virtual void onDisconnect(bdReference<bdConnection> connection);
 
     bool join(const bdReference<bdCommonAddr>& hostAddr, const XNKID& secID,
               const XNKEY& secKey, bdBitBuffer* const userData);

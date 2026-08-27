@@ -43,9 +43,9 @@ public:
                        const void* data, unsigned int length);
     virtual int receiveFrom(bdReference<bdAddrHandle>& addrHandle,
                             void* data, unsigned int size);
-    virtual void onNATAddrDiscovery(const bdReference<bdCommonAddr>& addr,
+    virtual void onNATAddrDiscovery(bdReference<bdCommonAddr> addr,
                                     const bdAddr& realAddr);
-    virtual void onNATAddrDiscoveryFailed(const bdReference<bdCommonAddr>& addr);
+    virtual void onNATAddrDiscoveryFailed(bdReference<bdCommonAddr> addr);
 
 protected:
     bdSocket* m_socket;                       // +0x04

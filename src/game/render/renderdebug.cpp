@@ -802,7 +802,7 @@ void DebugRender::RenderText3DOff2D(const char* str, const math::Position3& pos,
 }
 
 // ============================================================================
-// DebugRender::RenderTexturedQuad2D - ea: 0x006CA350
+// DebugRender::RenderTexturedQuad2D
 // ============================================================================
 struct DebugTexturedQuad2D {
     float l;          // +0x00
@@ -871,6 +871,7 @@ void DebugQuadVector::resize(int iNewSize)
     }
 }
 
+// ea: 0x006CA350
 void DebugRender::RenderTexturedQuad2D(float l, float t, float r, float b,
                                        float z, const Color& col,
                                        nglTexture* nglTex)

@@ -44,9 +44,11 @@ apsRenderer::eRenderResult apsColorRectangleRenderer::Render(const apsRendererRe
 }
 
 // ============================================================================
-// apsColorRectangleNode::GetDesc — ea: 0x8048A0 (inline COMDAT)
+// apsColorRectangleNode::GetDesc (inline COMDAT)
 // ============================================================================
+// ea: 0x804AB0
 void apsColorRectangleNode::GetDesc(char* buf) {
+    strcpy(buf, "apsColorRectangleNode");
 }
 
 // ============================================================================

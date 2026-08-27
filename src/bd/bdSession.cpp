@@ -615,7 +615,7 @@ bool bdSession::accept(bdReceivedMessage& message) {
 // ============================================================================
 // bdSession::onConnect - ea: 0x8B3BB0 (connection listener)
 // ============================================================================
-void bdSession::onConnect(const bdReference<bdConnection>& connection) {
+void bdSession::onConnect(bdReference<bdConnection> connection) {
     if (m_status == BD_SESSION_CONNECTING_TO_PEERS) {
         unsigned int index = 0;
         if (getPeerIndex(connection, index)) {
@@ -646,7 +646,7 @@ void bdSession::onConnect(const bdReference<bdConnection>& connection) {
 // ============================================================================
 // bdSession::onConnectFailed - ea: 0x8B3EB0 (connection listener)
 // ============================================================================
-void bdSession::onConnectFailed(const bdReference<bdConnection>& connection) {
+void bdSession::onConnectFailed(bdReference<bdConnection> connection) {
     bool hostFailed = m_hostConnection.m_ptr == connection.m_ptr;
     unsigned int index = 0;
     bool peerFailed = false;
@@ -682,7 +682,7 @@ void bdSession::onConnectFailed(const bdReference<bdConnection>& connection) {
 // ============================================================================
 // bdSession::onDisconnect - ea: 0x8B4050 (connection listener)
 // ============================================================================
-void bdSession::onDisconnect(const bdReference<bdConnection>& connection) {
+void bdSession::onDisconnect(bdReference<bdConnection> connection) {
     bool hostDisconnected = m_hostConnection.m_ptr == connection.m_ptr;
     bool localDisconnected = m_localConnection.m_ptr == connection.m_ptr;
     bool joiningDisconnected = m_joiningPeer.m_ptr == connection.m_ptr;

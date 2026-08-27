@@ -18,7 +18,7 @@ class bdDiscoveryListener {
 public:
     bdDiscoveryListener();
     virtual ~bdDiscoveryListener();
-    virtual void onDiscovery(const bdReference<bdGameInfo>& gameInfo);
+    virtual void onDiscovery(bdReference<bdGameInfo> gameInfo);
     virtual void onDiscoveryFinished();
     virtual void onRequest();
 };
@@ -68,7 +68,7 @@ public:
     bdDiscoveryStatus getStatus() const;
     void registerListener(bdDiscoveryListener* listener);
     void unregisterListener(bdDiscoveryListener* listener);
-    void fireOnDiscoveryListeners(const bdReference<bdGameInfo>& gameInfo) const;
+    void fireOnDiscoveryListeners(bdReference<bdGameInfo> gameInfo) const;
 
 #pragma pack(push, 4)
 protected:

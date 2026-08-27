@@ -22,19 +22,19 @@ bdConnectionListener::~bdConnectionListener() {
 // ============================================================================
 // bdConnectionListener::onConnect - ea: 0x9ED000
 // ============================================================================
-void bdConnectionListener::onConnect(const bdReference<bdConnection>&) {
+void bdConnectionListener::onConnect(bdReference<bdConnection>) {
 }
 
 // ============================================================================
 // bdConnectionListener::onConnectFailed - ea: 0x9ED030
 // ============================================================================
-void bdConnectionListener::onConnectFailed(const bdReference<bdConnection>&) {
+void bdConnectionListener::onConnectFailed(bdReference<bdConnection>) {
 }
 
 // ============================================================================
 // bdConnectionListener::onDisconnect - ea: 0x9ED060
 // ============================================================================
-void bdConnectionListener::onDisconnect(const bdReference<bdConnection>&) {
+void bdConnectionListener::onDisconnect(bdReference<bdConnection>) {
 }
 
 // ============================================================================

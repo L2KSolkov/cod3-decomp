@@ -106,12 +106,12 @@ int bdSocketRouter::receiveFrom(bdReference<bdAddrHandle>& addrHandle,
 // ============================================================================
 // bdSocketRouter::onNATAddrDiscovery - ea: 0x8B72C0
 // ============================================================================
-void bdSocketRouter::onNATAddrDiscovery(const bdReference<bdCommonAddr>&,
+void bdSocketRouter::onNATAddrDiscovery(bdReference<bdCommonAddr>,
                                         const bdAddr&) {
 }
 
 // ============================================================================
 // bdSocketRouter::onNATAddrDiscoveryFailed - ea: 0x8B72E0
 // ============================================================================
-void bdSocketRouter::onNATAddrDiscoveryFailed(const bdReference<bdCommonAddr>&) {
+void bdSocketRouter::onNATAddrDiscoveryFailed(bdReference<bdCommonAddr>) {
 }

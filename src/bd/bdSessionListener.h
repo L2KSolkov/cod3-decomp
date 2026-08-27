@@ -20,11 +20,11 @@ public:
     virtual ~bdSessionListener();
 
     virtual void onSessionJoinAccepted();
-    virtual void onSessionJoinRefused(const bdReference<bdBitBuffer>& userData);
+    virtual void onSessionJoinRefused(bdReference<bdBitBuffer> userData);
     virtual void onSessionConnectFail();
     virtual void onSessionConnectSuccess();
-    virtual void onSessionConnect(const bdReference<bdConnection>& connection);
-    virtual void onSessionDisconnect(const bdReference<bdConnection>& connection);
+    virtual void onSessionConnect(bdReference<bdConnection> connection);
+    virtual void onSessionDisconnect(bdReference<bdConnection> connection);
     virtual void onSessionStatusChange(bdSession::bdSessionStatus previous,
                                        bdSession::bdSessionStatus current);
     virtual void onSessionRoleUpdate(bdSession::bdSessionRole role);

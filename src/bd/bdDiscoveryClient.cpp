@@ -202,7 +202,7 @@ void bdDiscoveryClient::unregisterListener(bdDiscoveryListener* listener) {
 // bdDiscoveryClient::fireOnDiscoveryListeners - ea: 0x8AE0C0
 // ============================================================================
 void bdDiscoveryClient::fireOnDiscoveryListeners(
-    const bdReference<bdGameInfo>& gameInfo) const {
+    bdReference<bdGameInfo> gameInfo) const {
     for (unsigned int i = 0; i < m_listeners.m_size; i++)
         m_listeners[i]->onDiscovery(gameInfo);
 }

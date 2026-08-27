@@ -44,9 +44,14 @@ extern nglScene* nglBuildScene;  // ?nglBuildScene@@3PAUnglScene@@A
 // ============================================================================
 // NGLPreSceneCallBack - ea: 0x006C2120
 // ============================================================================
+static void j_nullsub_123(void*)
+{
+}
+
 void NGLPreSceneCallBack(void* Data)
 {
     (void)Data;
+    j_nullsub_123(nullptr);
 }
 
 // ============================================================================

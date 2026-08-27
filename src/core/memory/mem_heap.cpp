@@ -87,9 +87,18 @@ static mem_heap  s_heap_default;
 static mem_heap  s_heap_debug;
 static mem_heap  s_heap_combine;
 static mem_heap* s_current_heap = &s_heap_default;
-static bool      s_no_mem_break = false;
 static const char* s_mem_context = "root";
 static int       s_checkpoint_alloc_count = 0;
+
+// Release mem_lib.o quick-pool storage.  The four classes are 16/32/64/128
+// byte blocks with the exact release capacities; each free-list entry is a
+// pointer stored in the first word of the block.
+bool gQuickPoolActive = true;
+int gQuickPoolSizes[4] = { 16, 32, 64, 128 };
+int gQuickPoolAllocated[4] = { 65536, 16384, 65536, 524288 };
+void* gQuickPool[4] = {};
+unsigned char gQuickPoolStore[671744] = {};
+bool g_mem_break_enabled = true;
 
 // The Win32 backend uses the CRT allocator in place of Xbox dlmalloc. Keep
 // the owner and requested size so pak heaps retain the reference allocator's
@@ -424,11 +433,13 @@ int mem_get_free_bytes(mem_heap_type type) {
 }
 
 void mem_enable_no_mem_break(bool enable) {
-    s_no_mem_break = enable;
+    g_mem_break_enabled = enable;
 }
 
-void mem_break() {
-    if (!s_no_mem_break) DebugBreak();
+bool mem_break() {
+    bool result = g_mem_break_enabled;
+    if (g_mem_break_enabled) DebugBreak();
+    return result;
 }
 
 int mem_set_checkpoint() {
@@ -537,10 +548,25 @@ bool ae_heap_base::MemCheckFree(void* ptr, mem_heap* heap) {
 // Missing internal wrappers (from mem_lib.o, ea: 0x7BADD0-0x7BDA0)
 // ============================================================================
 
-// InitQuickPool — initialize the quick-fit pool (Xbox-only small-block cache)
+// InitQuickPool — initialize the quick-fit pool (release mem_lib.o)
 // ea: 0x7BADD0
 void InitQuickPool() {
-    // Xbox: configures dlmalloc's fastbins. No-op with system malloc.
+    std::memset(gQuickPoolStore, 0, sizeof(gQuickPoolStore));
+    unsigned int offset = 0;
+    for (int i = 0; i < 4; ++i) {
+        const int allocated = gQuickPoolAllocated[i];
+        const int blockSize = gQuickPoolSizes[i];
+        unsigned char* block = gQuickPoolStore + offset;
+        gQuickPool[i] = block;
+        int links = allocated / blockSize - 1;
+        while (links > 0) {
+            --links;
+            unsigned char* next = block + blockSize;
+            *reinterpret_cast<unsigned char**>(block) = next;
+            block = next;
+        }
+        offset += static_cast<unsigned int>(allocated);
+    }
 }
 
 // mem_alt_sbrk — alternative sbrk for Xbox memory layout
@@ -559,7 +585,19 @@ malloc_state* mem_get_current_av() {
 // Validate chunk list integrity (debug only)
 // ea: 0x7BB210
 void validate_chunk_list(malloc_chunk* start, bool fullCheck) {
-    // No-op: system malloc handles integrity internally
+    malloc_chunk* current = start;
+    if (current == nullptr) return;
+    do {
+        if (current->head >= 0x8000000 && g_mem_break_enabled)
+            DebugBreak();
+        malloc_chunk* next = current->fd;
+        if (next != nullptr && fullCheck && next->bk != current
+            && g_mem_break_enabled)
+            DebugBreak();
+        if (current->fd != next && g_mem_break_enabled)
+            DebugBreak();
+        current = next;
+    } while (current != nullptr && current->fd != current && current != start);
 }
 
 // mem_heap_malloc_private — internal alloc bypassing sentinel checks

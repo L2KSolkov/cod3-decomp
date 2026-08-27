@@ -21,7 +21,7 @@ bdDiscoveryListener::~bdDiscoveryListener() {
 // ============================================================================
 // bdDiscoveryListener::onDiscovery - ea: 0x8AFDF0
 // ============================================================================
-void bdDiscoveryListener::onDiscovery(const bdReference<bdGameInfo>&) {
+void bdDiscoveryListener::onDiscovery(bdReference<bdGameInfo>) {
 }
 
 // ============================================================================

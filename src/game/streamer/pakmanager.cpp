@@ -505,7 +505,7 @@ extern void nflUpdate();
 extern nflState nflGetState();
 extern unsigned int nflReadFile(nflFileID file, unsigned offset, void* buf,
                                 unsigned size);
-extern void mem_break();  // mem_heap.cpp
+extern bool mem_break();  // mem_heap.cpp
 
 // nfl async (nfl_common.o)
 #define NFL_PRIORITY_LOWEST 0
@@ -9417,6 +9417,14 @@ nalAnimClass<nalAnyPose>* cdGetAnim(unsigned int hash)
         INSTBANK_TYPE_ANIMFILE, PAK_ID_INVALID, hash);
 }
 
+// Win32 game-side bridge for callers that intentionally keep animation assets
+// opaque.  The release ABI returns the same pointer; this wrapper only keeps
+// the return type expected by the cgame translation unit.
+void* cdGetAnimCompat(unsigned int hash)
+{
+    return cdGetAnim(hash);
+}
+
 // ea: 0x677C20
 nalBaseSkeleton* cdGetSkeleton(TPakId pakId, const tlFixedString& name)
 {
@@ -12376,9 +12384,7 @@ bool PakManager::IsLoading(TPakId id) const
 // ea: 0x665850
 void PakManager::LoadWbk(tlFixedString audioBank, bool async)
 {
-    // Cross-object: AudioBankMgr (game.o) owns the real symbol; stub until
-    // the audio bridge lands.
-    (void)audioBank; (void)async;
+    AudioBankMgr::sInst->LoadWbk(audioBank, async);
 }
 
 // ============================================================================

@@ -711,7 +711,7 @@ void R_Init()
 }
 
 // ============================================================================
-// R_AddXModelSurfaces - ea: 0x006D1940
+// R_AddXModelSurfaces
 // ============================================================================
 struct scr_vehicle_t;
 struct nglScene;
@@ -749,6 +749,7 @@ extern int R_AddNonVehicleSurfaces(DObj* obj, Entity* entity,
                                    bool render_shadow,
                                    bool maxLod);  // 0x6D02D0
 
+// ea: 0x006D1940
 void R_AddXModelSurfaces(trRefEntity* ent)
 {
     EntityView* entity = (EntityView*)ent->e.entity;
