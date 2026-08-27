@@ -208,9 +208,14 @@ public:
     void* mCapturedScene;              // +0x4C
 
     // ea: 0x005E9A70
-    bool IsLoaded() { return mMeshFile != nullptr; }
+    bool IsLoaded() const;
 };
 static_assert(sizeof(BspCell) == 0x50, "BspCell size mismatch");
+
+bool BspCell::IsLoaded() const
+{
+    return mMeshFile != nullptr;
+}
 
 class BspPortal {
 public:

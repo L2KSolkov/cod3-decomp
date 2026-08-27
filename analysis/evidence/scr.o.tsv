@@ -207,3 +207,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E97C0	??0hudelem@Broc@@QAE@H@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005E97C0	IDA release constructor stores the supplied index directly and returns this; source has the exact int constructor ABI.
 0x005E97E0	?GetIndex@hudelem@Broc@@QBEHXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/broc/Broc.cpp:417	Non-empty HUD element accessor returns the stored index.
 0x005E97E0	?GetIndex@hudelem@Broc@@QBEHXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005E97E0	IDA release accessor returns mHudIndex and source matches the signed-int return ABI.
+0x005E9A70	?IsLoaded@BspCell@@QBE_NXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/render/tr_dpvs.cpp:214	Non-empty const accessor reports whether the BspCell mesh file is present.
+0x005E9A70	?IsLoaded@BspCell@@QBE_NXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005E9A70	Release returns the mMeshFile-nonnull predicate exactly; method is emitted out-of-line with the release const ABI.
+0x005E9A80	?set_transparent@trRefEntity@@QAEXE@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/render/tr_main.cpp:78	Non-empty alpha setter handles zero, one-half, and byte-scaled transparency cases.
+0x005E9A80	?set_transparent@trRefEntity@@QAEXE@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x005E9A80	Release alpha branches and constants match source; out-of-line emission now provides the exact public byte-parameter symbol.

@@ -83,6 +83,12 @@ def main() -> int:
                     in ledger.symbol_variants(
                         "?MPScript_SendGameStateSD@BrocSys@@YAXIII_NUvector@Broc@@1H@Z"))
 
+            # The current MSVC compact bool back-reference is equivalent to
+            # the release map's repeated bool spelling for effect exports.
+            assert ("?EffectEventPlay@BrocSys@@YAHIABVstring@Broc@@H_N1@Z"
+                    in ledger.symbol_variants(
+                        "?EffectEventPlay@BrocSys@@YAHIABVstring@Broc@@H_N_N@Z"))
+
             # Missing source_ref is rejected rather than silently granting a gate.
             path.write_text("\t".join(ledger.EVIDENCE_FIELDS) + "\n" + row("PASS", source_ref="") + "\n", encoding="utf-8")
             _, errors = ledger.read_evidence()
