@@ -1403,6 +1403,8 @@ extern bool XAnimNotetrackExists(scr_anim_s anim,
                                  const unsigned int& name);  // ?XAnimNotetrackExists@@YA_NUscr_anim_s@@ABI@Z
 extern void XAnimGetAbsDelta(scr_anim_s anim, float* rot, float* trans,
                              float time);  // ?XAnimGetAbsDelta@@YAXUscr_anim_s@@QAM1M@Z
+extern void XAnimGetRelDelta(scr_anim_s anim, float* rot, float* trans,
+                             float time1, float time2);  // ?XAnimGetRelDelta@@YAXUscr_anim_s@@QAM1MM@Z
 extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o
 
 // MusicMgr view (game.o; class lives in g_entity_misc.cpp)
@@ -7014,7 +7016,7 @@ void BrocSys::GetMoveDelta(Broc::vector& outVec, unsigned int anim,
                                  "start time must be between 0 and 1"))
             __debugbreak();
     }
-    XAnimGetRelDelta(nullptr, anim, rot, &outVec.x, startTime, endTime);
+    XAnimGetRelDelta(scr_anim_s{anim}, rot, &outVec.x, startTime, endTime);
     if (IS_NAN(outVec.x) || IS_NAN(outVec.y) || IS_NAN(outVec.z))
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -7054,7 +7056,7 @@ float BrocSys::GetAngleDelta(unsigned int anim, float startTime,
                                  "start time must be between 0 and 1"))
             __debugbreak();
     }
-    XAnimGetRelDelta(nullptr, anim, rot, trans, startTime, endTime);
+    XAnimGetRelDelta(scr_anim_s{anim}, rot, trans, startTime, endTime);
     return vectosignedyaw(rot);
 }
 
