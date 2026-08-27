@@ -30437,6 +30437,7 @@ void InteractStateRowboat::StartModeIdle()
     mStartAnim = 1;
 }
 
+// ea: 0x0053DEF0
 void InteractStateRowboat::StartModeRow()
 {
     mStartAnim = 1;
