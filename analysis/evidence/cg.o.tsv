@@ -27,3 +27,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0068B8F0	?CG_ExportKeyBinding@@YAHPBDPAPBD1@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1298893	Release and source both return integer constant 1 with no other control flow.
 0x0068BAA0	?CG_DrawScoreboard@@YAHXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:2753	Non-empty body matches the release scoreboard visibility/fade path.
 0x0068BAA0	?CG_DrawScoreboard@@YAHXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1298985	Release and source match on pause/state guards, fade-color call, alpha inversion, and return values.
+0x0068B9A0	?CG_DrawScoreboard_GetTeamColor@@YAXHQAM@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/cg/cg_draw.cpp:1015	Non-empty body selects the same friendly/enemy/neutral colors as the release path.
+0x0068B9A0	?CG_DrawScoreboard_GetTeamColor@@YAXHQAM@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	c3_bin/codmp_xboxr.xbe.c:1298940	Source now preserves the release's two GetPlayer calls, team/null checks, color constants, and branch structure.

@@ -1016,8 +1016,9 @@ void CG_DrawScoreboard_GetTeamColor(int iTeam, float* vColor)
 {
     if (iTeam == 1 || iTeam == 2)
     {
-        Entity* p = EntityManager::sInst->GetPlayer( currCl);
-        if (p->sentient == nullptr || p->sentient->eTeam == iTeam)
+        if (EntityManager::sInst->GetPlayer( currCl)->sentient == nullptr
+            || EntityManager::sInst->GetPlayer( currCl)->sentient->eTeam
+                   == iTeam)
         {
             vColor[0] = 0.25f;
             vColor[1] = 1.0f;
