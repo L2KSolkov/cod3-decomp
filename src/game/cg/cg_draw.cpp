@@ -75,7 +75,7 @@ extern vmCvar_t hud_healthOverlay_phaseEnd_pulseDuration;
 extern vmCvar_t hud_healthOverlay_regenPauseTime;
 extern vmCvar_t cg_hudAlpha;
 extern float CG_CalcPlayerHealth();
-extern bool CG_GetWeapReticleZoom(float* pfZoom);
+extern int CG_GetWeapReticleZoom(float* pfZoom);
 extern void BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
                                   float* minSpread, float* maxSpread);
 extern vmCvar_t s_cgCvarStorage[170];

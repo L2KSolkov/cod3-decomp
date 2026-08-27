@@ -151,7 +151,7 @@ extern struct gitem_s bg_itemlist[];
 extern void CG_RegisterItemVisuals(int itemNum);
 extern bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum);
 extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
-extern bool CG_GetWeapReticleZoom(float* pfZoom);
+extern int CG_GetWeapReticleZoom(float* pfZoom);
 // ea: 0x0053C200
 int InteractionController_CanRunWeaponAnims(void* self)
 {
@@ -370,7 +370,7 @@ class DObj;
 extern char buffer_0[256];
 
 // ea: 0x00687F40
-bool CG_GetWeapReticleZoom(float* pfZoom)
+int CG_GetWeapReticleZoom(float* pfZoom)
 {
     Entity* player = EntityManager::sInst->GetPlayer( currCl);
     float fWeaponPosFrac = player->client->ps.fWeaponPosFrac;
