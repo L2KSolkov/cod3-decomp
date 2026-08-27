@@ -835,3 +835,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044AF20	?CheckArmor@@YAHPAVEntity@@HH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AF20	release damage/actor guards, Actor_CheckArmor delegation, and zero fallback match source.
 0x0044AF50	?G_GetHitLocationString@@YAIW4hitLocation_t@@@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_utils.cpp:428	hit-location range assertion initializes the matching AeAssert fields and returns the indexed constant-name entry.
 0x0044AF50	?G_GetHitLocationString@@YAIW4hitLocation_t@@@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AF50	release HITLOC_NUM guard, assertion metadata/call, debugbreak gate, and table return match source.
+0x0044AF10	?handleDeathInvulnerability@@YAXPAVEntity@@HH@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_combat.cpp:83	release helper is an intentional no-op and current source preserves the empty body.
+0x0044AF10	?handleDeathInvulnerability@@YAXPAVEntity@@HH@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044AF10	release empty function body matches source; release parameter list is optimized away.
+0x0044B0F0	?HudElem_Alloc@@YAPAUgame_hudelem_s@@XZ	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:9	HUD allocator scans 16 slots, returns null when full, initializes the first free slot, and returns it.
+0x0044B0F0	?HudElem_Alloc@@YAPAUgame_hudelem_s@@XZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B0F0	release slot scan/count, full-table null return, HudElem_SetDefaults call, and selected-slot return match source.
+0x0044B120	?HudElem_UpdateClient@@YAXPAUClient@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_hudelem.cpp:24	HUD client update entry is an intentional no-op with the exported ABI retained.
+0x0044B120	?HudElem_UpdateClient@@YAXPAUClient@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B120	release empty body matches source; optimized-away parameters are ABI artifacts.
+0x0044B130	?Fill_Clip@@YAXPAVPlayerState@@H@Z	V3	PASS	ida-manual-20260827	2026-08-27	src/game/logic/g_weapon.cpp:31	fill-clip computes ammo/clip indices, bounds weapon, and transfers available ammo into the clip.
+0x0044B130	?Fill_Clip@@YAXPAVPlayerState@@H@Z	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x0044B130	release index calls, weapon bound, clip-space calculation, ammo clamp, and state updates match source.
