@@ -29180,7 +29180,7 @@ void InteractState::CheckNotifySet(Entity& ent, int eventIndex)
         if (Notify != nullptr)
         {
             int v7 = 0;
-            void** mNotifiesUsed = mNotifiesUsed;
+            void** mNotifiesUsed = this->mNotifiesUsed;
             do
             {
                 if (*mNotifiesUsed == Notify)
@@ -32749,7 +32749,7 @@ void InteractStateRowboat::Activate()
     typedef void (__thiscall* RB_AlphaFn)(void*, float);
     InteractState::Activate();
     gRowboatMgr.InitActionAnims(*(const InteractStateInfo*)mInfo);
-    int mRumbleHandleVal = mRumbleHandleVal;
+    int mRumbleHandleVal = this->mRumbleHandleVal;
     mMode = MODE_IDLE;
     mStartAnim = 1;
     if (mRumbleHandleVal != -1)
@@ -32761,7 +32761,7 @@ void InteractStateRowboat::Activate()
             h.mVal = mRumbleHandleVal;
             v3->Remove(h);
         }
-        mRumbleHandleVal = -1;
+        this->mRumbleHandleVal = -1;
     }
     UpdateModeIdle(0.0f);
     const char* v4 = ((InteractStateInfoLocal*)mInfo)->playerModAnim[2];
