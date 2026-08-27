@@ -148,7 +148,7 @@ public:
 
 namespace BrocSys {
 void HudSetDefaults(game_hudelem_s* hud);  // ?HudSetDefaults@BrocSys@@YAXPAUgame_hudelem_s@@@Z
-void HudSetClockInternal(int elemNum, he_type_t type, const char* cmdName,
+void HudSetClockInternal(unsigned int elemNum, he_type_t type, const char* cmdName,
                          const char* a4, float fTime, float fDur, int width,
                          int height);  // ?HudSetClockInternal@BrocSys@@YAXHW4he_type_t@@PBD1MMHH@Z
 }
@@ -1401,6 +1401,8 @@ extern void CG_Fade(int r, int g, int b, int a, int time, int duration,
                     int viewport);  // ?CG_Fade@@YAXHHHHHHH@Z (cg.o)
 extern bool XAnimNotetrackExists(scr_anim_s anim,
                                  const unsigned int& name);  // ?XAnimNotetrackExists@@YA_NUscr_anim_s@@ABI@Z
+extern void XAnimGetAbsDelta(scr_anim_s anim, float* rot, float* trans,
+                             float time);  // ?XAnimGetAbsDelta@@YAXUscr_anim_s@@QAM1M@Z
 extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o
 
 // MusicMgr view (game.o; class lives in g_entity_misc.cpp)
@@ -1603,6 +1605,16 @@ int Scr_GetAnimsIndex(AnimTree* anims)
             __debugbreak();
     }
     return index;
+}
+
+// ea: 0x005C75F0
+AnimTree* Scr_GetAnims(int index)
+{
+    AnimBank* bank = AnimBankManager::sInst->GetBank(PAK_ID_MIN);
+    if (bank == nullptr || index < 0
+        || static_cast<unsigned int>(index) >= bank->anims.mSize)
+        return nullptr;
+    return &bank->anims[index];
 }
 
 // ============================================================================
@@ -2370,7 +2382,7 @@ void SoundStop(unsigned int handle)
 }
 
 // ea: 0x005C4C20
-void HudSetTimerInternal(int elemNum, he_type_t type,
+void HudSetTimerInternal(unsigned int elemNum, he_type_t type,
                          const char* /*cmdName*/, float fVal)
 {
     if (elemNum >= 0x10)
@@ -2393,9 +2405,9 @@ void HudSetTimerInternal(int elemNum, he_type_t type,
         if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", type))
             __debugbreak();
     }
-    float v4 = fVal * 1000.0f;
+    double v4 = fVal * 1000.0;
     game_hudelem_s* v5 = &g_hudelems[elemNum];
-    int v6 = (int)ceilf(v4);
+    int v6 = (int)ceil(v4);
     if (v6 <= 0 && type != HE_TYPE_TIMER_UP)
         Scr_ParamError(0, va("time %g should be > 0", v6 * 0.001f));
     int time = level.time;
@@ -4207,7 +4219,7 @@ void ObjectiveChildAdd3(int iObjective, int iChild,
                         const Broc::string& pszString,
                         const char* display);  // 0x5C8E30
 void BrocDebugRender();  // 0x5BDEA0
-void* CreateExtendedEntity(const char** keys, int count);  // 0x5BDF00
+void* CreateExtendedEntity();  // 0x5BDF00
 bool RecompileScript();  // 0x5BDFB0
 void GetJoyPos(int stickIndex, float& xPos, float& yPos);  // 0x5BF6A0
 void MPScript_ClearPlayerStats();  // 0x5C0B80
@@ -4906,7 +4918,7 @@ void SetFlaggedAnimAligned(unsigned int entityHandleVal,
                            const Broc::vector& angles,
                            unsigned int broanim);  // 0x5CC890
 void InitEntity();  // 0x5DD690 (void mangle)
-void InitAPI();     // 0x5DFDB0 (void mangle)
+BrocAPI* InitAPI(); // 0x5DFDB0 (void mangle)
 void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
                        float fTotalTime, float fAccelTime,
                        float fDecelTime);  // g_physics.cpp 0x5C0A90
@@ -7047,7 +7059,7 @@ float BrocSys::GetAngleDelta(unsigned int anim, float startTime,
 }
 
 // ea: 0x005C4C50
-void BrocSys::HudSetClockInternal(int elemNum, he_type_t type,
+void BrocSys::HudSetClockInternal(unsigned int elemNum, he_type_t type,
                                   const char* texturename,
                                   const char* /*cmdName*/, const float fTime,
                                   const float fDur, int width, int height)
@@ -7070,9 +7082,9 @@ void BrocSys::HudSetClockInternal(int elemNum, he_type_t type,
         if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", type))
             __debugbreak();
     }
-    float v8 = fTime * 1000.0f;
+    double v8 = fTime * 1000.0;
     game_hudelem_s* v9 = &g_hudelems[elemNum];
-    int time = (int)ceilf(v8);
+    int time = (int)ceil(v8);
     if (time <= 0 && type != HE_TYPE_CLOCK_UP)
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -7083,8 +7095,8 @@ void BrocSys::HudSetClockInternal(int elemNum, he_type_t type,
             && AeAssert::Warning("time should be > 0"))
             __debugbreak();
     }
-    float v10 = fDur * 1000.0f;
-    int duration = (int)ceilf(v10);
+    double v10 = fDur * 1000.0;
+    int duration = (int)ceil(v10);
     if (duration <= 0)
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -10989,14 +11001,15 @@ void BrocSys::BrocDebugRender()
 }
 
 // ea: 0x005BDF00
-void* BrocSys::CreateExtendedEntity(const char** keys, int count)
+void* BrocSys::CreateExtendedEntity()
 {
-    (void)keys;
-    (void)count;
     if (gpBrocAPI != nullptr)
-        return Broc::gBrocAPI.mBrocExports.mCreateExtendedEntity(nullptr, 0);
-    else
-        return nullptr;
+    {
+        using CreateExtendedEntityFn = void* (*)();
+        return reinterpret_cast<CreateExtendedEntityFn>(
+            gpBrocAPI->mBrocExports.mCreateExtendedEntity)();
+    }
+    return nullptr;
 }
 
 // ea: 0x005BDFB0
@@ -11820,7 +11833,7 @@ void BrocSys::GetStartOrigin(Broc::vector& outVec,
     float axis[4][3];
     float trans[3];
     float rot[2];
-    XAnimGetAbsDelta(nullptr, anim, rot, trans, 0.0f);
+    XAnimGetAbsDelta(scr_anim_s{anim}, rot, trans, 0.0f);
     axis[3][0] = origin.x;
     axis[3][1] = origin.y;
     axis[3][2] = origin.z;
@@ -11858,7 +11871,7 @@ void BrocSys::GetStartAngles(Broc::vector& outVec,
     float axis[4][3];
     float trans[3];
     float rot[2];
-    XAnimGetAbsDelta(nullptr, anim, rot, trans, 0.0f);
+    XAnimGetAbsDelta(scr_anim_s{anim}, rot, trans, 0.0f);
     axis[3][0] = origin.x;
     axis[3][1] = origin.y;
     axis[3][2] = origin.z;
@@ -11890,8 +11903,8 @@ void BrocSys::GetCycleOriginOffset(Broc::vector& outVec,
     float endOrigin[3];
     float rot[2];
     AnglesToAxis(&angles.x, axis);
-    XAnimGetAbsDelta(nullptr, anim, rot, startOrigin, 0.0f);
-    XAnimGetAbsDelta(nullptr, anim, rot, endOrigin, 1.0f);
+    XAnimGetAbsDelta(scr_anim_s{anim}, rot, startOrigin, 0.0f);
+    XAnimGetAbsDelta(scr_anim_s{anim}, rot, endOrigin, 1.0f);
     trans[0] = endOrigin[0] - startOrigin[0];
     trans[1] = endOrigin[1] - startOrigin[1];
     trans[2] = endOrigin[2] - startOrigin[2];
@@ -23171,10 +23184,7 @@ public:
     {
         Entry* e = find(hash);
         if (e != nullptr)
-        {
-            e->mStr = s;
             return;
-        }
         if (mCount < 2048)
         {
             mEntries[mCount].mHash = hash;
@@ -23236,6 +23246,12 @@ void BrocSys::RegisterHashString(int hash, const char* txt)
 static const char* BrocSysHashLookup(unsigned int hash)
 {
     return sHashStrings.lookup(hash);
+}
+
+// ea: 0x005DC4B0
+const char* BrocSys::ConvertHashToString(int hash)
+{
+    return BrocSysHashLookup(static_cast<unsigned int>(hash));
 }
 
 // ea: 0x005DF580
@@ -23683,12 +23699,9 @@ bool BrocSys::RemoveHashString(int hash)
 // ea: 0x005DC620
 bool BrocSys::RemoveHashString(const char* txt)
 {
-    const char* hash = txt;
-    if (txt != nullptr)
-        hash = (const char*)(uintptr_t)tlFixedString(txt).hash;
-    if (!sHashStrings.remove((unsigned int)(uintptr_t)hash))
-        return 0;
-    return 1;
+    const unsigned int hash =
+        txt != nullptr ? tlFixedString(txt).hash : 0u;
+    return sHashStrings.remove(hash) ? 1 : 0;
 }
 
 // ea: 0x005DC680
@@ -25233,7 +25246,6 @@ unsigned int BrocSys::GetEntByFieldAndHash(int offsetIntoEnt,
                                            unsigned int hValue,
                                            unsigned int* array, int capacity)
 {
-    (void)capacity;
     unsigned int result = 0;
     AeSizedEntityArray& active = EntityHandleDb::sInst.mActiveList;
     Entity** p = active.m_elements;
@@ -26797,7 +26809,7 @@ static const struct { unsigned int off1; void (*fn1)();
     { 0x132C, (void (*)())cdOceanGlobals::SetWaveTimescale, 0x5DC, (void (*)())BrocSys::ProfTick },
 };
 // ea: 0x005DFDB0
-void BrocSys::InitAPI()
+BrocAPI* BrocSys::InitAPI()
 {
     // gpBrocAPI->mPrint = 0xBFBFBFBF (release sentinel per disasm)
     *(void**)((char*)&gpBrocAPI->mBrocExports + 0x000) = (void*)0xBFBFBFBF;
@@ -26892,6 +26904,7 @@ void BrocSys::InitAPI()
         cdOceanGlobals::SetWavePhase;
     gpBrocAPI->mBrocExports.mOceanSetWaveTimescale =
         cdOceanGlobals::SetWaveTimescale;
+    return gpBrocAPI;
 }
 
 // ea: 0x005CBA30
