@@ -23,6 +23,20 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0044AB20	?Cmd_ProfileNodes_f@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0044AB20	IDA decompiles the release function as a one-byte empty body; source preserves the same no-op behavior.
 0x0044AE30	?Cmd_Thread_Debug_f@@YAXXZ	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_main.cpp:299	Source body is an intentional empty release hook with the complete ABI.
 0x0044AE30	?Cmd_Thread_Debug_f@@YAXXZ	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0044AE30	IDA decompiles the release function as a one-byte empty body; source preserves the same no-op behavior.
+0x004A55C0	??0Dir3@math@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:706	Default Dir3 construction has no user body and only preserves the release object ABI.
+0x004A55C0	??0Dir3@math@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A55C0	Release decompiles to the constructor returning this without writes; source is the equivalent empty constructor.
+0x004A55D0	??0Dir3@math@@QAE@MMM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:710	Constructor writes the three supplied coordinates and clears the SIMD padding lane.
+0x004A55D0	??0Dir3@math@@QAE@MMM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A55D0	Release stores x/y/z into the packed vector and returns this; source performs the same coordinate initialization.
+0x004A5640	??0Dir3@math@@QAE@M@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:718	Scalar constructor broadcasts its argument into x/y/z and clears the padding lane.
+0x004A5640	??0Dir3@math@@QAE@M@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5640	Release broadcasts the scalar to all three coordinates; source has the same resulting vector state.
+0x004A56A0	?GetZ@Dir3@math@@QBEMXZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:731	Accessor returns the packed z component.
+0x004A56A0	?GetZ@Dir3@math@@QBEMXZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A56A0	Release uses the z-lane shuffle; source uses the equivalent SIMD z extraction.
+0x004A56F0	?SetZ@Dir3@math@@QAEXM@Z	V3	PASS	manual-equivalence-20260827	2026-08-27	src/game/logic/g_accessors.cpp:746	Setter replaces only the packed z component.
+0x004A56F0	?SetZ@Dir3@math@@QAEXM@Z	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A56F0	Release preserves x/y and inserts the supplied z value; source uses the matching shuffle sequence.
+0x004A5790	??0Position3@math@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/core/math_types.h:118	Default Position3 construction has an intentionally empty body.
+0x004A5790	??0Position3@math@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5790	Release constructor returns this without writes; source preserves the same default-construction semantics.
+0x004A5A90	??0Vector4@math@@QAE@XZ	V3	PASS	manual-equivalence-20260827	2026-08-27	src/core/math_types.h:279	Default Vector4 construction has an intentionally empty body.
+0x004A5A90	??0Vector4@math@@QAE@XZ	V4	PASS	manual-equivalence-20260827	2026-08-27	IDA:0x004A5A90	Release constructor returns this without writes; source preserves the same default-construction semantics.
 0x0044AF10	?handleDeathInvulnerability@@YAXPAVEntity@@HH@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_combat.cpp:84	Source body is an intentional empty release hook with the complete entity/int/int ABI.
 0x0044AF10	?handleDeathInvulnerability@@YAXPAVEntity@@HH@Z	V4	PASS	manual-equivalence-20260826	2026-08-26	IDA:0x0044AF10	IDA decompiles the release function as a one-byte empty body; source preserves the same no-op behavior.
 0x0044B120	?HudElem_UpdateClient@@YAXPAUClient@@H@Z	V3	PASS	manual-equivalence-20260826	2026-08-26	src/game/logic/g_hudelem.cpp:25	Source body is an intentional empty release hook with the complete client/int ABI.

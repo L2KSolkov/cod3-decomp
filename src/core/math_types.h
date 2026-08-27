@@ -114,6 +114,7 @@ class Position3 {
 public:
     __m128 v;  // SSE-packed: x, y, z, w
 
+    // ea: 0x004A5790
     Position3() {}
     Position3(__m128 _v) : v(_v) {}
     Position3(float _x, float _y, float _z);  // ??0Position3@math@@QAE@MMM@Z (g.o 0x4A57A0)
@@ -274,6 +275,7 @@ public:
         float x, y, z, w;
     };
 
+    // ea: 0x004A5A90
     Vector4() {}
     Vector4(__m128 _v) : v(_v) {}
     Vector4(const Vector4& other) : v(other.v) {}  // implicit copy

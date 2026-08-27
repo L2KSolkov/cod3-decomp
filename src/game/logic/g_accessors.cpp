@@ -702,9 +702,11 @@ float RSqrt(float a) { return 1.0f / (float)sqrt((double)a); }
 // ============================================================================
 // math vector accessors (g.o 0x4A55C0-0x4A5BA0)
 // ============================================================================
+// ea: 0x004A55C0
 math::Dir3::Dir3()
 {
 }
+// ea: 0x004A55D0
 math::Dir3::Dir3(float _x, float _y, float _z)
 {
     v.m128_f32[0] = _x;
@@ -712,6 +714,7 @@ math::Dir3::Dir3(float _x, float _y, float _z)
     v.m128_f32[2] = _z;
     v.m128_f32[3] = 0.0f;
 }
+// ea: 0x004A5640
 math::Dir3::Dir3(float _x)
 {
     v.m128_f32[0] = _x;
@@ -724,6 +727,7 @@ double math::Dir3::GetY() const
 {
     return _mm_shuffle_ps(v, v, 0x55).m128_f32[0];
 }
+// ea: 0x004A56A0
 float math::Dir3::GetZ() const
 {
     return _mm_shuffle_ps(v, v, 0xAA).m128_f32[0];
@@ -738,6 +742,7 @@ void math::Dir3::SetY(float _y)
 {
     v = _mm_shuffle_ps(_mm_shuffle_ps(_mm_set1_ps(_y), v, 0), v, 0xE2);
 }
+// ea: 0x004A56F0
 void math::Dir3::SetZ(float _z)
 {
     v = _mm_shuffle_ps(v, _mm_shuffle_ps(_mm_set1_ps(_z), v, 0xF0), 0xC4);
