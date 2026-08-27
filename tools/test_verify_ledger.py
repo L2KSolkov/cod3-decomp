@@ -130,6 +130,8 @@ def main() -> int:
             assert ("?CG_DrawPerformanceWarnings@@YAHXZ"
                     in ledger.symbol_variants(
                         "?CG_DrawPerformanceWarnings@@YAXXZ"))
+            assert ("?CG_WeaponFireRecoil@@YAHXZ"
+                    in ledger.symbol_variants("?CG_WeaponFireRecoil@@YAXXZ"))
             assert ("?CG_WeaponSelectable@@YA_NH@Z"
                     in ledger.symbol_variants("?CG_WeaponSelectable@@YAHH@Z"))
             assert ("?CG_Weapon_f@@YAHXZ"
