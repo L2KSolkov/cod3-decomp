@@ -183,7 +183,7 @@ core.o	1437	606	26	313	1	491	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	38	0	122	1	1309	0
+g.o	1470	38	0	121	1	1310	0
 game.o	1158	461	11	671	3	12	0
 game2.o	1040	414	91	487	8	40	0
 game_xbox.o	365	151	93	110	0	11	0
@@ -279,7 +279,7 @@ phys_constraint_solver_multithreaded.o	184	140	36	8	0	0	0
 phys_contact_manifold.o	26	8	12	6	0	0	0
 phys_gjk.o	37	32	3	2	0	0	0
 phys_util.o	11	3	8	0	0	0	0
-physics.o	747	474	25	242	0	6	0
+physics.o	747	474	25	238	0	10	0
 physics_system.o	313	277	30	5	0	1	0
 physics_system_internal.o	154	114	30	10	0	0	0
 rb_ragdoll_model.o	92	58	19	15	0	0	0
