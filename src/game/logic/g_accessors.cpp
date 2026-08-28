@@ -485,6 +485,7 @@ void Task_SetAllocator(PoolAllocator* allocator)
 {
     Task::SetAllocator(allocator);
 }
+// ea: 0x004A5360
 PhysDataBankManager* PhysDataBankManager::Inst()
 {
     return PhysDataBankManager::sInst;
@@ -495,6 +496,7 @@ public:
     static AnimBankManager* sInst;
     static AnimBankManager* Inst();
 };
+// ea: 0x004A5350
 AnimBankManager* AnimBankManager::Inst()
 {
     return AnimBankManager::sInst;
@@ -519,10 +521,12 @@ public:
 };
 TaskHandler XAnimUpdateTask::sHandler(FourCC(1480674893), 0u);
 TaskHandler AnimationUpdateTask::sHandler(FourCC(1095649613), 0u);
+// ea: 0x004A5330
 TaskHandler* XAnimUpdateTask::GetHandler()
 {
     return &XAnimUpdateTask::sHandler;
 }
+// ea: 0x004A5340
 TaskHandler* AnimationUpdateTask::GetHandler()
 {
     return &AnimationUpdateTask::sHandler;
@@ -597,29 +601,35 @@ FourCC TaskHandler::GetId() const
 // ============================================================================
 // Task memory ops / Update (g.o 0x4A5250-0x4A52E0)
 // ============================================================================
+// ea: 0x004A5250
 void* Task::operator new(size_t size, bool forceHeapAlloc, const char* /*file*/,
                          int /*line*/)
 {
     return Task::sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
 }
+// ea: 0x004A5270
 void Task::operator delete(void* ptr, bool /*forceHeapAlloc*/,
                            const char* /*file*/, int /*line*/)
 {
     Task::sAllocator->Release(ptr);
 }
+// ea: 0x004A5290
 void* Task::operator new(size_t size)
 {
     return Task::sAllocator->Allocate((unsigned int)size, false);
 }
+// ea: 0x004A52B0
 void Task::operator delete(void* ptr)
 {
     Task::sAllocator->Release(ptr);
 }
+// ea: 0x004A52E0
 void Task::Update(Entity* /*e*/, float /*deltaT*/)
 {
 }
 
 // TaskFunctor dtor (g.o 0x4A5320)
+// ea: 0x004A5320
 TaskFunctor::~TaskFunctor()
 {
 }
@@ -2144,6 +2154,7 @@ const math::Position3* EntityState::GetLerpOrigin(math::Position3* result)
 // ============================================================================
 // Misc accessors (g.o)
 // ============================================================================
+// ea: 0x004A53B0
 unsigned __int64 tlGetTick()
 {
     return __rdtsc();

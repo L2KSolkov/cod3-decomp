@@ -702,6 +702,7 @@ def symbol_variants(name: str) -> set[str]:
         "??3AeThread@@SAXPAX_NPBDH@Z": "??3AeThread@@SAXPAX@Z",
         "??2Block@BackupStack@AeThread@@SAPAXI_NPBDH@Z": "??2Block@BackupStack@AeThread@@SAPAXI_N@Z",
         "??3Block@BackupStack@AeThread@@SAXPAX_NPBDH@Z": "??3Block@BackupStack@AeThread@@SAXPAX@Z",
+        "??3Task@@SAXPAX0@Z": "??3Task@@SAXPAX_NPBDH@Z",
         "??2EntityNotifySet@@SAPAXI_NPBDH@Z": "??2EntityNotifySet@@SAPAXI_N@Z",
         "??3EntityNotifySet@@SAXPAX_NPBDH@Z": "??3EntityNotifySet@@SAXPAX@Z",
         "??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z":
@@ -791,6 +792,8 @@ def symbol_variants(name: str) -> set[str]:
     for value in tuple(values):
         values.add(value.replace("V?$", "U?$"))
         values.add(value.replace("U?$", "V?$"))
+        values.add(value.replace("PAVTaskHandler", "PAUTaskHandler"))
+        values.add(value.replace("PAUTaskHandler", "PAVTaskHandler"))
         values.add(value.replace("?AV0@", "?AU0@"))
         values.add(value.replace("?AU0@", "?AV0@"))
     return values

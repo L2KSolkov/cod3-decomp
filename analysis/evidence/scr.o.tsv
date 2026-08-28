@@ -2850,3 +2850,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A5230	?GetName@XModel@@QBEPBDXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012759	Release GetName returns name.mStr.
 0x004A5240	?Inst@XModelManager@@SAPAV1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:403	XModelManager Inst returns the static singleton pointer.
 0x004A5240	?Inst@XModelManager@@SAPAV1@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012765	Release XModelManager Inst returns XModelManager::sInst.
+0x004A5250	??2Task@@SAPAXI_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:604	Task placement operator new routes allocation through Task::sAllocator with the force flag.
+0x004A5250	??2Task@@SAPAXI_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012771	Release Task placement operator new calls PoolAllocator::Allocate with forceHeapAlloc.
+0x004A5270	??3Task@@SAXPAX_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:610	Task placement operator delete routes release through Task::sAllocator.
+0x004A5270	??3Task@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012777	Release Task operator delete calls PoolAllocator::Release.
+0x004A5290	??2Task@@SAPAXI@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:616	Task ordinary operator new allocates from Task::sAllocator without the force flag.
+0x004A5290	??2Task@@SAPAXI@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012783	Release ordinary Task operator new calls PoolAllocator::Allocate with false.
+0x004A52B0	??3Task@@SAXPAX@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:621	Task ordinary operator delete releases through Task::sAllocator.
+0x004A52B0	??3Task@@SAXPAX@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012789	Release ordinary Task operator delete calls PoolAllocator::Release.
+0x004A52D0	??1Task@@UAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_entity_misc.cpp:2073	Task destructor is a compiler-generated base-vtable restoration body.
+0x004A52D0	??1Task@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012795	Release Task destructor restores the Task vtable.
+0x004A52F0	??_GTask@@UAEPAXI@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_old_mangle_thunks.asm:63	Task deleting-destructor thunk forwards to the scalar destructor implementation.
+0x004A52F0	??_GTask@@UAEPAXI@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012802	Release Task vector deleting destructor restores the vtable and conditionally releases the object.
+0x004A52F0	??_ETask@@UAEPAXI@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_old_mangle_thunks.asm:63	Task vector-deleting alias forwards to the scalar deleting destructor path.
+0x004A52F0	??_ETask@@UAEPAXI@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012802	Release Task vector deleting destructor has the same vtable restore and conditional release contract.
+0x004A5320	??1TaskFunctor@@UAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:632	TaskFunctor destructor preserves the base virtual-object lifetime contract.
+0x004A5320	??1TaskFunctor@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012812	Release TaskFunctor destructor restores its vtable.
+0x004A5330	?GetHandler@XAnimUpdateTask@@SAPAVTaskHandler@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:524	XAnimUpdateTask GetHandler returns its static TaskHandler.
+0x004A5330	?GetHandler@XAnimUpdateTask@@SAPAVTaskHandler@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012819	Release XAnimUpdateTask GetHandler returns sHandler.
+0x004A5340	?GetHandler@AnimationUpdateTask@@SAPAVTaskHandler@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:529	AnimationUpdateTask GetHandler returns its static TaskHandler.
+0x004A5340	?GetHandler@AnimationUpdateTask@@SAPAVTaskHandler@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012825	Release AnimationUpdateTask GetHandler returns sHandler.
+0x004A5350	?Inst@AnimBankManager@@SAPAV1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:499	AnimBankManager Inst returns its static singleton.
+0x004A5350	?Inst@AnimBankManager@@SAPAV1@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012831	Release AnimBankManager Inst returns sInst.
+0x004A5360	?Inst@PhysDataBankManager@@SAPAV1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:488	PhysDataBankManager Inst returns its static singleton.
+0x004A5360	?Inst@PhysDataBankManager@@SAPAV1@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012837	Release PhysDataBankManager Inst returns sInst.
+0x004A5370	?get_is_locked@controller@@QAE_NXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/input/controller.cpp:701	Controller lock query returns the stored lock state.
+0x004A5370	?get_is_locked@controller@@QAE_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012843	Release get_is_locked returns is_locked.
+0x004A5380	?get_locked_port@controller@@QAEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/input/controller.cpp:703	Controller port query returns the stored locked port.
+0x004A5380	?get_locked_port@controller@@QAEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012849	Release get_locked_port returns locked_port.
+0x004A53B0	?tlGetTick@@YA_KXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:2157	tlGetTick returns the x86 timestamp counter.
+0x004A53B0	?tlGetTick@@YA_KXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012867	Release tlGetTick returns __rdtsc().

@@ -698,5 +698,7 @@ void controller::accept_input_from_all_controllers(bool accept)
         enabled = accept;
 }
 
+// ea: 0x004A5370
 bool controller::get_is_locked() { return is_locked; }
+// ea: 0x004A5380
 int controller::get_locked_port() { return locked_port; }
