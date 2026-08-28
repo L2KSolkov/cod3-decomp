@@ -265,3 +265,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B9670	?AngleEigenTrace@@YAMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024635	Release AngleEigenTrace uses the same conversion constant and sine square.
 0x004B96A0	?QuatRatioEigenTrace@@YAMQAM0@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1000	QuatRatioEigenTrace multiplies quat1 by the inverse of quat2 and returns the normalized vector-square ratio.
 0x004B96A0	?QuatRatioEigenTrace@@YAMQAM0@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024644	Release QuatRatioEigenTrace uses the same inverse components, quaternion product, norm, and normalized result.
+0x004B97E0	?ColorBytes3@@YA?BIMMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1022	ColorBytes3 truncates RGB byte values and forces an opaque alpha byte.
+0x004B97E0	?ColorBytes3@@YA?BIMMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024683	Release ColorBytes3 uses the same three byte conversions and 0xFF alpha.
+0x004B9820	?ColorBytes4@@YA?BIMMMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1033	ColorBytes4 truncates and packs all four RGBA byte values.
+0x004B9820	?ColorBytes4@@YA?BIMMMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024695	Release ColorBytes4 uses the same four byte conversions and shifts.
+0x004B9870	?NormalizeColor@@YA?BMQBMQAM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1044	NormalizeColor divides RGB by their maximum, preserves the maximum return value, and handles a zero maximum.
+0x004B9870	?NormalizeColor@@YA?BMQBMQAM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024707	Release NormalizeColor uses the same max selection, zero branch, divisions, and return.
+0x004B98F0	?AngleMod@@YA?BMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1077	AngleMod applies the release degree normalization multiply and scale constants.
+0x004B98F0	?AngleMod@@YA?BMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024746	Release AngleMod uses the same two constants and operation order.
+0x004B9920	?LerpAngle@@YA?BMMMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1084	LerpAngle adjusts the shortest wraparound path before interpolating.
+0x004B9920	?LerpAngle@@YA?BMMMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024755	Release LerpAngle uses the same two wrap branches and interpolation.
+0x004B9990	?AngleSubtract@@YA?BMMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1098	AngleSubtract wraps the difference into the signed 180-degree interval.
+0x004B9990	?AngleSubtract@@YA?BMMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024771	Release AngleSubtract uses the same fmod and positive/negative wrap branches.
+0x004B99F0	?AnglesSubtract@@YAXABVPosition3@math@@0AAV12@@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1113	Position3 AnglesSubtract applies AngleSubtract component-wise to all three vector lanes.
+0x004B99F0	?AnglesSubtract@@YAXABVPosition3@math@@0AAV12@@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024789	Release Position3 AnglesSubtract uses the same three fmod and wrap sequences.
+0x004B9B20	?AnglesSubtract@@YAXQBM0QAM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1140	Float-array AnglesSubtract applies the same signed wrap logic to all three components.
+0x004B9B20	?AnglesSubtract@@YAXQBM0QAM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024822	Release float-array AnglesSubtract uses the same component-wise fmod and wrap branches.
+0x004B9C50	?AngleNormalize360@@YA?BMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1167	AngleNormalize360 applies the release degree conversion constants.
+0x004B9C50	?AngleNormalize360@@YA?BMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024855	Release AngleNormalize360 uses the same multiply and scale operations.
+0x004B9C80	?AngleNormalize180@@YA?BMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1174	AngleNormalize180 converts degrees and subtracts 360 above 180.
+0x004B9C80	?AngleNormalize180@@YA?BMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024864	Release AngleNormalize180 uses the same conversion and upper-bound branch.
+0x004B9CD0	?AngleDelta@@YA?BMMM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1184	AngleDelta converts the angle difference and subtracts 360 above 180.
+0x004B9CD0	?AngleDelta@@YA?BMMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024877	Release AngleDelta uses the same difference conversion and upper-bound branch.
+0x004B9D20	?RadiusFromBounds@@YA?BMABVPosition3@math@@0@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1194	RadiusFromBounds selects the maximum absolute extent on each axis and returns its Euclidean radius.
+0x004B9D20	?RadiusFromBounds@@YA?BMABVPosition3@math@@0@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024890	Release RadiusFromBounds uses the same absolute maxima and square-root sum.
