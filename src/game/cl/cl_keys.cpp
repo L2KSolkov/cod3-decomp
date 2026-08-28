@@ -103,8 +103,9 @@ KeyInfoEntry::KeyInfoEntry() : mState(0), mBoundCmdName(nullptr)
 }
 
 // ea: 0x52C590
-void Field_Paste()
+void Field_Paste(field_t* edit)
 {
+    (void)edit;
 }
 
 // ea: 0x52C7F0

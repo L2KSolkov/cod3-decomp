@@ -770,9 +770,13 @@ void CL_MapLoading()
 // Server-message parsing (cl.o cl_parse.cpp)
 // ============================================================================
 
+struct clSnapshot_t;
+
 // ea: 0x52DA40
-void CL_ParsePacketEntities(msg_t* msg, void* snapshot)
+void CL_ParsePacketEntities(msg_t* msg, clSnapshot_t* snapshot)
 {
+    (void)msg;
+    (void)snapshot;
 }
 
 // ea: 0x52DA50

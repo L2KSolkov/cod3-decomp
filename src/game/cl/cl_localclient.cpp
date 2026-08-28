@@ -18,6 +18,7 @@ struct netchan_t;
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
+extern void (*gpBrocAPI_mCallbackQuitGame)();
 extern void MSG_WriteByte(struct msg_t* msg, int c);
 extern void Netchan_Transmit(netchan_t* chan, int length,
                              const unsigned char* data);
@@ -90,31 +91,35 @@ extern int dword_F171E0;
 extern int dword_F171E4;
 
 // ============================================================================
-// LocalClient statics
+// LocalClient namespace functions
 // ============================================================================
 static int lFirstLocalClientIndex;
 static int lLastLocalClientIndex;
 static int lNumLocalClients;
 
-// LocalClient (cl.o; C++ statics matching the binary mangling)
-class LocalClient {
-public:
-    static void InitializeClientControllers();      // ?InitializeClientControllers@LocalClient@@YAXXZ (0x52EF50)
-    static int  LastLocalClientIndex();          // ?LastLocalClientIndex@LocalClient@@YAHXZ (0x52EF60)
-    static void SetLastLocalClientIndex(int index); // ?SetLastLocalClientIndex@LocalClient@@YAXH@Z (0x52EF70)
-    static int  FirstLocalClientIndex();
-    static int  NumLocalClients();               // ?NumLocalClients@LocalClient@@YAHXZ (0x52EFA0)
-    static void SetFirstLocalClientIndex(int index);// ?SetFirstLocalClientIndex@LocalClient@@YAXH@Z (0x52EF90)
-    static void SetNumLocalClients(int num);     // ?SetNumLocalClients@LocalClient@@YAXH@Z (0x52EFB0)
-    static int  GetNumLocalClientsByState(int state);  // ?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z (0x52EFC0)
-    static int  PortToClient(int port);          // ?PortToClient@LocalClient@@YAHH@Z (0x52F010)
-    static bool PortIsState(int port, int state);// ?PortIsState@LocalClient@@YA_NHH@Z (0x52F020)
-    static int  PortToValidClient(int port);     // ?PortToValidClient@LocalClient@@YAHH@Z (0x52F040)
-    static void SetClientPort(int client, int port);  // ?SetClientPort@LocalClient@@YAXHH@Z (0x52F080)
-    static void UpdatePlayerPorts(int fixedPort);      // ?UpdatePlayerPorts@LocalClient@@YAXH@Z (0x52F0A0)
-    static void ConfigureLocalClients();               // ?ConfigureLocalClients@LocalClient@@YAXXZ (0x52F0F0)
-    static bool QuitClientOutOfGame(int client);       // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (0x52F140)
+enum ELocalPlayerStates
+{
+    LOCAL_PLAYER_STATE_DEFAULT = 0
 };
+
+namespace LocalClient {
+void InitializeClientControllers();
+int LastLocalClientIndex();
+void SetLastLocalClientIndex(int index);
+int FirstLocalClientIndex();
+int NumLocalClients();
+void SetFirstLocalClientIndex(int index);
+void SetNumLocalClients(int num);
+int GetNumLocalClientsByState(ELocalPlayerStates state);
+int ClientToPort(int client);
+int PortToClient(int port);
+bool PortIsState(int port, int state);
+int PortToValidClient(int port);
+void SetClientPort(int client, int port);
+void UpdatePlayerPorts(int fixedPort);
+void ConfigureLocalClients();
+bool QuitClientOutOfGame(int client);
+}
 
 // ea: 0x52EF50
 void LocalClient::InitializeClientControllers()
@@ -187,21 +192,25 @@ void LocalClient_SetNumLocalClients(int num)
 }
 
 // ea: 0x52EFC0
-int LocalClient::GetNumLocalClientsByState(int state)
+int LocalClient::GetNumLocalClientsByState(ELocalPlayerStates state)
 {
     return dword_F6A290[0] == state;
 }
 int LocalClient_GetNumLocalClientsByState(int state)
 {
-    return LocalClient::GetNumLocalClientsByState(state);
+    return LocalClient::GetNumLocalClientsByState((ELocalPlayerStates)state);
 }
 
 // ea: 0x52EFE0
-int LocalClient_ClientToPort(int client)
+int LocalClient::ClientToPort(int client)
 {
     if (client != 0)
         return 0;
     return unk_F6A28C[0];
+}
+int LocalClient_ClientToPort(int client)
+{
+    return LocalClient::ClientToPort(client);
 }
 
 // ea: 0x52F010
@@ -310,8 +319,7 @@ bool LocalClient::QuitClientOutOfGame(int client)
     if (client == 0)
         View::IsSplitScreen();
     MultiplayerMgr::sInst->DropHotJoiningPlayers();
-    extern void (*gpBrocAPI_mCallbackQuitGame)();
-    void (*mCallbackQuitGame)() = gpBrocAPI_mCallbackQuitGame;
+    void (*mCallbackQuitGame)() = ::gpBrocAPI_mCallbackQuitGame;
     if (mCallbackQuitGame != nullptr)
         mCallbackQuitGame();
     FEManagerView& manager = *(FEManagerView*)&g_femanager;
@@ -405,9 +413,9 @@ int CL_IsCGameRendering()
 }
 
 // ea: 0x52E2D0
-int GetConfigString(unsigned int index, char* buf, int size)
+int GetConfigString(int index, char* buf, int size)
 {
-    if (index >= 0x400)
+    if (index < 0 || index >= 0x400)
         return 0;
     if (cls.servername[4 * index + 128] == 0)
     {

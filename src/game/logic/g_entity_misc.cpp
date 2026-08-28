@@ -1911,30 +1911,13 @@ int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
             ent, targEnt, visThreshold);
 }
 
-// LocalClient namespace (canonical implementations live in cl_localclient.cpp).
-extern int LocalClient_PortToValidClient(int port);
-extern void LocalClient_SetFirstLocalClientIndex(int index);
-extern void LocalClient_SetLastLocalClientIndex(int index);
-extern void LocalClient_InitializeClientControllers();
 namespace LocalClient {
 int FirstLocalClientIndex();
 int ClientToPort(int client);
-int PortToValidClient(int port)
-{
-    return LocalClient_PortToValidClient(port);
-}
-void SetFirstLocalClientIndex(int index)
-{
-    LocalClient_SetFirstLocalClientIndex(index);
-}
-void SetLastLocalClientIndex(int index)
-{
-    LocalClient_SetLastLocalClientIndex(index);
-}
-void InitializeClientControllers()
-{
-    LocalClient_InitializeClientControllers();
-}
+int PortToValidClient(int port);
+void SetFirstLocalClientIndex(int index);
+void SetLastLocalClientIndex(int index);
+void InitializeClientControllers();
 }
 
 // ea: 0x4A6B70 (g.o inline COMDAT)

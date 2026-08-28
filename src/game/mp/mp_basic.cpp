@@ -282,13 +282,6 @@ extern void LocalClient_SetNumLocalClients(int num);
 extern void LocalClient_UpdatePlayerPorts(int fixedPort);
 extern int LocalClient_FirstLocalClientIndex();
 extern int LocalClient_LastLocalClientIndex();
-namespace LocalClient {
-int NumLocalClients() { return LocalClient_NumLocalClients(); }
-void SetNumLocalClients(int num) { LocalClient_SetNumLocalClients(num); }
-void UpdatePlayerPorts(int fixedPort) { LocalClient_UpdatePlayerPorts(fixedPort); }
-int FirstLocalClientIndex() { return LocalClient_FirstLocalClientIndex(); }
-int LastLocalClientIndex() { return LocalClient_LastLocalClientIndex(); }
-}
 
 // PadAliasMgr controller button helper (implemented by PadAliasMgr::Context).
 extern void* PadAliasMgr_sInst;  // @ 0x00F4F458

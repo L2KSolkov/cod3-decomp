@@ -27743,7 +27743,7 @@ extern float sStickDownMinDist2;
 extern float sStickDownMinSide;
 extern float sStickDownMaxProgress;
 extern float CL_GamepadPhysicalAxisValue(int physicalAxis);
-extern void GetSwirlSpeedDirect(float* fCosDeltaAngle, int* iRotationDir,
+extern void GetSwirlSpeedDirect(float& fCosDeltaAngle, int& iRotationDir,
                                 int iStickIndex);
 extern void GetAverageDelta(float& deltaAngle, int& index, int iStickIndex);
 struct cvar_t;
@@ -27993,7 +27993,7 @@ void InteractInputRcvrStickSwirl::MeasureInput(float& inputRate,
     InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
     float cosDelta = -2.0f;
     int rotateDir = 0;
-    GetSwirlSpeedDirect(&cosDelta, &rotateDir, mInfo->leftStick == 0);
+    GetSwirlSpeedDirect(cosDelta, rotateDir, mInfo->leftStick == 0);
     float v7 = (1.0f - cosDelta) * rotateDir;
     if (mTotalTime <= 0.1f)
     {

@@ -555,7 +555,7 @@ extern const float VectorNormalize(float* const v);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
 // ea: 0x530780
-void GetSwirlSpeedDirect(float* fCosDeltaAngle, int* iRotationDir,
+void GetSwirlSpeedDirect(float& fCosDeltaAngle, int& iRotationDir,
                          int iStickIndex)
 {
     float currDir[3];
