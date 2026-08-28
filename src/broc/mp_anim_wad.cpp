@@ -811,13 +811,13 @@ Broc::bbool* IsEEDefined_script_fixbasepose_ptr(Broc::bbool* result, Broc::entit
 }
 
 // GetEE_script_moveoverride / IsEEDefined_script_moveoverride (key 0x04B15AAB)
-Broc::bint* GetEE_script_moveoverride(Broc::entity ent) {
+Broc::bint* GetEE_script_moveoverride_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x04B15AAB);
 }
 
-Broc::bbool* IsEEDefined_script_moveoverride(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_moveoverride_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -835,13 +835,13 @@ Broc::bbool* IsEEDefined_script_moveoverride(Broc::bbool* result, Broc::entity e
 }
 
 // GetEE_script_stalingradspawn / IsEEDefined_script_stalingradspawn (key 0x15D9C126)
-Broc::bint* GetEE_script_stalingradspawn(Broc::entity ent) {
+Broc::bint* GetEE_script_stalingradspawn_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x15D9C126);
 }
 
-Broc::bbool* IsEEDefined_script_stalingradspawn(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_stalingradspawn_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -859,13 +859,13 @@ Broc::bbool* IsEEDefined_script_stalingradspawn(Broc::bbool* result, Broc::entit
 }
 
 // GetEE_script_new_exploder / IsEEDefined_script_new_exploder (key 0xC1C22900)
-Broc::bint* GetEE_script_new_exploder(Broc::entity ent) {
+Broc::bint* GetEE_script_new_exploder_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0xC1C22900);
 }
 
-Broc::bbool* IsEEDefined_script_new_exploder(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_new_exploder_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -879,6 +879,38 @@ Broc::bbool* IsEEDefined_script_new_exploder(Broc::bbool* result, Broc::entity e
     } else {
         result->mVal = false;
     }
+    return result;
+}
+
+// Release ABI wrappers for the script control fields.
+// ea: 0x0098DF40
+::bint& GetEE_script_moveoverride(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_moveoverride_ptr(ent));
+}
+// ea: 0x0098DF90
+::bbool IsEEDefined_script_moveoverride(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_moveoverride_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098E040
+::bint& GetEE_script_stalingradspawn(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_stalingradspawn_ptr(ent));
+}
+// ea: 0x0098E090
+::bbool IsEEDefined_script_stalingradspawn(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_stalingradspawn_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098E140
+::bint& GetEE_script_new_exploder(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_new_exploder_ptr(ent));
+}
+// ea: 0x0098E190
+::bbool IsEEDefined_script_new_exploder(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_new_exploder_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
     return result;
 }
 
