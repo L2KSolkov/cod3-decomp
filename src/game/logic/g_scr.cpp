@@ -624,6 +624,9 @@ typename reserved_dlist<T>::iterator reserved_dlist<T>::find(T* object)
 }
 
 template <typename T>
+// ea: 0x005EA8E0
+// ea: 0x005EA900
+// ea: 0x005EA950
 void reserved_dlist<T>::dlist_node::pop()
 {
     m_next->m_prev = m_prev;
@@ -631,6 +634,8 @@ void reserved_dlist<T>::dlist_node::pop()
 }
 
 template <typename T>
+// ea: 0x005EA8C0
+// ea: 0x005EA930
 void reserved_dlist<T>::clear()
 {
     m_size = 0;
@@ -740,6 +745,7 @@ T* reserved_dlist<T>::node_to_object(dlist_node* node)
 }
 
 template <typename T>
+// ea: 0x005EA920
 const T* reserved_dlist<T>::node_to_object(const dlist_node* node)
 {
     return reinterpret_cast<const T*>(node);
@@ -807,6 +813,7 @@ reserved_dlist<AeThreadState>::node_to_object(
 }
 
 template <>
+// ea: 0x005EA8B0
 const AeThreadState*
 reserved_dlist<AeThreadState>::node_to_object(
     const reserved_dlist<AeThreadState>::dlist_node* node)
@@ -912,6 +919,7 @@ template AeThread* reserved_dlist<AeThread>::pop_back();
 template void reserved_dlist<AeThreadState>::dlist_node::pop();
 template void reserved_dlist<EndOnScriptNode>::dlist_node::pop();
 template void reserved_dlist<AeThread>::dlist_node::pop();
+// ea: 0x005EA8C0
 template void reserved_dlist<AeThreadState>::clear();
 template void reserved_dlist<AeThread>::clear();
 template reserved_dlist<AeThreadState>::const_iterator::const_iterator(
