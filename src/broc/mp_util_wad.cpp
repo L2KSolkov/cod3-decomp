@@ -5080,6 +5080,54 @@ Broc::bbool IsEEDefined_script_friendname(Broc::entity ent) {
     return result;
 }
 
+// ea: 0x0098D060
+Broc::string& GetEE_script_location(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_location(ent);
+}
+
+// ea: 0x0098D0B0
+Broc::bbool IsEEDefined_script_location(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_location(&result, ent);
+    return result;
+}
+
+// ea: 0x0098D1B0
+Broc::string& GetEE_script_area(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_area(ent);
+}
+
+// ea: 0x0098D200
+Broc::bbool IsEEDefined_script_area(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_area(&result, ent);
+    return result;
+}
+
+// ea: 0x0098D300
+Broc::string& GetEE_script_uniquename(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_uniquename(ent);
+}
+
+// ea: 0x0098D350
+Broc::bbool IsEEDefined_script_uniquename(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_uniquename(&result, ent);
+    return result;
+}
+
+// ea: 0x0098D650
+Broc::string& GetEE_script_flaktype(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_flaktype(ent);
+}
+
+// ea: 0x0098D6A0
+Broc::bbool IsEEDefined_script_flaktype(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_flaktype(&result, ent);
+    return result;
+}
+
 // ============================================================================
 // _mp_airplanes - airplane flyby script (72-byte mp_plane).
 // ============================================================================

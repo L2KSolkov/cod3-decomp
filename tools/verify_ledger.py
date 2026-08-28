@@ -659,6 +659,17 @@ def symbol_variants(name: str) -> set[str]:
             values.add(current_name)
         elif name == current_name:
             values.add(release_name)
+    # Boxed bbool is a one-byte value type.  The release map leaves the
+    # namespace off the return type and uses the full entity namespace, while
+    # current MSVC emits the type namespace and an entity back-reference.
+    bool_value_prefix = "@@YA?AUbbool@@Ventity@Broc@@@Z"
+    if name.startswith("?IsEEDefined_") and name.endswith(bool_value_prefix):
+        values.add(name[:-len(bool_value_prefix)] +
+                   "@@YA?AUbbool@Broc@@Ventity@2@@Z")
+    elif name.startswith("?IsEEDefined_") and name.endswith(
+            "@@YA?AUbbool@Broc@@Ventity@2@@Z"):
+        values.add(name[:-len("@@YA?AUbbool@Broc@@Ventity@2@@Z")] +
+                   bool_value_prefix)
     # VC7's release map uses a compact back-reference for a repeated
     # by-value Broc::vector parameter.  Current MSVC spells the same ABI as
     # U23; undname confirms both forms are the identical vector-by-value
