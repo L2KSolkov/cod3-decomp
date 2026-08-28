@@ -676,6 +676,7 @@ void reserved_dlist<T>::clear()
 }
 
 template <typename T>
+// ea: 0x005EAB50
 reserved_dlist<T>::const_iterator::const_iterator(
     const dlist_node* cur, const dlist_node* next)
     : m_node(cur), m_next(next)
@@ -705,6 +706,8 @@ reserved_dlist<T>::const_iterator::const_iterator(
 }
 
 template <typename T>
+// ea: 0x005EAB70
+// ea: 0x005EAB90
 bool reserved_dlist<T>::const_iterator::compare(
     const const_iterator& rhs) const
 {
