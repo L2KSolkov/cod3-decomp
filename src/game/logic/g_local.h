@@ -70,6 +70,9 @@ public:
     // ea: 0x004ADE70
     // ea: 0x004ADF10
     ae_vector() : mElements(nullptr), mCapacity(0), mSize(0) {}
+    // ea: 0x004B2C30
+    // ea: 0x004B2D90
+    // ea: 0x004B2F50
     ~ae_vector() { destroy_all(); }
     // ea: 0x004AE7F0
     // ea: 0x004AE850
@@ -158,6 +161,7 @@ void ae_vector<T>::destroy_all()
 }
 
 template <typename T>
+// ea: 0x004B2C60
 void ae_vector<T>::reserve(int iCapacity)
 {
     if (iCapacity > mCapacity)
@@ -177,6 +181,9 @@ void ae_vector<T>::reserve(int iCapacity)
 }
 
 template <typename T>
+// ea: 0x004B2CE0
+// ea: 0x004B2DC0
+// ea: 0x004B2F80
 void ae_vector<T>::push_back(const T& iElement)
 {
     if (mSize >= mCapacity)
@@ -208,6 +215,9 @@ void ae_vector<T>::pop_back()
 }
 
 template <typename T>
+// ea: 0x004B3220
+// ea: 0x004B32D0
+// ea: 0x004B3420
 void ae_vector<T>::resize(int iNewSize)
 {
     if (iNewSize > mCapacity)

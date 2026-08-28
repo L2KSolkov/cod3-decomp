@@ -193,6 +193,7 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
             r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+(?:new|delete|[~A-Za-z_][A-Za-z0-9_]*))|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+[^(){}]+)|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator[^\s(]+)|"
+            r"(?:operator\s+[^\s(]+)|"
             r"(?:operator[^\s(]+)|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*))\s*\(", text))
         if matches and "{" in text:
@@ -388,6 +389,9 @@ def scan_markers() -> list[Marker]:
 
 def base_name(decorated: str) -> str:
     if decorated.startswith("??"):
+        # MSVC's ``??7`` decoration is logical negation (operator!).
+        if decorated.startswith("??7"):
+            return "operator!"
         # ??0Class and ??1Class are constructor/destructor decorations.
         match = re.match(r"\?\?[01]([^@]+)", decorated)
         if match:

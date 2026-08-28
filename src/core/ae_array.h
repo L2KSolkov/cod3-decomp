@@ -47,6 +47,7 @@ public:
     // ea: 0x004B1450
     // ea: 0x004B1470
     // ea: 0x004B14D0
+    // ea: 0x004B2BF0
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0

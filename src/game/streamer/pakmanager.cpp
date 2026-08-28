@@ -1722,11 +1722,13 @@ public:
             return (const T*)m_node;
         }
         // ??Cconst_iterator@?$reserved_dlist@VPakFile@@@@QBEPBVPakFile@@XZ (g.o 0x4B1320)
+        // ea: 0x004B1320
         const T* operator->() const
         {
             return (const T*)m_node;
         }
         // ??9const_iterator@?$reserved_dlist@VPakFile@@@@QBE_NABV01@@Z (g.o 0x4B1330)
+        // ea: 0x004B1330
         bool operator!=(const const_iterator& rhs) const
         {
             return m_next != rhs.m_next;
@@ -1839,6 +1841,7 @@ reserved_dlist<PakFile>::const_iterator reserved_dlist<PakFile>::end() const
 }
 
 template <>
+// ea: 0x004B2760
 reserved_dlist<PakFile>::const_iterator reserved_dlist<PakFile>::begin() const
 {
     const_iterator result((const dlist_node*)m_head,

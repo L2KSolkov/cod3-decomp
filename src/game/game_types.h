@@ -272,7 +272,12 @@ public:
     // ea: 0x004B18E0
     // ea: 0x004B1900
     const T* operator->() const { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QBEPBVXModel@@XZ (g.o 0x4B18C0)
+    // ea: 0x004B27B0
+    // ea: 0x004B27F0
+    // ea: 0x004B2830
     operator bool() const { ValidatePakId((TPakId)mPakId); return mValue != nullptr; }  // ??B?$IVPointer@VXModel@@@@QBE_NXZ (g.o 0x4B27B0)
+    // ea: 0x004B27D0
+    // ea: 0x004B2810
     bool operator!() const { ValidatePakId((TPakId)mPakId); return mValue == nullptr; }  // ??7?$IVPointer@VXModel@@@@QBE_NXZ (g.o 0x4B27D0)
 
 private:
