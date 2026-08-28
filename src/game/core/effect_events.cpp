@@ -531,6 +531,14 @@ extern unsigned int SoundDevice_QueueSound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,
     const math::Position3* pos, const math::Position3* dir, float volume,
     float pitch, float minRange, float maxRange);
+extern "C" unsigned int SoundDevice_PlaySound_Bridge(
+    unsigned int wave, unsigned int entHandle, bool important,
+    bool autoRelease, const math::Position3* pos, const math::Dir3* vel,
+    float volume, float pitch, float minRange, float maxRange);
+extern "C" unsigned int SoundDevice_QueueSound_Bridge(
+    unsigned int wave, unsigned int entHandle, bool important,
+    bool autoRelease, const math::Position3* pos, const math::Dir3* vel,
+    float volume, float pitch, float minRange, float maxRange);
 // SoundDevice free artifacts (sound.o surface; stubs, port later)
 unsigned int SoundDevice_FindWave(void* sInst, const char* name)
 {
@@ -542,20 +550,20 @@ unsigned int SoundDevice_PlaySound(
     const math::Position3* pos, const math::Position3* dir, float volume,
     float pitch, float minRange, float maxRange)
 {
-    (void)wave; (void)entHandle; (void)important; (void)a5;
-    (void)pos; (void)dir; (void)volume; (void)pitch;
-    (void)minRange; (void)maxRange;
-    return 0;
+    return SoundDevice_PlaySound_Bridge(
+        wave, entHandle, important, a5 != 0, pos,
+        reinterpret_cast<const math::Dir3*>(dir), volume, pitch, minRange,
+        maxRange);
 }
 unsigned int SoundDevice_QueueSound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,
     const math::Position3* pos, const math::Position3* dir, float volume,
     float pitch, float minRange, float maxRange)
 {
-    (void)wave; (void)entHandle; (void)important; (void)a5;
-    (void)pos; (void)dir; (void)volume; (void)pitch;
-    (void)minRange; (void)maxRange;
-    return 0;
+    return SoundDevice_QueueSound_Bridge(
+        wave, entHandle, important, a5 != 0, pos,
+        reinterpret_cast<const math::Dir3*>(dir), volume, pitch, minRange,
+        maxRange);
 }
 extern float nslGetWaveParam(nslWaveID wave, int b, float c);
 

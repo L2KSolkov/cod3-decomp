@@ -8229,6 +8229,20 @@ SoundDevice::QueueSound(nslWaveID id,
     return result;
 }
 
+extern "C" unsigned int SoundDevice_QueueSound_Bridge(
+    unsigned int wave, unsigned int entHandle, bool important,
+    bool autoRelease, const math::Position3* pos, const math::Dir3* vel,
+    float volume, float pitch, float minRange, float maxRange)
+{
+    if (SoundDevice::sInst == nullptr)
+        return 0;
+    DbLinkedHandle<EntityHandleDb, Entity> ent(entHandle);
+    return SoundDevice::sInst
+        ->QueueSound((nslWaveID)wave, ent, important, autoRelease, *pos,
+                     *vel, volume, pitch, minRange, maxRange)
+        .mHandle.mVal;
+}
+
 // ea: 0x0063A260
 DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>
 SoundDevice::PlaySound(nslWaveID id,
@@ -8273,6 +8287,20 @@ SoundDevice::PlaySound(nslWaveID id,
     }
     result.mHandle.mVal = 0;
     return result;
+}
+
+extern "C" unsigned int SoundDevice_PlaySound_Bridge(
+    unsigned int wave, unsigned int entHandle, bool important,
+    bool autoRelease, const math::Position3* pos, const math::Dir3* vel,
+    float volume, float pitch, float minRange, float maxRange)
+{
+    if (SoundDevice::sInst == nullptr)
+        return 0;
+    DbLinkedHandle<EntityHandleDb, Entity> ent(entHandle);
+    return SoundDevice::sInst
+        ->PlaySound((nslWaveID)wave, ent, important, autoRelease, *pos,
+                    *vel, volume, pitch, minRange, maxRange)
+        .mHandle.mVal;
 }
 
 // ea: 0x0063A420
