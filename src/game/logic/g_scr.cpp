@@ -746,6 +746,7 @@ reserved_dlist<T>::get_head() const
 }
 
 template <typename T>
+// ea: 0x005EAE20
 reserved_dlist<T>::iterator::iterator(T* obj)
     : m_node(reinterpret_cast<dlist_node*>(&obj->m_dlist_node)),
       m_next(reinterpret_cast<dlist_node*>(obj->m_dlist_node.mNext))
