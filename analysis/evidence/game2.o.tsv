@@ -101,3 +101,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004EBEA0	?Controller_UnlockPort@@YAXXZ	V4	PASS	ida-manual-cl-input-abi-20260827	2026-08-27	IDA:0x004EBEA0;src/game/cl/cl_input.cpp:82	dumpbin confirms exact void decoration; manual release/source comparison confirms singleton lookup and unlock call.
 0x004EAA50	?get_dlist_node_offset@AeThreadState@@SAHXZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:429-432	Source reports the AeThreadState dlist node offset as four bytes.
 0x004EAA50	?get_dlist_node_offset@AeThreadState@@SAHXZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1054373-1054377	Release AeThreadState dlist offset getter matches source.
+0x004EABD0	?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:4078-4081	Source returns the AeThread owner linked handle.
+0x004EABD0	?GetOwner@AeThread@@QAE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1054467-1054474	Release AeThread owner getter matches source handle copying.
