@@ -1708,9 +1708,9 @@ public:
     const char* GetSTBString(const char* pszReference);  // ?GetSTBString@STBManager@@QAEPBDPBD@Z
     const char* GetSTBString(unsigned int hash);
     const char* GetSTBString(TPakId pakId, unsigned int hash);
-    unsigned int GetSTBFlags(const char* pszReference);
-    unsigned int GetSTBFlags(unsigned int hash);
-    unsigned int GetSTBFlags(TPakId pakId, unsigned int hash);
+    const unsigned int GetSTBFlags(const char* pszReference);
+    const unsigned int GetSTBFlags(unsigned int hash);
+    const unsigned int GetSTBFlags(TPakId pakId, unsigned int hash);
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
 private:

@@ -518,7 +518,7 @@ const char* STBManager::GetSTBString(TPakId pakId, unsigned int hash)
 }
 
 // ea: 0x004C5FA0
-unsigned int STBManager::GetSTBFlags(const char* pszReference)
+const unsigned int STBManager::GetSTBFlags(const char* pszReference)
 {
     if (pszReference != nullptr)
     {
@@ -531,7 +531,7 @@ unsigned int STBManager::GetSTBFlags(const char* pszReference)
 }
 
 // ea: 0x004C5FE0
-unsigned int STBManager::GetSTBFlags(unsigned int hash)
+const unsigned int STBManager::GetSTBFlags(unsigned int hash)
 {
     const StringTableEntry* STBEntry = STBManager_sInst->GetSTBEntry(hash);
     if (STBEntry != nullptr)
@@ -540,7 +540,7 @@ unsigned int STBManager::GetSTBFlags(unsigned int hash)
 }
 
 // ea: 0x004C6010
-unsigned int STBManager::GetSTBFlags(TPakId pakId, unsigned int hash)
+const unsigned int STBManager::GetSTBFlags(TPakId pakId, unsigned int hash)
 {
     if (pakId != -1)
     {
