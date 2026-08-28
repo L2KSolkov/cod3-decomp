@@ -306,6 +306,9 @@ void force_emit_wait_delete(WaitTilOutput* p)
 
 // g.o explicit instantiations (0x4AE510 / 0x4AE530)
 template reserved_dlist<WaitTilOutput>::reserved_dlist();
+template reserved_dlist<WaitTilOutput>::dlist_node::dlist_node(
+    reserved_dlist<WaitTilOutput>::dlist_node*,
+    reserved_dlist<WaitTilOutput>::dlist_node*);
 template void reserved_dlist<WaitTilOutput>::validate() const;
 template class reserved_dlist<EntityNotify>;
 
