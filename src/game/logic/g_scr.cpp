@@ -955,6 +955,8 @@ template int ae_sized_array<ae_pair<void*, unsigned int>, 15>::size() const;
 template void ae_sized_array<ae_pair<void*, unsigned int>, 15>::push_back(
     const ae_pair<void*, unsigned int>&);
 template ae_sized_array<AeThread*, 64>::ae_sized_array();
+template int ae_sized_array<AeThread*, 64>::size() const;
+template void ae_sized_array<AeThread*, 64>::set_size(int);
 template bool ae_sized_array<AeThread*, 64>::empty() const;
 template void ae_sized_array<AeThread*, 64>::push_back(AeThread* const&);
 template AeThread*& ae_sized_array<AeThread*, 64>::pop_back();
@@ -981,6 +983,8 @@ template ae_sized_array<Broc::entity, 512>::const_iterator&
 ae_sized_array<Broc::entity, 512>::const_iterator::operator++();
 template bool ae_sized_array<Broc::entity, 512>::const_iterator::operator!=(
     ae_sized_array<Broc::entity, 512>::const_iterator) const;
+template ae_sized_array<Broc::entity, 512>::const_iterator::const_iterator(
+    const Broc::entity*);
 struct BspCell {
     unsigned char m_opaque[0x50];
 };
@@ -3635,9 +3639,12 @@ public:
         }
         mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
     }
+    // ea: 0x005EAAB0
     SizedHandle(Handle h) { mVal = h.mVal; }
     operator Handle() const { return Handle((int)mVal); }
+    // ea: 0x005EAAD0
     int GetIndex() const { return (int)(mVal & ((1 << INDEX_BITS) - 1)); }
+    // ea: 0x005EAAE0
     int GetKey() const { return (int)(mVal >> INDEX_BITS); }
 };
 
@@ -3648,10 +3655,15 @@ public:
     struct DbElement {
         T*  mObject;  // +0x00
         int mKey;     // +0x04
+        // ea: 0x005EAAF0
         DbElement() : mObject(nullptr), mKey(1) {}
+        // ea: 0x005EAB10
         T* GetObject() const { return mObject; }
+        // ea: 0x005EAB20
         void SetObject(T* obj) { mObject = obj; }
+        // ea: 0x005EAB30
         int GetKey() const { return mKey; }
+        // ea: 0x005EAB40
         void Release() { ++mKey; mObject = nullptr; }
     };
     unsigned int mFreeIndices[(CAPACITY + 31) / 32];  // +0x00
@@ -3665,6 +3677,9 @@ public:
     void Dump();
     H AllocateHandle();
 };
+
+template class SizedHandle<8, 24>;
+template class HandleDb<AeThread, 256, SizedHandle<8, 24>>;
 
 template <typename T, int CAPACITY, typename H>
 HandleDb<T, CAPACITY, H>::HandleDb()

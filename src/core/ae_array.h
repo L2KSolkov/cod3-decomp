@@ -28,6 +28,7 @@ class ae_sized_array_base {
 public:
     T m_elements[CAPACITY];  // +0x00
 
+    // ea: 0x005EAC70
     ae_sized_array_base() {}
 };
 
@@ -42,6 +43,7 @@ public:
     // ea: 0x005EA1A0
     // ea: 0x005EA680
     // ea: 0x005EA8A0
+    // ea: 0x005EABB0
     int size() const { return m_size; }
     // ea: 0x005EA490
     bool empty() const { return m_size == 0; }
@@ -102,10 +104,12 @@ public:
             ++m_size;
         }
     }
+    // ea: 0x005EA970
     int capacity() const { return CAPACITY; }
     int free_space() const { return CAPACITY - m_size; }
 
     // ea: 0x005EA540
+    // ea: 0x005EA980
     T& pop_back() {
         if (m_size != 0)
             --m_size;
@@ -125,6 +129,7 @@ public:
         m_size = size + 1;
         return m_elements[size];
     }
+    // ea: 0x005EABC0
     void set_size(int size) { m_size = size; }
     void erase(int idx) {
         int size = m_size;
@@ -142,6 +147,7 @@ public:
         const T* m_ptr;  // +0x00
         const_iterator() : m_ptr(nullptr) {}
     private:
+        // ea: 0x005EAC80
         const_iterator(const T* ptr) : m_ptr(ptr) {}  // ??0const_iterator@...@@AAE@PBQAVEntity@@@Z (g.o 0x4AE5D0)
     public:
         // ea: 0x005EA730

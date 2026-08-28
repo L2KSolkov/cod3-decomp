@@ -92,7 +92,8 @@ struct ae_pair {
     A first;   // +0x00
     B second;  // +0x04
 
-    ae_pair() : first(), second() {}
+    // ea: 0x005EA9A0
+    ae_pair() {}
     // ea: 0x005EA240
     // ea: 0x005EA770
     ae_pair(const A& f, const B& s) : first(f), second(s) {}
