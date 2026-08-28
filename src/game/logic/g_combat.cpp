@@ -985,7 +985,11 @@ void HeadHitEnt_Die(Entity* self, Entity* inflictor, Entity* attacker,
                     int damage, int meansOfDeath, int iWeapon,
                     const float* position, const float* vDir, hitLocation_t hitLoc)
 {
-    HeadHitEnt_Pain(self, attacker, damage, position, meansOfDeath, vDir, hitLoc);
+    (void)inflictor;
+    (void)iWeapon;
+    (void)position;
+    HeadHitEnt_Pain(self, attacker, damage, self->r.currentOrigin.v.m128_f32,
+                    meansOfDeath, vDir, hitLoc);
 }
 
 // ea: 0x00469360
