@@ -204,6 +204,7 @@ WaitTilOutput* EntityNotify::GetParam() const
 {
     return mParam;
 }
+// ea: 0x004A5BF0
 void* EntityNotify::operator new(size_t size, bool forceHeapAlloc,
                                  const char* /*file*/, int /*line*/)
 {
@@ -214,6 +215,7 @@ void EntityNotify::operator delete(void* ptr)
 {
     EntityNotify::sAllocator->Release(ptr);
 }
+// ea: 0x004A5C60
 void EntityNotify::operator delete(void* ptr, bool /*forceHeapAlloc*/,
                                    const char* /*file*/, int /*line*/)
 {
@@ -270,6 +272,7 @@ int WaitTilOutput::GetSize()
 {
     return 0;
 }
+// ea: 0x004A5810
 void* WaitTilOutput::operator new(size_t size, bool forceHeapAlloc,
                                   const char* /*file*/, int /*line*/)
 {
@@ -285,10 +288,12 @@ void WaitTilOutput::operator delete(void* ptr, bool /*forceHeapAlloc*/,
 {
     WaitTilOutput::sAllocator->Release(ptr);
 }
+// ea: 0x004A5890
 void WaitTilOutput::operator delete(void* ptr)
 {
     WaitTilOutput::sAllocator->Release(ptr);
 }
+// ea: 0x004A5920
 WaitTilOutput::~WaitTilOutput()
 {
 }

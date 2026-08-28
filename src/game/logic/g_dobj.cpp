@@ -1658,16 +1658,19 @@ void tagInfo_SetAllocator(PoolAllocator* allocator)
 }
 
 // tagInfo_t memory ops (g.o 0x4A7760-0x4A77A0)
+// ea: 0x004A7760
 void* tagInfo_t::operator new(size_t size, bool forceHeapAlloc,
                               const char* /*file*/, int /*line*/)
 {
     return tagInfo_t::sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
 }
+// ea: 0x004A7780
 void tagInfo_t::operator delete(void* ptr, bool /*forceHeapAlloc*/,
                                 const char* /*file*/, int /*line*/)
 {
     tagInfo_t::sAllocator->Release(ptr);
 }
+// ea: 0x004A77A0
 void tagInfo_t::operator delete(void* ptr)
 {
     tagInfo_t::sAllocator->Release(ptr);

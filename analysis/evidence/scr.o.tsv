@@ -2890,3 +2890,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A5F40	??0Vector4@math@@QAE@ABVDir3@1@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013305	Release constructor shuffles the Dir3 lanes into Vector4.
 0x004A7400	??0Mat43@math@@QAE@ABV01@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/core/math_types.h:360	Inline copy constructor copies all four Mat43 members.
 0x004A7400	??0Mat43@math@@QAE@ABV01@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013956	Release copy constructor copies the complete Mat43 object.
+0x004A5810	??2WaitTilOutput@@SAPAXI_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:275	WaitTilOutput placement allocation forwards size and force flag to its pool allocator.
+0x004A5810	??2WaitTilOutput@@SAPAXI_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013050	Release placement allocation calls PoolAllocator::Allocate with size and forceHeapAlloc.
+0x004A5890	??3WaitTilOutput@@SAXPAX_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:291	WaitTilOutput deletion releases the object through its pool allocator.
+0x004A5890	??3WaitTilOutput@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013068	Release deletion calls PoolAllocator::Release on sAllocator.
+0x004A5920	??1WaitTilOutput@@UAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:296	WaitTilOutput destructor is an intentionally empty lifetime body.
+0x004A5920	??1WaitTilOutput@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013086	Release destructor only restores the WaitTilOutput vtable.
+0x004A5BF0	??2EntityNotify@@SAPAXI_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:207	EntityNotify allocation forwards size and force flag to its pool allocator.
+0x004A5BF0	??2EntityNotify@@SAPAXI_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013191	Release EntityNotify allocation calls PoolAllocator::Allocate.
+0x004A5C60	??3EntityNotify@@SAXPAX_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:218	EntityNotify deletion releases through sAllocator.
+0x004A5C60	??3EntityNotify@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013203	Release EntityNotify deletion calls PoolAllocator::Release.
+0x004A7760	??2tagInfo_t@@SAPAXI_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_dobj.cpp:1661	Tag info allocation forwards size and force flag to its pool allocator.
+0x004A7760	??2tagInfo_t@@SAPAXI_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1014071	Release tagInfo_t allocation calls PoolAllocator::Allocate.
+0x004A7780	??3tagInfo_t@@SAXPAX_NPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_dobj.cpp:1667	Tag info placement deletion releases through sAllocator.
+0x004A7780	??3tagInfo_t@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1014077	Release tagInfo_t placement deletion calls PoolAllocator::Release.
+0x004A77A0	??3tagInfo_t@@SAXPAX@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_dobj.cpp:1673	Tag info ordinary deletion releases through sAllocator.
+0x004A77A0	??3tagInfo_t@@SAXPAX@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1014083	Release ordinary tagInfo_t deletion calls PoolAllocator::Release.
