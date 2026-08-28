@@ -712,6 +712,7 @@ string::string(const bbool& val) {
     RegisterStringObject(this);
 }
 
+// ea: 0x005EE030
 string::~string() {
     const Block* const poison =
         reinterpret_cast<const Block*>(static_cast<uintptr_t>(0xDEADF1F1u));

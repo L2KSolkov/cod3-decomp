@@ -106,6 +106,7 @@ public:
     }
     // ea: 0x005EA970
     int capacity() const { return CAPACITY; }
+    // ea: 0x005EE950
     int free_space() const { return CAPACITY - m_size; }
 
     // ea: 0x005EA540
@@ -139,6 +140,8 @@ public:
             --m_size;
     }
     T& back() { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }  // ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ (g.o 0x4B1660)
+    // ea: 0x005EE7D0
+    const T& back() const { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }
 
     // Binary mangle: const_iterator@?$ae_sized_array@...@@ (Entity* const*)
     class const_iterator {

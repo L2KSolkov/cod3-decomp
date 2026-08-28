@@ -516,6 +516,7 @@ public:
 };
 const char* XModelParts::GetName() { return mName; }
 
+// ea: 0x005EE290
 unsigned int XModelParts::GetBoneNameHash(unsigned int i) const
 {
     if (i >= mHierarchy.mSize)

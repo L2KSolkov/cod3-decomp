@@ -220,6 +220,9 @@ template <typename T, int CAPACITY>
 struct ae_array {
     T m_elements[CAPACITY];  // +0x00
 
+    // ea: 0x005EE440
+    ae_array() {}
+
     // ea: 0x005EA070
     int capacity() const { return CAPACITY; }
 
@@ -241,6 +244,9 @@ struct ae_array {
 };
 
 template int ae_array<HashString, 4>::capacity() const;
+template ae_array<HashString, 4>::ae_array();
+template const short& ae_sized_array<short, 8>::back() const;
+template int ae_sized_array<ae_pair<void*, unsigned int>, 15>::free_space() const;
 
 // BrocDtorBase (mp_level.xboxd; vtable[0] = Destroy)
 class BrocDtorBase {
