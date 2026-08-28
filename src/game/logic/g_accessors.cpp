@@ -4473,6 +4473,7 @@ Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator->() const
 }
 
 // proximity_data_t dtor (g.o 0x4B2290)
+// ea: 0x004B2290
 proximity_data_t::~proximity_data_t()
 {
 }
@@ -4486,6 +4487,7 @@ void proximity_data_t::clear()
 }
 
 // ConfigString::operator[] (g.o 0x4B22A0)
+// ea: 0x004B22A0
 const char* ConfigString::operator[](const char* key) const
 {
     InplaceString* v2 = mStringMap.Find<const char*>(key);
@@ -4501,12 +4503,14 @@ public:
     vehicle_backup_s();
     ~vehicle_backup_s();
 };
+// ea: 0x004B2430
 vehicle_backup_s::vehicle_backup_s()
 {
     vehicle_node_t* nodes = (vehicle_node_t*)&((vehicle_pathpos_t*)data)->switchNode;
     for (int i = 0; i < 2; ++i)
         new (&nodes[i]) vehicle_node_t();
 }
+// ea: 0x004B2460
 vehicle_backup_s::~vehicle_backup_s()
 {
     vehicle_node_t* nodes = (vehicle_node_t*)&((vehicle_pathpos_t*)data)->switchNode;
@@ -4527,6 +4531,7 @@ struct PendingNotifyList {
     EntityNotifyDListNode* m_tail;
 };
 }
+// ea: 0x004B2170
 void AeThreadManager::AddNotify(EntityNotify* notify)
 {
     PendingNotifyList* list = (PendingNotifyList*)((char*)this + 0x24);

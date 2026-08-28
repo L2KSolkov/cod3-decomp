@@ -1897,3 +1897,13 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B2020	??1?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020359	Release destructor is empty after the derived/base teardown transition.
 0x004B2210	??0RumbleEffect@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:1327	Constructor delegates to Initialize, which sets both motor records to the release defaults.
 0x004B2210	??0RumbleEffect@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020421	Release constructor initializes both RumbleData records with enabled/default timing values.
+0x004B2170	?AddNotify@AeThreadManager@@QAEXPAVEntityNotify@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4534	AddNotify links the notification at the pending-list tail and increments the pending count.
+0x004B2170	?AddNotify@AeThreadManager@@QAEXPAVEntityNotify@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020388	Release AddNotify performs the same tail linkage and count update.
+0x004B2290	??1proximity_data_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4476	Destructor is intentionally empty; the proximity storage is embedded and has no owned non-trivial members in this view.
+0x004B2290	??1proximity_data_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.map:1508	Release map identifies the inline proximity_data_t destructor thunk; no release C body is emitted.
+0x004B22A0	??AConfigString@@QBEPBDPBD@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4490	operator[] finds the requested key and returns its stored string or null.
+0x004B22A0	??AConfigString@@QBEPBDPBD@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020445	Release operator[] uses the same InplaceTree lookup and null fallback.
+0x004B2430	??0vehicle_backup_s@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4506	Constructor initializes both embedded vehicle nodes with placement construction.
+0x004B2430	??0vehicle_backup_s@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020508	Release constructor runs the two-element vehicle_node_t constructor iterator.
+0x004B2460	??1vehicle_backup_s@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4513	Destructor tears down both embedded vehicle nodes in reverse order.
+0x004B2460	??1vehicle_backup_s@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020520	Release destructor runs the two-element vehicle_node_t destructor iterator.
