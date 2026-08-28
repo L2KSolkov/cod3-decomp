@@ -188,7 +188,7 @@ extern void CL_AddDebugLine(const float* start, const float* end,
                             const float* color, int depthTest, int duration,
                             int fromServer, int fadeOut);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
-extern void ByteToDir(unsigned int b, float* const dir);
+extern void ByteToDir(int b, float* const dir);
 extern void PerpendicularVector(float* const dst, const float* const src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 

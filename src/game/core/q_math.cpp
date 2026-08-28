@@ -266,7 +266,7 @@ const unsigned char DirToByte(const float* const dir)
 }
 
 // ea: 0x004B6170
-void ByteToDir(unsigned int b, float* const dir)
+void ByteToDir(int b, float* const dir)
 {
     if (b > 0xA1)
     {

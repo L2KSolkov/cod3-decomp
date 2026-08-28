@@ -74,7 +74,7 @@ int g_TEMP_ViewSetup = 0;         // mp.o global @ 0xF61708
 
 extern bool MI_IsAvailableMap(char mapIndex);   // ?MI_IsAvailableMap@@YA_ND@Z (mp_shell.o)
 extern char* MI_GetMapDisplayName(char mapIndex);  // ?MI_GetMapDisplayName@@YAPADD@Z (mp_shell.o)
-extern void ByteToDir(unsigned int b, float* const dir); // ?ByteToDir@@YAXIQAM@Z (core.o)
+extern void ByteToDir(int b, float* const dir); // ?ByteToDir@@YAXHQAM@Z (core.o)
 extern void ClientSpawn(Entity* ent, const float* origin, const float* angles,
                         bool stopPhysics, bool isRevive);  // ?ClientSpawn@@YAXPAVEntity@@QBM1_N2@Z (g.o)
 extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);  // core.o

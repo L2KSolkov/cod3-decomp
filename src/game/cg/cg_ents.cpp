@@ -1699,7 +1699,7 @@ extern void CG_EjectWeaponBrass(Entity* entity, int event);
 enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
 extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
                                     EAction weaponAction);
-extern void ByteToDir(unsigned int b, float* const dir);
+extern void ByteToDir(int b, float* const dir);
 extern void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                               float* const normal, int weapon, int surfType,
                               Entity* hitEnt);
