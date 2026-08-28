@@ -36,10 +36,12 @@ class ae_sized_array : public ae_sized_array_base<T, CAPACITY> {
 public:
     int     m_size;                // +sizeof(T)*CAPACITY
 
+    // ea: 0x005EA480
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
     int size() const { return m_size; }
+    // ea: 0x005EA490
     bool empty() const { return m_size == 0; }
     void clear() { m_size = 0; }
 
@@ -81,6 +83,7 @@ public:
     }
 
     // ea: 0x005EA1B0
+    // ea: 0x005EA4B0
     void push_back(const T& val) {
         if (m_size >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -98,6 +101,7 @@ public:
     int capacity() const { return CAPACITY; }
     int free_space() const { return CAPACITY - m_size; }
 
+    // ea: 0x005EA540
     T& pop_back() {
         if (m_size != 0)
             --m_size;

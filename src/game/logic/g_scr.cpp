@@ -954,6 +954,10 @@ ae_sized_array<ae_pair<void*, unsigned int>, 15>::operator[](int);
 template int ae_sized_array<ae_pair<void*, unsigned int>, 15>::size() const;
 template void ae_sized_array<ae_pair<void*, unsigned int>, 15>::push_back(
     const ae_pair<void*, unsigned int>&);
+template ae_sized_array<AeThread*, 64>::ae_sized_array();
+template bool ae_sized_array<AeThread*, 64>::empty() const;
+template void ae_sized_array<AeThread*, 64>::push_back(AeThread* const&);
+template AeThread*& ae_sized_array<AeThread*, 64>::pop_back();
 struct BspCell {
     unsigned char m_opaque[0x50];
 };
