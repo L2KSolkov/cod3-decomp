@@ -2742,6 +2742,22 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005EED20	?Add@?$BitSet@$0BAA@@@QAEXH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206476	Release BitSet<256> Add performs the same bounds assertion and bit set.
 0x005EEDB0	?Rmv@?$BitSet@$0BAA@@@QAEXH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:728	BitSet<256> Rmv checks the word bound and clears the requested packed bit.
 0x005EEDB0	?Rmv@?$BitSet@$0BAA@@@QAEXH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206491	Release BitSet<256> Rmv performs the same bounds assertion and bit clear.
+0x005EAF90	?compare@iterator@?$BitSet@$0BAA@@@QAE_NABV12@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:320	BitSet<256> iterator compare checks both current value and word index.
+0x005EAF90	?compare@iterator@?$BitSet@$0BAA@@@QAE_NABV12@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203992	Release BitSet<256> iterator compare uses the same two-field equality.
+0x005EEFD0	?Clear@?$BitSet@$0BAA@@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:713	BitSet<256> Clear zeros every packed word from the last word through the first.
+0x005EEFD0	?Clear@?$BitSet@$0BAA@@@QAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206621	Release BitSet<256> Clear zeros the complete packed bit storage.
+0x005EEFF0	??S?$BitSet@$0BAA@@@QBE?AV0@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:756	BitSet<256> complement constructs a result and bitwise-inverts each packed word.
+0x005EEFF0	??S?$BitSet@$0BAA@@@QBE?AV0@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206634	Release BitSet<256> complement performs the same word-wise inversion.
+0x005EF070	?begin@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:368	BitSet<256> begin constructs an iterator rooted at the set.
+0x005EF070	?begin@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206647	Release BitSet<256> begin constructs and returns the set iterator.
+0x005EF0B0	?end@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:374	BitSet<256> end returns the terminal iterator sentinel.
+0x005EF0B0	?end@?$BitSet@$0BAA@@@QBE?AViterator@1@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206658	Release BitSet<256> end returns the same -1/null iterator sentinel.
+0x005EF120	??9iterator@?$BitSet@$0BAA@@@QAE_NABV01@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:325	BitSet<256> iterator inequality compares current value or word index.
+0x005EF120	??9iterator@?$BitSet@$0BAA@@@QAE_NABV01@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206690	Release BitSet<256> iterator inequality uses the same sentinel/value comparison.
+0x005EFF30	??0?$BitSet@$0BAA@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:283	BitSet<256> default constructor clears the packed storage.
+0x005EFF30	??0?$BitSet@$0BAA@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1207422	Release BitSet<256> default constructor zeroes its packed words.
+0x005EED00	?back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:146	Pair pointer/unsigned-int sized-array back returns the clamped last element.
+0x005EED00	?back@?$ae_sized_array@V?$ae_pair@PAXI@@$0P@@@QAEAAV?$ae_pair@PAXI@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206469	Release pair sized-array back uses the same empty-array clamp and last-element selection.
 0x005EEB20	??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:42	Broc entity sized-array constructor initializes m_size to zero while retaining the inline element storage.
 0x005EEB20	??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206313	Release Broc entity sized-array constructor initializes the size field to zero.
 0x005EEB40	?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:185	Broc entity const begin returns a const iterator over the first inline element.

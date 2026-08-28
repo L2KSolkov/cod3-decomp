@@ -143,6 +143,7 @@ public:
             --m_size;
     }
     // ea: 0x005EEAE0
+    // ea: 0x005EED00
     T& back() { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }  // ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ (g.o 0x4B1660)
     // ea: 0x005EE7D0
     const T& back() const { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }

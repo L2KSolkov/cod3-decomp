@@ -280,6 +280,7 @@ struct BitSet {
         UNINITIALIZED = 0x0,
     };
 
+    // ea: 0x005EFF30
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
     // ea: 0x005EAEE0
     BitSet(EInitializer) {}  // ??0?$BitSet@$0FEA@@@QAE@W4EInitializer@0@@Z (g.o 0x4AE780)
@@ -289,10 +290,12 @@ struct BitSet {
     unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
     // ea: 0x005EAD10
     static int GetNumWords() { return (N + 31) / 32; }
+    // ea: 0x005EEFD0
     void Clear();  // ?Clear@?$BitSet@$0FEA@@@QAEXXZ (g.o 0x4AE790)
     void Add(int v);  // ?Add@?$BitSet@$0FEA@@@QAEXH@Z (g.o 0x4B1750)
     void Rmv(int v);  // ?Rmv@?$BitSet@$0FEA@@@QAEXH@Z (g.o 0x4B17E0)
     void Set(int b, bool v);
+    // ea: 0x005EEFF0
     BitSet<N> operator~() const;  // ??S?$BitSet@$0FEA@@@QBE?AV0@XZ (g.o 0x4B1870)
 
     class iterator {
@@ -314,10 +317,12 @@ struct BitSet {
             m_cur_val = (unsigned int)-1;
             operator++();
         }
+        // ea: 0x005EAF90
         bool compare(const iterator& rhs)  // ?compare@iterator@?$BitSet@$0FEA@@@QAE_NABV12@@Z (g.o 0x4AE5A0)
         {
             return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
         }
+        // ea: 0x005EF120
         bool operator!=(const iterator& rhs)  // ??9iterator@?$BitSet@$0FEA@@@QAE_NABV01@@Z (g.o 0x4B1400)
         {
             return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
@@ -358,11 +363,13 @@ struct BitSet {
         }
     };
 
+    // ea: 0x005EF070
     iterator begin() const  // ?begin@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B2630)
     {
         iterator it(this);
         return it;
     }
+    // ea: 0x005EF0B0
     iterator end() const  // ?end@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B0EC0)
     {
         iterator it;
@@ -701,6 +708,7 @@ typename reserved_dlist<T>::iterator reserved_dlist<T>::erase(iterator& i)
 }
 
 template <int N>
+// ea: 0x005EEFD0
 void BitSet<N>::Clear()
 {
     for (int i = GetNumWords() - 1; i >= 0; --i)
@@ -751,6 +759,7 @@ void BitSet<N>::Set(int b, bool v)
 }
 
 template <int N>
+// ea: 0x005EEFF0
 BitSet<N> BitSet<N>::operator~() const
 {
     BitSet<N> r;

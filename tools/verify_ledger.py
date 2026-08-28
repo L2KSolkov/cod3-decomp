@@ -365,6 +365,7 @@ def base_name(decorated: str) -> str:
             ("??M", "operator<"),
             ("??E", "operator++"),
             ("??F", "operator--"),
+            ("??S", "operator~"),
         ):
             if decorated.startswith(decoration):
                 return readable
@@ -737,6 +738,8 @@ def symbol_variants(name: str) -> set[str]:
     for value in tuple(values):
         values.add(value.replace("V?$", "U?$"))
         values.add(value.replace("U?$", "V?$"))
+        values.add(value.replace("?AV0@", "?AU0@"))
+        values.add(value.replace("?AU0@", "?AV0@"))
     return values
 
 

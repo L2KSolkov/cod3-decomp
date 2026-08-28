@@ -996,6 +996,8 @@ template int ae_sized_array<short, 8>::size() const;
 template int ae_sized_array<ae_pair<void*, unsigned int>, 15>::capacity() const;
 template ae_pair<void*, unsigned int>&
 ae_sized_array<ae_pair<void*, unsigned int>, 15>::pop_back();
+template ae_pair<void*, unsigned int>&
+ae_sized_array<ae_pair<void*, unsigned int>, 15>::back();
 template int ae_sized_array<Broc::entity, 512>::size() const;
 template void ae_sized_array<Broc::entity, 512>::push_back(const Broc::entity&);
 template const Broc::entity&
