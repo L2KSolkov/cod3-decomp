@@ -16,7 +16,7 @@ ae_fixed_string.o	9	0	0	9	0	0	0
 ae_heap.o	12	12	0	0	0	0	0
 afmv_dx_idct.o	3	3	0	0	0	0	0
 afmv_dx_rgb.o	2	2	0	0	0	0	0
-anim.o	741	253	3	339	7	139	0
+anim.o	741	245	9	333	6	148	0
 apk.o	24	1	0	23	0	0	0
 apsAction.o	19	11	1	7	0	0	0
 apsActionList.o	26	18	1	7	0	0	0
@@ -179,12 +179,12 @@ cl.o	341	15	36	267	0	23	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
 controller_xbox.o	16	15	0	1	0	0	0
-core.o	1437	620	82	697	1	37	0
+core.o	1437	620	81	698	1	37	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	437	1	491	0	541	0
-game.o	1158	461	12	675	3	7	0
+game.o	1158	461	11	676	3	7	0
 game2.o	1040	419	94	485	8	34	0
 game_xbox.o	365	152	93	110	0	10	0
 inffast.o	1	1	0	0	0	0	0
@@ -263,7 +263,7 @@ nslListener.o	7	0	0	7	0	0	0
 nslMaster.o	16	0	0	16	0	0	0
 nslMemory.o	2	2	0	0	0	0	0
 nslPriority.o	7	0	0	7	0	0	0
-nslSource.o	69	2	1	66	0	0	0
+nslSource.o	69	2	0	67	0	0	0
 nslUpdate.o	2	0	0	2	0	0	0
 nslVoice.o	5	0	0	5	0	0	0
 nslWave.o	15	0	0	15	0	0	0

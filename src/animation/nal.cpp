@@ -24512,7 +24512,7 @@ struct XModelPartsAnim {
     void* mAnimDef;  // +0x38
 };
 
-// ea: 0x0053E7C0
+// DObjAllocateSubModelPose - ea: 0x0053E7C0
 namespace {
 __declspec(noinline) void DObjAllocateSubModelPose(
     DObj* obj, int i, nalGenericSkeleton* skeleton)

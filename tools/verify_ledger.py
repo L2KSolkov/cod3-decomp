@@ -201,7 +201,8 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
                 # bodies).  A call/expression without an opening brace is
                 # still rejected below by the definition check.
                 if (candidate in {"if", "for", "while", "switch", "catch", "return", "new", "delete",
-                                  "void", "bool", "char", "short", "int", "long", "float", "double"}
+                                  "void", "bool", "char", "short", "int", "long", "float", "double",
+                                  "__declspec"}
                         or (not prefix and "{" not in text)
                         or prefix.endswith((".", "->", "="))):
                     continue
@@ -409,7 +410,7 @@ def debug_symbols() -> set[str]:
         except (OSError, subprocess.CalledProcessError):
             continue
         for line in output.splitlines():
-            if "External" in line and "|" in line:
+            if ("External" in line or "Static" in line) and "|" in line:
                 value = line.rsplit("|", 1)[1].strip().split(" ", 1)[0]
                 if value:
                     symbols.add(value)
@@ -423,6 +424,8 @@ def symbol_variants(name: str) -> set[str]:
     # confirm these are the same x86 call contracts; accept the current
     # compiler's equivalent decorations without weakening body gates.
     equivalent = {
+        "?DObjAllocateSubModelPose@?A0x7516322e@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z":
+            "?DObjAllocateSubModelPose@?A0x49388f53@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z",
         "?CG_SaveEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":
             "?CG_SaveEntity@@YAXXZ",
         "?CG_LoadEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":
