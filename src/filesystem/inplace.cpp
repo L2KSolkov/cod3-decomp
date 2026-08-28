@@ -1,7 +1,6 @@
 // ============================================================================
 // Inplace File Format — pointer fixup and tree extraction utilities
 // Source: InplaceTree.cpp (14), PtrFixupTable.cpp (36), InplaceFileBuilder.cpp
-// ea: 0x7E1800-0x7E1A10 (3 funcs + helper)
 // ============================================================================
 
 #include <cstring>
@@ -30,6 +29,7 @@ public:
     void Fixup(const void* basePtr);
 };
 
+// ea: 0x7E19F0
 template <typename T>
 void FixupPointer(T** ptr, const void* base)
 {
