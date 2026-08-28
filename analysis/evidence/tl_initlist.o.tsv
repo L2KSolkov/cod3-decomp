@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00833B70	?tlInitListInit@@YAXXZ	V3	PASS	tl-initlist-20260827	2026-08-27	IDA disasm/decompile 0x833B70	Release walks tlInitList::head and invokes each virtual Register.
+0x00833B70	?tlInitListInit@@YAXXZ	V4	PASS	tl-initlist-20260827	2026-08-27	IDA disasm 0x833B70 + src/core/tl_system.cpp	Source preserves head traversal, virtual dispatch, and void ABI.

@@ -1,0 +1,51 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008333A0	?tlSetSystemCallbacks@@YAXPBUtlSystemCallbacks@@@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm/decompile 0x8333A0	Release copies exactly ten callback dwords.
+0x008333A0	?tlSetSystemCallbacks@@YAXPBUtlSystemCallbacks@@@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8333A0 + src/core/tl_system.cpp	Source table is 0x28 bytes in release order and copies verbatim.
+0x008333C0	?tlLinkFrame@@YAXXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8333C0	Release thunk dispatches to MemAlloc or returns.
+0x008333C0	?tlLinkFrame@@YAXXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8333C0 + src/core/tl_system.cpp	Naked x86 thunk uses callback slot +0x1C.
+0x008333D0	?tlLinkConnected@@YA_NXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8333D0	Release thunk dispatches to LinkConnected or returns false.
+0x008333D0	?tlLinkConnected@@YA_NXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8333D0 + src/core/tl_system.cpp	Naked x86 thunk uses callback slot +0x18.
+0x008333E0	?tlSetFileServerRootPC@@YAXPBD@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8333E0	Release copies the path into tlHostPrefix.
+0x008333E0	?tlSetFileServerRootPC@@YAXPBD@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8333E0 + src/core/tl_system.cpp	Source preserves host-prefix storage and termination.
+0x00833400	?tlMemFree@@YAXPAX@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile/disasm 0x833400	Release decrements allocation count and routes MemFree/fallback.
+0x00833400	?tlMemFree@@YAXPAX@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x833400 + src/core/tl_system.cpp	Source uses corrected callback slot and fallback free path.
+0x00833440	?tlReleaseFile@@YAXPAUtlFileBuf@@@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile/disasm 0x833440	Release callback and three-field fallback clearing reviewed.
+0x00833440	?tlReleaseFile@@YAXPAUtlFileBuf@@@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x833440 + src/core/tl_system.cpp	Source has 12-byte tlFileBuf and clears UserData on fallback.
+0x008334B0	?tlFinalPrint@@YAXPBD@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8334B0	Release directly calls OutputDebugStringA.
+0x008334B0	?tlFinalPrint@@YAXPBD@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8334B0 + src/core/tl_system.cpp	Source preserves direct output behavior.
+0x008334C0	?tlGetVersion@@YAHXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8334C0	Release returns the fixed 0x10400 address constant.
+0x008334C0	?tlGetVersion@@YAHXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8334C0 + src/core/tl_system.cpp	Source returns 0x10400 with the mapped int ABI.
+0x008334D0	?tlGetFreeMemory@@YAIXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile/disasm 0x8334D0	Release calls GlobalMemoryStatus and returns dwAvailPhys.
+0x008334D0	?tlGetFreeMemory@@YAIXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8334D0 + src/core/tl_system.cpp	Source uses the Win32 physical-memory query.
+0x008334F0	?tlSetCurrentThreadName@@YAXPBD@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile/disasm 0x8334F0	Release emits THREADNAME_INFO through RaiseException.
+0x008334F0	?tlSetCurrentThreadName@@YAXPBD@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8334F0 + src/core/tl_system.cpp	Source fills all four fields and safely wraps the debugger exception.
+0x00833580	?tlFatalHandler@@YA_NPBD@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833580	Release routes CriticalError or logs and returns status.
+0x00833580	?tlFatalHandler@@YA_NPBD@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833580 + src/core/tl_system.cpp	Source matches callback false/log true behavior.
+0x008335C0	?tlFatal@@YAXPBDZZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x8335C0	Release formats into 512 bytes, calls CriticalError, or logs/breaks.
+0x008335C0	?tlFatal@@YAXPBDZZ	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x8335C0 + src/core/tl_system.cpp	Source preserves fatal callback and debugger-break paths.
+0x00833620	?_tlAssert@@YA_NPBDH00@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833620	Release formats assertion text and returns callback/log status.
+0x00833620	?_tlAssert@@YA_NPBDH00@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833620 + src/core/tl_system.cpp	Source preserves the 256-byte assertion formatter and return contract.
+0x008336A0	?tlMemAlloc@@YAPAXIII@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile/disasm 0x8336A0	Release alignment normalization, counter, callback, fallback, and failure paths reviewed.
+0x008336A0	?tlMemAlloc@@YAPAXIII@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8336A0 + src/core/tl_system.cpp	Source uses corrected MemAlloc slot and preserves flags/failure handling.
+0x00833730	?tlMemRealloc@@YAPAXPAXIII@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile/disasm 0x833730	Release callback/fallback selection and failure checks reviewed.
+0x00833730	?tlMemRealloc@@YAPAXPAXIII@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x833730 + src/core/tl_system.cpp	Source uses corrected MemRealloc slot and physical-memory rejection.
+0x008337B0	?tlPrint@@YAXPBD@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8337B0	Release directly calls OutputDebugStringA.
+0x008337B0	?tlPrint@@YAXPBD@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8337B0 + src/core/tl_system.cpp	Source no longer routes tlPrint through DebugPrint callback.
+0x008337C0	?tlStackRangeInit@@YAXXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8337C0	Release aligns stack page, asserts protection, and walks 64K pages.
+0x008337C0	?tlStackRangeInit@@YAXXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8337C0 + src/core/tl_system.cpp	Source matches stack bounds and mapped void ABI.
+0x00833830	?tlScratchPadInit@@YAPAXXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833830	Release refcount, 0x4000 allocation, counter, and failure path reviewed.
+0x00833830	?tlScratchPadInit@@YAPAXXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833830 + src/core/tl_system.cpp	Source preserves shared pointer/refcount and corrected MemAlloc callback.
+0x008338B0	?tlScratchPadReset@@YAXXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x8338B0	Release underflow assertion, refcount, counter, free, and nulling reviewed.
+0x008338B0	?tlScratchPadReset@@YAXXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x8338B0 + src/core/tl_system.cpp	Source preserves reset assertion and callback/fallback free behavior.
+0x00833940	?tlDebugPrint@@YAXPBD@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833940	Release routes DebugPrint or OutputDebugStringA.
+0x00833940	?tlDebugPrint@@YAXPBD@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833940 + src/core/tl_system.cpp	Source matches callback fallback.
+0x00833960	?tlPrintf@@YAXPBDZZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833960	Release formats 512-byte text and routes DebugPrint/fallback.
+0x00833960	?tlPrintf@@YAXPBDZZ	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833960 + src/core/tl_system.cpp	Source preserves formatting and callback behavior.
+0x008339B0	?tlReadFile@@YA_NPBDPAUtlFileBuf@@II@Z	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile/disasm 0x8339B0	Release callback path, prefix handling, slash conversion, Win32 read, and output fields reviewed.
+0x008339B0	?tlReadFile@@YA_NPBDPAUtlFileBuf@@II@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x8339B0 + src/core/tl_system.cpp	Source preserves duplicate-prefix avoidance and 12-byte file buffer ABI.
+0x00833AF0	?tlWarning@@YAXPBDZZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833AF0	Release routes Warning callback or tlPrintf fallback.
+0x00833AF0	?tlWarning@@YAXPBDZZ	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833AF0 + src/core/tl_system.cpp	Source now uses the corrected Warning callback slot.
+0x00833B50	??0tlMemAllocMutex@@QAE@XZ	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x833B50	Release constructor is a this-pointer no-op.
+0x00833B50	??0tlMemAllocMutex@@QAE@XZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x833B50 + src/core/tl_system.cpp	Source emits the release constructor ABI and empty body.
+0x00833B60	??1tlMemAllocMutex@@QAE@XZ	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x833B60	Release destructor is an empty no-op.
+0x00833B60	??1tlMemAllocMutex@@QAE@XZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x833B60 + src/core/tl_system.cpp	Source emits the release destructor ABI and empty body.
