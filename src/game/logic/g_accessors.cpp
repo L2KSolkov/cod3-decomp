@@ -3777,6 +3777,7 @@ public:
     T* DereferenceHandle(Handle h) const;
     T* GetObject(int idx) const;
     void BindObjectToHandle(Handle handle, T* obj);
+    // ea: 0x004AC530
     void RegisterDebugCallback(void (*cb)(int, T*)) { mDebugCallback = cb; }
     void Dump();  // ?Dump@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ (g.o 0x4B3130)
     SizedHandle<12, 20> AllocateHandle();  // ?AllocateHandle@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ (g.o 0x4B3D70)

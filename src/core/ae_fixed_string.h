@@ -55,6 +55,11 @@ public:
 
     const char* c_str() const { return (const char*)mBuff; }
     // ea: 0x004AC720
+    // ea: 0x004AC770
+    // ea: 0x004ACE40
+    // ea: 0x004AD270
+    // ea: 0x004AD320
+    // ea: 0x004ADE60
     char* c_str() { return (char*)mBuff; }
     // ea: 0x004AC730
     int length() const { return mLength; }
@@ -88,6 +93,7 @@ public:
     }
 
     // ?to_lower@?$ae_fixed_string@$0CA@E@@QAEXXZ (g.o 0x4ACE50)
+    // ea: 0x004ACE50
     void to_lower() {
         _strlwr((char*)mBuff);
     }
