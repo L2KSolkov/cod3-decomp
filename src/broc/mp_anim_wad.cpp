@@ -915,13 +915,13 @@ Broc::bbool* IsEEDefined_script_new_exploder_ptr(Broc::bbool* result, Broc::enti
 }
 
 // GetEE_script_pacifist / IsEEDefined_script_pacifist (key 0x8CC9C547)
-Broc::bint* GetEE_script_pacifist(Broc::entity ent) {
+Broc::bint* GetEE_script_pacifist_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x8CC9C547);
 }
 
-Broc::bbool* IsEEDefined_script_pacifist(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_pacifist_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -939,13 +939,13 @@ Broc::bbool* IsEEDefined_script_pacifist(Broc::bbool* result, Broc::entity ent) 
 }
 
 // GetEE_script_fb_retreat_chunk_size / IsEEDefined_script_fb_retreat_chunk_size (key 0xEA795D04)
-Broc::bint* GetEE_script_fb_retreat_chunk_size(Broc::entity ent) {
+Broc::bint* GetEE_script_fb_retreat_chunk_size_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0xEA795D04);
 }
 
-Broc::bbool* IsEEDefined_script_fb_retreat_chunk_size(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_fb_retreat_chunk_size_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -963,13 +963,13 @@ Broc::bbool* IsEEDefined_script_fb_retreat_chunk_size(Broc::bbool* result, Broc:
 }
 
 // GetEE_script_grenades / IsEEDefined_script_grenades (key 0x601948FD)
-Broc::bint* GetEE_script_grenades(Broc::entity ent) {
+Broc::bint* GetEE_script_grenades_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x601948FD);
 }
 
-Broc::bbool* IsEEDefined_script_grenades(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_grenades_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -987,13 +987,13 @@ Broc::bbool* IsEEDefined_script_grenades(Broc::bbool* result, Broc::entity ent) 
 }
 
 // GetEE_script_fb_id / IsEEDefined_script_fb_id (key 0x4723E508)
-Broc::bint* GetEE_script_fb_id(Broc::entity ent) {
+Broc::bint* GetEE_script_fb_id_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x4723E508);
 }
 
-Broc::bbool* IsEEDefined_script_fb_id(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_fb_id_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1011,13 +1011,13 @@ Broc::bbool* IsEEDefined_script_fb_id(Broc::bbool* result, Broc::entity ent) {
 }
 
 // GetEE_script_speed / IsEEDefined_script_speed (key 0x4816E9E5)
-Broc::bint* GetEE_script_speed(Broc::entity ent) {
+Broc::bint* GetEE_script_speed_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x4816E9E5);
 }
 
-Broc::bbool* IsEEDefined_script_speed(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_speed_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1031,6 +1031,58 @@ Broc::bbool* IsEEDefined_script_speed(Broc::bbool* result, Broc::entity ent) {
     } else {
         result->mVal = false;
     }
+    return result;
+}
+
+// Release ABI wrappers for the loadout and movement fields.
+// ea: 0x0098E4E0
+::bint& GetEE_script_pacifist(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_pacifist_ptr(ent));
+}
+// ea: 0x0098E530
+::bbool IsEEDefined_script_pacifist(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_pacifist_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098E730
+::bint& GetEE_script_fb_retreat_chunk_size(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_fb_retreat_chunk_size_ptr(ent));
+}
+// ea: 0x0098E780
+::bbool IsEEDefined_script_fb_retreat_chunk_size(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_fb_retreat_chunk_size_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098E830
+::bint& GetEE_script_grenades(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_grenades_ptr(ent));
+}
+// ea: 0x0098E880
+::bbool IsEEDefined_script_grenades(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_grenades_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098EA80
+::bint& GetEE_script_fb_id(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_fb_id_ptr(ent));
+}
+// ea: 0x0098EAD0
+::bbool IsEEDefined_script_fb_id(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_fb_id_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098ECD0
+::bint& GetEE_script_speed(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_speed_ptr(ent));
+}
+// ea: 0x0098ED20
+::bbool IsEEDefined_script_speed(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_speed_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
     return result;
 }
 
