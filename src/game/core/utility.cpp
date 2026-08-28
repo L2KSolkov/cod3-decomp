@@ -165,7 +165,7 @@ mat3_t::mat3_t(const idVec3& x, const idVec3& y, const idVec3& z)
 }
 
 // ea: 0x004DF140
-idVec3& mat3_t::operator[](unsigned int index)
+idVec3& mat3_t::operator[](int index)
 {
     if (index > 2)
     {
@@ -176,7 +176,7 @@ idVec3& mat3_t::operator[](unsigned int index)
 }
 
 // ea: 0x004DF1C0
-float& quat_t::operator[](unsigned int index)
+float& quat_t::operator[](int index)
 {
     if (index >= 4)
     {

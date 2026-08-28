@@ -235,7 +235,7 @@ public:
     idVec3 mat[3];  // +0x00
     mat3_t();
     mat3_t(const idVec3& x, const idVec3& y, const idVec3& z);
-    idVec3& operator[](unsigned int index);
+    idVec3& operator[](int index);
     void Transpose(mat3_t& matrix);
     void Transpose();
     void ProjectVector(const idVec3& src, idVec3& dst) const;
@@ -256,7 +256,7 @@ public:
     float y;  // +0x04
     float z;  // +0x08
     float w;  // +0x0C
-    float& operator[](unsigned int index);
+    float& operator[](int index);
 };
 static_assert(sizeof(quat_t) == 0x10, "quat_t size mismatch");
 static_assert(offsetof(quat_t, w) == 0x0C, "quat_t::w offset mismatch");
