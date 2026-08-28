@@ -235,8 +235,8 @@ float proneRotR_Function(float v)
     weaponFileInfo_t* info = BG_GetPlayerWeaponInfo();
     if (info == nullptr)
         return 0;
-    float r = v + info->vProneRot[1];
-    info->vProneRot[1] = r;
+    float r = v + info->vProneRot[2];
+    info->vProneRot[2] = r;
     return r;
 }
 
