@@ -647,6 +647,12 @@ def symbol_variants(name: str) -> set[str]:
         # current compiler.
         "?BadPlaceCylinder@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM0@Z":
             "?BadPlaceCylinder@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM@Z",
+        # The current compiler uses a template back-reference for the
+        # repeated Broc::entity argument in these value-returning checks.
+        "?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z":
+            "?IsEEDefined_script_explodertype@@YA?AUbbool@Broc@@Ventity@2@@Z",
+        "?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z":
+            "?IsEEDefined_script_friendname@@YA?AUbbool@Broc@@Ventity@2@@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:

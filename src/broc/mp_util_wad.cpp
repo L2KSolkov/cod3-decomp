@@ -5055,6 +5055,31 @@ Broc::bbool* IsEEDefined_audio_ambmin(Broc::bbool* result, Broc::entity ent) {
 
 } // namespace mp_util_wad
 
+// The animation wad exports these two entity fields at global scope.  Keep
+// the shared implementation in mp_util_wad while exposing the release ABI:
+// string getters return references and defined checks return bbool values.
+Broc::string& GetEE_script_explodertype(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_explodertype(ent);
+}
+
+// ea: 0x0098CB10
+Broc::bbool IsEEDefined_script_explodertype(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_explodertype(&result, ent);
+    return result;
+}
+
+Broc::string& GetEE_script_friendname(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_friendname(ent);
+}
+
+// ea: 0x0098CC60
+Broc::bbool IsEEDefined_script_friendname(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_friendname(&result, ent);
+    return result;
+}
+
 // ============================================================================
 // _mp_airplanes - airplane flyby script (72-byte mp_plane).
 // ============================================================================

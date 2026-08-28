@@ -3,3 +3,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x009983D0	?main@_mp_setup@@YAXXZ	V4	PASS	direct-release-nullsub-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c:1856661	Release body is a nullsub and matches the source entry point.
 0x009983D0	?main@_mp_setup@@YAXXZ	V3	PASS	release-stub-audit-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c	Release C dump body is empty; source main body is an intentional release no-op.
 0x009983D0	?main@_mp_setup@@YAXXZ	V4	PASS	release-stub-audit-20260827	2026-08-27	c3_bin/codmp_xboxr.xbe.c	Release C dump body is empty; source main body is an intentional release no-op.
+0x0098CB10	?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z	V3	PASS	direct-script-abi-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5065	Global wrapper preserves the checked extended-entity defined-value logic and release value ABI.
+0x0098CB10	?IsEEDefined_script_explodertype@@YA?AUbbool@@Ventity@Broc@@@Z	V4	PASS	direct-script-abi-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1849113	Release implementation computes the same extended-entity defined result.
+0x0098CC60	?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z	V3	PASS	direct-script-abi-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5076	Global wrapper preserves the checked extended-entity defined-value logic and release value ABI.
+0x0098CC60	?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z	V4	PASS	direct-script-abi-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1849161	Release implementation computes the same extended-entity defined result.
