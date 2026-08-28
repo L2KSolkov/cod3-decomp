@@ -267,17 +267,11 @@ struct vector {
     // ea: 0x004A5E80
     vector(float ix, float iy, float iz) : x(ix), y(iy), z(iz) {}
     vector& operator+=(const vector& rhs);
-    vector& operator/=(float rhs)
-    {
-        x = x * (1.0f / rhs);
-        const float zValue = (1.0f / rhs) * z;
-        y = (1.0f / rhs) * y;
-        z = zValue;
-        return *this;
-    }
+    vector(const vector& rhs);
+    vector& operator/=(float rhs);
     bool operator==(const vector& rhs);
     bool IsDefined() const;  // ?IsDefined@vector@Broc@@QBE_NXZ (core.o 0x4B5330)
-    float operator[](int i) const { return (&x)[i]; }
+    float operator[](int i) const;
     void Set(float X, float Y, float Z);  // ?Set@vector@Broc@@QAEXMMM@Z (g.o 0x4A5DE0)
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(vector) == 12, "Broc::vector size mismatch");
@@ -419,7 +413,7 @@ public:
 
     entity(unsigned int v);  // ??0entity@Broc@@QAE@I@Z (g.o 0x4A6250)
     entity(const entity& rhs);  // ??0entity@Broc@@QAE@ABV01@@Z (g.o 0x4A6270)
-    entity() : ___u0(0) {}
+    entity();
 
     void UndefineEEField(unsigned int key);
     // ea: 0x004A6290
@@ -711,7 +705,7 @@ class pathnode {
 public:
     unsigned int ___u0;
 
-    pathnode() : ___u0(0) {}
+    pathnode();
     explicit pathnode(int value) : ___u0((unsigned int)value) {}
     TPathnodeHandle GetHandle() const;
     bool IsDefined() const;

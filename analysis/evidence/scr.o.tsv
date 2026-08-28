@@ -2428,6 +2428,24 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E9E70	?MathsRandomIntRange@Broc@@YAHHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202928	Release selects irand(iMin,iMax) or the reversed ordering exactly as source.
 0x005E9EA0	?MathsRandomFloatRange@Broc@@YAMMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:154	Source orders float bounds and returns flrand over the ordered interval.
 0x005E9EA0	?MathsRandomFloatRange@Broc@@YAMMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202937	Release chooses flrand(fMin,fMax) or the reversed ordering exactly as source.
+0x005E9490	??1AeThreadState@@UAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:393	Out-of-line destructor preserves the release virtual-base teardown body.
+0x005E9490	??1AeThreadState@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202423	Release destructor resets the AeThreadState vtable; source emits the matching virtual destructor.
+0x005E94A0	??_GAeThreadState@@UAEPAXI@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:394	Release vector-deleting alias is represented by the same class destructor definition.
+0x005E94A0	??_GAeThreadState@@UAEPAXI@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202430	Release vector-deleting destructor resets the vtable and conditionally releases through sAllocator; compiler-generated alias matches.
+0x005E94A0	??_EAeThreadState@@UAEPAXI@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:394	Release scalar-deleting alias is represented by the same class destructor definition.
+0x005E94A0	??_EAeThreadState@@UAEPAXI@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202430	Release scalar-deleting destructor body is the same vtable/reset and allocator path emitted by the compiler.
+0x005E9520	??3EndOnScriptNode@@SAXPAX@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:5788	Release alias uses the EndOnScriptNode pool release body.
+0x005E9520	??3EndOnScriptNode@@SAXPAX@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202458	Release body calls PoolAllocator::Release with EndOnScriptNode::sAllocator; source matches.
+0x005E9600	??0vector@Broc@@QAE@QAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:335	Copy constructor copies all three vector components.
+0x005E9600	??0vector@Broc@@QAE@QAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202504	Release copies the complete 12-byte vector; source member initialization is equivalent.
+0x005E9630	??_0vector@Broc@@QAEAAU01@M@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:341	Compound division updates x, y, and z in release order and returns this.
+0x005E9630	??_0vector@Broc@@QAEAAU01@M@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202511	Release operator/= performs the same reciprocal multiply and returns the vector reference.
+0x005E9680	??Avector@Broc@@QBEMH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:351	Indexed accessor returns the selected component by value.
+0x005E9680	??Avector@Broc@@QBEMH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202523	Release returns the component at (&x + i); source is identical.
+0x005E97F0	??0pathnode@Broc@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:394	Default pathnode constructor initializes the handle to INVALID_PATHNODE_HANDLE.
+0x005E97F0	??0pathnode@Broc@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202598	Release initializes mHandle to INVALID_PATHNODE_HANDLE; source matches.
+0x005E9850	??0entity@Broc@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:400	Default entity constructor clears the script handle.
+0x005E9850	??0entity@Broc@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202629	Release initializes mEntityHandle to zero; source clears ___u0.
 0x00539D30	??BtlFixedString@@QBEPBDXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/tlFixedString.h:97	Definition returns the stored string pointer with the release const conversion ABI.
 0x00539D30	??BtlFixedString@@QBEPBDXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1096766	Release body at 0x00539D30 returns this->str; source is identical.
 0x005E9A50	??BtlFixedString@@QAEPADXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/tlFixedString.h:103	Definition returns the stored string pointer with the release mutable conversion ABI.

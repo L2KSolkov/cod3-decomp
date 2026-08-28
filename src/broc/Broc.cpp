@@ -332,10 +332,36 @@ vector& vector::operator+=(const vector& rhs)
     return *this;
 }
 
+// ea: 0x005E9600
+vector::vector(const vector& rhs)
+    : x(rhs.x), y(rhs.y), z(rhs.z)
+{
+}
+
+// ea: 0x005E9630
+vector& vector::operator/=(float rhs)
+{
+    x = x * (1.0f / rhs);
+    const float zValue = (1.0f / rhs) * z;
+    y = (1.0f / rhs) * y;
+    z = zValue;
+    return *this;
+}
+
+// ea: 0x005E9680
+float vector::operator[](int i) const
+{
+    return (&x)[i];
+}
+
 bool vector::operator==(const vector& rhs)
 {
     return x == rhs.x && y == rhs.y && z == rhs.z;
 }
+
+typedef vector& (vector::*BrocVectorDivAssignFn)(float);
+static volatile BrocVectorDivAssignFn brocVectorDivAssignAnchor =
+    &vector::operator/=;
 
 vector operator+(const vector& lhs, const vector& rhs)
 {
@@ -363,6 +389,18 @@ vector operator/(const vector& lhs, float rhs)
     result.y = lhs.y * inverse;
     result.z = lhs.z * inverse;
     return result;
+}
+
+// ea: 0x005E97F0
+pathnode::pathnode()
+    : ___u0((unsigned int)INVALID_PATHNODE_HANDLE)
+{
+}
+
+// ea: 0x005E9850
+entity::entity()
+    : ___u0(0)
+{
 }
 
 // ea: 0x005E9730

@@ -431,6 +431,13 @@ def symbol_variants(name: str) -> set[str]:
     # confirm these are the same x86 call contracts; accept the current
     # compiler's equivalent decorations without weakening body gates.
     equivalent = {
+        # The release map's local Broc vector copy/compound-assignment names
+        # retain IDA's pointer/return spelling; the current MSVC emits the
+        # canonical C++ copy-constructor and member-operator decorations.
+        "??0vector@Broc@@QAE@QAM@Z":
+            "??0vector@Broc@@QAE@ABU01@@Z",
+        "??_0vector@Broc@@QAEAAU01@M@Z":
+            "??_0vector@Broc@@QAEAAU01@M@Z",
         # The release map records these CG static methods with the non-static
         # YAX decoration, while the current MSVC emits the equivalent static
         # SAX decoration. IDA confirms identical cdecl call contracts.

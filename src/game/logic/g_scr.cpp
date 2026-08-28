@@ -346,7 +346,7 @@ public:
         kActionTerminate = 3,
     };
 
-    virtual ~AeThreadState() {}
+    virtual ~AeThreadState();
     virtual EAction NewAction(AeThread& t) = 0;  // UAE?AW4EAction@AeThreadState@@
     virtual void GetCondText(ae_fixed_string<64, unsigned char>& str) = 0;
     virtual void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) = 0;
@@ -388,6 +388,12 @@ AeThreadState::AeThreadState(EAction result)
     m_dlist_node.mPrev = nullptr;
     mFinished = false;
     mResult = result;
+}
+
+// ea: 0x005E9490
+// ea: 0x005E94A0 (release vector-deleting alias uses the same destructor body)
+AeThreadState::~AeThreadState()
+{
 }
 
 // ea: 0x005E9420
@@ -5779,6 +5785,7 @@ void* EndOnScriptNode::operator new(size_t size, bool forceHeapAlloc)
 }
 
 // EndOnScriptNode::operator delete - ea: 0x005E9500
+// ea: 0x005E9520 (release emits the same pool-release body as a second alias)
 void EndOnScriptNode::operator delete(void* ptr)
 {
     sAllocator->Release(ptr);
