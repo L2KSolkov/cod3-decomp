@@ -551,3 +551,15 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00945D30	?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810644	Release menu/class selection, fade timing, and respawn request flow match source.
 0x00945FE0	?Code_RequestRespawn@Broc@@YAXI@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5635-5638	Source forwards the player ID to the runtime respawn-request API.
 0x00945FE0	?Code_RequestRespawn@Broc@@YAXI@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810754	Release respawn-request API forwarding matches source.
+0x00946010	?TakeAllWeapons@Broc@@YAXABVentity@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5529-5533	Source forwards the entity handle to the runtime take-all-weapons API.
+0x00946010	?TakeAllWeapons@Broc@@YAXABVentity@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810760	Release take-all-weapons API forwarding matches source.
+0x00947450	?MusicStop@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:30-33	Source stops music through the runtime API with zero fade time.
+0x00947450	?MusicStop@@YAXXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1811425	Release music-stop API call matches source.
+0x009483A0	?waitframe@_mp_common@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9529-9532	Source waits one 50-ms frame.
+0x009483A0	?waitframe@_mp_common@@YAXXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1811892	Release 50-ms wait matches source.
+0x00949EB0	?SetSpectateSeconds@Broc@@YAXHH@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5560-5563	Source forwards spectator countdown seconds and viewport to the runtime API.
+0x00949EB0	?SetSpectateSeconds@Broc@@YAXHH@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1812882	Release spectator-seconds API forwarding matches source.
+0x0094D2A0	?Code_SetTeamGame@Broc@@YAX_N@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:214-217	Source forwards team-game state to the runtime API.
+0x0094D2A0	?Code_SetTeamGame@Broc@@YAX_N@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1814654	Release team-game API forwarding matches source.
+0x0094D2D0	?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6476-6483	Source forwards objective index, state, label, position, height, and client index to the objective API.
+0x0094D2D0	?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1814660	Release objective-add API forwarding and fixed display arguments match source.
