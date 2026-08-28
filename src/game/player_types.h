@@ -230,6 +230,7 @@ struct pmove_t {
     void (__cdecl* capsuletrace)(struct trace_t*, const math::Position3&, const math::Position3&,
                                  const math::Position3&, const math::Position3&, const struct collision_context_t&);  // +0x148
     int (__cdecl* pointcontents)(const math::Position3&, const struct collision_context_t&);  // +0x14C
+    pmove_t();  // ??0pmove_t@@QAE@XZ (g.o 0x4B00F0)
 };
 static_assert(sizeof(pmove_t) == 0x150, "pmove_t size mismatch");
 static_assert(offsetof(pmove_t, ps) == 0x00, "pmove_t::ps offset mismatch");

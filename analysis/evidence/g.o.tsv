@@ -1727,3 +1727,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B0000	??0player_collision_context_t@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019011	Release player collision constructor initializes base fields, binds pass_entity1, sets mask, and installs the derived vtable.
 0x004B0040	??0VehicleNodeAllocator@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3603	Manual source body zeroes allocator counters and all sixteen block pointers.
 0x004B0040	??0VehicleNodeAllocator@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019031	Release VehicleNodeAllocator constructor zeroes counters and sixteen node blocks.
+0x004B00A0	?FreeInteraction@InteractionController@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4004	Manual source body ends the active interaction and clears the interaction queue.
+0x004B00A0	?FreeInteraction@InteractionController@@QAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019063	Release FreeInteraction passes current-state presence to EndInteraction and then clears the queue.
+0x004B00D0	??0RumbleData@RumbleEffect@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:2679	Manual inline constructor initializes rumble_notes and clears the flags mask.
+0x004B00D0	??0RumbleData@RumbleEffect@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019070	Release constructor constructs the notes string and writes a zero flags mask.
+0x004B00F0	??0pmove_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4035	Manual source constructor clears all thirty-two touch entity handles.
+0x004B00F0	??0pmove_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019078	Release constructor zeroes each of the thirty-two touchents handle values.
+0x004B0540	?is_physics_paused@rb_vehicle@@QBE_NXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4012	Manual source getter returns the physics-paused bit from vehicle flags.
+0x004B0540	?is_physics_paused@rb_vehicle@@QBE_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019221	Release getter tests bit 1 in the vehicle flags mask.
+0x004B0550	?is_attached_path@rb_vehicle@@QBE_NXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4017	Manual source getter returns the attached-path flag bit.
+0x004B0550	?is_attached_path@rb_vehicle@@QBE_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019227	Release getter tests bit 1 of the second vehicle flag byte.
+0x004B0560	?is_driving_path@rb_vehicle@@QBE_NXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4022	Manual source getter returns the driving-path flag bit.
+0x004B0560	?is_driving_path@rb_vehicle@@QBE_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019233	Release getter tests the 0x200 driving-path bit in the vehicle flags mask.
+0x004B0570	??0__unnamed@level_locals_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4058	Manual source constructor clears the unnamed level-local field at offset four.
+0x004B0570	??0__unnamed@level_locals_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019239	Release constructor writes zero to the unnamed level-local field at this plus four.
+0x004B0580	??0trigger_info_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4042	Manual source constructor clears both trigger entity handles.
+0x004B0580	??0trigger_info_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019246	Release constructor zeroes the primary and secondary trigger handle values.
+0x004B05A0	??0__unnamed@scr_data_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4067	Manual source constructor constructs the full script-data string, animation, and string arrays.
+0x004B05A0	??0__unnamed@scr_data_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019254	Release constructor constructs twenty-eight Broc strings, ninety-one animation records, and five Broc strings.
+0x004B08A0	??1__unnamed@scr_data_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4077	Manual source destructor destroys the script-data arrays in reverse construction order.
+0x004B08A0	??1__unnamed@scr_data_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019299	Release destructor destroys the five strings, ninety-one animation records, and twenty-eight strings in reverse order.
+0x004B0B50	??0corpseInfo_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4049	Manual source constructor clears the corpse entity handle.
+0x004B0B50	??0corpseInfo_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019338	Release constructor writes zero to corpseInfo_t::mEntity.mVal.
+0x004B0B60	??0local_physic_s@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4028	Manual source constructor clears the ground-trace entity handle and part-name hash.
+0x004B0B60	??0local_physic_s@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019345	Release constructor writes zero to groundTrace.mEntity and the partName hash.

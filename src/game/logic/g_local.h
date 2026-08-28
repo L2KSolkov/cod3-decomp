@@ -561,6 +561,7 @@ struct trigger_info_t {
     int useCount;                                         // +0x08
     int otherUseCount;                                    // +0x0C
 
+    trigger_info_t();  // ??0trigger_info_t@@QAE@XZ (g.o 0x4B0580)
     void Clear();  // ?Clear@trigger_info_t@@QAEXXZ (g.o 0x4AFD20)
 };
 static_assert(sizeof(trigger_info_t) == 0x10, "trigger_info_t size mismatch");
@@ -1555,6 +1556,7 @@ void Scr_ParamError(unsigned int index, const char* error);
 struct corpseInfo_t {
     DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x00
     actor_prone_info_t proneInfo;                    // +0x04
+    corpseInfo_t();  // ??0corpseInfo_t@@QAE@XZ (g.o 0x4B0B50)
 };
 static_assert(sizeof(corpseInfo_t) == 0x1C, "corpseInfo_t size mismatch");
 struct scr_data_t {
@@ -2673,10 +2675,8 @@ public:
         Broc::string rumble_notes; // +0x18
         unsigned int m_flags;      // +0x1C
 
-        RumbleData() : enabled(false), delay(0.0f), intensity(0.0f),
-                       ramp_up_duration(0.0f), steady_duration(0.0f),
-                       ramp_down_duration(0.0f), rumble_notes(),
-                       m_flags(0) {}
+        // ea: 0x004B00D0
+        RumbleData() : rumble_notes(), m_flags(0) {}
     };
     static_assert(sizeof(RumbleData) == 0x20, "RumbleData size mismatch");
     RumbleData mRumbleDataArray[2];  // +0x00

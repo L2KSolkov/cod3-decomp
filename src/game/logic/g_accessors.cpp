@@ -4000,6 +4000,7 @@ EntityHandleDb::EntityHandleDb()
 }
 
 // InteractionController::FreeInteraction (g.o 0x4B00A0)
+// ea: 0x004B00A0
 void InteractionController::FreeInteraction()
 {
     InteractionController_EndInteraction(this, mCurState != nullptr);
@@ -4007,36 +4008,60 @@ void InteractionController::FreeInteraction()
 }
 
 // rb_vehicle flag getters (g.o 0x4B0540-0x4B0560)
+// ea: 0x004B0540
 bool rb_vehicle::is_physics_paused() const
 {
     return (m_flags & 1) != 0;
 }
+// ea: 0x004B0550
 bool rb_vehicle::is_attached_path() const
 {
     return ((m_flags >> 8) & 1) != 0;
 }
+// ea: 0x004B0560
 bool rb_vehicle::is_driving_path() const
 {
     return (m_flags & 0x200) != 0;
 }
 
+// ea: 0x004B0B60
 local_physic_s::local_physic_s()
 {
     groundTrace.mEntity.mHandle.mVal = 0;
     groundTrace.partName.mHash = 0;
-    hasGround = 0;
-    onGround = 0;
+}
+
+// ea: 0x004B00F0
+pmove_t::pmove_t()
+{
+    for (int i = 0; i < 32; ++i)
+        reinterpret_cast<DbLinkedHandle<EntityHandleDb, Entity>*>(touchents)[i].mHandle.mVal = 0;
+}
+
+// ea: 0x004B0580
+trigger_info_t::trigger_info_t()
+{
+    mEntity.mHandle.mVal = 0;
+    mOtherEntity.mHandle.mVal = 0;
+}
+
+// ea: 0x004B0B50
+corpseInfo_t::corpseInfo_t()
+{
+    mEntity.mHandle.mVal = 0;
 }
 // ae_formatted_string ctor (g.o 0x4B0FB0) - declared in core/ae_fixed_string.h
 template class ae_formatted_string<256, unsigned short>;
 
 // level_locals_t::__unnamed ctor (g.o 0x4B0570)
+// ea: 0x004B0570
 level_locals_t::__unnamed::__unnamed()
 {
     v = 0;
 }
 
 // scr_data_t::__unnamed ctor/dtor (g.o 0x4B05A0 / 0x4B08A0)
+// ea: 0x004B05A0
 // Layout: 28 Broc::strings (+8..+332), 91 scr_animscript_t (+336..+1428),
 // 5 Broc::strings (+1436..+1456).
 scr_data_t::__unnamed::__unnamed()
@@ -4048,6 +4073,7 @@ scr_data_t::__unnamed::__unnamed()
     for (int i = 0; i < 5; ++i)
         new (data + 1436 + i * 4) Broc::string((Broc::string::Block*)nullptr);
 }
+// ea: 0x004B08A0
 scr_data_t::__unnamed::~__unnamed()
 {
     for (int i = 4; i >= 0; --i)
