@@ -312,6 +312,7 @@ struct BitSet {
         int m_cur_val;           // +0x0C
 
         // ea: 0x005EAF70 (BitSet<256>::iterator)
+        // ea: 0x004ACF80
         iterator()
             : m_src(nullptr), m_cur_word((unsigned int)-1), m_word_idx(-1),
               m_cur_val(-1) {}
@@ -506,6 +507,7 @@ struct reserved_dlist {
         }
 
         // ea: 0x005EA360 (reserved_dlist<AeThreadState>)
+        // ea: 0x004ACF00
         const_iterator& operator++()
         {
             if (m_next == nullptr)
