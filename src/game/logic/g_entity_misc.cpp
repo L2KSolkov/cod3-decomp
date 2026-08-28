@@ -3309,6 +3309,7 @@ void EntityHandleDb_Find(int fieldOfs, T match,
                          ae_sized_array<Entity*, 4096>& results);
 
 template <>
+// ea: 0x004B1A40
 void EntityHandleDb_Find<Broc::string>(int fieldOfs,
                                        Broc::string match,
                                        ae_sized_array<Entity*, 4096>& results)
@@ -3324,6 +3325,7 @@ void EntityHandleDb_Find<Broc::string>(int fieldOfs,
     }
 }
 template <>
+// ea: 0x004B1B00
 void EntityHandleDb_Find<HashString>(int fieldOfs, HashString match,
                                      ae_sized_array<Entity*, 4096>& results)
 {
@@ -3337,9 +3339,11 @@ void EntityHandleDb_Find<HashString>(int fieldOfs, HashString match,
             results.push_back(e);
     }
 }
+using EntityFindWord = unsigned short;
 template <>
-void EntityHandleDb_Find<unsigned short>(
-    int fieldOfs, unsigned short match,
+// ea: 0x004B1B60
+void EntityHandleDb_Find<EntityFindWord>(
+    int fieldOfs, EntityFindWord match,
     ae_sized_array<Entity*, 4096>& results)
 {
     Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;

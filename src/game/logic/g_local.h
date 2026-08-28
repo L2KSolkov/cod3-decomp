@@ -144,6 +144,9 @@ T* ae_vector<T>::construct_array(int iNumber)
 }
 
 template <typename T>
+// ea: 0x004B19B0
+// ea: 0x004B19E0
+// ea: 0x004B1A10
 void ae_vector<T>::destroy_all()
 {
     if (mElements != nullptr)
