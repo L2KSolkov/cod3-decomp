@@ -3779,10 +3779,11 @@ void G_Animscripted_Think(Entity* ent)
                     }
                     HashString h;
                     h.mHash = end_hash;
-                    Scr_Notify(ent, h, 0);
+                    ent->Notify(h);
+                    Broc::string endString("end");
                     HashString n;
                     n.mHash = v2->notifyName;
-                    Scr_Notify(ent, n, 0);
+                    ent->Notify(n, endString);
                     ent->flags &= ~0x1000000u;
                     v2->anim = 0;
                 }
