@@ -53,3 +53,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00529790	?Con_ClearSubtitles@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x00529790;src/game/cl/cl_console.cpp:713-715	Exact release/source empty-body match.
 0x004EBEB0	?IN_Shutdown@@YAXXZ	V3	PASS	independent-audit-20260827	2026-08-27	IDA:0x004EBEB0;src/game/cl/cl_input.cpp	Release decompiles to an intentional empty input shutdown hook; source body is empty with no omitted side effects.
 0x004EBEB0	?IN_Shutdown@@YAXXZ	V4	PASS	independent-audit-20260827	2026-08-27	IDA:0x004EBEB0;src/game/cl/cl_input.cpp	Exact release/source empty-body match.
+0x005288B0	?CL_CM_LoadMap@@YAXPBD@Z	V3	PASS	ida-manual-cl-stub-abi-20260827	2026-08-27	IDA:0x005288B0;src/game/cl/cl_debug.cpp:154	Release is an intentional empty client-map hook that accepts a const char* map name; source preserves the empty body and ignores the parameter.
+0x005288B0	?CL_CM_LoadMap@@YAXPBD@Z	V4	PASS	ida-manual-cl-stub-abi-20260827	2026-08-27	IDA:0x005288B0;src/game/cl/cl_debug.cpp:154	dumpbin confirms exact YAXPBD decoration; manual release/source comparison confirms the parameter ABI and ret-only body.

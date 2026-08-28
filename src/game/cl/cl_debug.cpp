@@ -152,7 +152,7 @@ void CL_AddCgameCommand(const char* cmdName, void (__cdecl* function)())
 }
 
 // ea: 0x5288B0
-void CL_CM_LoadMap()
+void CL_CM_LoadMap(const char* /*mapName*/)
 {
 }
 
