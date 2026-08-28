@@ -6897,7 +6897,7 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
 class InteractionController {
 public:
     static void* operator new(size_t size, void* p); // core.o 0x004DE710
-    static InteractionController* CreateInst(); // core.o 0x004DE720
+    static void CreateInst();                   // core.o 0x004DE720
     static void DeleteInst();                   // core.o 0x004E2DA0
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
 
@@ -7043,7 +7043,7 @@ static_assert(sizeof(InteractionController) == 0x210,
               "InteractionController size mismatch");
 
 // ea: 0x004DE720
-InteractionController* InteractionController::CreateInst()
+void InteractionController::CreateInst()
 {
     if (InteractionController::sInstHolder.sInst[0] != nullptr)
     {
@@ -7063,10 +7063,9 @@ InteractionController* InteractionController::CreateInst()
         InteractionController* result =
             new (memory) InteractionController(0);
         InteractionController::sInstHolder.sInst[0] = result;
-        return result;
+        return;
     }
     InteractionController::sInstHolder.sInst[0] = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004DE710
@@ -37361,7 +37360,7 @@ class AnimBankManager : public AssetBankSet {
 public:
     static void* operator new(unsigned int s, void* p); // core.o 0x004DC300
     static AnimBankManager* sInst;  // ?sInst@AnimBankManager@@2PAV1@A
-    static AnimBankManager* CreateInst();  // core.o 0x004DC310
+    static void CreateInst();              // core.o 0x004DC310
     AnimBankManager();   // ??0AnimBankManager@@QAE@XZ (0x545650)
     virtual ~AnimBankManager();  // ??1AnimBankManager@@UAE@XZ (0x53EA80)
 
@@ -37385,7 +37384,7 @@ void* AnimBankManager::operator new(unsigned int, void* p)
 }
 
 // ea: 0x004DC310
-AnimBankManager* AnimBankManager::CreateInst()
+void AnimBankManager::CreateInst()
 {
     if (AnimBankManager::sInst != nullptr)
     {
@@ -37405,11 +37404,10 @@ AnimBankManager* AnimBankManager::CreateInst()
         AnimBankManager* result = new (memory) AnimBankManager();
         AnimBankManager::sInst = result;
         AnimBankManager_sInst = result;
-        return result;
+        return;
     }
     AnimBankManager::sInst = nullptr;
     AnimBankManager_sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x00545650

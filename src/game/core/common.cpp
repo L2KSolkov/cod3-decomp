@@ -55,7 +55,7 @@ public:
 class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
-    static InteractionController* CreateInst();  // ?CreateInst@InteractionController@@SAPAV1@XZ (core.o)
+    static void CreateInst();  // ?CreateInst@InteractionController@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@InteractionController@@SAXXZ (core.o)
 };
 
@@ -66,7 +66,7 @@ public:
 
 class GameSettings {
 public:
-    static GameSettings* CreateInst();  // ?CreateInst@GameSettings@@SAXXZ
+    static void CreateInst();  // ?CreateInst@GameSettings@@SAXXZ
 };
 
 
@@ -486,22 +486,22 @@ class DestructibleBankManager { public: static DestructibleBankManager* CreateIn
 class PhysDataBankManager { public: static PhysDataBankManager* CreateInst(); static void DeleteInst(); };
 class AITypeManager { public: static void CreateInst(); static void DeleteInst(); };
 class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
-class SoundMediaMgr { public: static SoundMediaMgr* CreateInst(); static void DeleteInst(); };
+class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
 struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
 class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
 class PathNodeMgr { public: static PathNodeMgr* CreateInst(); static void DeleteInst(); };
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
-class CheckpointMgr { public: static CheckpointMgr* CreateInst(); static void DeleteInst(); };
-class SplineMgr { public: static SplineMgr* CreateInst(); static void DeleteInst(); };
+class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
+class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SmokeGrenadeMgr { public: static SmokeGrenadeMgr* CreateInst(); };
 class CGBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
-class AnimBankManager { public: static AnimBankManager* CreateInst(); };
+class AnimBankManager { public: static void CreateInst(); };
 class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
 class BinFileManager { public: static BinFileManager* CreateInst(); static void DeleteInst(); };
-class CurveManager { public: static CurveManager* CreateInst(); static void DeleteInst(); };
+class CurveManager { public: static void CreateInst(); static void DeleteInst(); };
 class PlayerAnimMgr { public: static PlayerAnimMgr* CreateInst(); static void DeleteInst(); };
 class DynamicDecalMgr { public: static DynamicDecalMgr* CreateInst(); static void DeleteInst(); };
 class TestFPS { public: static void CreateInst(); static void DeleteInst(); };

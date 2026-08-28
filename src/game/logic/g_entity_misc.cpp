@@ -4836,7 +4836,7 @@ enum nslWaveID : int;
 class SoundMediaMgr {
 public:
     static SoundMediaMgr* sInst;        // ?sInst@SoundMediaMgr@@2PAV1@A
-    static SoundMediaMgr* CreateInst();  // core.o 0x004DCAD0
+    static void CreateInst();             // core.o 0x004DCAD0
     static void DeleteInst();            // core.o 0x004E2750
     static void* operator new(size_t size, void* p);
     nslWaveID mFoliageRustleSound;       // +0x00, IDA type size 0x04
@@ -4865,7 +4865,7 @@ void* SoundMediaMgr::operator new(size_t size, void* p)
 }
 
 // ea: 0x004DCAD0
-SoundMediaMgr* SoundMediaMgr::CreateInst()
+void SoundMediaMgr::CreateInst()
 {
     if (SoundMediaMgr::sInst != nullptr)
     {
@@ -4884,10 +4884,9 @@ SoundMediaMgr* SoundMediaMgr::CreateInst()
     {
         SoundMediaMgr* result = new (memory) SoundMediaMgr();
         SoundMediaMgr::sInst = result;
-        return result;
+        return;
     }
     SoundMediaMgr::sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004E2750

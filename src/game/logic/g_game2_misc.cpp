@@ -2718,7 +2718,7 @@ public:
     void ReverseEndianSplinePath(SplinePath* spline);                   // ea: 0x5045F0
     void ReverseEndianSplineGroupFile(HashGroupFileLocal* splineGroupFile);  // ea: 0x5046C0
     static SplineMgr* sInst;  // ?sInst@SplineMgr@@2PAV1@A
-    static SplineMgr* CreateInst();  // ?CreateInst@SplineMgr@@SAPAV1@XZ
+    static void CreateInst();        // ?CreateInst@SplineMgr@@SAXXZ
     static void DeleteInst();  // ?DeleteInst@SplineMgr@@SAXXZ
 };
 
@@ -2758,7 +2758,7 @@ void* SplineMgr::operator new(size_t size, void* p)
 }
 
 // ea: 0x004DDEF0
-SplineMgr* SplineMgr::CreateInst()
+void SplineMgr::CreateInst()
 {
     SplineMgr* result = nullptr;
     if (sInst != nullptr)
@@ -2783,7 +2783,6 @@ SplineMgr* SplineMgr::CreateInst()
     {
         sInst = nullptr;
     }
-    return result;
 }
 
 // ea: 0x004DDFF0

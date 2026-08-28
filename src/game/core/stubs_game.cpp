@@ -23,7 +23,7 @@ class SmokeGrenadeMgr { public: static void CreateInst(); };
 struct AnimBank;
 class AnimBankManager {
 public:
-    static AnimBankManager* CreateInst();
+    static void CreateInst();
 };
 class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
 

@@ -45,7 +45,7 @@ public:
     static GameSettings* sInst;                         // ?sInst@GameSettings@@2PAV1@A
     static GameSettings* Inst();                        // 0x5AEDE0
     static void* operator new(size_t size, void* p);
-    static GameSettings* CreateInst();                   // ?CreateInst@GameSettings@@SAXXZ
+    static void CreateInst();                            // ?CreateInst@GameSettings@@SAXXZ
     static void DeleteInst();                            // ?DeleteInst@GameSettings@@SAXXZ
     MemoryUnitManager::Container container;  // +0x04 (648 bytes)
     SaveGameData* m_temp_buffer;             // +0x28C
@@ -115,7 +115,7 @@ GameSettings* GameSettings::Inst()
 }
 
 // ea: 0x004DD930
-GameSettings* GameSettings::CreateInst()
+void GameSettings::CreateInst()
 {
     if (sInst != nullptr)
     {
@@ -133,7 +133,6 @@ GameSettings* GameSettings::CreateInst()
         sInst = new (memory) GameSettings();
     else
         sInst = nullptr;
-    return sInst;
 }
 
 // ea: 0x004DDA30

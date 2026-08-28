@@ -130,7 +130,7 @@ private:
 public:
     static void* operator new(unsigned int size, void* p);
     static CurveManager* Inst();
-    static CurveManager* CreateInst();
+    static void CreateInst();
     static void DeleteInst();
     RemainingTime mRemainingTime[50];  // +0x04 (0x0C stride)
     struct CurveDList {
@@ -200,7 +200,7 @@ void CurveManager::SetAllocator(PoolAllocator* allocator)
 }
 
 // ea: 0x004DD640
-CurveManager* CurveManager::CreateInst()
+void CurveManager::CreateInst()
 {
     if (CurveManager::sInst != nullptr)
     {
@@ -220,11 +220,10 @@ CurveManager* CurveManager::CreateInst()
         CurveManager* result = new (memory) CurveManager();
         CurveManager::sInst = result;
         CurveManager_sInst = result;
-        return result;
+        return;
     }
     CurveManager::sInst = nullptr;
     CurveManager_sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004E29C0

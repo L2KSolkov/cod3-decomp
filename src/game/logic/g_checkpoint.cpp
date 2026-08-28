@@ -665,7 +665,7 @@ CheckpointMgr::~CheckpointMgr()
 }
 
 // ea: 0x004DDDB0
-CheckpointMgr* CheckpointMgr::CreateInst()
+void CheckpointMgr::CreateInst()
 {
     CheckpointMgr* result = nullptr;
     if (CheckpointMgr::sInst != nullptr)
@@ -690,7 +690,6 @@ CheckpointMgr* CheckpointMgr::CreateInst()
     {
         CheckpointMgr::sInst = nullptr;
     }
-    return result;
 }
 
 // ea: 0x004E2AD0
