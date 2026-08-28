@@ -117,7 +117,8 @@ void Cvar_Shutdown()
                 mem_heap_free(j->resetString);
                 j->resetString = nullptr;
             }
-            ASSERT("var->name", "c:\\cod\\code\\game\\cvar.cpp", 138);
+            if (j->name == nullptr)
+                ASSERT("var->name", "c:\\cod\\code\\game\\cvar.cpp", 138);
             mem_heap_free(j->name);
             j->name = nullptr;
         }

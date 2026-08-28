@@ -2068,10 +2068,11 @@ void nglMatrixCreateXYZ(math::Mat43* mat, math::Dir3* rot, math::Position3* tran
 // ea: 0x004BC4B0
 void mat3_t::Transpose(mat3_t& matrix)
 {
+    const mat3_t source = *this;
     for (int i = 0; i < 3; ++i)
     {
         for (int j = 0; j < 3; ++j)
-            matrix.mat[i].x = this->mat[j].x;
+            matrix.mat[i][j] = (&source.mat[j].x)[i];
     }
 }
 
