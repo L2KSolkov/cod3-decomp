@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007BF220	_AeHash	V3	PASS	ae-hash-manual-20260827	2026-08-27	src/core/ae_hash.cpp:10	Non-empty wrapper now constructs tlFixedString for non-null input and returns its hash field; null input returns zero.
+0x007BF220	_AeHash	V4	PASS	ae-hash-manual-20260827	2026-08-27	IDA:0x007BF220;IDA:0x004A53F0;src/core/ae_hash.cpp:10	Release disassembly constructs a local tlFixedString and returns its first DWORD, with a null early return; source has the same call/return ABI and the constructor now matches release signed-byte CRT promotion.

@@ -380,6 +380,11 @@ def base_name(decorated: str) -> str:
 def candidate_name_matches(decorated: str, candidate: str) -> bool:
     """Match a release decoration to the readable source definition name."""
     base = base_name(decorated)
+    # 32-bit C linkage adds one leading underscore to the map/public symbol
+    # (for example `_AeHash`), while the source definition is spelled
+    # `AeHash`.  Treat that ABI decoration as non-semantic for source lookup.
+    if base.startswith("_") and base[1:] == candidate:
+        return True
     # MSVC uses ??B for all conversion operators.  The release map does not
     # retain the conversion target, so accept the source's explicit
     # const-char-pointer conversion spelling alongside the bool normalization.

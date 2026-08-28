@@ -3,17 +3,13 @@
 // ea: 0x7BF220 -- direct DJB2 with lowercase folding, matches tlFixedString ctor
 // ============================================================================
 
-#include <ctype.h>
+#include "core/tlFixedString.h"
 #include <stdint.h>
 
+// ea: 0x7BF220
 extern "C" unsigned int AeHash(const char* str) {
-    if (!str) return 0;
-    unsigned int hash = 0;
-    for (const char* p = str; *p; ++p) {
-        unsigned char c = (unsigned char)*p;
-        if (isalpha(c))
-            c = (unsigned char)tolower(c);
-        hash = (unsigned int)c + 33u * hash;
-    }
-    return hash;
+    if (str == 0)
+        return 0;
+    tlFixedString value(str);
+    return value.hash;
 }

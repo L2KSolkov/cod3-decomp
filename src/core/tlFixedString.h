@@ -39,8 +39,9 @@ public:
             int i = 0;
             for (const char* p = s; *p != 0; ++p) {
                 char c = *p;
-                if (isalpha((unsigned char)c))
-                    c = (char)tolower((unsigned char)c);
+                // Release passes the sign-extended char to the CRT helpers.
+                if (isalpha((int)c))
+                    c = (char)tolower((int)c);
                 hash = (uint32_t)c + 33u * hash;
                 if (i < 27) {
                     *d++ = c;
