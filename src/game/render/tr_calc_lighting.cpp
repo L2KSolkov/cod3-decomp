@@ -6,6 +6,8 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#include "ngl/ngl_lighting.h"
+#include "ngl/ngl_scene.h"
 
 #include <stdint.h>
 
@@ -22,7 +24,6 @@ bool Assert(const char* fmtstring, ...);
 struct nglShaderParamSet {
     unsigned int* Array;             // +0x00
 };
-struct nglLightContext;
 class Entity;
 
 class tagInfoLocal {
@@ -65,9 +66,6 @@ struct BspTree {
 };
 extern BspTree* g_bspTree;           // ?g_bspTree@@3PAUBspTree@@A
 extern void ModelLightingHack();     // ?ModelLightingHack@@YAXXZ
-extern nglLightContext* nglCreateLightContext();  // ?nglCreateLightContext@@YAPAUnglLightContext@@XZ
-extern void nglListAddLight(int type, void* data, unsigned int unknown);  // ?nglListAddLight@@YAXW4nglLightType@@PAXI@Z
-extern unsigned int nglLightContextParamID;   // ngl_lighting.cpp
 extern unsigned int cdSimpleAlphaAlphaParamID;  // tr_tiny.cpp
 
 namespace LightGrid { struct TOC; }
@@ -154,6 +152,19 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
             }
         }
     }
+
+    // Re-submit the scene's light nodes into the newly created build context.
+    // The release binary walks category 6 using the context object as its
+    // intrusive-list sentinel before publishing the context shader parameter.
+    nglLightContext* buildLightContext = nglBuildScene->LightContext;
+    nglLightNode* light = buildLightContext->Head.Next[6];
+    nglLightNode* sentinel = reinterpret_cast<nglLightNode*>(buildLightContext);
+    while (light != sentinel)
+    {
+        nglListAddLight(light->Type, light->NodeData, 0xFFFFFFFFu);
+        light = light->Next[6];
+    }
+
     unsigned int* Array = shaderParams.Array;
     unsigned int id = nglLightContextParamID;
     Array[0] |= (1u << id);
