@@ -329,7 +329,7 @@ int gLanguage;                      // ?gLanguage@@3HA (core_globals.h typedef t
 // ea: 0x004A7A10 (mp_actors.o; header inline)
 bool IsVehicleSpotted(Entity* vehicle)  // ?IsVehicleSpotted@@YA_NPAVEntity@@@Z
 {
-    if (vehicle == nullptr || vehicle->scr_vehicle == nullptr)
+    if (vehicle == nullptr)
         return false;
     int spotTime = *(int*)((char*)vehicle->scr_vehicle + 0x84);
     return spotTime != 0 && spotTime + 15000 >= level.time;
@@ -338,8 +338,25 @@ bool IsVehicleSpotted(Entity* vehicle)  // ?IsVehicleSpotted@@YA_NPAVEntity@@@Z
 // ea: 0x004A7AF0 (mp_actors.o; actor.h inline)
 bool Actor_IsMeleeInteractable(const actor_s* pSelf)  // ?Actor_IsMeleeInteractable@@YA_NPBUactor_s@@@Z
 {
-    return pSelf != nullptr && pSelf->pEnt != nullptr
-        && (pSelf->pEnt->s.eFlags & 0x10000000) != 0;
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\actor.h";
+        AeAssert::gCurrentLine = 1216;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\actor.h";
+        AeAssert::gCurrentLine = 1217;
+        AeAssert::gCurrentExpr = "pSelf->pEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return (pSelf->pEnt->s.eFlags & 0x10000000) != 0;
 }
 cFreeList<trRefEntity> gRefEntFreeList;   // ?gRefEntFreeList@@3V?$cFreeList@VtrRefEntity@@@@A (g.o)
 cFreeList<DObj> gDObjFreeList;            // ?gDObjFreeList@@3V?$cFreeList@VDObj@@@@A (g.o)
