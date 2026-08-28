@@ -186,7 +186,7 @@ dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	38	0	140	1	1291	0
 game.o	1158	461	11	674	3	9	0
 game2.o	1040	414	91	489	8	38	0
-game_xbox.o	365	151	93	111	0	10	0
+game_xbox.o	365	151	93	110	0	11	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
 inftrees.o	1	1	0	0	0	0	0
@@ -291,7 +291,7 @@ rbc_def_vehicle.o	46	32	7	7	0	0	0
 render.o	1038	694	2	316	0	26	0
 rigid_body.o	13	5	1	7	0	0	0
 scr.o	1540	242	3	123	0	1172	0
-shell.o	2214	836	27	966	2	383	0
+shell.o	2214	836	27	959	2	390	0
 streamer.o	730	372	84	272	0	2	0
 sv.o	148	15	7	125	0	1	0
 tl_initlist.o	1	0	0	0	0	1	0
