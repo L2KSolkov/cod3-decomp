@@ -278,6 +278,8 @@ public:
     Broc::string      boneName;         // +0x08
     int               ignoreCollision;  // +0x0C
     XAnimTree*        animTree;         // +0x10
+    // ea: 0x004AC450
+    ~DObjModel() {}
 };
 static_assert(sizeof(DObjModel) == 0x14, "DObjModel size mismatch");
 

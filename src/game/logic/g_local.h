@@ -704,6 +704,8 @@ struct vehicle_node_t {
     vehicle_node_t();                             // ??0vehicle_node_t@@QAE@XZ (g.o 0x4ABF80)
     vehicle_node_t(const vehicle_node_t& that);   // ??0vehicle_node_t@@QAE@ABU0@@Z (g.o 0x4AC1C0)
     vehicle_node_t& operator=(const vehicle_node_t& rhs);  // ??4vehicle_node_t@@QAEAAU0@ABU0@@Z (g.o 0x4AC310)
+    // ea: 0x004ABFF0
+    ~vehicle_node_t() {}
 };
 static_assert(sizeof(vehicle_node_t) == 0x40, "vehicle_node_t size mismatch");
 
@@ -4094,6 +4096,7 @@ struct debug_aabb {
     math::Position3 bmax;  // +0x10
     float color[4];        // +0x20
 
+    // ea: 0x004AC130
     debug_aabb() {}
     debug_aabb(const math::Position3& _bmin, const math::Position3& _bmax,
                const Color& _color);  // ??0debug_aabb@@QAE@ABVPosition3@math@@0ABVColor@@@Z (g.o 0x4AC140)
