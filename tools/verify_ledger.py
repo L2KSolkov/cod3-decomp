@@ -389,7 +389,9 @@ def candidate_name_matches(decorated: str, candidate: str) -> bool:
     # retain the conversion target, so accept the source's explicit
     # const-char-pointer conversion spelling alongside the bool normalization.
     return (base in candidate or candidate.endswith(base) or
-            (base == "operator bool" and "::operator const char*" in candidate))
+            (base == "operator bool" and
+             ("::operator const char*" in candidate or
+              "::operator char*" in candidate)))
 
 
 def dumpbin_path() -> str | None:

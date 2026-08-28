@@ -24127,6 +24127,12 @@ void XAnimSaveAnimTree(XAnimTree* tree)
 typedef const char* (tlFixedString::*TlFixedStringConvFn)() const;
 static volatile TlFixedStringConvFn tlFixedStringConvAnchor =
     &tlFixedString::operator const char*;
+typedef char* (tlFixedString::*TlFixedStringMutableConvFn)();
+static volatile TlFixedStringMutableConvFn tlFixedStringMutableConvAnchor =
+    &tlFixedString::operator char*;
+typedef unsigned int (tlFixedString::*TlFixedStringHashFn)() const;
+static volatile TlFixedStringHashFn tlFixedStringHashAnchor =
+    &tlFixedString::GetHash;
 
 // ea: 0x00543870
 unsigned int XAnimGetAnimTreeSize(AnimTree* anims)

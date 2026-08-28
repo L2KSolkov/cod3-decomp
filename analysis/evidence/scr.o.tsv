@@ -2428,3 +2428,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E9E70	?MathsRandomIntRange@Broc@@YAHHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202928	Release selects irand(iMin,iMax) or the reversed ordering exactly as source.
 0x005E9EA0	?MathsRandomFloatRange@Broc@@YAMMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:154	Source orders float bounds and returns flrand over the ordered interval.
 0x005E9EA0	?MathsRandomFloatRange@Broc@@YAMMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202937	Release chooses flrand(fMin,fMax) or the reversed ordering exactly as source.
+0x00539D30	??BtlFixedString@@QBEPBDXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/tlFixedString.h:97	Definition returns the stored string pointer with the release const conversion ABI.
+0x00539D30	??BtlFixedString@@QBEPBDXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1096766	Release body at 0x00539D30 returns this->str; source is identical.
+0x005E9A50	??BtlFixedString@@QAEPADXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/tlFixedString.h:103	Definition returns the stored string pointer with the release mutable conversion ABI.
+0x005E9A50	??BtlFixedString@@QAEPADXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202748	Release body at 0x005E9A50 returns this->str; source is identical.
+0x005E9A60	?GetHash@tlFixedString@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/tlFixedString.h:109	Definition returns the stored hash value.
+0x005E9A60	?GetHash@tlFixedString@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202754	Release body at 0x005E9A60 returns this->hash; source is identical.

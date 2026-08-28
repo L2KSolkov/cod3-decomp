@@ -24,8 +24,9 @@ public:
     uint32_t hash;          // +0x00 - DJB2-style hash
     char     str[28];       // +0x04 - inline string (28 bytes = 32 total)
 
-    // ??BtlFixedString@@QBEPBDXZ (anim.o 0x539D30)
-    operator const char*() const { return str; }
+    operator const char*() const;
+
+    operator char*();
 
 
     tlFixedString() : hash(0) {
@@ -88,8 +89,27 @@ public:
     // ea: 0x4B53E0
     const uint32_t* value() const { return (const uint32_t*)this; }
 
-    unsigned int GetHash() const { return hash; }
+    unsigned int GetHash() const;
 
     int Order(const tlFixedString& rhs) const;  // ?Order@tlFixedString@@QBEHABV1@@Z (streamer.o 0x6638E0)
 };
+
+// ea: 0x00539D30
+inline tlFixedString::operator const char*() const
+{
+    return str;
+}
+
+// ea: 0x005E9A50
+inline tlFixedString::operator char*()
+{
+    return str;
+}
+
+// ea: 0x005E9A60
+inline unsigned int tlFixedString::GetHash() const
+{
+    return hash;
+}
+
 static_assert(sizeof(tlFixedString) == 0x20, "tlFixedString size mismatch");
