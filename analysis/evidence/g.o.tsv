@@ -2737,3 +2737,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00477C10	?turret_ReturnToDefaultPos@@YAHPAVEntity@@H@Z	V4	PASS	ida-manual-turret-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:995811-995841	Release default-position angle selection and delegation match source.
 0x00477CA0	?turret_random_aim@@YAHPAVEntity@@@Z	V3	PASS	ida-manual-turret-20260828	2026-08-28	src/game/logic/g_turret.cpp:1018-1031	Source refreshes ambient target angles after the target timeout and delegates to target-angle update.
 0x00477CA0	?turret_random_aim@@YAHPAVEntity@@@Z	V4	PASS	ida-manual-turret-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:995842-995858	Release turret random-aim timeout and angle generation match source.
+0x00478460	?turret_aimat_Ent@@YAHPAVEntity@@0H@Z	V3	PASS	ida-manual-turret-20260828	2026-08-28	src/game/logic/g_turret.cpp:1261-1270	Source sets the target entity, computes aim angles from its origin, updates turret angles, and reports success.
+0x00478460	?turret_aimat_Ent@@YAHPAVEntity@@0H@Z	V4	PASS	ida-manual-turret-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:996172-996183	Release entity-aim target setup and success path match source.
