@@ -839,8 +839,8 @@ void EntityHandleDb::AssignHandle(Entity& e)
     {
         unsigned int mVal = EntityHandleDb_AllocateHandle();
         e.mHandle.mHandle.mVal = mVal;
+        EntityHandleDb::sInst.BindObjectToHandle(mVal, &e);
         unsigned int idx = mVal & 0xFFF;
-        EntityHandleDb::sInst.mElements[idx].mObject = &e;
         EntityHandleDb::sInst.mActiveList.m_elements[
             EntityHandleDb::sInst.mActiveList.m_size] = &e;
         ++EntityHandleDb::sInst.mActiveList.m_size;
