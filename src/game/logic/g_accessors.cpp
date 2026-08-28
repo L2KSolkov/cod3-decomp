@@ -4276,6 +4276,26 @@ void level_locals_t::Clear()
     memset(delayClearAnimTree, 0, sizeof(delayClearAnimTree));
 }
 
+// PlayerState ctor (g.o 0x4B21A0)
+// ea: 0x004B21A0
+PlayerState::PlayerState()
+{
+    mGroundEntity.mHandle.mVal = 0;
+    mLastSpotter.mHandle.mVal = 0;
+    mKiller.mHandle.mVal = 0;
+    mTarget.mHandle.mVal = 0;
+    mClient.mHandle.mVal = 0;
+    queuedReloadSound.mVal = 0;
+    viewmodel.mValue = nullptr;
+    viewmodel.mPakId = PAK_ID_INVALID;
+    mViewLockedEntity.mHandle.mVal = 0;
+    serverCursorHintTrace.mEntity.mHandle.mVal = 0;
+    serverCursorHintTrace.partName.mHash = 0;
+    currentTargetHandle.mHandle.mVal = 0;
+    mMeleeAssistTarget.mHandle.mVal = 0;
+    mFlags = 0;
+}
+
 // PlayerState::Clear (g.o 0x4AF3C0)
 void PlayerState::Clear(bool clearWeapons)
 {
