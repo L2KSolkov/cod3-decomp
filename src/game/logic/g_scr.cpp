@@ -220,6 +220,7 @@ template <typename T, int CAPACITY>
 struct ae_array {
     T m_elements[CAPACITY];  // +0x00
 
+    // ea: 0x005EA080
     T& operator[](int idx) { return m_elements[idx]; }
     const T& operator[](int idx) const { return m_elements[idx]; }
 };
