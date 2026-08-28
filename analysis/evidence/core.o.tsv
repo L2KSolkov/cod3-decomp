@@ -578,3 +578,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004BF2C0	?vectoangles@@YAXQBMAAVPosition3@math@@@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1028813	Release Position3 vectoangles uses the same delegate and three component stores.
 0x004BF300	?vectosignedangles@@YAXQBMQAM@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:2963	vectosignedangles matches release signed yaw/pitch calculations and zero-vector endpoints.
 0x004BF300	?vectosignedangles@@YAXQBMQAM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1028822	Release vectosignedangles uses the same fast-acos branches, sign handling, and output assignments.
+0x004B3F10	?SetAllocator@AeThreadState@@SAXPAVPoolAllocator@@@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:402-405	Source stores the AeThreadState pool allocator pointer.
+0x004B3F10	?SetAllocator@AeThreadState@@SAXPAVPoolAllocator@@@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021838-1021842	Release allocator setter matches source.
+0x004B3F60	?get_dlist_node_offset@EndOnScriptNode@@SAHXZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:5969-5972	Source reports the EndOnScriptNode dlist node offset as zero.
+0x004B3F60	?get_dlist_node_offset@EndOnScriptNode@@SAHXZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021857-1021861	Release dlist offset getter matches source.
+0x004B3F70	?SetAllocator@EndOnScriptNode@@SAXPAVPoolAllocator@@@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:5950-5953	Source stores the EndOnScriptNode pool allocator pointer.
+0x004B3F70	?SetAllocator@EndOnScriptNode@@SAXPAVPoolAllocator@@@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021863-1021867	Release EndOnScriptNode allocator setter matches source.
