@@ -3016,6 +3016,7 @@ public:
     }
     ~cdl_array() { done(); }
 
+    // ea: 0x004AC780
     unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
     const T& operator[](unsigned int index) const; // ?A@?$cdl_array@...@@QBEABU...@@I@Z
     T& operator[](unsigned int index);
@@ -3024,6 +3025,7 @@ public:
     void load_inplace(char* base, int* offs);
 };
 template <typename T>
+// ea: 0x004AC790
 const T& cdl_array<T>::operator[](unsigned int index) const
 {
     if (index >= m_count
@@ -3114,10 +3116,24 @@ class ae_array {
 public:
     T m_elements[SIZE];  // +0x00
 
-    T& operator[](int idx) { return m_elements[idx]; }
+    // ea: 0x004AC7E0
+    T& operator[](int idx)
+    {
+        if (idx < 0 || idx >= SIZE)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return m_elements[idx];
+    }
 };
 
 template <typename T, int CAPACITY>
+// ea: 0x004AC880
 const T& phys_static_array<T, CAPACITY>::operator[](int i) const
 {
     if ((i < 0 || i >= m_alloc_count)

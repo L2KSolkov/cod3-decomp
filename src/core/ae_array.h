@@ -40,12 +40,15 @@ public:
 
     // ea: 0x005EA480
     // ea: 0x005EEB20
+    // ea: 0x004AC550
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
     // ea: 0x005EA680
     // ea: 0x005EA8A0
     // ea: 0x005EABB0
+    // ea: 0x004AC520
+    // ea: 0x004AC5E0
     int size() const { return m_size; }
     // ea: 0x005EA490
     bool empty() const { return m_size == 0; }
@@ -53,6 +56,8 @@ public:
     void clear() { m_size = 0; }
 
     // ea: 0x005EA120
+    // ea: 0x004AC4A0
+    // ea: 0x004AC560
     T& operator[](int idx) {
         if (idx < 0 || idx >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -93,6 +98,7 @@ public:
     // ea: 0x005EA1B0
     // ea: 0x005EA690
     // ea: 0x005EA4B0
+    // ea: 0x004AC5F0
     void push_back(const T& val) {
         if (m_size >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -114,6 +120,7 @@ public:
 
     // ea: 0x005EA540
     // ea: 0x005EA980
+    // ea: 0x004AC690
     T& pop_back() {
         if (m_size != 0)
             --m_size;

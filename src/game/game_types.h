@@ -119,9 +119,12 @@ public:
 
     DbLinkedHandle() { mHandle.mVal = 0; }
     // ea: 0x005EA570
+    // ea: 0x004AC6C0
     DbLinkedHandle(int v) { mHandle.mVal = (unsigned int)v; }  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@H@Z (g.o 0x4AC6C0)
     // ea: 0x005EA590
+    // ea: 0x004AC6E0
     DbLinkedHandle(Handle h) { mHandle = h; }                  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@VHandle@@@Z (g.o 0x4AC6E0)
+    // ea: 0x004AC700
     DbLinkedHandle& operator=(Handle rhs)                      // ??4?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEAAV0@VHandle@@@Z (g.o 0x4AC700)
     {
         mHandle = rhs;

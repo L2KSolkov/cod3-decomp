@@ -4204,6 +4204,7 @@ public:
     T*  m_slot_array;   // +0x00
     int m_alloc_count;  // +0x04
 
+    // ea: 0x004AC860
     phys_static_array()  // ??0?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ (g.o 0x4AC860)
     {
         m_slot_array = (T*)this;
@@ -4214,6 +4215,7 @@ public:
     T& operator[](int i);
     int get_available_slots() const;
     const T& operator[](int i) const;  // ??A?$phys_static_array@...@@QBEABU...@@H@Z
+    // ea: 0x004AC8E0
     const int get_count() const { return m_alloc_count; }  // ?get_count@...@@QBE?BHXZ
     void remove_all() { m_alloc_count = 0; }  // ?remove_all@...@@QAEXXZ (g.o 0x4B1230)
     ~phys_static_array();  // ??1?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ (g.o 0x4B1210)

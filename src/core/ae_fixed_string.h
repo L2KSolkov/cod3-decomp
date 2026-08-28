@@ -54,7 +54,9 @@ public:
     }
 
     const char* c_str() const { return (const char*)mBuff; }
+    // ea: 0x004AC720
     char* c_str() { return (char*)mBuff; }
+    // ea: 0x004AC730
     int length() const { return mLength; }
     static int capacity() {
         return (CAPACITY - 1) / sizeof(CHAR) * sizeof(CHAR);
@@ -72,6 +74,7 @@ public:
     }
 
     // ?rfind@?$ae_fixed_string@$0EA@E@@QBEHD@Z (g.o 0x4AC740)
+    // ea: 0x004AC740
     int rfind(char c) const {
         if (mLength == 0)
             return -1;
