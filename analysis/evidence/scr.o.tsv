@@ -2998,3 +2998,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E9970	?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202697-1202702	Release executing-thread getter matches source.
 0x005E9980	?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:4090-4093	Source stores the executing-thread pointer on the manager.
 0x005E9980	?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202703-1202708	Release executing-thread setter matches source.
+0x005E9420	?get_dlist_node@AeThreadState@@QAEPAXXZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:423-426	Source returns the address of the AeThreadState intrusive-list node.
+0x005E9420	?get_dlist_node@AeThreadState@@QAEPAXXZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202392-1202396	Release dlist-node getter matches source.
+0x005E9450	??3AeThreadState@@SAXPAX_NPBDH@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:441-444	Source releases AeThreadState storage through its pool allocator.
+0x005E9450	??3AeThreadState@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202404-1202408	Release AeThreadState delete forwards to the same allocator.
+0x005E94D0	?get_dlist_node@EndOnScriptNode@@QAEPAXXZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:5975-5978	Source returns the EndOnScriptNode object as its intrusive-list node.
+0x005E94D0	?get_dlist_node@EndOnScriptNode@@QAEPAXXZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202439-1202443	Release EndOnScriptNode dlist getter matches source.
+0x005E9500	??3EndOnScriptNode@@SAXPAX_NPBDH@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:5987-5989	Source releases EndOnScriptNode storage through its pool allocator.
+0x005E9500	??3EndOnScriptNode@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202451-1202455	Release EndOnScriptNode delete forwards to the same allocator.
