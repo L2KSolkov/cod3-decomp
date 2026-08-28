@@ -289,6 +289,7 @@ struct BitSet {
     // ea: 0x005EFF30
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
     // ea: 0x005EAEE0
+    // ea: 0x004AE780
     BitSet(EInitializer) {}  // ??0?$BitSet@$0FEA@@@QAE@W4EInitializer@0@@Z (g.o 0x4AE780)
 
     // ea: 0x005EAD00
@@ -719,6 +720,7 @@ typename reserved_dlist<T>::iterator reserved_dlist<T>::erase(iterator& i)
 
 template <int N>
 // ea: 0x005EEFD0
+// ea: 0x004AE790
 void BitSet<N>::Clear()
 {
     for (int i = GetNumWords() - 1; i >= 0; --i)

@@ -1743,8 +1743,10 @@ public:
     static const T* node_to_object(const dlist_node* dlist_node);
 
     // ?get_head@?$reserved_dlist@VPakFile@@@@QBEPBUdlist_node@1@XZ (g.o 0x4AE7B0)
+    // ea: 0x004AE7B0
     const dlist_node* get_head() const { return m_head; }
     // ?empty@?$reserved_dlist@VPakFile@@@@QBE_NXZ (g.o 0x4AE7C0)
+    // ea: 0x004AE7C0
     bool empty() const { return m_head == m_end; }
     // ?validate@?$reserved_dlist@VPakFile@@@@QBEXXZ (g.o 0x4AE7E0)
     void validate() const;
@@ -1820,6 +1822,7 @@ reserved_dlist<PakFile>::const_iterator::const_iterator(
 {
 }
 
+// ea: 0x004AE7E0
 template <>
 void reserved_dlist<PakFile>::validate() const
 {

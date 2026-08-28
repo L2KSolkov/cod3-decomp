@@ -157,6 +157,7 @@ public:
 
     // ea: 0x004AE5F0
     // ea: 0x004AE600
+    // ea: 0x004AE6E0
     ae_sized_array_base()
         : m_elements(reinterpret_cast<DbLinkedHandle<HandleDb, T>*>(
               m_elementdata))

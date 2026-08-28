@@ -71,7 +71,13 @@ public:
     // ea: 0x004ADF10
     ae_vector() : mElements(nullptr), mCapacity(0), mSize(0) {}
     ~ae_vector() { destroy_all(); }
+    // ea: 0x004AE7F0
+    // ea: 0x004AE850
+    // ea: 0x004AE8C0
     T* begin() { return mElements; }
+    // ea: 0x004AE670
+    // ea: 0x004AE860
+    // ea: 0x004AE8D0
     T* end() { return &mElements[mSize]; }
     // ea: 0x004ADCA0
     // ea: 0x004ADE80
@@ -119,6 +125,9 @@ struct DroneAEMap {
 };
 
 template <typename T>
+// ea: 0x004AE680
+// ea: 0x004AE700
+// ea: 0x004AE750
 T* ae_vector<T>::construct_array(int iCapacity, int iSize)
 {
     (void)iSize;
@@ -126,6 +135,9 @@ T* ae_vector<T>::construct_array(int iCapacity, int iSize)
 }
 
 template <typename T>
+// ea: 0x004AE800
+// ea: 0x004AE870
+// ea: 0x004AE8F0
 T* ae_vector<T>::construct_array(int iNumber)
 {
     return (T*)tlMemAlloc(sizeof(T) * iNumber, 8u, 0);

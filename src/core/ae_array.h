@@ -127,6 +127,7 @@ public:
         }
     }
     // ea: 0x005EA970
+    // ea: 0x004AE6D0
     int capacity() const { return CAPACITY; }
     // ea: 0x005EE950
     int free_space() const { return CAPACITY - m_size; }

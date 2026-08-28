@@ -30,6 +30,7 @@ public:
     // ea: 0x004AD300
     // ea: 0x004AE400
     // ea: 0x004AE630
+    // ea: 0x004AE6F0
     ae_fixed_string() : mLength(0) {
         mBuff[0] = 0;
     }
