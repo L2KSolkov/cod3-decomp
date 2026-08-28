@@ -1,0 +1,21 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0081E600	?compute_det@@YAXXZ	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81E600	Release determinant/dot-product table update and full-mask outputs reviewed.
+0x0081E600	?compute_det@@YAXXZ	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81E600 + src/core/cdl_gjk.cpp	Source preserves table indexing, mask loops, full-simplex outputs, and void release ABI.
+0x0081EA70	?gjk@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@M_NIIII@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA disasm/decompile 0x81EA70	Release GJK support mapping, determinant selection, convergence, and result paths reviewed.
+0x0081EA70	?gjk@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@M_NIIII@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA disasm/decompile 0x81EA70 + src/core/cdl_gjk.cpp	Source body and class ABI match the release solver structure.
+0x0081F2F0	?collide_partial@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81F2F0	Release delegates to GJK and normalizes valid penetration results.
+0x0081F2F0	?collide_partial@@YAHABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81F2F0 + src/core/cdl_gjk.cpp	Source matches threshold, normalization, half-normal adjustment, and return codes.
+0x0081F3D0	?collide_full@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81F3D0	Release iterative penetration search, retry cap, alignment convergence, and output adjustment reviewed.
+0x0081F3D0	?collide_full@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81F3D0 + src/core/cdl_gjk.cpp	Source matches release transform layout, retry/length guards, alignment test, and final points.
+0x0081F6B0	?collide@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@IIII@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81F6B0	Release profiler accounting, partial GJK path, sphere fallback, and iterative full collision path reviewed.
+0x0081F6B0	?collide@@YA_NABVcdlConvex@@ABVMat43@math@@0AAUcdl_cinfo2@@IIII@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81F6B0 + src/core/cdl_gjk.cpp	Source matches release branch thresholds, callback arguments, retry cap, and cinfo output handling.
+0x0081FBF0	?valid@@YA_NH@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FBF0	Release validates determinant coefficients against new_mask.
+0x0081FBF0	?valid@@YA_NH@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FBF0 + src/core/cdl_gjk.cpp	Source matches four-column mask loop and determinant thresholds.
+0x0081FC50	?compute_vector@@YAXHAAVDir3@math@@@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FC50	Release weighted simplex vector reconstruction reviewed.
+0x0081FC50	?compute_vector@@YAXHAAVDir3@math@@@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FC50 + src/core/cdl_gjk.cpp	Source matches y_0 weighted accumulation and inverse weight sum.
+0x0081FD80	?compute_points@@YAXHAAVPosition3@math@@0@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FD80	Release weighted p_0/q point reconstruction reviewed.
+0x0081FD80	?compute_points@@YAXHAAVPosition3@math@@0@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FD80 + src/core/cdl_gjk.cpp	Source matches per-mask weighted accumulation and normalization.
+0x0081FF40	?closest@@YA_NAAVDir3@math@@@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FF40	Release subset search, determinant validity fallback, and simplex update reviewed.
+0x0081FF40	?closest@@YA_NAAVDir3@math@@@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x81FF40 + src/core/cdl_gjk.cpp	Source preserves descending subset search, fallback single support, and output vector behavior.
+0x00820170	?degenerate@@YA_NABVPosition3@math@@@Z	V3	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x820170	Release duplicate-support distance checks against active new_mask entries reviewed.
+0x00820170	?degenerate@@YA_NABVPosition3@math@@@Z	V4	PASS	ida-cdl-gjk-20260827	2026-08-27	IDA decompile 0x820170 + src/core/cdl_gjk.cpp	Source matches all four active-point checks and strict 0.000099999997 threshold.

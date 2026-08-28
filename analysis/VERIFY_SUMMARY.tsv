@@ -172,8 +172,8 @@ cdWorldPointLitShader.o	31	28	0	3	0	0	0
 cdWorldShader.o	27	19	4	4	0	0	0
 cdWorldVertexLitShader.o	25	20	0	5	0	0	0
 cdl_base.o	2	0	0	0	0	2	0
-cdl_common.o	16	0	11	0	0	5	0
-cdl_gjk.o	10	5	5	0	0	0	0
+cdl_common.o	16	0	6	0	0	10	0
+cdl_gjk.o	10	0	0	0	0	10	0
 cg.o	405	4	0	145	1	255	0
 cl.o	341	15	36	267	0	23	0
 compress.o	3	3	0	0	0	0	0

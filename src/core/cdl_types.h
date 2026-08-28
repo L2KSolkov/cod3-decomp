@@ -47,7 +47,8 @@ static_assert(sizeof(cdlVirtual) == 0x04, "cdlVirtual size mismatch");
 // +0x10 m_sphere (bounds), +0x20 m_dims
 // Size: 0x30 (48 bytes) — verified against IDA
 // ============================================================================
-struct cdlConvex {
+class cdlConvex {
+public:
     void*             __vftable;      // +0x00
     int               m_surfaceFlags; // +0x04
     int               m_contentFlags; // +0x08
@@ -102,7 +103,7 @@ static_assert(offsetof(cdlConvex, m_dims)         == 0x20, "cdlConvex.m_dims off
 // cdlAABB — axis-aligned bounding box (derives cdlConvex)
 // Size: 0x30 (48 bytes) — verified against IDA
 // ============================================================================
-struct cdlAABB : cdlConvex {
+class cdlAABB : public cdlConvex {
 };
 static_assert(sizeof(cdlAABB) == 0x30, "cdlAABB size mismatch");
 
@@ -110,7 +111,7 @@ static_assert(sizeof(cdlAABB) == 0x30, "cdlAABB size mismatch");
 // cdlSphere — bounding sphere (derives cdlConvex)
 // Size: 0x30 (48 bytes) — verified against IDA
 // ============================================================================
-struct cdlSphere : cdlConvex {
+class cdlSphere : public cdlConvex {
 };
 static_assert(sizeof(cdlSphere) == 0x30, "cdlSphere size mismatch");
 

@@ -100,11 +100,136 @@ static float rel_error2 = 0.01f;
 static const float SEP_TRESHOLD2_0 = 1.0f;
 static const float PEN_TRESHOLD2_0 = 0.010000001f;
 
+void compute_det();
+
+// ea: 0x81FBF0
+bool valid(int mask) {
+    int column = 0;
+    for (unsigned int bit = 1; ; bit <<= 1, ++column) {
+        if ((new_mask & bit) != 0) {
+            const bool coefficientValid = (static_cast<unsigned int>(mask) & bit) != 0
+                ? det_[mask][column] >= 0.001f
+                : det_[mask | bit][column] <= 0.0f;
+            if (!coefficientValid)
+                return false;
+        }
+        if (column >= 3)
+            return true;
+    }
+}
+
+// ea: 0x81FC50
+void compute_vector(int mask, math::Dir3& result) {
+    result.v = _mm_setzero_ps();
+    float weightSum = 0.0f;
+    if ((mask & 1) != 0) {
+        const float weight = det_[mask][0];
+        weightSum = weight;
+        result.v = _mm_add_ps(result.v,
+                              _mm_mul_ps(y_0[0].v, _mm_set1_ps(weight)));
+    }
+    if ((mask & 2) != 0) {
+        const float weight = det_[mask][1];
+        weightSum += weight;
+        result.v = _mm_add_ps(result.v,
+                              _mm_mul_ps(y_0[1].v, _mm_set1_ps(weight)));
+    }
+    if ((mask & 4) != 0) {
+        const float weight = det_[mask][2];
+        weightSum += weight;
+        result.v = _mm_add_ps(result.v,
+                              _mm_mul_ps(y_0[2].v, _mm_set1_ps(weight)));
+    }
+    if ((mask & 8) != 0) {
+        const float weight = det_[mask][3];
+        weightSum += weight;
+        result.v = _mm_add_ps(result.v,
+                              _mm_mul_ps(y_0[3].v, _mm_set1_ps(weight)));
+    }
+    result.v = _mm_mul_ps(result.v, _mm_set1_ps(1.0f / weightSum));
+}
+
+// ea: 0x81FD80
+void compute_points(int mask, math::Position3& pointA,
+                    math::Position3& pointB) {
+    pointA.v = _mm_setzero_ps();
+    pointB.v = _mm_setzero_ps();
+    float weightSum = 0.0f;
+    if ((mask & 1) != 0) {
+        const float weight = det_[mask][0];
+        weightSum = weight;
+        const __m128 w = _mm_set1_ps(weight);
+        pointA.v = _mm_add_ps(pointA.v, _mm_mul_ps(p_0[0].v, w));
+        pointB.v = _mm_add_ps(pointB.v, _mm_mul_ps(q[0].v, w));
+    }
+    if ((mask & 2) != 0) {
+        const float weight = det_[mask][1];
+        weightSum += weight;
+        const __m128 w = _mm_set1_ps(weight);
+        pointA.v = _mm_add_ps(pointA.v, _mm_mul_ps(p_0[1].v, w));
+        pointB.v = _mm_add_ps(pointB.v, _mm_mul_ps(q[1].v, w));
+    }
+    if ((mask & 4) != 0) {
+        const float weight = det_[mask][2];
+        weightSum += weight;
+        const __m128 w = _mm_set1_ps(weight);
+        pointA.v = _mm_add_ps(pointA.v, _mm_mul_ps(p_0[2].v, w));
+        pointB.v = _mm_add_ps(pointB.v, _mm_mul_ps(q[2].v, w));
+    }
+    if ((mask & 8) != 0) {
+        const float weight = det_[mask][3];
+        weightSum += weight;
+        const __m128 w = _mm_set1_ps(weight);
+        pointA.v = _mm_add_ps(pointA.v, _mm_mul_ps(p_0[3].v, w));
+        pointB.v = _mm_add_ps(pointB.v, _mm_mul_ps(q[3].v, w));
+    }
+    const __m128 inverseWeightSum = _mm_set1_ps(1.0f / weightSum);
+    pointA.v = _mm_mul_ps(pointA.v, inverseWeightSum);
+    pointB.v = _mm_mul_ps(pointB.v, inverseWeightSum);
+}
+
+// ea: 0x81FF40
+bool closest(math::Dir3& result) {
+    compute_det();
+    const unsigned int requestedMask = w_mask;
+    if (cur_mask != 0) {
+        for (unsigned int subset = cur_mask; subset != 0; --subset) {
+            if ((subset & cur_mask) != subset)
+                continue;
+            const unsigned int candidateMask = subset | requestedMask;
+            if (!valid(static_cast<int>(candidateMask)))
+                continue;
+            cur_mask = candidateMask;
+            compute_vector(static_cast<int>(candidateMask), result);
+            return true;
+        }
+    }
+
+    if (!valid(static_cast<int>(requestedMask)))
+        return false;
+    cur_mask = requestedMask;
+    result.v = y_0[w_ind].v;
+    return true;
+}
+
+// ea: 0x820170
+bool degenerate(const math::Position3& point) {
+    const __m128 points[4] = { y_0[0].v, y_0[1].v, y_0[2].v, y_0[3].v };
+    for (unsigned int bit = 1, index = 0; index < 4; bit <<= 1, ++index) {
+        if ((new_mask & bit) != 0) {
+            const __m128 delta = _mm_sub_ps(point.v, points[index]);
+            if (dot3(_mm_mul_ps(delta, delta)) < 0.000099999997f)
+                return true;
+        }
+    }
+    return false;
+}
+
 // ============================================================================
 // compute_det — recompute determinant tables from current y_0 points
 // ea: 0x81E600
 // ============================================================================
-int compute_det() {
+void compute_det() {
     unsigned int v0 = w_ind;
     unsigned int v1 = 0;
     unsigned int mask = 1;
@@ -208,7 +333,6 @@ int compute_det() {
             + ((dword_10E0DB0 - dword_10E0DBC) * dword_10E0C34)
             + ((dp_storage[0] - dword_10E0DAC) * dword_10E0C30);
     }
-    return 16;
 }
 
 // ============================================================================
