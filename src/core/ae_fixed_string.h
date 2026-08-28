@@ -27,6 +27,7 @@ public:
     CHAR            mBuff[(CAPACITY - 1) / sizeof(CHAR)];  // +0x00
     unsigned char   mLength;                               // +sizeof(mBuff)
 
+    // ea: 0x004AD300
     ae_fixed_string() : mLength(0) {
         mBuff[0] = 0;
     }
@@ -63,6 +64,7 @@ public:
     char* c_str() { return (char*)mBuff; }
     // ea: 0x004AC730
     int length() const { return mLength; }
+    // ea: 0x004AD330
     static int capacity() {
         return (CAPACITY - 1) / sizeof(CHAR) * sizeof(CHAR);
     }

@@ -192,11 +192,14 @@ public:
         iterator(T* ptr) : m_ptr(ptr) {}  // ??0iterator@...@@AAE@PAPAVEntity@@@Z (g.o 0x4AE610)
     public:
         // ea: 0x004AD230
+        // ea: 0x004AD280
         T& operator*() const { return *m_ptr; }  // ??Diterator@...@@QBEAAPAV...@@XZ / QBEAAV...@@XZ
         T* operator->() const { return m_ptr; }
         // ea: 0x004AD240
+        // ea: 0x004AD290
         iterator& operator++() { ++m_ptr; return *this; }  // ??Eiterator@...@@QAEAAV01@XZ
         // ea: 0x004AD250
+        // ea: 0x004AD2A0
         bool operator!=(iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9iterator@...@@QBE_NV01@@Z
     };
 
