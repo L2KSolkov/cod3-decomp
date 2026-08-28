@@ -629,3 +629,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00947F40	?CheckLastManStandingEnoughPlayers@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1811762	Release player-count wait and last-man-standing state transitions match source.
 0x0094B210	?WaitForTeams@_mp_common@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9784-9822	Source waits until both required teams and player counts are present before starting the round.
 0x0094B210	?WaitForTeams@_mp_common@@YAXXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813564	Release team/player wait conditions and timing match source.
+0x00925170	??0bint@@QAE@M@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6611-6612	Source bint float constructor truncates the float into mVal, matching the release body.
+0x00925170	??0bint@@QAE@M@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1819782	Release bint(float) stores the converted value directly, matching source.
+0x0095AD50	??D@YA?AUbfloat@@Ubint@@U0@@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6697-6701	Source multiplies bfloat by the checked bint value and returns a bfloat.
+0x0095AD50	??D@YA?AUbfloat@@Ubint@@U0@@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1822234-1822244	Release operator*(bint,bfloat) performs the same checked conversion and multiplication.
+0x0095ADA0	??H@YA?AUbfloat@@Ubint@@U0@@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6704-6708	Source adds the checked bint value to bfloat and returns the result.
+0x0095ADA0	??H@YA?AUbfloat@@Ubint@@U0@@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1822246-1822255	Release operator+(bint,bfloat) matches source arithmetic and conversion order.
+0x0095AE70	??4bint@@QAEHUbfloat@@@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6751-6758	Source assigns a defined bfloat conversion or bint undefined sentinel exactly as release.
+0x0095AE70	??4bint@@QAEHUbfloat@@@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1822276-1822289	Release bint assignment from bfloat has the same IsDefined branch and sentinel behavior.
+0x0095AED0	?IsDefined@bfloat@@QBE_NXZ	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6740-6742	Source reports bfloat defined when its value is not NaN.
+0x0095AED0	?IsDefined@bfloat@@QBE_NXZ	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1822291-1822295	Release bfloat IsDefined uses the same NaN test.
+0x0095D300	??9bfloat@@QBE_NM@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6726-6728	Source compares bfloat mVal directly against the float operand.
+0x0095D300	??9bfloat@@QBE_NM@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1823509-1823513	Release bfloat inequality performs the same direct comparison.
+0x00971F80	??D@YA?AUbfloat@@Ubint@@M@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6685-6687	Source multiplies the checked bint value by the float operand.
+0x00971F80	??D@YA?AUbfloat@@Ubint@@M@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1835082-1835089	Release operator*(bint,float) matches source.
+0x00971FC0	??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6791-6793	Source compares bfloat rhs greater than the checked bint lhs.
+0x00971FC0	??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1835092-1835100	Release mixed bint/bfloat less-than uses the same comparison.
+0x00975FF0	??M@YA?AUbbool@@Ubfloat@@0@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6716-6718	Source implements bfloat less-than by comparing rhs greater than lhs.
+0x00975FF0	??M@YA?AUbbool@@Ubfloat@@0@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1837321-1837330	Release bfloat less-than matches source ordering and result construction.
+0x00977460	??4bint@@QAEHM@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6689-6694	Source asserts bint is defined, multiplies mVal, and returns it.
+0x00977460	??4bint@@QAEHM@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1838072-1838078	Release bint operator*= has the same assertion and multiplication.
+0x009774D0	??M@YA?AUbbool@@Ubfloat@@H@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6721-6723	Source compares integer rhs greater than bfloat lhs.
+0x009774D0	??M@YA?AUbbool@@Ubfloat@@H@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1838087-1838095	Release mixed bfloat/int less-than matches source.
+0x0097D020	??Fbint@@QAEHXZ	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6648-6651	Source asserts bint is defined and returns post-decrement mVal.
+0x0097D020	??Fbint@@QAEHXZ	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1841357-1841362	Release bint post-decrement has the same assertion and return semantics.
