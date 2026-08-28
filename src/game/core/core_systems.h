@@ -317,6 +317,7 @@ struct BitSet {
         iterator()
             : m_src(nullptr), m_cur_word((unsigned int)-1), m_word_idx(-1),
               m_cur_val(-1) {}
+        // ea: 0x004B1970
         iterator(const BitSet<N>* src)  // ??0iterator@?$BitSet@$0FEA@@@QAE@ABV1@@Z (g.o 0x4B1970)
         {
             m_src = (BitSet<N>*)src;
@@ -332,6 +333,7 @@ struct BitSet {
             return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
         }
         // ea: 0x005EF120
+        // ea: 0x004B1400
         bool operator!=(const iterator& rhs)  // ??9iterator@?$BitSet@$0FEA@@@QAE_NABV01@@Z (g.o 0x4B1400)
         {
             return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
@@ -599,6 +601,7 @@ struct reserved_dlist {
         m_tail = reinterpret_cast<dlist_node*>(&m_head);
     }
     void validate() const;  // ?validate@?$reserved_dlist@VEntityNotify@@@@QBEXXZ (g.o 0x4AE530)
+    // ea: 0x004B12D0
     void push_back(T* obj);  // ?push_back@?$reserved_dlist@VEntityNotify@@@@QAEXPAVEntityNotify@@@Z (g.o 0x4B12D0)
     void push_front(T* obj);
     void erase(T* obj);
@@ -614,6 +617,7 @@ void reserved_dlist<T>::validate() const
 }
 
 template <typename T>
+// ea: 0x004B12D0
 void reserved_dlist<T>::push_back(T* obj)
 {
     dlist_node* node = (dlist_node*)obj;

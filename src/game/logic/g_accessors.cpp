@@ -3670,11 +3670,15 @@ public:
     void (T::*mFp)(Entity*, U);
     U  mA1;
 
+    // ea: 0x004B1510
+    // ea: 0x004B1590
     TaskFunctor1(void (T::*fp)(Entity*, U), const U& a1)
         : mFp(fp), mA1(a1)
     {
     }
     virtual ~TaskFunctor1();
+    // ea: 0x004B1540
+    // ea: 0x004B15C0
     virtual void Update(Task* t, Entity* e)
     {
         (((T*)t)->*mFp)(e, mA1);
@@ -3739,14 +3743,44 @@ template <int N>
 class BitSet {
 public:
     unsigned char mBits[(N + 7) / 8];
+    // ea: 0x004B1720
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
     void Clear()
     {
         for (int i = (N + 31) / 32 - 1; i >= 0; --i)
             ((unsigned int*)mBits)[i] = 0;
     }
-    void Add(int v) { ((unsigned int*)mBits)[v >> 5] |= 1u << (v & 0x1F); }
-    void Rmv(int v) { ((unsigned int*)mBits)[v >> 5] &= ~(1u << (v & 0x1F)); }
+    // ea: 0x004B1750
+    void Add(int v)
+    {
+        if ((v >> 5) >= 42)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
+            AeAssert::gCurrentLine = 99;
+            AeAssert::gCurrentExpr = "idx < GetNumWords()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        ((unsigned int*)mBits)[v >> 5] |= 1u << (v & 0x1F);
+    }
+    // ea: 0x004B17E0
+    void Rmv(int v)
+    {
+        if ((v >> 5) >= 42)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
+            AeAssert::gCurrentLine = 107;
+            AeAssert::gCurrentExpr = "idx < GetNumWords()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        ((unsigned int*)mBits)[v >> 5] &= ~(1u << (v & 0x1F));
+    }
+    // ea: 0x004B1870
     BitSet<N> operator~() const
     {
         BitSet<N> r;
@@ -3921,6 +3955,7 @@ void HandleDb<T, CAPACITY, H>::ReleaseHandle(Handle h)
     }
 }
 template <typename T, int CAPACITY, typename H>
+// ea: 0x004B16D0
 T* HandleDb<T, CAPACITY, H>::DereferenceHandle(Handle h) const
 {
     unsigned int v2 = h.mVal & 0xFFF;

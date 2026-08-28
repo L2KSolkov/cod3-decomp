@@ -197,6 +197,7 @@ void ae_vector<T>::push_back(const T& iElement)
 }
 
 template <typename T>
+// ea: 0x004B14C0
 void ae_vector<T>::pop_back()
 {
     if (mSize != 0)

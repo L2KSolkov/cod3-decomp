@@ -263,6 +263,7 @@ void WaitTilOutput::SetAllocator(PoolAllocator* allocator)
     WaitTilOutput::sAllocator = allocator;
 }
 // WaitTilOutput ctor (g.o 0x4B1680)
+// ea: 0x004B1680
 WaitTilOutput::WaitTilOutput()
 {
     dListNodeFiller1 = nullptr;

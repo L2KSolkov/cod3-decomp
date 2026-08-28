@@ -30,6 +30,7 @@ public:
 
     // ea: 0x005EAC70
     // ea: 0x005EEBF0
+    // ea: 0x004B16A0
     ae_sized_array_base() {}
 };
 
@@ -43,6 +44,9 @@ public:
     // ea: 0x004AC550
     // ea: 0x004AD0F0
     // ea: 0x004ADFD0
+    // ea: 0x004B1450
+    // ea: 0x004B1470
+    // ea: 0x004B14D0
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
@@ -130,6 +134,7 @@ public:
     // ea: 0x004AE6D0
     int capacity() const { return CAPACITY; }
     // ea: 0x005EE950
+    // ea: 0x004B14F0
     int free_space() const { return CAPACITY - m_size; }
 
     // ea: 0x005EA540
@@ -165,6 +170,7 @@ public:
             --m_size;
     }
     // ea: 0x005EEAE0
+    // ea: 0x004B1660
     // ea: 0x005EED00
     T& back() { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }  // ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ (g.o 0x4B1660)
     // ea: 0x005EE7D0
@@ -217,8 +223,10 @@ public:
     };
 
     // ea: 0x004B0EE0
+    // ea: 0x004B1490
     iterator begin() { return iterator(m_elements); }  // ?begin@...@@QAE?AViterator@1@XZ
     // ea: 0x004B0EF0
+    // ea: 0x004B14A0
     iterator end() { return iterator(&m_elements[m_size]); }  // ?end@...@@QAE?AViterator@1@XZ
     // ea: 0x004B0F10
     // ea: 0x005EEB40
