@@ -515,6 +515,9 @@ public:
         dlist_node* m_next;
         dlist_node* m_prev;
 
+        // ea: 0x005EA030
+        // ea: 0x005EA050
+        // ea: 0x005EA100
         dlist_node(dlist_node* next, dlist_node* prev)
             : m_next(next), m_prev(prev) {}
         void pop();
