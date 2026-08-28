@@ -505,3 +505,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0093F610	??8bbool@@QBE_N_N@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1806694	Release bbool equality comparison matches source.
 0x0093F640	??9entity@Broc@@QBE_NABV01@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5594-5596	Source compares entity handles for inequality.
 0x0093F640	??9entity@Broc@@QBE_NABV01@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1806700	Release entity inequality comparison matches source.
+0x00940210	??D@YA?AUbfloat@@HU0@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6696-6700	Source multiplies an integer and bfloat and returns the bfloat result.
+0x00940210	??D@YA?AUbfloat@@HU0@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807270	Release integer-bfloat multiplication matches source.
+0x00940250	??4health_struct@__unnamed@entity@Broc@@QAEABHABH@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5390-5394	Source forwards entity health assignment to the runtime API and returns the assigned value.
+0x00940250	??4health_struct@__unnamed@entity@Broc@@QAEABHABH@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807282	Release health setter and return match source.
+0x00940290	??0bint@@QAE@ABUbfloat@@@	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6609-6612	Source constructs bint storage from a bfloat value.
+0x00940290	??0bint@@QAE@ABUbfloat@@@	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807289	Release bint-from-bfloat conversion matches source.
+0x00940400	?CallbackPlayerRevive@_mp_common@@YAXVentity@Broc@@0@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:10147-10368	Source handles revive state, medic/player stats, equipment, and local-player feedback.
+0x00940400	?CallbackPlayerRevive@_mp_common@@YAXVentity@Broc@@0@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807332	Release revive state, stats, equipment, and feedback paths match source.
+0x009408B0	?CallbackCanTeamChange@_mp_common@@YAHVentity@Broc@@H@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9939-9985	Source evaluates team-change permissions, balancing rules, and player state.
+0x009408B0	?CallbackCanTeamChange@_mp_common@@YAHVentity@Broc@@H@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807534	Release team-change permission and balancing checks match source.
+0x00940D40	?TeamChangeKillPlayer@_mp_common@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9672-9987	Source applies team-change kill handling and respawn-state updates.
+0x00940D40	?TeamChangeKillPlayer@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807684	Release team-change kill state and player updates match source.
+0x00940EC0	?CallbackPlayerTeamChange@_mp_common@@YAXVentity@Broc@@HH@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9988-10145	Source handles team-change notifications, scores, weapons, and respawn state.
+0x00940EC0	?CallbackPlayerTeamChange@_mp_common@@YAXVentity@Broc@@HH@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807744	Release team-change callbacks, state, and feedback match source.
+0x00941480	?CallbackRoundOver@_mp_common@@YAXHVstring@Broc@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:10370-11534	Source processes round-over condition, messaging, score state, and next-round scheduling.
+0x00941480	?CallbackRoundOver@_mp_common@@YAXHVstring@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807985	Release round-over condition branches, messaging, score updates, and scheduling match source.
+0x00943C50	??H@YA?AUbint@@U0@0@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6770-6773	Source adds two bint values and returns the sum.
+0x00943C50	??H@YA?AUbint@@U0@0@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1809413	Release bint addition matches source.
+0x009448E0	?QuitGameWithMessage@_mp_common@@YAXVentity@Broc@@UHashStr@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9824-9863	Source sends the quit-game notification and closes the player menu/state.
+0x009448E0	?QuitGameWithMessage@_mp_common@@YAXVentity@Broc@@UHashStr@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1809875	Release quit notification and menu/state cleanup match source.
+0x009449D0	?CloseAllMenus@Broc@@YAXH@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:266-269	Source forwards viewport menu closure to the runtime API.
+0x009449D0	?CloseAllMenus@Broc@@YAXH@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1809913	Release close-all-menus API forwarding matches source.
+0x00944A00	?HostHasMigrated@_mp_common@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:11536-11680	Source handles host migration state, player updates, and game-state notifications.
+0x00944A00	?HostHasMigrated@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1809919	Release host-migration state and player notification flow match source.
+0x00944E70	?Code_RoundOver@Broc@@YAXHABVstring@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5806-5809	Source forwards round-over condition and winner string to the runtime API.
+0x00944E70	?Code_RoundOver@Broc@@YAXHABVstring@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810073	Release round-over API forwarding matches source.
+0x00944F40	?NewHost@_mp_common@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9665-9670	Source handles new-host initialization and notification flow.
+0x00944F40	?NewHost@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810091	Release new-host initialization and notification flow match source.
+0x00944F90	?FadeUpWhenLoaded@_mp_common@@YAXVentity@Broc@@0@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:9865-9937	Source fades the local player up after load and handles state/notification cleanup.
+0x00944F90	?FadeUpWhenLoaded@_mp_common@@YAXVentity@Broc@@0@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810104	Release fade-up state, player selection, and notification flow match source.
