@@ -343,6 +343,13 @@ struct sentient_s {
     int32_t    mLastAnimIKOffsetTime;               // +0x168
     // pad to end
     uint8_t    _pad16C[4];                          // +0x16C
+
+    // ea: 0x004A9F60
+    sentient_s()
+        : hGoalScriptCallback(), mClaimedNode(), mActualChainPos(),
+          mDesiredChainPos(), mNearestNode(0)
+    {
+    }
 };
 static_assert(sizeof(sentient_s) == 0x170, "sentient_s size mismatch");
 static_assert(offsetof(sentient_s, pEnt) == 0x000, "sentient_s::pEnt offset mismatch");

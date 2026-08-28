@@ -3239,6 +3239,9 @@ struct turretInfo_t {
     float    heat;               // +0x80
     bool     overheating;        // +0x84
     Handle   overheatEffect;     // +0x88
+
+    // ea: 0x004A9FB0
+    turretInfo_t() : overheatEffect() {}
 };
 static_assert(sizeof(turretInfo_t) == 0x8C, "turretInfo_t size mismatch");
 static_assert(offsetof(turretInfo_t, turret_state) == 0x01, "turretInfo_t::turret_state offset mismatch");
