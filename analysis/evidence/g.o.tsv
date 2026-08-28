@@ -1895,3 +1895,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B1F90	??1?$WaitTilOutputInst1@Vstring@Broc@@@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020339	Release destructor is empty after the derived/base teardown transition.
 0x004B2020	??1?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:388	Two-payload carrier destructor has the compiler-generated empty body.
 0x004B2020	??1?$WaitTilOutputInst2@Vstring@Broc@@V12@@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020359	Release destructor is empty after the derived/base teardown transition.
+0x004B2210	??0RumbleEffect@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:1327	Constructor delegates to Initialize, which sets both motor records to the release defaults.
+0x004B2210	??0RumbleEffect@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020421	Release constructor initializes both RumbleData records with enabled/default timing values.

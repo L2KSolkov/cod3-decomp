@@ -1324,7 +1324,8 @@ public:
     static_assert(sizeof(RumbleData) == 0x20, "RumbleData size mismatch");
     RumbleData mRumbleDataArray[2];  // +0x00
 
-    RumbleEffect() {}
+    // ea: 0x004B2210
+    RumbleEffect() { Initialize(); }
     // ea: 0x004A9E20
     ~RumbleEffect() {}
     bool GetLooping(ERumbleMotorID rumbleID) const;
