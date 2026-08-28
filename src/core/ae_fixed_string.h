@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 namespace AeStringSupport {
+void Concat(char* dst, int* const dstLen, int dstCapacity, const char* src);
 bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff,
                 int rhsLen);
 void Split(char* dstBuff, int* const dstLen, char* srcBuff, int* const srcLen,
@@ -108,25 +109,19 @@ public:
 
     // Append a C string (ae_fixed_string::operator+=, COMDAT).
     ae_fixed_string& operator+=(const CHAR* rhs) {
-        const char* src = (const char*)rhs;
-        int l = (int)mLength;
-        int r = 0;
-        while (src[r] != 0 && l < (CAPACITY - 1) / sizeof(CHAR)) {
-            mBuff[l++] = (CHAR)src[r++];
-        }
-        mLength = (unsigned char)l;
-        mBuff[l] = 0;
+        int len = (int)mLength;
+        AeStringSupport::Concat((char*)mBuff, &len, capacity(),
+                                 (const char*)rhs);
+        mLength = (unsigned char)len;
         return *this;
     }
 
+    // ea: 0x005EE7F0
+    // ea: 0x005EEB80
     ae_fixed_string& operator+=(const char* rhs) {
-        int l = (int)mLength;
-        int r = 0;
-        while (rhs[r] != 0 && l < (CAPACITY - 1) / sizeof(CHAR)) {
-            mBuff[l++] = (CHAR)rhs[r++];
-        }
-        mLength = (unsigned char)l;
-        mBuff[l] = 0;
+        int len = (int)mLength;
+        AeStringSupport::Concat((char*)mBuff, &len, capacity(), rhs);
+        mLength = (unsigned char)len;
         return *this;
     }
 
