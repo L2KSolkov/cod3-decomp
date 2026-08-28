@@ -399,6 +399,7 @@ bool trace_t::decal_ok()
 // ============================================================================
 // Singleton Inst accessors (g.o)
 // ============================================================================
+// ea: 0x004A5240
 XModelManager* XModelManager::Inst()
 {
     return XModelManager::sInst;
@@ -499,6 +500,7 @@ AnimBankManager* AnimBankManager::Inst()
     return AnimBankManager::sInst;
 }
 
+// ea: 0x004A5230
 const char* XModel::GetName() const
 {
     return name.mStr;
@@ -631,6 +633,7 @@ void force_emit_task_vec_dtor(Task* p)
 // ============================================================================
 // XModel::GetXModelParts (g.o 0x4A5170 / 0x4A51D0)
 // ============================================================================
+// ea: 0x004A5170
 XModelParts* XModel::GetXModelParts(int lodIndex)
 {
     if (lodIndex >= 0)
@@ -644,6 +647,7 @@ XModelParts* XModel::GetXModelParts(int lodIndex)
     } while (lod[v3] == nullptr);
     return lod[v3]->xmodelParts;
 }
+// ea: 0x004A51D0
 const XModelParts* XModel::GetXModelParts(int lodIndex) const
 {
     if (lodIndex >= 0)
@@ -661,6 +665,7 @@ const XModelParts* XModel::GetXModelParts(int lodIndex) const
 // ============================================================================
 // scr_vehicle_t CollisionDamage / GetAverageWheelSpeed (g.o)
 // ============================================================================
+// ea: 0x004890C0
 void scr_vehicle_t::CollisionDamage(Entity* ent, const math::Position3& pos,
                                     const math::Position3& dir,
                                     float intensity)
@@ -670,6 +675,7 @@ void scr_vehicle_t::CollisionDamage(Entity* ent, const math::Position3& pos,
              32, 27, HITLOC_NONE, -1);
 }
 
+// ea: 0x0046F4F0
 float scr_vehicle_t::GetAverageWheelSpeed()
 {
     rb_vehicle* mRBVeh = (rb_vehicle*)this->mRBVeh;
@@ -688,6 +694,12 @@ float scr_vehicle_t::GetAverageWheelSpeed()
         }
         if (totalWheels > 0)
             return m_wheel_vel / (float)totalWheels;
+    }
+    else
+    {
+        Entity* mObject = HandleDbToEnt(this->mEntity);
+        if (mObject != nullptr)
+            return mObject->speed * 0.1f;
     }
     return 0.0f;
 }

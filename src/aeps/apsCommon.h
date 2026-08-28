@@ -174,6 +174,7 @@ public:
     static float GetChanceToRemove() { return mChanceToRemove; }  // ?GetChanceToRemove@apsCommon@@SAMXZ (apsActionList.o)
     static float* (*GetSplineCallback())(unsigned int) { return mSplineCallback; }  // ?GetSplineCallback@apsCommon@@SAP6APAMI@ZXZ (apsSuppliedActions.o)
     static void SetSplineCallback(float* (*iCallback)(unsigned int)) { mSplineCallback = iCallback; }  // ?SetSplineCallback@apsCommon@@SAXP6APAMI@Z@Z (game2.o)
+    // ea: 0x004A5130
     static apsClient* GetClient() { return mApsClient; }    // ?GetClient@apsCommon@@SAPAVapsClient@@XZ (g.o)
     static void SaveBuildScenePtr(nglScene* iScene) { mBuildScene = iScene; }  // ?SaveBuildScenePtr@apsCommon@@SAXPAUnglScene@@@Z (render.o)
     static void InvalidateBuildScenePtr() { mBuildScene = 0; }  // ?InvalidateBuildScenePtr@apsCommon@@SAXXZ (render.o)

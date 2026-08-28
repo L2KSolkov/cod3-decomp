@@ -2828,3 +2828,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A5140	?fabs@@YAMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012701	Release fabs wrapper performs the corresponding absolute-value operation.
 0x004A5150	?pow@@YAMMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:699	The single-precision power wrapper forwards both arguments to CRT pow and narrows the result.
 0x004A5150	?pow@@YAMMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012707	Release pow wrapper performs the corresponding two-argument power operation.
+0x00455DF0	?G_RmvInvalidatedNode@@YAXPAVEntity@@PBUPathNode@PathNodes@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_dobj.cpp:531	Invalidated-node removal preserves the release null assertion, lookup, and conditional removal flow.
+0x00455DF0	?G_RmvInvalidatedNode@@YAXPAVEntity@@PBUPathNode@PathNodes@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:974408	Release G_RmvInvalidatedNode has the same guarded lookup and removal flow.
+0x0046F4F0	?GetAverageWheelSpeed@scr_vehicle_t@@QAEMXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:678	Wheel speed averages flagged rigid-body wheels and falls back to the resolved entity speed when no rigid body exists.
+0x0046F4F0	?GetAverageWheelSpeed@scr_vehicle_t@@QAEMXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:990494	Release GetAverageWheelSpeed uses the same six-wheel accumulation and entity-speed fallback.
+0x004890C0	?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:668	CollisionDamage forwards direction, position, scaled collision damage, and release damage flags to G_Damage.
+0x004890C0	?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1006746	Release CollisionDamage performs the same G_Damage call and collision scaling.
+0x004A5010	?get_dlist_node_offset@PakFile@@SAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/streamer/pakmanager.cpp:3558	PakFile dlist-node offset returns the release zero sentinel.
+0x004A5010	?get_dlist_node_offset@PakFile@@SAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012609	Release PakFile dlist-node offset returns zero.
+0x004A5030	?ToggleEnabled@PakManager@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/streamer/pakmanager.cpp:3548	PakManager ToggleEnabled flips the enabled bit.
+0x004A5030	?ToggleEnabled@PakManager@@QAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012621	Release ToggleEnabled XORs mEnabled with one.
+0x004A5040	?GetActivePaks@PakManager@@QBEABV?$reserved_dlist@VPakFile@@@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/streamer/pakmanager.cpp:3553	GetActivePaks returns the manager active-pak list by const reference.
+0x004A5040	?GetActivePaks@PakManager@@QBEABV?$reserved_dlist@VPakFile@@@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012627	Release GetActivePaks returns the same list address.
+0x004A5130	?GetClient@apsCommon@@SAPAVapsClient@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/aeps/apsCommon.h:177	apsCommon GetClient returns the static aps client pointer.
+0x004A5130	?GetClient@apsCommon@@SAPAVapsClient@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012695	Release GetClient returns apsCommon::mApsClient.
+0x004A5170	?GetXModelParts@XModel@@QAEPAVXModelParts@@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:636	XModel non-const parts accessor handles explicit and first-available LOD selection.
+0x004A5170	?GetXModelParts@XModel@@QAEPAVXModelParts@@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012713	Release non-const GetXModelParts uses the same LOD selection loop.
+0x004A51D0	?GetXModelParts@XModel@@QBEPBVXModelParts@@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:650	XModel const parts accessor mirrors the explicit and first-available LOD selection.
+0x004A51D0	?GetXModelParts@XModel@@QBEPBVXModelParts@@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012736	Release const GetXModelParts uses the same LOD selection loop.
+0x004A5230	?GetName@XModel@@QBEPBDXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:503	XModel GetName returns the model name string pointer.
+0x004A5230	?GetName@XModel@@QBEPBDXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012759	Release GetName returns name.mStr.
+0x004A5240	?Inst@XModelManager@@SAPAV1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:403	XModelManager Inst returns the static singleton pointer.
+0x004A5240	?Inst@XModelManager@@SAPAV1@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012765	Release XModelManager Inst returns XModelManager::sInst.

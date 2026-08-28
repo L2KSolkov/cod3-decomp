@@ -3545,14 +3545,17 @@ PakManager* PakManager::Inst()
 {
     return PakManager::sInst;
 }
+// ea: 0x004A5030
 void PakManager::ToggleEnabled()
 {
     this->mEnabled ^= 1u;
 }
+// ea: 0x004A5040
 const reserved_dlist<PakFile>& PakManager::GetActivePaks() const
 {
     return this->mActivePaks;
 }
+// ea: 0x004A5010
 int PakFile::get_dlist_node_offset()
 {
     return 0;

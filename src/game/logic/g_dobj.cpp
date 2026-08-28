@@ -528,6 +528,7 @@ void G_CleanupAnimTrees()
 
 // ea: 0x00455DF0
 static void G_RmvInvalidatedNodeRemove(Entity* pEnt, int iRmv);
+// ea: 0x00455DF0
 void G_RmvInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode)
 {
     if (pEnt == nullptr || pEnt->client == nullptr || pNode == nullptr)
