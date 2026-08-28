@@ -524,7 +524,7 @@ public:
         // ea: 0x005EA030
         // ea: 0x005EA050
         // ea: 0x005EA100
-        dlist_node(dlist_node* next, dlist_node* prev)
+        dlist_node(dlist_node* prev, dlist_node* next)
             : m_next(next), m_prev(prev) {}
         void pop();
     };
@@ -910,6 +910,15 @@ void reserved_dlist<AeThreadState>::delete_all()
 
 template reserved_dlist<AeThreadState>::reserved_dlist();
 template reserved_dlist<AeThread>::reserved_dlist();
+template reserved_dlist<AeThreadState>::dlist_node::dlist_node(
+    reserved_dlist<AeThreadState>::dlist_node*,
+    reserved_dlist<AeThreadState>::dlist_node*);
+template reserved_dlist<EndOnScriptNode>::dlist_node::dlist_node(
+    reserved_dlist<EndOnScriptNode>::dlist_node*,
+    reserved_dlist<EndOnScriptNode>::dlist_node*);
+template reserved_dlist<AeThread>::dlist_node::dlist_node(
+    reserved_dlist<AeThread>::dlist_node*,
+    reserved_dlist<AeThread>::dlist_node*);
 template bool reserved_dlist<Task>::empty() const;
 template reserved_dlist<Task>::dlist_node::dlist_node(
     reserved_dlist<Task>::dlist_node*, reserved_dlist<Task>::dlist_node*);
@@ -26052,34 +26061,34 @@ T entity_get_field(unsigned int handle)
     return T();
 }
 
-// ea: 0x005F36D0
-// ea: 0x005F3920
-// ea: 0x005F3B70
-// ea: 0x005F3DC0
-// ea: 0x005F4010
-// ea: 0x005F4260
-// ea: 0x005F4550
-// ea: 0x005F4840
-// ea: 0x005F4B30
-// ea: 0x005F4D80
-// ea: 0x005F4FD0
-// ea: 0x005F5220
-// ea: 0x005F5460
-// ea: 0x005F56B0
-// ea: 0x005F58F0
-// ea: 0x005F5B30
-// ea: 0x005F5D70
-// ea: 0x005F5FC0
-// ea: 0x005F6210
-// ea: 0x005F6450
-// ea: 0x005F6690
-// ea: 0x005F6980
-// ea: 0x005F6BC0
-// ea: 0x005F6E00
-// ea: 0x005F7040
-// ea: 0x005F7290
-// ea: 0x005F74E0
-// ea: 0x005F7730
+// entity_set_actor_field - ea: 0x005F36D0
+// entity_set_actor_field - ea: 0x005F3920
+// entity_set_actor_field - ea: 0x005F3B70
+// entity_set_actor_field - ea: 0x005F3DC0
+// entity_set_actor_field - ea: 0x005F4010
+// entity_set_actor_field - ea: 0x005F4260
+// entity_set_actor_field - ea: 0x005F4550
+// entity_set_actor_field - ea: 0x005F4840
+// entity_set_actor_field - ea: 0x005F4B30
+// entity_set_actor_field - ea: 0x005F4D80
+// entity_set_actor_field - ea: 0x005F4FD0
+// entity_set_actor_field - ea: 0x005F5220
+// entity_set_actor_field - ea: 0x005F5460
+// entity_set_actor_field - ea: 0x005F56B0
+// entity_set_actor_field - ea: 0x005F58F0
+// entity_set_actor_field - ea: 0x005F5B30
+// entity_set_actor_field - ea: 0x005F5D70
+// entity_set_actor_field - ea: 0x005F5FC0
+// entity_set_actor_field - ea: 0x005F6210
+// entity_set_actor_field - ea: 0x005F6450
+// entity_set_actor_field - ea: 0x005F6690
+// entity_set_actor_field - ea: 0x005F6980
+// entity_set_actor_field - ea: 0x005F6BC0
+// entity_set_actor_field - ea: 0x005F6E00
+// entity_set_actor_field - ea: 0x005F7040
+// entity_set_actor_field - ea: 0x005F7290
+// entity_set_actor_field - ea: 0x005F74E0
+// entity_set_actor_field - ea: 0x005F7730
 // ea: 0x005F7970
 // ea: 0x005F7BB0
 // ea: 0x005F7DF0
@@ -26143,34 +26152,34 @@ void entity_set_actor_field(unsigned int handle, T val)
     }
 }
 
-// ea: 0x005F37F0
-// ea: 0x005F3A40
-// ea: 0x005F3C90
-// ea: 0x005F3EE0
-// ea: 0x005F4130
-// ea: 0x005F4390
-// ea: 0x005F4680
-// ea: 0x005F4970
-// ea: 0x005F4C50
-// ea: 0x005F4EA0
-// ea: 0x005F50F0
-// ea: 0x005F5340
-// ea: 0x005F5580
-// ea: 0x005F57D0
-// ea: 0x005F5A10
-// ea: 0x005F5C50
-// ea: 0x005F5E90
-// ea: 0x005F60E0
-// ea: 0x005F6330
-// ea: 0x005F6570
-// ea: 0x005F67C0
-// ea: 0x005F6AA0
-// ea: 0x005F6CE0
-// ea: 0x005F6F20
-// ea: 0x005F7160
-// ea: 0x005F73B0
-// ea: 0x005F7600
-// ea: 0x005F7850
+// entity_get_actor_field - ea: 0x005F37F0
+// entity_get_actor_field - ea: 0x005F3A40
+// entity_get_actor_field - ea: 0x005F3C90
+// entity_get_actor_field - ea: 0x005F3EE0
+// entity_get_actor_field - ea: 0x005F4130
+// entity_get_actor_field - ea: 0x005F4390
+// entity_get_actor_field - ea: 0x005F4680
+// entity_get_actor_field - ea: 0x005F4970
+// entity_get_actor_field - ea: 0x005F4C50
+// entity_get_actor_field - ea: 0x005F4EA0
+// entity_get_actor_field - ea: 0x005F50F0
+// entity_get_actor_field - ea: 0x005F5340
+// entity_get_actor_field - ea: 0x005F5580
+// entity_get_actor_field - ea: 0x005F57D0
+// entity_get_actor_field - ea: 0x005F5A10
+// entity_get_actor_field - ea: 0x005F5C50
+// entity_get_actor_field - ea: 0x005F5E90
+// entity_get_actor_field - ea: 0x005F60E0
+// entity_get_actor_field - ea: 0x005F6330
+// entity_get_actor_field - ea: 0x005F6570
+// entity_get_actor_field - ea: 0x005F67C0
+// entity_get_actor_field - ea: 0x005F6AA0
+// entity_get_actor_field - ea: 0x005F6CE0
+// entity_get_actor_field - ea: 0x005F6F20
+// entity_get_actor_field - ea: 0x005F7160
+// entity_get_actor_field - ea: 0x005F73B0
+// entity_get_actor_field - ea: 0x005F7600
+// entity_get_actor_field - ea: 0x005F7850
 // ea: 0x005F7A90
 // ea: 0x005F7CD0
 // ea: 0x005F7F60
