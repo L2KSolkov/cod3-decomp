@@ -2958,6 +2958,9 @@ void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3& vStart,
             zeroMins.v = _mm_setzero_ps();
             zeroMaxs.v = _mm_setzero_ps();
             collision_context_t context;
+            // SightTraceToEntity uses -1 in the secondary pass slot for these
+            // trigger-damage probes, as in the release implementation.
+            context.pass_entity2.mHandle.mVal = -1;
                 if (SV_SightTraceToEntity(&vStart, &zeroMins, &zeroMaxs, &vEnd,
                                       mObject->mHandle, &context, 1) != 0)
             {
@@ -2994,6 +2997,7 @@ void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3& vSta
             zeroMins.v = _mm_setzero_ps();
             zeroMaxs.v = _mm_setzero_ps();
             collision_context_t context;
+            context.pass_entity2.mHandle.mVal = -1;
             if (SV_SightTraceToEntity(&vStart, &zeroMins, &zeroMaxs, &vEnd,
                                       mObject->mHandle, &context, 1) != 0)
             {
