@@ -16,6 +16,16 @@ extern void mem_heap_free_ctx(void* heap, void* ptr);
 extern int gPakHeaps_m_size;
 void* gPakHeaps_elements[32];  // ?gPakHeaps_elements (core.o)
 
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
 class AnimCacheHeap : public ae_heap_base {
 public:
     AnimCacheHeap();
@@ -113,6 +123,19 @@ void AnimHeap::LinkAnimHeap()
     void* memory = mem_heap_malloc(4u);
     if (memory != nullptr)
         v1 = new (memory) AnimCacheHeap();
-    gPakHeaps_elements[gPakHeaps_m_size] = v1;
-    ++gPakHeaps_m_size;
+    if (gPakHeaps_m_size >= 32)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 174;
+        AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no room left in array"))
+            __debugbreak();
+    }
+    if (gPakHeaps_m_size < 32)
+    {
+        gPakHeaps_elements[gPakHeaps_m_size] = v1;
+        ++gPakHeaps_m_size;
+    }
 }
