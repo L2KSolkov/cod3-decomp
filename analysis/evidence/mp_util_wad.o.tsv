@@ -445,3 +445,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00960460	?GiveSmokeGrenadeSpecial@_mp_loadout@@YAXVentity@Broc@@F@Z	V4	PASS	ida-manual-loadout-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1825349	Release rank gate, weapon grant, and special ammo setup match source.
 0x00961340	?GiveAmmoWeapon@_mp_loadout@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-loadout-20260828	2026-08-28	src/broc/mp_util_wad.cpp:13086-13102	Source selects the team-specific ammo weapon and starts the health/ammo dispenser with rank timing values.
 0x00961340	?GiveAmmoWeapon@_mp_loadout@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-loadout-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1825936	Release team-specific ammo selection, dispenser parameters, and thread creation match source.
+0x00961150	?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-loadout-20260828	2026-08-28	src/broc/mp_util_wad.cpp:12656-12659	Source intentionally defines the loadout PlayerKill hook as an empty function.
+0x00961150	?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-loadout-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1825853	Release PlayerKill is a nullsub, matching source.
