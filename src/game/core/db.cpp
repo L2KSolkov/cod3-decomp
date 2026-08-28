@@ -90,7 +90,7 @@ uint16_t DbColumn::GetSize() const
 }
 
 // ea: 0x004B4810
-const char* DbColumn::get_element_ptr(uint16_t idx) const
+const void* DbColumn::get_element_ptr(uint16_t idx) const
 {
     return (const char*)mElements + mElementSize * idx;
 }
@@ -102,7 +102,7 @@ int16_t DbRow::GetColUsedNum() const
 }
 
 // ea: 0x004B4840
-int DbGraphNode::GetFieldId() const
+uint16_t DbGraphNode::GetFieldId() const
 {
     return mFieldId & 0x7FFF;
 }

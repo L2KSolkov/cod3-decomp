@@ -1941,7 +1941,7 @@ public:
     void SetProgressCallback(void (*cb)(float));
     // - ea: 0x4B45E0 (core.o inline)
     TPakId GetGlobalPakId() const;
-    TPakId GetCurrentPakId() const;
+    TPakId GetCurrentPakId();
     // - ea: 0x6657A0
     bool IsLoaded(TPakId id) const;
     // - ea: 0x665830
@@ -3667,7 +3667,7 @@ TPakId PakManager::GetGlobalPakId() const
 }
 
 // ea: 0x4B4620
-TPakId PakManager::GetCurrentPakId() const
+TPakId PakManager::GetCurrentPakId()
 {
     return mCurrentPakId;
 }

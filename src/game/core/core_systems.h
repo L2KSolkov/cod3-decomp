@@ -1421,7 +1421,7 @@ public:
     DbStringHashTable* mStringHash;  // +0x0C
     uint16_t GetId() const;
     uint16_t GetSize() const;
-    const char* get_element_ptr(uint16_t idx) const;
+    const void* get_element_ptr(uint16_t idx) const;
 };
 static_assert(sizeof(DbColumn) == 0x10, "DbColumn size mismatch");
 
@@ -1585,7 +1585,7 @@ public:
         AttachLeaf leaf;
     } mAttachments;                  // +0x00 (NodeAttach)
     uint16_t      mFieldId;           // +0x0C
-    int GetFieldId() const;
+    uint16_t GetFieldId() const;
     bool IsLeaf() const;
     uint16_t GetNumHits() const;
     DbRow** GetHits() const;
