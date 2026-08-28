@@ -567,10 +567,10 @@ static void FS_BuildOSPath_Internal(const char* base, char* game,
 }
 
 // ea: 0x004C6890
-void FS_BuildOSPath(const char* base, char* game, const char* qpath,
-                    char* ospath)
+void FS_BuildOSPath(const char* base, const char* game, const char* qpath,
+                    char* const ospath)
 {
-    FS_BuildOSPath_Internal(base, game, qpath, ospath, 0);
+    FS_BuildOSPath_Internal(base, const_cast<char*>(game), qpath, ospath, 0);
 }
 
 // ea: 0x004C6E70

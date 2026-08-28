@@ -1061,8 +1061,9 @@ void DialogMenuSystem::UseSmallBackground(bool use)
 }
 
 // ea: 0x004DDAE0
-void DialogMenuSystem::TriangleResponseNone()
+void DialogMenuSystem::TriangleResponseNone(int client)
 {
+    (void)client;
 }
 
 // ea: 0x00572860

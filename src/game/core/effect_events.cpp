@@ -3339,7 +3339,7 @@ void AbstractEffect::SetAllocator(PoolAllocator* allocator)
 }
 
 // ea: 0x004DE550
-unsigned int AbstractEffect::GetEffectNameHashStr()
+const unsigned int AbstractEffect::GetEffectNameHashStr()
 {
     return mEffectNameHashStr;
 }

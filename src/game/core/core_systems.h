@@ -831,7 +831,7 @@ public:
     virtual Broc::string GetDebugString() const;
     bool IsFading();                         // core.o 0x004E2D70
     bool IsSound();                          // core.o 0x004E2D80
-    unsigned int GetEffectNameHashStr();
+    const unsigned int GetEffectNameHashStr();
     int GetFlags() const;
     bool Test(int flag) const;
     Entity* GetOwner() const;                 // ea: 0x004E8B30
@@ -2206,7 +2206,8 @@ struct DialogueInstance {
 static_assert(sizeof(DialogueInstance) == 0x0C,
               "DialogueInstance size mismatch");
 
-struct DialogueManager : AssetBankSet {
+class DialogueManager : public AssetBankSet {
+public:
     static void CreateInst();  // ?CreateInst@DialogueManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@DialogueManager@@SAXXZ (core.o)
     static DialogueManager* Inst(); // ?Inst@DialogueManager@@SAPAV1@XZ (core.o)

@@ -1909,7 +1909,7 @@ public:
     void UseSmallBackground(bool use);       // 0x572850
     static bool DefaultNoResponse(int client);  // 0x572860
     static bool DefaultYesResponse(int client); // 0x586690
-    static void TriangleResponseNone();         // 0x4DDAE0
+    static void TriangleResponseNone(int client); // 0x4DDAE0
     void OnStart(int c);                     // 0x572880
     void SetState(eState newState);          // 0x586640
     void BringUp(const char* t, bool type_ok, bool type_yn,
