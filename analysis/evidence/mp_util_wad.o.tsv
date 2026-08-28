@@ -691,6 +691,10 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0095CE20	?CallbackGetTeamCapturingHQPercent@_mp_hq@@YAHVentity@Broc@@@Z	V4	PASS	ida-manual-hq-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1823354-1823407	Release HQ capture percentage gates, clamp, and scaling match source.
 0x0095CF90	?CallbackGetTeamDestroyingHQPercent@_mp_hq@@YAHXZ	V3	PASS	ida-manual-hq-20260828	2026-08-28	src/broc/mp_util_wad.cpp:17561-17582	Source expires stale radio progress, clamps the destroy percentage, and returns the same scaling.
 0x0095CF90	?CallbackGetTeamDestroyingHQPercent@_mp_hq@@YAHXZ	V4	PASS	ida-manual-hq-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1823408-1823458	Release HQ destroy percentage timing, clamp, and scaling match source.
+0x0097AF60	??Gbfloat@@QBE?AU0@XZ	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6674-6676	Source returns a bfloat containing the negated mVal.
+0x0097AF60	??Gbfloat@@QBE?AU0@XZ	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1840189-1840194	Release bfloat unary minus matches source.
+0x0097AFB0	??H@YA?AUbfloat@@U0@0@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6710-6712	Source adds the two bfloat values and returns a bfloat result.
+0x0097AFB0	??H@YA?AUbfloat@@U0@0@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1840196-1840206	Release bfloat addition matches source operand conversion and result construction.
 0x00976050	?CallbackHostMigrated@_mp_war@@YAXXZ	V3	PASS	ida-manual-war-20260828	2026-08-28	src/broc/mp_util_wad.cpp:18334-18345	Source forwards host migration, sends all flag states, and returns after broadcasting to every player.
 0x00976050	?CallbackHostMigrated@_mp_war@@YAXXZ	V4	PASS	ida-manual-war-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1837333-1837699	Release host migration callback and per-player flag-state loop match source.
 0x00976BB0	?CallbackHostOptionsChanged@_mp_war@@YAXH@Z	V3	PASS	ida-manual-war-20260828	2026-08-28	src/broc/mp_util_wad.cpp:18347-18352	Source forwards host option changes and disables last-man-standing.
