@@ -40,6 +40,8 @@ public:
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
+    // ea: 0x005EA680
+    // ea: 0x005EA8A0
     int size() const { return m_size; }
     // ea: 0x005EA490
     bool empty() const { return m_size == 0; }
@@ -58,6 +60,7 @@ public:
         return m_elements[idx];
     }
 
+    // ea: 0x005EA820
     T& operator[](unsigned int idx) {
         if (idx >= static_cast<unsigned int>(CAPACITY)) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -83,6 +86,7 @@ public:
     }
 
     // ea: 0x005EA1B0
+    // ea: 0x005EA690
     // ea: 0x005EA4B0
     void push_back(const T& val) {
         if (m_size >= CAPACITY) {
@@ -140,9 +144,12 @@ public:
     private:
         const_iterator(const T* ptr) : m_ptr(ptr) {}  // ??0const_iterator@...@@AAE@PBQAVEntity@@@Z (g.o 0x4AE5D0)
     public:
+        // ea: 0x005EA730
         const T& operator*() const { return *m_ptr; }  // ??Dconst_iterator@...@@QBEAB...@@XZ
         const T* operator->() const { return m_ptr; }
+        // ea: 0x005EA740
         const_iterator& operator++() { ++m_ptr; return *this; }  // ??Econst_iterator@...@@QAEAAV01@XZ
+        // ea: 0x005EA750
         bool operator!=(const_iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9const_iterator@...@@QBE_NV01@@Z
     };
 

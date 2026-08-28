@@ -118,7 +118,9 @@ public:
     Handle mHandle;  // +0x00 — wrapped handle
 
     DbLinkedHandle() { mHandle.mVal = 0; }
+    // ea: 0x005EA570
     DbLinkedHandle(int v) { mHandle.mVal = (unsigned int)v; }  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@H@Z (g.o 0x4AC6C0)
+    // ea: 0x005EA590
     DbLinkedHandle(Handle h) { mHandle = h; }                  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@VHandle@@@Z (g.o 0x4AC6E0)
     DbLinkedHandle& operator=(Handle rhs)                      // ??4?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEAAV0@VHandle@@@Z (g.o 0x4AC700)
     {
@@ -205,7 +207,24 @@ public:
         }
         return mList[index];
     }
-    const T& operator[](unsigned int i) const { return mList[i]; }
+    // ea: 0x005EA7A0 (const InplaceTreeElement<InplaceString,InplaceString>)
+    const T& operator[](unsigned int i) const
+    {
+        unsigned int index = i;
+        if (index >= mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+            AeAssert::gCurrentLine = 91;
+            AeAssert::gCurrentExpr = "index < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                __debugbreak();
+            if (index >= mSize)
+                index = 0;
+        }
+        return mList[index];
+    }
+    // ea: 0x005EA790
     unsigned int size() const { return mSize; }
 };
 static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");

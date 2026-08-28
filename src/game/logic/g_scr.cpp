@@ -958,6 +958,29 @@ template ae_sized_array<AeThread*, 64>::ae_sized_array();
 template bool ae_sized_array<AeThread*, 64>::empty() const;
 template void ae_sized_array<AeThread*, 64>::push_back(AeThread* const&);
 template AeThread*& ae_sized_array<AeThread*, 64>::pop_back();
+template ae_pair<void*, unsigned int>::ae_pair(void* const&,
+                                                const unsigned int&);
+template ae_pair<int, void*>::ae_pair(const int&, void* const&);
+template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(int);
+template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(Handle);
+template unsigned int
+InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>::size() const;
+template const InplaceTreeElement<InplaceString, InplaceString>&
+InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>::operator[](unsigned int) const;
+template unsigned short& ae_sized_array<unsigned short, 256>::operator[](unsigned int);
+template unsigned short& ae_sized_array<unsigned short, 256>::operator[](int);
+template int ae_sized_array<short, 8>::size() const;
+template int ae_sized_array<ae_pair<void*, unsigned int>, 15>::capacity() const;
+template ae_pair<void*, unsigned int>&
+ae_sized_array<ae_pair<void*, unsigned int>, 15>::pop_back();
+template int ae_sized_array<Broc::entity, 512>::size() const;
+template void ae_sized_array<Broc::entity, 512>::push_back(const Broc::entity&);
+template const Broc::entity&
+ae_sized_array<Broc::entity, 512>::const_iterator::operator*() const;
+template ae_sized_array<Broc::entity, 512>::const_iterator&
+ae_sized_array<Broc::entity, 512>::const_iterator::operator++();
+template bool ae_sized_array<Broc::entity, 512>::const_iterator::operator!=(
+    ae_sized_array<Broc::entity, 512>::const_iterator) const;
 struct BspCell {
     unsigned char m_opaque[0x50];
 };
@@ -9150,7 +9173,12 @@ struct ae_array_dynamic {
     T*             m_elements;  // +0x00
     unsigned short m_capacity;  // +0x04
     short          m_size;      // +0x06
-    void push_back(T const* elt)
+    // ea: 0x005EA5B0
+    ae_array_dynamic() : m_elements(nullptr), m_capacity(0), m_size(0) {}
+    // ea: 0x005EA5D0
+    ~ae_array_dynamic() { mem_heap_free(m_elements); }
+    // ea: 0x005EA5E0
+    void push_back(T const& elt)
     {
         if (m_size >= (short)m_capacity) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -9162,11 +9190,14 @@ struct ae_array_dynamic {
                 __debugbreak();
         }
         if (m_size < (short)m_capacity) {
-            m_elements[m_size] = *elt;
+            m_elements[m_size] = elt;
             ++m_size;
         }
     }
 };
+template ae_array_dynamic<AnimBroRef*>::ae_array_dynamic();
+template ae_array_dynamic<AnimBroRef*>::~ae_array_dynamic();
+template void ae_array_dynamic<AnimBroRef*>::push_back(AnimBroRef* const&);
 ae_array_dynamic<AnimBroRef*> gAnimRefRegList;  // scr.o data
 
 // ea: 0x005BEE00
@@ -9445,7 +9476,7 @@ void BrocSys::IPrintLnBold(const char* txt)
 // ea: 0x005C2260
 void BrocSys::RegisterAnimation(struct AnimBroRef* animBroRef)
 {
-    gAnimRefRegList.push_back(&animBroRef);
+    gAnimRefRegList.push_back(animBroRef);
 }
 
 // ea: 0x005C22E0
