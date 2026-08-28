@@ -5218,9 +5218,7 @@ bool scr_vehicle_t::SetAnimRouteStage(Entity* player, Entity* ent,
             angles[2] = 0.0f;
             if (vehPosDest == 0 && info->type != 2)
                 angles[1] = 0.0f;
-            else if (vehPosDest != 1)
-                angles[0] = 0.0f;
-            else
+            if (vehPosDest == 1)
                 angles[0] = 0.0f;
             angles[0] = AngleNormalize180(angles[0]);
             SetClientViewAngle(player, angles);
