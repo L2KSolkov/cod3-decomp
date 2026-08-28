@@ -557,11 +557,14 @@ unsigned int SoundDevice_QueueSound(
     (void)minRange; (void)maxRange;
     return 0;
 }
-// ?Sound_GetStartingVolume@@YAMPAX@Z artifact (sound.o; stub)
+extern float nslGetWaveParam(nslWaveID wave, int b, float c);
+
+// ?Sound_GetStartingVolume@@YAMPAX@Z artifact (sound.o)
 float Sound_GetStartingVolume(void* sound)
 {
-    (void)sound;
-    return 1.0f;
+    const int wave = *reinterpret_cast<const int*>(
+        reinterpret_cast<const unsigned char*>(sound) + 4);
+    return nslGetWaveParam((nslWaveID)wave, 0, 1.0f);
 }
 struct SoundDeviceInst {
     float mVolScale;  // +0x00 (name-accessed)
@@ -623,6 +626,13 @@ struct Sound {
     HashString   mDialogNotify;  // +0x2C
     float        mDebugPos[3];   // +0x30
 
+    float GetStartingVolume() const;
+    float GetLength() const;
+    void Stop();
+    void PlayQueued();
+    void SetPoPtr(const math::Mat43* po);
+    void SetPitch(float pitch);
+    void SetVolume(float vol);
     bool IsQueued() const;    // ?IsQueued@Sound@SoundDevice@@QBE_NXZ (game.o 0x602890)
     bool IsFinished() const;  // ?IsFinished@Sound@SoundDevice@@QBE_NXZ (game.o 0x602940)
     bool IsLooped() const;    // ?IsLooped@Sound@SoundDevice@@QBE_NXZ (game.o 0x602980)
@@ -644,31 +654,19 @@ public:
 
 extern void Sound_Stop(Sound* s);
 extern void Sound_PlayQueued(Sound* s);
-float Sound_GetVolume(const Sound* s)  // artifact shim -> nslGetWaveParam(0)
+float Sound_GetVolume(const Sound* s)
 {
-    return nslGetWaveParam((nslWaveID)s->mWave, 0, 1.0f);
+    return s->GetStartingVolume();
 }
-float Sound_GetLength(const Sound* s)  // artifact shim
+float Sound_GetLength(const Sound* s)
 {
-    return (float)nslGetWaveLength((nslWaveID)s->mWave);
+    return s->GetLength();
 }
-extern void Sound_SetPoPtr(Sound* s, const math::Mat43* po);
-extern void Sound_SetPitch(Sound* s, float pitch);
-extern void Sound_SetVolume(Sound* s, float vol);
-void Sound_Stop(Sound* s) { (void)s; }
-void Sound_PlayQueued(Sound* s) { (void)s; }
-void Sound_SetPoPtr(Sound* s, const math::Mat43* po)
-{
-    (void)s; (void)po;
-}
-void Sound_SetPitch(Sound* s, float pitch)
-{
-    (void)s; (void)pitch;
-}
-void Sound_SetVolume(Sound* s, float vol)
-{
-    (void)s; (void)vol;
-}
+void Sound_Stop(Sound* s) { s->Stop(); }
+void Sound_PlayQueued(Sound* s) { s->PlayQueued(); }
+void Sound_SetPoPtr(Sound* s, const math::Mat43* po) { s->SetPoPtr(po); }
+void Sound_SetPitch(Sound* s, float pitch) { s->SetPitch(pitch); }
+void Sound_SetVolume(Sound* s, float vol) { s->SetVolume(vol); }
 // ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o)
 bool subtitle_manager_play_subtitle(const char* tag, const char* prefix)
 {
