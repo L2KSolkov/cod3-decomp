@@ -4634,6 +4634,7 @@ int Scr_Vehicle_SeatChange(Entity* occupant, int newSeatIdx)
     if (newSeatIdx == 0)
         mObject->scr_vehicle->AssignPhysics(occupant);
     VEH_LinkPlayer(mObject, occupant, (int)newSeatIdx, 0, vehPos);
+    tlPrintf("=======================================Scr_Vehicle_SeatChange: just linked player\n");
     return newSeatIdx;
 }
 
