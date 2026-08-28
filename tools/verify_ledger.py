@@ -666,6 +666,8 @@ def symbol_variants(name: str) -> set[str]:
             "?IsEEDefined_script_explodertype@@YA?AUbbool@Broc@@Ventity@2@@Z",
         "?IsEEDefined_script_friendname@@YA?AUbbool@@Ventity@Broc@@@Z":
             "?IsEEDefined_script_friendname@@YA?AUbbool@Broc@@Ventity@2@@Z",
+        "??A?$InplaceVector@VBspCell@@@@QAEAAVBspCell@@I@Z":
+            "??A?$InplaceVector@UBspCell@@@@QAEAAUBspCell@@I@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:

@@ -954,6 +954,10 @@ ae_sized_array<ae_pair<void*, unsigned int>, 15>::operator[](int);
 template int ae_sized_array<ae_pair<void*, unsigned int>, 15>::size() const;
 template void ae_sized_array<ae_pair<void*, unsigned int>, 15>::push_back(
     const ae_pair<void*, unsigned int>&);
+struct BspCell {
+    unsigned char m_opaque[0x50];
+};
+template BspCell& InplaceVector<BspCell>::operator[](unsigned int);
 template void reserved_dlist<AeThreadState>::push_back(AeThreadState*);
 template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);

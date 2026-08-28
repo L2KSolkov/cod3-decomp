@@ -188,7 +188,23 @@ public:
     unsigned int mSize;  // +0x00
     T*           mList;  // +0x04
 
-    T& operator[](unsigned int i) { return mList[i]; }
+    // ea: 0x005EA2B0
+    T& operator[](unsigned int i)
+    {
+        unsigned int index = i;
+        if (index >= mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+            AeAssert::gCurrentLine = 81;
+            AeAssert::gCurrentExpr = "index < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                __debugbreak();
+            if (index >= mSize)
+                index = 0;
+        }
+        return mList[index];
+    }
     const T& operator[](unsigned int i) const { return mList[i]; }
     unsigned int size() const { return mSize; }
 };
