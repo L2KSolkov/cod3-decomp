@@ -1751,3 +1751,15 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B0B50	??0corpseInfo_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019338	Release constructor writes zero to corpseInfo_t::mEntity.mVal.
 0x004B0B60	??0local_physic_s@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4028	Manual source constructor clears the ground-trace entity handle and part-name hash.
 0x004B0B60	??0local_physic_s@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019345	Release constructor writes zero to groundTrace.mEntity and the partName hash.
+0x004B0B70	??0vehicle_pathpos_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4056	Manual source constructor placement-constructs both switch-node vehicle records and leaves scalar fields untouched.
+0x004B0B70	??0vehicle_pathpos_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019353	Release default constructor runs the vehicle_node_t constructor iterator for two 0x40-byte switch nodes.
+0x004B0BA0	??1vehicle_pathpos_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4064	Manual source destructor destroys both switch-node vehicle records in reverse order.
+0x004B0BA0	??1vehicle_pathpos_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019365	Release destructor runs the vehicle_node_t destructor iterator for both switch nodes.
+0x004B0BC0	??0TouchEntityData@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4121	Manual source constructor zeroes the complete 128-entry touch handle array.
+0x004B0BC0	??0TouchEntityData@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019371	Release constructor memset-clears the touch array while preserving the preceding fields.
+0x004B0BE0	??0vehicle_pathpos_t@@QAE@ABU0@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4072	Manual source copy constructor copies scalar path fields and copy-constructs both switch nodes.
+0x004B0BE0	??0vehicle_pathpos_t@@QAE@ABU0@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019378	Release copy constructor copies fourteen scalar values then invokes the vehicle-node copy iterator for two nodes.
+0x004B0CA0	??4vehicle_pathpos_t@@QAEAAU0@ABU0@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4096	Manual source assignment copies scalar path fields, assigns both switch nodes, and returns this.
+0x004B0CA0	??4vehicle_pathpos_t@@QAEAAU0@ABU0@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019411	Release assignment copies the scalar path fields and invokes vehicle_node_t assignment for each of two nodes.
+0x004B0D90	??1EntityDeathTask@@UAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4127	Manual source provides the derived virtual destructor body; compiler teardown restores the Task vtable.
+0x004B0D90	??1EntityDeathTask@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019452	Release destructor has an empty body after the derived-to-base vtable transition.

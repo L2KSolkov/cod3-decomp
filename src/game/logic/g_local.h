@@ -286,6 +286,11 @@ struct vehicle_pathpos_t {
     float   angles[3];  // +0x20
     float   lookPos[3]; // +0x2C
     vehicle_path_node_t switchNode[2];  // +0x38
+
+    vehicle_pathpos_t();
+    ~vehicle_pathpos_t();
+    vehicle_pathpos_t(const vehicle_pathpos_t& that);
+    vehicle_pathpos_t& operator=(const vehicle_pathpos_t& rhs);
 };
 static_assert(sizeof(vehicle_pathpos_t) == 0xB8, "vehicle_pathpos_t size mismatch");
 
@@ -4937,6 +4942,8 @@ public:
     math::Position3 mins;   // +0x10
     math::Position3 maxs;   // +0x20
     DbLinkedHandle<EntityHandleDb, Entity> touch[128];  // +0x30
+
+    TouchEntityData();  // ??0TouchEntityData@@QAE@XZ (g.o 0x4B0BC0)
 };
 static_assert(sizeof(TouchEntityData) == 0x230, "TouchEntityData size mismatch");
 
@@ -5379,6 +5386,7 @@ static_assert(sizeof(TaskSys) == 0x19C, "TaskSys size mismatch");
 
 struct EntityDeathTask : Task {
     EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // ??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z
+    virtual ~EntityDeathTask();  // ??1EntityDeathTask@@UAE@XZ (g.o 0x4B0D90)
     virtual void Update(Entity* e, float delta);  // ?Update@EntityDeathTask@@UAEXPAVEntity@@M@Z
     static TaskHandler sHandler;  // ?sHandler@EntityDeathTask@@0VTaskHandler@@A
     static TaskHandler* GetHandler();  // ?GetHandler@EntityDeathTask@@SAPAVTaskHandler@@XZ (game2.o 0x5171D0)

@@ -4050,6 +4050,83 @@ corpseInfo_t::corpseInfo_t()
 {
     mEntity.mHandle.mVal = 0;
 }
+
+// vehicle_pathpos_t lifecycle (g.o 0x4B0B70-0x4B0CA0)
+// ea: 0x004B0B70
+vehicle_pathpos_t::vehicle_pathpos_t()
+{
+    vehicle_node_t* nodes = reinterpret_cast<vehicle_node_t*>(switchNode);
+    for (int i = 0; i < 2; ++i)
+        new (&nodes[i]) vehicle_node_t();
+}
+
+// ea: 0x004B0BA0
+vehicle_pathpos_t::~vehicle_pathpos_t()
+{
+    vehicle_node_t* nodes = reinterpret_cast<vehicle_node_t*>(switchNode);
+    for (int i = 1; i >= 0; --i)
+        nodes[i].~vehicle_node_t();
+}
+
+// ea: 0x004B0BE0
+vehicle_pathpos_t::vehicle_pathpos_t(const vehicle_pathpos_t& that)
+{
+    nodeIdx = that.nodeIdx;
+    endOfPath = that.endOfPath;
+    frac = that.frac;
+    speed = that.speed;
+    lookAhead = that.lookAhead;
+    slide = that.slide;
+    origin[0] = that.origin[0];
+    origin[1] = that.origin[1];
+    origin[2] = that.origin[2];
+    angles[0] = that.angles[0];
+    angles[1] = that.angles[1];
+    angles[2] = that.angles[2];
+    lookPos[0] = that.lookPos[0];
+    lookPos[1] = that.lookPos[1];
+    lookPos[2] = that.lookPos[2];
+    vehicle_node_t* nodes = reinterpret_cast<vehicle_node_t*>(switchNode);
+    const vehicle_node_t* sourceNodes = reinterpret_cast<const vehicle_node_t*>(that.switchNode);
+    for (int i = 0; i < 2; ++i)
+        new (&nodes[i]) vehicle_node_t(sourceNodes[i]);
+}
+
+// ea: 0x004B0CA0
+vehicle_pathpos_t& vehicle_pathpos_t::operator=(const vehicle_pathpos_t& rhs)
+{
+    nodeIdx = rhs.nodeIdx;
+    endOfPath = rhs.endOfPath;
+    frac = rhs.frac;
+    speed = rhs.speed;
+    lookAhead = rhs.lookAhead;
+    slide = rhs.slide;
+    origin[0] = rhs.origin[0];
+    origin[1] = rhs.origin[1];
+    origin[2] = rhs.origin[2];
+    angles[0] = rhs.angles[0];
+    angles[1] = rhs.angles[1];
+    angles[2] = rhs.angles[2];
+    lookPos[0] = rhs.lookPos[0];
+    lookPos[1] = rhs.lookPos[1];
+    lookPos[2] = rhs.lookPos[2];
+    vehicle_node_t* nodes = reinterpret_cast<vehicle_node_t*>(switchNode);
+    const vehicle_node_t* sourceNodes = reinterpret_cast<const vehicle_node_t*>(rhs.switchNode);
+    for (int i = 0; i < 2; ++i)
+        nodes[i] = sourceNodes[i];
+    return *this;
+}
+
+// ea: 0x004B0BC0
+TouchEntityData::TouchEntityData()
+{
+    memset(touch, 0, sizeof(touch));
+}
+
+// ea: 0x004B0D90
+EntityDeathTask::~EntityDeathTask()
+{
+}
 // ae_formatted_string ctor (g.o 0x4B0FB0) - declared in core/ae_fixed_string.h
 template class ae_formatted_string<256, unsigned short>;
 
