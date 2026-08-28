@@ -31,6 +31,11 @@ public:
         mBuff[0] = 0;
     }
 
+    // ea: 0x005EEE40
+    ae_fixed_string(const ae_fixed_string& rhs) {
+        memcpy(this, &rhs, sizeof(*this));
+    }
+
     // ea: 0x4E4890 — CStrToAeStr + length store
     ae_fixed_string(const char* txt) {
         char* d = (char*)mBuff;

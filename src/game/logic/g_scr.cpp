@@ -693,6 +693,7 @@ reserved_dlist<T>::const_iterator::const_iterator(
 }
 
 template <typename T>
+// ea: 0x005EEE80
 reserved_dlist<T>::const_iterator::const_iterator(
     const reserved_dlist<T>& dlist)
 {
@@ -921,6 +922,11 @@ template reserved_dlist<TaskHandler>::dlist_node::dlist_node(
     reserved_dlist<TaskHandler>::dlist_node*,
     reserved_dlist<TaskHandler>::dlist_node*);
 template ae_sized_array<TaskHandler*, 32>::ae_sized_array();
+template ae_sized_array<Broc::entity, 512>::ae_sized_array();
+template ae_sized_array<Broc::entity, 512>::const_iterator
+ae_sized_array<Broc::entity, 512>::begin() const;
+template ae_sized_array<Broc::entity, 512>::const_iterator
+ae_sized_array<Broc::entity, 512>::end() const;
 template void ae_sized_array<TaskHandler*, 32>::push_back(
     TaskHandler* const&);
 template TaskHandler* const&
@@ -972,6 +978,10 @@ template AeThread*& ae_sized_array<AeThread*, 64>::pop_back();
 template ae_pair<void*, unsigned int>::ae_pair(void* const&,
                                                 const unsigned int&);
 template ae_pair<int, void*>::ae_pair(const int&, void* const&);
+template ae_fixed_string<32, unsigned char>::ae_fixed_string(
+    const ae_fixed_string<32, unsigned char>&);
+template ae_sized_array_base<ae_pair<void*, unsigned int>, 15>::
+ae_sized_array_base();
 template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(int);
 template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(Handle);
 template unsigned int

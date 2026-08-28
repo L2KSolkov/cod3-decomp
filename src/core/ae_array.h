@@ -29,6 +29,7 @@ public:
     T m_elements[CAPACITY];  // +0x00
 
     // ea: 0x005EAC70
+    // ea: 0x005EEBF0
     ae_sized_array_base() {}
 };
 
@@ -38,6 +39,7 @@ public:
     int     m_size;                // +sizeof(T)*CAPACITY
 
     // ea: 0x005EA480
+    // ea: 0x005EEB20
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
@@ -180,7 +182,9 @@ public:
 
     iterator begin() { return iterator(m_elements); }  // ?begin@...@@QAE?AViterator@1@XZ
     iterator end() { return iterator(&m_elements[m_size]); }  // ?end@...@@QAE?AViterator@1@XZ
+    // ea: 0x005EEB40
     const_iterator begin() const { return const_iterator(m_elements); }  // ?begin@...@@QBE?AVconst_iterator@1@XZ
+    // ea: 0x005EEB60
     const_iterator end() const { return const_iterator(&m_elements[m_size]); }  // ?end@...@@QBE?AVconst_iterator@1@XZ
 };
 
