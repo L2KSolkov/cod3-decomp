@@ -6604,6 +6604,9 @@ phys_gjk_geom_vert_list* phys_gjk_geom_vert_list::create(int num_verts,
             0x50, 16, false, "phys_collision_allocater overflow.");
     if (result == nullptr)
         return nullptr;
+    // The release factory writes the polymorphic object's vtable before
+    // initializing its payload fields.
+    result = new (result) phys_gjk_geom_vert_list();
     result->m_vert_list =
         (math::Dir3*)g_collision_memory_allocater.allocate(
             num_verts * 16, 16, false, "phys_collision_allocater overflow.");
@@ -6679,12 +6682,19 @@ void* phys_gjk_geom_list_create()
         0x30, 16, false, "phys_collision_allocater overflow.");
 }
 
-// cdl_vinfo_t / cdl_array<vi4> minimal views for unpack
-struct cdl_vinfo_t {
-    float vbase[3];       // +0x00 (x/y/z)
-    int   num_verts;      // +0x0C
-    int   first_vert;     // +0x10
+// cdl_vinfo_t / cdl_array<vi4> packed views used by the release CDL loader.
+// The six-byte signed base is followed by two 16-bit indices/counts.
+struct vi6 {
+    int16_t x;
+    int16_t y;
+    int16_t z;
 };
+struct cdl_vinfo_t {
+    vi6      vbase;       // +0x00
+    uint16_t first_vert;  // +0x06
+    uint16_t num_verts;   // +0x08
+};
+static_assert(sizeof(cdl_vinfo_t) == 10, "cdl_vinfo_t size mismatch");
 struct vi4 {
     int v;  // +0x00
 };
@@ -6700,10 +6710,11 @@ void unpack(const cdl_vinfo_t& vinfo, const cdl_array<vi4>& verts,
             math::Dir3* vert_list)
 {
     math::Position3 base;
-    base.v = _mm_setr_ps(vinfo.vbase[0], vinfo.vbase[1], vinfo.vbase[2],
+    base.v = _mm_setr_ps((float)vinfo.vbase.x, (float)vinfo.vbase.y,
+                         (float)vinfo.vbase.z,
                          0.0f);
-    int num_verts = vinfo.num_verts;
     unsigned int first_vert = vinfo.first_vert;
+    int num_verts = (int)vinfo.num_verts;
     if (first_vert >= (unsigned int)verts.m_count
         && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
                      "index >= 0 && index < size()", "invalid index"))

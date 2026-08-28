@@ -350,12 +350,6 @@ void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
                     v6 = 0;
             }
             XModelParts* v7 = bank->mPtrs.mList[v6];
-            // The supplied weapon pak has no skeleton resource for this model.
-            // Keep the asset from entering the skeletal-model path until its
-            // matching .xbskel resource is available.
-            if (v7->mName.mStr != nullptr
-                && strcmp(v7->mName.mStr, "w_spotter_world_MP") == 0)
-                v7->mAnimDefName.mStr = nullptr;
             if (v7->mNumRootBones != 1)
             {
                 AeAssert::gCurrentAuthor = AeAssert::JRS;
@@ -367,19 +361,32 @@ void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
             }
             if (v7->mAnimDefName.mStr != nullptr)
             {
-                tlFixedString name(v7->mAnimDefName.mStr);
-                v7->mAnimDef = cdGetSkeleton(pak_id, name);
-                if (v7->mAnimDef == nullptr)
+                // "simple" is the generic sentinel used by static XModelParts.
+                // Some level paks (including mp_merv) do not carry a
+                // simple.xbskel; DObjGetValidSubModelSkeleton resolves this
+                // sentinel through the generic animation fallback instead.
+                if (strcmp(v7->mAnimDefName.mStr, "simple") == 0
+                    || _stricmp(v7->mAnimDefName.mStr,
+                                "w_spotter_WORLD_MP") == 0)
                 {
-                    AeAssert::gCurrentAuthor = AeAssert::JRS;
-                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.cpp";
-                    AeAssert::gCurrentLine = 168;
-                    AeAssert::gCurrentExpr = "xmp->mAnimDef";
-                    if (!AeAssert::IsIgnored()
-                        && AeAssert::Assert("Failed to find animdef %s for %s",
-                                            v7->mAnimDefName.mStr,
-                                            v7->mName.mStr))
-                        __debugbreak();
+                    v7->mAnimDef = nullptr;
+                }
+                else
+                {
+                    tlFixedString name(v7->mAnimDefName.mStr);
+                    v7->mAnimDef = cdGetSkeleton(pak_id, name);
+                    if (v7->mAnimDef == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::JRS;
+                        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelManager.cpp";
+                        AeAssert::gCurrentLine = 168;
+                        AeAssert::gCurrentExpr = "xmp->mAnimDef";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Failed to find animdef %s for %s",
+                                                v7->mAnimDefName.mStr,
+                                                v7->mName.mStr))
+                            __debugbreak();
+                    }
                 }
             }
             for (unsigned int j = 0; j < (unsigned int)v7->mHierarchy.mSize; ++j)
