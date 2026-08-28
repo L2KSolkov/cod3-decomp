@@ -3743,6 +3743,7 @@ AeThread* DbLinkedHandle<AeThreadManager, AeThread>::operator*() const
 }
 
 // SetJmp/LongJmp (register-snapshot longjmp; transcribed from disasm)
+// ea: 0x005BBD30
 __declspec(naked) void SetJmp(unsigned int* storageAddr)
 {
     __asm {
@@ -3775,6 +3776,7 @@ __declspec(naked) void SetJmp(unsigned int* storageAddr)
     }
 }
 
+// ea: 0x005BBD80
 __declspec(naked) void LongJmp(unsigned int* r)
 {
     __asm {
@@ -23294,7 +23296,7 @@ int BrocSys::RegisterHashString(const char* txt)
     return hash;
 }
 
-// ea: 0x005DFD00
+// ea: 0x005DFC50
 void BrocSys::RegisterHashString(int hash, const char* txt)
 {
     BrocSysHashStrings::Entry* existing = sHashStrings.find((unsigned int)hash);
@@ -23320,7 +23322,7 @@ static const char* BrocSysHashLookup(unsigned int hash)
     return sHashStrings.lookup(hash);
 }
 
-// ea: 0x005DC4B0
+// ea: 0x005DC5B0
 const char* BrocSys::ConvertHashToString(int hash)
 {
     return BrocSysHashLookup(static_cast<unsigned int>(hash));

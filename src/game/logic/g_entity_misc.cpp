@@ -4271,6 +4271,7 @@ void Init()
     DebugRender::sInst.AddRenderer(BrocSys::BrocDebugRender);
 }
 bool IsValidClientType(Entity* pEnt);
+// ea: 0x005C13C0
 void TakeWeapon(Entity* pSelf, const char* pszWeaponName)
 {
     if (IsValidClientType(pSelf))
