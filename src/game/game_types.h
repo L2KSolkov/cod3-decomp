@@ -120,11 +120,13 @@ public:
     DbLinkedHandle() { mHandle.mVal = 0; }
     // ea: 0x005EA570
     // ea: 0x004AC6C0
+    // ea: 0x004ACEA0
     DbLinkedHandle(int v) { mHandle.mVal = (unsigned int)v; }  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@H@Z (g.o 0x4AC6C0)
     // ea: 0x005EA590
     // ea: 0x004AC6E0
     DbLinkedHandle(Handle h) { mHandle = h; }                  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@VHandle@@@Z (g.o 0x4AC6E0)
     // ea: 0x004AC700
+    // ea: 0x004ACEC0
     DbLinkedHandle& operator=(Handle rhs)                      // ??4?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEAAV0@VHandle@@@Z (g.o 0x4AC700)
     {
         mHandle = rhs;
@@ -249,6 +251,7 @@ public:
     unsigned int mPakId;   // +0x04 — pak id (TPakId)
 
     // ea: 0x004ACE00
+    // ea: 0x004ACE80
     // ea: 0x005EA340
     IVPointer() : mValue(nullptr), mPakId(PAK_ID_INVALID) {}  // ??0?$IVPointer@VPhysData@@@@QAE@XZ (g.o 0x4ACE80)
     // ea: 0x004ACE20

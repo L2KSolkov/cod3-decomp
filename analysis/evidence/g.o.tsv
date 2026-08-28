@@ -1451,6 +1451,12 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004ACE60	?size@?$InplaceVector@UXAnimEntry@@@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016699	Release XAnimEntry size returns mSize directly.
 0x004ACE70	?size@?$InplaceVector@VAnimTree@@@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:238	The InplaceVector size accessor returns mSize directly.
 0x004ACE70	?size@?$InplaceVector@VAnimTree@@@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016705	Release AnimTree size returns mSize directly.
+0x004ACE80	??0?$IVPointer@VPhysData@@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:254	IVPointer construction initializes mValue to null and mPakId to the invalid sentinel.
+0x004ACE80	??0?$IVPointer@VPhysData@@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016711	Release IVPointer<PhysData> stores null in mValue and PAK_ID_INVALID in mPakId.
+0x004ACEA0	??0?$DbLinkedHandle@VTaskSys@@VTask@@@@QAE@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:123	DbLinkedHandle construction copies the integer value into the wrapped Handle field.
+0x004ACEA0	??0?$DbLinkedHandle@VTaskSys@@VTask@@@@QAE@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016719	Release DbLinkedHandle<TaskSys,Task> construction stores the integer in mVal.
+0x004ACEC0	??4?$DbLinkedHandle@VTaskSys@@VTask@@@@QAEAAV0@VHandle@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:129	DbLinkedHandle assignment copies the source Handle into mHandle and returns this.
+0x004ACEC0	??4?$DbLinkedHandle@VTaskSys@@VTask@@@@QAEAAV0@VHandle@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016728	Release DbLinkedHandle<TaskSys,Task> assignment copies rhs.mVal and returns the object.
 0x004ACE00	??0?$IVPointer@VXModel@@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:243	IVPointer constructor initializes the model pointer to null and the pak identifier to the invalid sentinel.
 0x004ACE00	??0?$IVPointer@VXModel@@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016671	Release IVPointer constructor stores null in mValue and 0xFFFFFFFF in mPakId.
 0x004ACE20	?clear@?$IVPointer@VXModel@@@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:246	IVPointer clear resets both the model pointer and pak identifier to their initial invalid state.
