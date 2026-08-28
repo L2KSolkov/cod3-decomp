@@ -434,6 +434,8 @@ def base_name(decorated: str) -> str:
 
 def candidate_name_matches(decorated: str, candidate: str) -> bool:
     """Match a release decoration to the readable source definition name."""
+    if decorated == candidate:
+        return True
     base = base_name(decorated)
     # IDA keeps a template constructor/destructor's leading `?$` marker in
     # the map name; source candidates are readable class names.  Normalize
