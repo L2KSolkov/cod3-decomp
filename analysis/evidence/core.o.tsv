@@ -289,3 +289,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B9CD0	?AngleDelta@@YA?BMMM@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024877	Release AngleDelta uses the same difference conversion and upper-bound branch.
 0x004B9D20	?RadiusFromBounds@@YA?BMABVPosition3@math@@0@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1194	RadiusFromBounds selects the maximum absolute extent on each axis and returns its Euclidean radius.
 0x004B9D20	?RadiusFromBounds@@YA?BMABVPosition3@math@@0@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024890	Release RadiusFromBounds uses the same absolute maxima and square-root sum.
+0x004B9E20	?ClearBounds@@YAXQAM0@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1217	ClearBounds writes the release positive and negative sentinel extents.
+0x004B9E20	?ClearBounds@@YAXQAM0@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024923	Release ClearBounds writes the same six 262144 sentinel values.
+0x004B9E60	?AxisClear@@YAXQAY02M@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1228	AxisClear writes the 3x3 identity matrix.
+0x004B9E60	?AxisClear@@YAXQAY02M@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024934	Release AxisClear writes the same identity elements.
+0x004B9EA0	?AxisCopy@@YAXQAY02$$CBMQAY02M@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1242	AxisCopy copies all nine 3x3 elements.
+0x004B9EA0	?AxisCopy@@YAXQAY02$$CBMQAY02M@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024948	Release AxisCopy uses the same nine element assignments.
+0x004B9EE0	?PlaneFromPoints@@YA?BHQAMQBM11@Z	V3	PASS	ida-manual-core-math-20260828	2026-08-28	src/game/core/q_math.cpp:1256	PlaneFromPoints computes the cross-product normal, handles degenerate points, normalizes, and computes the plane distance.
+0x004B9EE0	?PlaneFromPoints@@YA?BHQAMQBM11@Z	V4	PASS	ida-manual-core-math-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024962	Release PlaneFromPoints uses the same normal equations, zero-length return, normalization, and distance calculation.
