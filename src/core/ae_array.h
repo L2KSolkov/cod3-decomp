@@ -38,10 +38,12 @@ public:
 
     ae_sized_array() : m_size(0) {}
 
+    // ea: 0x005EA1A0
     int size() const { return m_size; }
     bool empty() const { return m_size == 0; }
     void clear() { m_size = 0; }
 
+    // ea: 0x005EA120
     T& operator[](int idx) {
         if (idx < 0 || idx >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -78,6 +80,7 @@ public:
         return m_elements[idx];
     }
 
+    // ea: 0x005EA1B0
     void push_back(const T& val) {
         if (m_size >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;

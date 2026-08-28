@@ -728,6 +728,12 @@ def symbol_variants(name: str) -> set[str]:
         for value in tuple(values):
             values.add(value.replace(old, new))
             values.add(value.replace(new, old))
+    # Older release decorations identify ae_pair as a class (V) while the
+    # current source declares the ABI-identical aggregate as a struct (U).
+    # This applies to both template arguments and return/reference types.
+    for value in tuple(values):
+        values.add(value.replace("V?$", "U?$"))
+        values.add(value.replace("U?$", "V?$"))
     return values
 
 

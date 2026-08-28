@@ -949,6 +949,11 @@ template ae_sized_array<Task*, 128>::iterator&
 ae_sized_array<Task*, 128>::iterator::operator++();
 template bool ae_sized_array<Task*, 128>::iterator::operator!=(
     ae_sized_array<Task*, 128>::iterator) const;
+template ae_pair<void*, unsigned int>&
+ae_sized_array<ae_pair<void*, unsigned int>, 15>::operator[](int);
+template int ae_sized_array<ae_pair<void*, unsigned int>, 15>::size() const;
+template void ae_sized_array<ae_pair<void*, unsigned int>, 15>::push_back(
+    const ae_pair<void*, unsigned int>&);
 template void reserved_dlist<AeThreadState>::push_back(AeThreadState*);
 template void reserved_dlist<EndOnScriptNode>::push_back(EndOnScriptNode*);
 template void reserved_dlist<AeThread>::push_back(AeThread*);
