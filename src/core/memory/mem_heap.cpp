@@ -501,7 +501,7 @@ class ae_heap_base {
 public:
     ae_heap_base();
     virtual ~ae_heap_base();
-    mem_heap* GetHeapPointer();
+    virtual mem_heap* GetHeapPointer();
 protected:
     void* MemAlloc(unsigned size, unsigned align, mem_heap* heap);
     void  MemFree(void* ptr, mem_heap* heap);

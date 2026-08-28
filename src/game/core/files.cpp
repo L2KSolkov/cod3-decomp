@@ -120,15 +120,12 @@ int FS_Initialized()
 }
 
 // ea: 0x004B5680
-char FS_CheckFileSystemStarted()
+void FS_CheckFileSystemStarted()
 {
-    char result = static_cast<char>(
-        reinterpret_cast<uintptr_t>(fs_searchpaths));
     if (fs_searchpaths == nullptr)
     {
         ASSERT("fs_searchpaths", "c:\\cod\\code\\game\\com_files.cpp", 319);
     }
-    return result;
 }
 
 // ea: 0x004B56D0
@@ -260,7 +257,7 @@ int FS_FilenameCompare(const char* s1, const char* s2)
 }
 
 // ea: 0x004B5A70
-char* FS_ShiftedStrStr(const char* string, const char* substring, char shift)
+char* FS_ShiftedStrStr(const char* string, const char* substring, int shift)
 {
     char buf[256];
     const char* v3 = substring;

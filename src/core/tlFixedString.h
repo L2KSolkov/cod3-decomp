@@ -57,7 +57,7 @@ public:
     }
 
     // ea: 0x4B5420
-    tlFixedString& operator=(const tlFixedString& rhs) {
+    const tlFixedString& operator=(const tlFixedString& rhs) {
         memcpy(this, &rhs, 32);
         return *this;
     }
