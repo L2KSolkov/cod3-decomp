@@ -27589,13 +27589,67 @@ void InteractInputRcvr::Activate(const InteractStateInfo& info)
     mInputProgress = 0.0f;
 }
 
+extern float sInputTimeFalloffEnd;
+extern float sInputTimeFalloffStart;
+extern float sTotalTimeMin;
+extern float sBucketDuration;
 // ea: 0x0053F350
 void InteractInputRcvr::MeasureInput(float& rate, float& progress,
                                      float deltaT)
 {
-    mTimer += deltaT;
+    mBucketTime[mTimeIndex] += deltaT;
     mTimeSinceLastInput += deltaT;
-    (void)rate; (void)progress;
+    float bucketTime = mBucketTime[mTimeIndex];
+    if (bucketTime > sBucketDuration)
+    {
+        mBucketTime[mTimeIndex] = sBucketDuration;
+        if (mNumTimesUsed < 5)
+            ++mNumTimesUsed;
+        mTimeIndex = (mTimeIndex + 1 == 5) ? 0 : mTimeIndex + 1;
+        mBucketCount[mTimeIndex] = 0;
+        mBucketTime[mTimeIndex] = bucketTime - sBucketDuration;
+    }
+    if ((mFlags & 1) != 0)
+    {
+        ++mBucketCount[mTimeIndex];
+        mTimeSinceLastInput = 0.0f;
+        mFlags &= ~1u;
+    }
+    int totalCount = 0;
+    float totalTime = 0.0f;
+    if (mNumTimesUsed <= 0)
+    {
+        XANIM_ASSERT("totalTime > 0.0f",
+                     "c:\\cod\\code\\game\\InteractInputRcvr.cpp", 216,
+                     "Bad delta t");
+    }
+    for (int i = 0; i < mNumTimesUsed; ++i)
+    {
+        totalTime += mBucketTime[i];
+        totalCount += mBucketCount[i];
+    }
+    if (totalTime <= 0.0f)
+    {
+        XANIM_ASSERT("totalTime > 0.0f",
+                     "c:\\cod\\code\\game\\InteractInputRcvr.cpp", 216,
+                     "Bad delta t");
+    }
+    if (sTotalTimeMin > totalTime)
+        totalTime = sTotalTimeMin;
+    float inputRate = (totalCount / totalTime)
+                      * *(float*)((char*)mInfo + 0x384);
+    rate = inputRate;
+    if (mTimeSinceLastInput > sInputTimeFalloffStart)
+    {
+        float falloff = (mTimeSinceLastInput - sInputTimeFalloffStart)
+                        / (sInputTimeFalloffEnd - sInputTimeFalloffStart);
+        if (falloff < 0.0f)
+            falloff = 0.0f;
+        else if (falloff > 1.0f)
+            falloff = 1.0f;
+        rate = (1.0f - falloff) * inputRate;
+    }
+    (void)progress;
 }
 
 // InteractStateInfo minimal view - offsets verified vs IDA struct + disasm
@@ -27706,6 +27760,10 @@ extern float sArmsOffsetY;
 extern float sArmsOffsetZ;
 
 // anim.o statics (verified vs IDA)
+float sInputTimeFalloffEnd = 0.8f;   // @ 0xDF304C
+float sInputTimeFalloffStart = 0.5f; // @ 0xDF3050
+float sTotalTimeMin = 1.0f;          // @ 0xDF3054
+float sBucketDuration = 1.0f;        // @ 0xDF3058
 float sMinStickVal = 70.0f;          // @ 0xDF305C
 float sStickDownMinProgress = 0.25f; // @ 0xDF2E6C
 float sStickUpMaxSide = 100.0f;      // @ 0xDF2E68
