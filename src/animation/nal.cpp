@@ -32229,7 +32229,7 @@ void InteractState::DoWeaponChange()
 // PickLiveGrenade + Vehicle steering cluster (anim.o)
 // ============================================================================
 
-extern double VectorNormalize(float* const v);  // real (math lib)
+extern const float VectorNormalize(float* const v);  // real (math lib)
 extern void vectoangles(const float* const vec,
                         float* const angles);  // real (cg_misc)
 

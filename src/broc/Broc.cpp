@@ -24,8 +24,8 @@ extern const char defaultFileName[];
 
 extern int gNumStringsAlloc;
 extern int gNumStringsFreed;
-extern double VectorDistance(const float* const v1, const float* const v2);
-extern double VectorDistanceSquared(const float* const p1,
+extern const float VectorDistance(const float* const v1, const float* const v2);
+extern const float VectorDistanceSquared(const float* const p1,
                                     const float* const p2);
 extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void vectoangles(const float* const vec, float* const angles);

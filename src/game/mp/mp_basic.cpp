@@ -59,7 +59,7 @@ extern void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker,
                        int damage, int meansOfDeath, int weapon,
                        const float* position, const float* dir,
                        EHitLocation hitLoc);  // g.o (g_combat.cpp)
-extern double VectorNormalize(float* const v);  // math lib (?VectorNormalize@@YA?BMQAM@Z)
+extern const float VectorNormalize(float* const v);  // math lib (?VectorNormalize@@YA?BMQAM@Z)
 extern const float vectoyaw(const float* const v);   // math lib (?vectoyaw@@YA?BMQBM@Z)
 extern const float AngleMod(const float a);          // math lib (?AngleMod@@YA?BMM@Z)
 extern const unsigned char DirToByte(const float* const dir);  // ?DirToByte@@YA?BEQBM@Z

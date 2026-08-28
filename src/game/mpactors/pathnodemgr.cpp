@@ -37,9 +37,9 @@ void Path_SetupAnimFunc(PathNodes::PathNode* node,
                         PathNodes::ENodeType* type);  // pathnode.cpp
 
 extern float flrand(float min, float max);  // core.o
-extern double VectorDistanceSquared(const float* const p1,
+extern const float VectorDistanceSquared(const float* const p1,
                                     const float* const p2);  // core.o
-extern double VectorDistanceSquared2D(const float* const p1,
+extern const float VectorDistanceSquared2D(const float* const p1,
                                       const float* const p2);  // core.o
 extern void YawVectors(float yaw, float* const forward,
                        float* const right);  // core.o

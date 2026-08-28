@@ -3123,7 +3123,7 @@ void CG_PerturbationPoint(const float* prev, float* out, float mindist)
                           + (prev[1] - out[1]) * (prev[1] - out[1]);
     } while (mindistSquared > distanceSquared);
 }
-extern double VectorNormalize2(const float* const v,
+extern const float VectorNormalize2(const float* const v,
                                     float* const out);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern char* va(const char* fmt, ...);
@@ -4269,7 +4269,7 @@ struct vehicle_info_full_t {
 
 extern vehicle_info_t* VEH_GetInfo(int idx);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
-extern double VectorNormalize(float* const v);
+extern const float VectorNormalize(float* const v);
 extern void MatrixMultiply(const float (*const in1)[3],
                              const float (*const in2)[3],
                            float (*const out)[3]);

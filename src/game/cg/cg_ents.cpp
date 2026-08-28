@@ -402,8 +402,8 @@ extern vmCvar_t cg_tracerChance;
 extern int dword_DF6ADC[6];
 float tracer_info_speed[6];
 extern void AxisClear(float (*const axis)[3]);
-extern double VectorNormalize(float* const v);
-extern double VectorDistance(const float* const v1, const float* const v2);
+extern const float VectorNormalize(float* const v);
+extern const float VectorDistance(const float* const v1, const float* const v2);
 extern void PerpendicularVector(float* const dst, const float* const src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 extern void FastSinCos(float radians, float* psin, float* pcos);
@@ -872,7 +872,7 @@ extern int dword_F6294C[4 * 1580];
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
 extern TPakId CurPakId();  // defined in streamer/pakmanager.cpp
-extern double VectorNormalize2(const float* const v,
+extern const float VectorNormalize2(const float* const v,
                                     float* const out);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
@@ -1222,7 +1222,7 @@ extern float dword_F63C70[4 * 1580];
 extern Camera gCamera[];
 extern int dword_180000;
 unsigned int head_hash_0;
-extern double VectorDistance(const float* const v1, const float* const v2);
+extern const float VectorDistance(const float* const v1, const float* const v2);
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMat);
 void CG_Player(Entity* entity);
@@ -1537,7 +1537,7 @@ extern void CG_DrawTracer(const math::Position3& _start,
 struct trajectory_t;
 extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                                   math::Position3& result);
-extern double VectorNormalize2(const float* const v,
+extern const float VectorNormalize2(const float* const v,
                                     float* const out);
 int dword_DF6ADC[6];  // cg.o BSS
 int dword_DF6AE0[6];  // cg.o BSS

@@ -25,7 +25,7 @@ void nglWaitForRendering();
 void nglDestroyTexture(nglTexture* Tex);
 
 // q_math.o (returns const float per binary mangling ?A?BMQBM0)
-double VectorDistance(const float* const p1, const float* const p2);
+const float VectorDistance(const float* const p1, const float* const p2);
 
 // apsMemory (aepsMemory)
 namespace apsMemory {
