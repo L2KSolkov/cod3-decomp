@@ -1904,35 +1904,56 @@ void toMatrix(const angles_t& src, mat3_t& dst)
 void MatrixMultiplyRT(const math::Mat43& in1, const math::Mat43& in2,
                       math::Mat43& out)
 {
-    for (int i = 0; i < 3; ++i)
-    {
-        out.x.v.m128_f32[i] =
-            in2.x.v.m128_f32[i] * in1.x.v.m128_f32[0]
-            + in2.y.v.m128_f32[i] * in1.x.v.m128_f32[1]
-            + in2.z.v.m128_f32[i] * in1.x.v.m128_f32[2];
-        out.y.v.m128_f32[i] =
-            in2.x.v.m128_f32[i] * in1.y.v.m128_f32[0]
-            + in2.y.v.m128_f32[i] * in1.y.v.m128_f32[1]
-            + in2.z.v.m128_f32[i] * in1.y.v.m128_f32[2];
-        out.z.v.m128_f32[i] =
-            in2.x.v.m128_f32[i] * in1.z.v.m128_f32[0]
-            + in2.y.v.m128_f32[i] * in1.z.v.m128_f32[1]
-            + in2.z.v.m128_f32[i] * in1.z.v.m128_f32[2];
-    }
+    out.x.v.m128_f32[0] =
+        in2.x.v.m128_f32[0] * in1.x.v.m128_f32[0]
+        + in2.y.v.m128_f32[0] * in1.x.v.m128_f32[1]
+        + in2.z.v.m128_f32[0] * in1.x.v.m128_f32[2];
+    out.y.v.m128_f32[0] =
+        in2.x.v.m128_f32[1] * in1.x.v.m128_f32[0]
+        + in2.y.v.m128_f32[1] * in1.x.v.m128_f32[1]
+        + in2.z.v.m128_f32[1] * in1.x.v.m128_f32[2];
+    out.z.v.m128_f32[0] =
+        in2.x.v.m128_f32[2] * in1.x.v.m128_f32[0]
+        + in2.y.v.m128_f32[2] * in1.x.v.m128_f32[1]
+        + in2.z.v.m128_f32[2] * in1.x.v.m128_f32[2];
+    out.x.v.m128_f32[1] =
+        in2.x.v.m128_f32[0] * in1.y.v.m128_f32[0]
+        + in2.y.v.m128_f32[0] * in1.y.v.m128_f32[1]
+        + in2.z.v.m128_f32[0] * in1.y.v.m128_f32[2];
+    out.y.v.m128_f32[1] =
+        in2.x.v.m128_f32[1] * in1.y.v.m128_f32[0]
+        + in2.y.v.m128_f32[1] * in1.y.v.m128_f32[1]
+        + in2.z.v.m128_f32[1] * in1.y.v.m128_f32[2];
+    out.z.v.m128_f32[1] =
+        in2.x.v.m128_f32[2] * in1.y.v.m128_f32[0]
+        + in2.y.v.m128_f32[2] * in1.y.v.m128_f32[1]
+        + in2.z.v.m128_f32[2] * in1.y.v.m128_f32[2];
+    out.x.v.m128_f32[2] =
+        in2.x.v.m128_f32[0] * in1.z.v.m128_f32[0]
+        + in2.y.v.m128_f32[0] * in1.z.v.m128_f32[1]
+        + in2.z.v.m128_f32[0] * in1.z.v.m128_f32[2];
+    out.y.v.m128_f32[2] =
+        in2.x.v.m128_f32[1] * in1.z.v.m128_f32[0]
+        + in2.y.v.m128_f32[1] * in1.z.v.m128_f32[1]
+        + in2.z.v.m128_f32[1] * in1.z.v.m128_f32[2];
+    out.z.v.m128_f32[2] =
+        in2.x.v.m128_f32[2] * in1.z.v.m128_f32[0]
+        + in2.y.v.m128_f32[2] * in1.z.v.m128_f32[1]
+        + in2.z.v.m128_f32[2] * in1.z.v.m128_f32[2];
     out.w.v.m128_f32[0] =
-        in2.x.v.m128_f32[3] * in1.w.v.m128_f32[0]
-        + in2.y.v.m128_f32[3] * in1.w.v.m128_f32[1]
-        + in2.z.v.m128_f32[3] * in1.w.v.m128_f32[2]
+        in2.x.v.m128_f32[0] * in1.w.v.m128_f32[0]
+        + in2.y.v.m128_f32[0] * in1.w.v.m128_f32[1]
+        + in2.z.v.m128_f32[0] * in1.w.v.m128_f32[2]
         + in2.w.v.m128_f32[0];
     out.w.v.m128_f32[1] =
-        in2.x.v.m128_f32[3] * in1.w.v.m128_f32[1]
-        + in2.y.v.m128_f32[3] * in1.w.v.m128_f32[2]
-        + in2.z.v.m128_f32[3] * in1.w.v.m128_f32[0]
+        in2.x.v.m128_f32[1] * in1.w.v.m128_f32[0]
+        + in2.y.v.m128_f32[1] * in1.w.v.m128_f32[1]
+        + in2.z.v.m128_f32[1] * in1.w.v.m128_f32[2]
         + in2.w.v.m128_f32[1];
     out.w.v.m128_f32[2] =
-        in2.x.v.m128_f32[3] * in1.w.v.m128_f32[2]
-        + in2.y.v.m128_f32[3] * in1.w.v.m128_f32[0]
-        + in2.z.v.m128_f32[3] * in1.w.v.m128_f32[1]
+        in2.x.v.m128_f32[2] * in1.w.v.m128_f32[0]
+        + in2.y.v.m128_f32[2] * in1.w.v.m128_f32[1]
+        + in2.z.v.m128_f32[2] * in1.w.v.m128_f32[2]
         + in2.w.v.m128_f32[2];
     out.x.v.m128_f32[3] = 0.0f;
     out.y.v.m128_f32[3] = 0.0f;
