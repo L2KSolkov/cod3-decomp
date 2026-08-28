@@ -11390,7 +11390,7 @@ void MPPlayerManager::ClearStateVariables()
     *(float*)((char*)this + 0x58A0) = 0.0f;
     *(float*)((char*)this + 0x58A4) = 0.0f;
     *(float*)((char*)this + 0x58A8) = 0.0f;
-    memset((char*)this + 0x58AC, 0, 20);  // mFlagStatus
+    *(int*)((char*)this + 0x58AC) = 0;     // mFlagStatus[0]
     *(unsigned char*)((char*)this + 0x58C0) = 16;  // mSDPlanter
     *(unsigned char*)((char*)this + 0x58C1) = 16;  // mSDDefuser
     *(bool*)((char*)this + 0x58C2) = false;        // mSDPlanted
