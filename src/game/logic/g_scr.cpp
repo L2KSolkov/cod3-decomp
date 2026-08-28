@@ -24540,9 +24540,17 @@ void BrocSys::GetPartName(Broc::string& outName,
     }
     BrocXModelPartsLocal* parts2 =
         (BrocXModelPartsLocal*)mValue->lod[v17]->xmodelParts;
-    unsigned int boneHash = 0;
-    if (parts2 != nullptr && index < (unsigned int)parts2->mHierarchySize)
-        boneHash = parts2->mHierarchyList[index].mHash;
+    if (index >= (unsigned int)parts2->mHierarchySize)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)3;  // JRS
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelParts.h";
+        AeAssert::gCurrentLine = 216;
+        AeAssert::gCurrentExpr = "i >= 0 && i < mHierarchy.size()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad Bone Index"))
+            __debugbreak();
+    }
+    unsigned int boneHash = parts2->mHierarchyList[index].mHash;
     const char* v20 = sHashStrings.lookup(boneHash);
     outName = v20;
     if (outName.mBlock == nullptr)
