@@ -2906,3 +2906,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A7780	??3tagInfo_t@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1014077	Release tagInfo_t placement deletion calls PoolAllocator::Release.
 0x004A77A0	??3tagInfo_t@@SAXPAX@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_dobj.cpp:1673	Tag info ordinary deletion releases through sAllocator.
 0x004A77A0	??3tagInfo_t@@SAXPAX@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1014083	Release ordinary tagInfo_t deletion calls PoolAllocator::Release.
+0x005D63E0	?IsAds@BrocSys@@YAHI@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20333-20342	Source resolves a client handle and reports the ADS pm flag.
+0x005D63E0	?IsAds@BrocSys@@YAHI@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196258	Release client validation and ADS flag test match source.
+0x005D6440	?IsOnGround@BrocSys@@YAHI@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20345-20357	Source resolves a client handle and reports whether its ground entity is defined.
+0x005D6440	?IsOnGround@BrocSys@@YAHI@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196271	Release client validation and ground-entity test match source.
+0x005D65A0	?AllowStand@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20402-20412	Source preserves the release no-op control hook while validating the client handle.
+0x005D65A0	?AllowStand@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196331	Release AllowStand body validates the client and performs no state mutation, matching source.
+0x005D65E0	?AllowCrouch@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20414-20424	Source preserves the release no-op crouch-control hook while validating the client handle.
+0x005D65E0	?AllowCrouch@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196344	Release AllowCrouch body validates the client and performs no state mutation, matching source.
+0x005D6620	?AllowProne@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20426-20436	Source preserves the release no-op prone-control hook while validating the client handle.
+0x005D6620	?AllowProne@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196357	Release AllowProne body validates the client and performs no state mutation, matching source.
+0x005D6660	?AllowLeanLeft@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20438-20448	Source preserves the release no-op lean-left hook while validating the client handle.
+0x005D6660	?AllowLeanLeft@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196371	Release AllowLeanLeft body validates the client and performs no state mutation, matching source.
+0x005D66A0	?AllowLeanRight@BrocSys@@YAXI_N@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20450-20460	Source preserves the release no-op lean-right hook while validating the client handle.
+0x005D66A0	?AllowLeanRight@BrocSys@@YAXI_N@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196383	Release AllowLeanRight body validates the client and performs no state mutation, matching source.
+0x005D66E0	?SetSpectateTeamKill@BrocSys@@YAXHIH@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20462-20475	Source resolves the killer client, obtains the spectator menu, and forwards team-kill state.
+0x005D66E0	?SetSpectateTeamKill@BrocSys@@YAXHIH@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196396	Release killer lookup, menu selection, and SetTeamKill call match source.
+0x005D6880	?GetWeaponSlotWeapon@BrocSys@@YAXIABVstring@Broc@@AAV23@@Z	V3	PASS	ida-manual-scr-20260828	2026-08-28	src/game/logic/g_scr.cpp:20522-20542	Source resolves a client and slot name, validates the slot, and returns the equipped weapon string.
+0x005D6880	?GetWeaponSlotWeapon@BrocSys@@YAXIABVstring@Broc@@AAV23@@Z	V4	PASS	ida-manual-scr-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1196461	Release client/slot validation and equipped-weapon retrieval match source.
