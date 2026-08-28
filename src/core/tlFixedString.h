@@ -2,7 +2,6 @@
 // tlFixedString - 32-byte hashed fixed string (core/tl_xboxr).
 // Size: 32 bytes (0x20). Hash: lowercased char + 33*hash (DJB2-style), folded
 // through tolower() for letters. Verified against tl_xboxr / core.o COMDATs:
-//   ctor(const char*)  ea: 0x4A53F0
 //   ctor()             ea: 0x4B53F0
 //   copy ctor          ea: 0x4EAAE0
 //   operator=          ea: 0x4B5420
@@ -33,6 +32,7 @@ public:
         memset(str, 0, sizeof(str));
     }
 
+    // ea: 0x4A53F0
     tlFixedString(const char* s) : hash(0) {
         memset(str, 0, sizeof(str));
         if (s != NULL) {
