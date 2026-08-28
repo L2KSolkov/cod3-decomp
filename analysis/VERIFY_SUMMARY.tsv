@@ -255,7 +255,7 @@ ngl_xb_internal.o	2	1	0	0	0	1	0
 ngl_xb_palette.o	13	4	0	9	0	0	0
 ngl_xb_tex_load.o	2	0	0	2	0	0	0
 nslAram.o	9	9	0	0	0	0	0
-nslCompat.o	21	5	0	16	0	0	0
+nslCompat.o	21	5	0	1	0	15	0
 nslDriverXBOXDSOUND.o	56	43	0	13	0	0	0
 nslGroup.o	8	0	0	8	0	0	0
 nslInit.o	7	1	0	6	0	0	0
@@ -263,7 +263,7 @@ nslListener.o	7	0	0	7	0	0	0
 nslMaster.o	16	0	0	16	0	0	0
 nslMemory.o	2	2	0	0	0	0	0
 nslPriority.o	7	0	0	7	0	0	0
-nslSource.o	69	2	0	67	0	0	0
+nslSource.o	69	2	0	66	0	1	0
 nslUpdate.o	2	0	0	2	0	0	0
 nslVoice.o	5	0	0	5	0	0	0
 nslWave.o	15	0	0	15	0	0	0

@@ -1,3 +1,35 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x00829DD0	?nslWaveBankFixup@@YAHPAUnslWaveBank@@@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:2547-2615	Source fixes up bank-relative pointers, clears backing/MD5 state, adjusts wave/name/info records, resolves groups, and sets the fixed-up flag.
 0x00829DD0	?nslWaveBankFixup@@YAHPAUnslWaveBank@@@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1567647-1567716	Release null/flag guards, pointer fixups, wave/info loops, group resolution, sound flag normalization, and final flag update match source.
+0x00820290	?nslVoiceGet@@YAPAUnslVoice@@H@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:3388	Compatibility wrapper forwards the signed voice index directly to nslVoicePtr.
+0x00820290	?nslVoiceGet@@YAPAUnslVoice@@H@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1558940-1558944	Release wrapper returns nslVoicePtr(voiceIndex), matching source exactly.
+0x008202A0	?nslGetGroup@@YAPAUnslGroup@@PBD@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:3390	Compatibility wrapper forwards the group name to nslGroupGet.
+0x008202A0	?nslGetGroup@@YAPAUnslGroup@@PBD@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1558946-1558950	Release wrapper returns nslGroupGet(groupName), matching source exactly.
+0x008202B0	?nslGetListenerGroup@@YAPAUnslGroup@@XZ	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:3392	Compatibility wrapper requests listener group zero.
+0x008202B0	?nslGetListenerGroup@@YAPAUnslGroup@@XZ	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1558952-1558956	Release wrapper returns nslListenerGetGroup(0), matching source exactly.
+0x008202C0	?nslGetMasterGroup@@YAPAUnslGroup@@XZ	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:3394-3395	Compatibility wrapper forwards to nslMasterGetGroup.
+0x008202C0	?nslGetMasterGroup@@YAPAUnslGroup@@XZ	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.map:18988;c3_bin/codmp_xboxr.xbe.c:1564216-1564219	Release map locates the compatibility symbol in nslCompat.o; its target nslMasterGetGroup release body returns nslGroupGet("NSL_MASTER"), matching the source call chain.
+0x00820310	?nslGetWave@@YA?AW4nslWaveID@@PBD@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1396	Compatibility wrapper forwards the wave name to nslWaveLookup.
+0x00820310	?nslGetWave@@YA?AW4nslWaveID@@PBD@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1558976-1558980	Release wrapper returns nslWaveLookup(name), matching source exactly.
+0x00820320	?nslGetWaveLength@@YAHW4nslWaveID@@@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1409	Compatibility wrapper returns the wave length as int.
+0x00820320	?nslGetWaveLength@@YAHW4nslWaveID@@@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1558982-1558986	Release wrapper returns nslWaveGetLength(waveID), matching source exactly.
+0x00820330	?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1398-1401	Compatibility wrapper forwards wave ID, parameter index, and default value to nslWaveGetParam.
+0x00820330	?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1558988-1558992	Release wrapper returns nslWaveGetParam(a, b, c); map signature confirms float return despite decompiler double spelling.
+0x00820340	?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1392	Compatibility wrapper forwards the wave ID to nslWaveGetGroupName.
+0x00820340	?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1558994-1558998	Release wrapper returns nslWaveGetGroupName(a), matching source exactly.
+0x00820350	?nslGetWaveName@@YAPBDW4nslWaveID@@@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1356-1357	Compatibility wrapper forwards the wave ID to nslWaveGetName.
+0x00820350	?nslGetWaveName@@YAPBDW4nslWaveID@@@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1559000-1559004	Release wrapper returns nslWaveGetName(a), matching source exactly.
+0x00820360	?nslIsWaveLooped@@YAHW4nslWaveID@@@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1411	Compatibility wrapper forwards the wave ID to nslWaveIsLooping.
+0x00820360	?nslIsWaveLooped@@YAHW4nslWaveID@@@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1559006-1559010	Release wrapper returns nslWaveIsLooping(a), matching source exactly.
+0x00820370	?nslSetListenerOrientation@@YAXQBM0@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1696-1699	Compatibility wrapper targets listener zero and forwards front/top vectors.
+0x00820370	?nslSetListenerOrientation@@YAXQBM0@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1559012-1559016	Release wrapper calls nslListenerSetOrientation(0, a, b), matching source exactly.
+0x00820390	?nslSetListenerPosition@@YAXQBM@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1702-1705	Compatibility wrapper targets listener zero and forwards the position vector.
+0x00820390	?nslSetListenerPosition@@YAXQBM@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1559018-1559022	Release wrapper calls nslListenerSetPosition(0, a), matching source exactly.
+0x008203D0	?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1413	Compatibility wrapper forwards the wave ID to nslWaveIsStreaming.
+0x008203D0	?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1559030-1559034	Release wrapper returns nslWaveIsStreaming(a), matching source exactly.
+0x008203E0	?nslGetVoice@@YAPAUnslVoice@@I@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1049-1052	Unsigned compatibility wrapper converts to the signed nslVoicePtr index expected by the implementation.
+0x008203E0	?nslGetVoice@@YAPAUnslVoice@@I@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1559036-1559040	Release wrapper returns nslVoicePtr(a), matching source conversion and call.
+0x00820400	?nslGetMaxNumVoices@@YAIXZ	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:1345-1346	Compatibility wrapper returns nslVoiceCount.
+0x00820400	?nslGetMaxNumVoices@@YAIXZ	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.map:19005;c3_bin/codmp_xboxr.xbe.c:1566160-1566163	Release map locates the compatibility symbol; its release implementation uses the same nslVoiceCount result (the tiny wrapper has no separate decompiler body).
+0x00820410	?tlIsPow2@@YA_NI@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:787-790	Power-of-two test rejects zero and checks x & (x - 1).
+0x00820410	?tlIsPow2@@YA_NI@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1559042-1559046	Release implementation is x != 0 && ((x - 1) & x) == 0, matching source exactly.
