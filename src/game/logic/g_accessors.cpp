@@ -3319,13 +3319,6 @@ void force_std_pair_ctor_emit()
 }
 
 // IVPointer Deref (g.o 0x4AE4C0-0x4AE540)
-extern void ValidatePakId(TPakId pakId);
-template <typename T>
-T* IVPointer<T>::Deref() const
-{
-    ValidatePakId((TPakId)mPakId);
-    return mValue;
-}
 template class IVPointer<XModel>;
 template class IVPointer<PhysData>;
 template class IVPointer<Destructible>;

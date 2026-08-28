@@ -754,6 +754,8 @@ reserved_dlist<T>::get_head() const
 
 template <typename T>
 // ea: 0x005EAE20
+// ea: 0x005EACE0
+// ea: 0x005EAD20
 reserved_dlist<T>::iterator::iterator(T* obj)
     : m_node(reinterpret_cast<dlist_node*>(&obj->m_dlist_node)),
       m_next(reinterpret_cast<dlist_node*>(obj->m_dlist_node.mNext))
@@ -3700,6 +3702,7 @@ public:
 template class SizedHandle<8, 24>;
 template class HandleDb<AeThread, 256, SizedHandle<8, 24>>;
 template class IVPointer<AIType>;
+template AIType* IVPointer<AIType>::Deref() const;
 
 template <typename T, int CAPACITY, typename H>
 HandleDb<T, CAPACITY, H>::HandleDb()

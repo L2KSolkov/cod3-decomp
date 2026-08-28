@@ -254,6 +254,14 @@ private:
 static_assert(sizeof(IVPointer<char>) == 8, "IVPointer size mismatch");
 extern void ValidatePakId(TPakId pakId);  // core.o
 
+template <typename T>
+// ea: 0x005EACA0
+T* IVPointer<T>::Deref() const
+{
+    ValidatePakId((TPakId)mPakId);
+    return mValue;
+}
+
 // ============================================================================
 // DObjModel — model slot for Entity::CreateDObj (20 bytes) - verified IDA
 // ============================================================================

@@ -2724,6 +2724,24 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005EEAE0	?back@?$ae_sized_array@PAVAeThread@@$0EA@@@QAEAAPAVAeThread@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206299	Release AeThread sized-array back uses the clamped last-index expression.
 0x005EEBD0	??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:245	AIType IVPointer arrow access validates its pak id and returns mValue.
 0x005EEBD0	??C?$IVPointer@VAIType@@@@QAEPAVAIType@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206353	Release AIType IVPointer arrow access validates its pak id and returns mValue.
+0x005EACA0	?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:258	AIType IVPointer dereference validates the pak id and returns the stored pointer.
+0x005EACA0	?Deref@?$IVPointer@VAIType@@@@ABEPAVAIType@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203741	Release AIType IVPointer dereference performs the same pak validation and pointer return.
+0x005EACC0	??Diterator@?$BitSet@$0BAA@@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:325	BitSet<256> iterator dereference returns the current bit index sentinel/value.
+0x005EACC0	??Diterator@?$BitSet@$0BAA@@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203748	Release BitSet<256> iterator dereference returns m_cur_val unchanged.
+0x005EACE0	??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:757	AeThreadState reserved-list iterator constructor stores the object node and next link.
+0x005EACE0	??0iterator@?$reserved_dlist@VAeThreadState@@@@QAE@PAVAeThreadState@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203761	Release AeThreadState iterator constructor stores the embedded node and forward link.
+0x005EAD00	?GetWord@?$BitSet@$0BAA@@@QBEIH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:287	BitSet<256> GetWord indexes the packed 32-bit word array.
+0x005EAD00	?GetWord@?$BitSet@$0BAA@@@QBEIH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203771	Release BitSet<256> GetWord returns the indexed packed word.
+0x005EAD10	?GetNumWords@?$BitSet@$0BAA@@@SAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:290	BitSet<256> GetNumWords computes the packed 32-bit word count.
+0x005EAD10	?GetNumWords@?$BitSet@$0BAA@@@SAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203777	Release BitSet<256> GetNumWords returns (N+31)/32.
+0x005EAD20	??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:758	AeThread reserved-list iterator constructor stores the object node and next link.
+0x005EAD20	??0iterator@?$reserved_dlist@VAeThread@@@@QAE@PAVAeThread@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203783	Release AeThread iterator constructor stores the embedded node and forward link.
+0x005EAEE0	??0?$BitSet@$0BAA@@@QAE@W4EInitializer@0@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:284	BitSet<256> uninitialized-tag constructor intentionally leaves packed bits untouched.
+0x005EAEE0	??0?$BitSet@$0BAA@@@QAE@W4EInitializer@0@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1203930	Release BitSet<256> initializer constructor is intentionally empty.
+0x005EED20	?Add@?$BitSet@$0BAA@@@QAEXH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:711	BitSet<256> Add checks the word bound and sets the requested packed bit.
+0x005EED20	?Add@?$BitSet@$0BAA@@@QAEXH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206476	Release BitSet<256> Add performs the same bounds assertion and bit set.
+0x005EEDB0	?Rmv@?$BitSet@$0BAA@@@QAEXH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:728	BitSet<256> Rmv checks the word bound and clears the requested packed bit.
+0x005EEDB0	?Rmv@?$BitSet@$0BAA@@@QAEXH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206491	Release BitSet<256> Rmv performs the same bounds assertion and bit clear.
 0x005EEB20	??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:42	Broc entity sized-array constructor initializes m_size to zero while retaining the inline element storage.
 0x005EEB20	??0?$ae_sized_array@Ventity@Broc@@$0CAA@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1206313	Release Broc entity sized-array constructor initializes the size field to zero.
 0x005EEB40	?begin@?$ae_sized_array@Ventity@Broc@@$0CAA@@@QBE?AVconst_iterator@1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:185	Broc entity const begin returns a const iterator over the first inline element.

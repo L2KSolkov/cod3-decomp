@@ -281,10 +281,13 @@ struct BitSet {
     };
 
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
+    // ea: 0x005EAEE0
     BitSet(EInitializer) {}  // ??0?$BitSet@$0FEA@@@QAE@W4EInitializer@0@@Z (g.o 0x4AE780)
 
+    // ea: 0x005EAD00
     // ?GetWord@?$BitSet@$0FEA@@@QBEIH@Z / ?GetNumWords@?$BitSet@$0FEA@@@SAHXZ (g.o)
     unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
+    // ea: 0x005EAD10
     static int GetNumWords() { return (N + 31) / 32; }
     void Clear();  // ?Clear@?$BitSet@$0FEA@@@QAEXXZ (g.o 0x4AE790)
     void Add(int v);  // ?Add@?$BitSet@$0FEA@@@QAEXH@Z (g.o 0x4B1750)
@@ -319,10 +322,12 @@ struct BitSet {
         {
             return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
         }
+        // ea: 0x005EACC0
         int operator*() const  // ??Diterator@?$BitSet@$0BAA@@@QBEHXZ (scr.o 0x005EACC0)
         {
             return (int)m_cur_val;
         }
+        // ea: 0x005EAE40
         void operator++()  // ??Eiterator@?$BitSet@$0FEA@@@QAEXXZ
         {
             if (m_word_idx != -1)
@@ -703,6 +708,7 @@ void BitSet<N>::Clear()
 }
 
 template <int N>
+// ea: 0x005EED20
 void BitSet<N>::Add(int v)
 {
     if ((v >> 5) >= GetNumWords())
@@ -719,6 +725,7 @@ void BitSet<N>::Add(int v)
 }
 
 template <int N>
+// ea: 0x005EEDB0
 void BitSet<N>::Rmv(int v)
 {
     if ((v >> 5) >= GetNumWords())
