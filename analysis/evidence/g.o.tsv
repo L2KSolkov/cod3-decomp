@@ -3580,3 +3580,15 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0072CE70	?IsValid@MPPlayer@@SA_NE@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1391874-1391879	Live IDA/release returns id < 0x10.
 0x0072CE90	?SetId@MPPlayer@@QAEXE@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:981-985	SetId stores the supplied player ID.
 0x0072CE90	?SetId@MPPlayer@@QAEXE@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1391886-1391890	Live IDA/release directly assigns mId.
+0x0072CBA0	?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:13143-13162	getAnimIndex selects the sheet/row/column animation and falls back to the base row when requested and the selected animation is missing.
+0x0072CBA0	?getAnimIndex@MPPlayer@@SAPAUMP_ANIM_INDEX@@HHH_N@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1391763-1391781	Live IDA/release matches indexed lookup, null-animation default fallback, and null result.
+0x0072CC20	?Reset@MPPlayer@@QAEX_N@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:18860-18922	Reset clears persistent/volatile player state, timestamps/yaw state, interpolation fields, and the active player animation tree.
+0x0072CC20	?Reset@MPPlayer@@QAEX_N@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1391782-1392927	Live IDA/release matches reset-persistent gating, zeroing, local-time initialization, three yaw slots, and optional entity animation reset.
+0x0072E430	?IsValid@MPVehicle@@SA_NE@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:1114-1118	MPVehicle::IsValid accepts vehicle IDs below the ten-vehicle sentinel.
+0x0072E430	?IsValid@MPVehicle@@SA_NE@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1392928-1392939	Live IDA/release returns id < 0x0A.
+0x0072E450	?SetId@MPVehicle@@QAEXE@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:1102-1106	SetId stores the supplied vehicle ID.
+0x0072E450	?SetId@MPVehicle@@QAEXE@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1392940-1392951	Live IDA/release directly assigns mId.
+0x0072E470	?IsOccupied@MPVehicle@@QBE_NXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:1108-1112	IsOccupied reports whether the occupant count is nonzero.
+0x0072E470	?IsOccupied@MPVehicle@@QBE_NXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1392952-1392957	Live IDA/release matches the nonzero occupant-count test.
+0x0072E480	?IsFullyOccupied@MPVehicle@@QBE_NXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:1150-1154	IsFullyOccupied compares occupant count with the entity vehicle seat count.
+0x0072E480	?IsFullyOccupied@MPVehicle@@QBE_NXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1392958-1392963	Live IDA/release matches G_GetVehicleSeatCount comparison.
