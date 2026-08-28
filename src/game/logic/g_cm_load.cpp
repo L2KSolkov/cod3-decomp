@@ -1270,7 +1270,7 @@ public:
     unsigned int mTotalFiles;  // +0x258
     static BinFileManager* sInst;  // ?sInst@BinFileManager@@2PAV1@A
 
-    static BinFileManager* CreateInst();  // ?CreateInst@BinFileManager@@SAPAV1@XZ
+    static void CreateInst();             // ?CreateInst@BinFileManager@@SAXXZ
     static void DeleteInst();             // ?DeleteInst@BinFileManager@@SAXXZ
     static BinFileManager* Inst();        // ?Inst@BinFileManager@@SAPAV1@XZ
     void Clear();            // ?Clear@BinFileManager@@QAEXXZ
@@ -1299,7 +1299,7 @@ void* BinFileManager::operator new(size_t size, void* p)
 }
 
 // ea: 0x004DEB70
-BinFileManager* BinFileManager::CreateInst()
+void BinFileManager::CreateInst()
 {
     if (BinFileManager::sInst != nullptr)
     {
@@ -1319,11 +1319,10 @@ BinFileManager* BinFileManager::CreateInst()
         BinFileManager* result = new (memory) BinFileManager();
         BinFileManager::sInst = result;
         BinFileManager_sInst = result;
-        return result;
+        return;
     }
     BinFileManager::sInst = nullptr;
     BinFileManager_sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004E2F50

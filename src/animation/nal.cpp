@@ -8656,7 +8656,7 @@ class PlayerAnimMgr {
 public:
     static void* operator new(size_t size, void* p); // core.o 0x004DE850
     static PlayerAnimMgr* sInst;       // ?sInst@PlayerAnimMgr@@2PAV1@A @ 0xF25A28
-    static PlayerAnimMgr* CreateInst(); // core.o 0x004DE860
+    static void CreateInst();           // core.o 0x004DE860
     static void DeleteInst();           // core.o 0x004E2E30
     PlayerAnimMgr();   // ??0PlayerAnimMgr@@QAE@XZ (0x53DF90)
     ~PlayerAnimMgr();  // ??1PlayerAnimMgr@@QAE@XZ (0x53DFB0)
@@ -8693,7 +8693,7 @@ bool PlayerAnimMgr_IsInstantiated()
 }
 
 // ea: 0x004DE860
-PlayerAnimMgr* PlayerAnimMgr::CreateInst()
+void PlayerAnimMgr::CreateInst()
 {
     if (PlayerAnimMgr::sInst != nullptr)
     {
@@ -8712,10 +8712,9 @@ PlayerAnimMgr* PlayerAnimMgr::CreateInst()
     {
         PlayerAnimMgr* result = new (memory) PlayerAnimMgr();
         PlayerAnimMgr::sInst = result;
-        return result;
+        return;
     }
     PlayerAnimMgr::sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004DE850

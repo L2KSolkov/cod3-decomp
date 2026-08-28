@@ -61,7 +61,7 @@ public:
 
 class PadAliasMgr {
 public:
-    static PadAliasMgr* CreateInst();  // ?CreateInst@PadAliasMgr@@SAXXZ
+    static void CreateInst();  // ?CreateInst@PadAliasMgr@@SAXXZ
 };
 
 class GameSettings {
@@ -491,7 +491,7 @@ struct MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
 class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
 class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
-class PathNodeMgr { public: static PathNodeMgr* CreateInst(); static void DeleteInst(); };
+class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
 class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -500,10 +500,10 @@ class CGBankManager { public: static void CreateInst(); static void DeleteInst()
 class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class AnimBankManager { public: static void CreateInst(); };
 class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
-class BinFileManager { public: static BinFileManager* CreateInst(); static void DeleteInst(); };
+class BinFileManager { public: static void CreateInst(); static void DeleteInst(); };
 class CurveManager { public: static void CreateInst(); static void DeleteInst(); };
-class PlayerAnimMgr { public: static PlayerAnimMgr* CreateInst(); static void DeleteInst(); };
-class DynamicDecalMgr { public: static DynamicDecalMgr* CreateInst(); static void DeleteInst(); };
+class PlayerAnimMgr { public: static void CreateInst(); static void DeleteInst(); };
+class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
 class TestFPS { public: static void CreateInst(); static void DeleteInst(); };
 extern void InitLights();
 extern void TimerRenderBars_Init(void* self);

@@ -886,7 +886,7 @@ public:
     };
     VectorView mDecalSets;   // +0x00
 
-    static DynamicDecalMgr* CreateInst();
+    static void CreateInst();
     static void DeleteInst();
     DynamicDecalMgr();       // ??0DynamicDecalMgr@@QAE@XZ
     ~DynamicDecalMgr();      // ??1DynamicDecalMgr@@QAE@XZ
@@ -911,7 +911,7 @@ void* DynamicDecalMgr::operator new(size_t size, void* p)
 }
 
 // ea: 0x004DECB0
-DynamicDecalMgr* DynamicDecalMgr::CreateInst()
+void DynamicDecalMgr::CreateInst()
 {
     if (DynamicDecalMgr::sInst != nullptr)
     {
@@ -930,10 +930,9 @@ DynamicDecalMgr* DynamicDecalMgr::CreateInst()
     {
         DynamicDecalMgr* result = new (memory) DynamicDecalMgr();
         DynamicDecalMgr::sInst = result;
-        return result;
+        return;
     }
     DynamicDecalMgr::sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004E2FE0

@@ -176,7 +176,7 @@ PathNodes::TOC1* PathNodeMgr::GetTOC()
 }
 
 // ea: 0x004DD320
-PathNodeMgr* PathNodeMgr::CreateInst()
+void PathNodeMgr::CreateInst()
 {
     if (sInst != nullptr)
     {
@@ -201,7 +201,7 @@ PathNodeMgr* PathNodeMgr::CreateInst()
     {
         sInst = nullptr;
     }
-    return result;
+    return;
 }
 
 // ea: 0x004DD410

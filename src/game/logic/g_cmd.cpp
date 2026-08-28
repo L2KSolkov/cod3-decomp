@@ -2402,7 +2402,7 @@ public:
     };
     Context mCtx[3];      // +0x00 (3 contexts, 0x148 stride; GetCtx returns this + idx*0x148)
     static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
-    static PadAliasMgr* CreateInst();  // ?CreateInst@PadAliasMgr@@SAXXZ
+    static void CreateInst();          // ?CreateInst@PadAliasMgr@@SAXXZ
     static void DeleteInst();          // ?DeleteInst@PadAliasMgr@@SAXXZ
     static PadAliasMgr* Inst();  // ?Inst@PadAliasMgr@@SAPAV1@XZ (g.o 0x4ABF30)
     Context& GetCtx(EPadAliasContext ctxIndex);  // ?GetCtx@PadAliasMgr@@QAEAAUContext@1@W4EPadAliasContext@@@Z (g.o 0x4ABF40)
@@ -2458,7 +2458,7 @@ PadAliasMgr* PadAliasMgr::Inst()
 }
 
 // ea: 0x004DEDF0
-PadAliasMgr* PadAliasMgr::CreateInst()
+void PadAliasMgr::CreateInst()
 {
     if (sInst != nullptr)
     {
@@ -2480,7 +2480,6 @@ PadAliasMgr* PadAliasMgr::CreateInst()
     else
         sInst = nullptr;
     PadAliasMgr_sInst = sInst;
-    return sInst;
 }
 // ea: 0x004ABF40
 PadAliasMgr::Context& PadAliasMgr::GetCtx(EPadAliasContext ctxIndex)
