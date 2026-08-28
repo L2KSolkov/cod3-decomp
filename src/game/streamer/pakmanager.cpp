@@ -12427,10 +12427,7 @@ extern int nalReleaseSceneAnim(nalSceneAnim* sceneAnim);   // nal.cpp
 extern nalBaseSkeleton* nalLoadSkeletonInPlace(nalBaseSkeleton* data);  // nal.cpp
 extern nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString& FileName,
                                            void* Data);      // nal.cpp
-extern void XAnimEntryInvalidate();  // anim.o 0x92D5E0
-void XAnimEntryInvalidate()  // stub until anim.o lands
-{
-}
+extern void XAnimEntryInvalidate();  // anim.o 0x53E0E0
 tlFixedString GetName(const char* name);  // defined below (0x66F3C0)
 // XAnimRelease (anim.o 0x5513E0; stub)
 extern void XAnimRelease(nalAnimClass<nalAnyPose>* anim);

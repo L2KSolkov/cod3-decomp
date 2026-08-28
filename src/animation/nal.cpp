@@ -5132,6 +5132,12 @@ public:
 
 int XAnimEntry::sAttemptIndex = 1;
 
+// ea: 0x0053E0E0
+void XAnimEntryInvalidate()
+{
+    ++XAnimEntry::sAttemptIndex;
+}
+
 extern nalAnimClass<nalAnyPose>* cdGetAnim(unsigned int hash);  // ?cdGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@I@Z
 void ParseNoteTracks(XAnimEntry* entry);  // ?ParseNoteTracks@@YAXPAUXAnimEntry@@@Z (0x547E60)
 
@@ -6158,6 +6164,7 @@ void* AnimationPlayer_Create(nalGeneric::nalGenericSkeleton* skeleton)
     return new AnimationPlayer(skeleton);
 }
 
+// ea: 0x0053E6A0
 void DObjAdvanceAnimationPlayer(DObj* d, float deltaT)
 {
     if (d == nullptr)
