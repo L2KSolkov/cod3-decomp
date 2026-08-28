@@ -9690,7 +9690,7 @@ bool AnimQueue::GetDobjAbsolute(DObj* pTheObj)
     int v1 = 0;
     if (iNumMatrixQueueEntries <= 0)
         return false;
-    for (void** i = &matrixQueue[0].m_pPose; (void*)pTheObj != *i;
+    for (void** i = &matrixQueue[0].m_pTheObj; (void*)pTheObj != *i;
          i += 69)
     {
         if (++v1 >= iNumMatrixQueueEntries)
@@ -9757,10 +9757,8 @@ void AnimQueue::SetParamAsTemp()
 // ea: 0x0053EE60
 void AnimQueue::IncrementOptCount()
 {
-    int v1 = m_iNumOps + 1;
-    bool v2 = m_iNumOps - 29 < 0;
-    m_iNumOps = v1;
-    if (v2 == (v1 < 30 ? 1 : 0))
+    ++m_iNumOps;
+    if (m_iNumOps >= MAX_NUM_OPCODES)
     {
         XANIM_ASSERT("m_iNumOps < MAX_NUM_OPCODES",
                      "c:\\cod\\code\\game\\AnimQueue.cpp", 370,
@@ -9773,18 +9771,18 @@ void AnimQueue::AddTouch(float curr_t, float prev_t,
                          nalGenericInstance* pInstance,
                          unsigned int hint)
 {
-    if (iNumDecomps >= MAX_NUM_DECOMP_TOUCHES)
-    {
-        XANIM_ASSERT("iNumDecomps < MAX_NUM_DECOMP_TOUCHES",
-                     "c:\\cod\\code\\game\\AnimQueue.cpp", 415,
-                     "Bad Animation tree: too many opcodes in one frame.");
-    }
     DecompOp* entry = &decompList[iNumDecomps];
     entry->pInstance = pInstance;
     entry->curr_t = curr_t;
     entry->prev_t = prev_t;
     entry->hint = hint;
     ++iNumDecomps;
+    if (iNumDecomps >= MAX_NUM_DECOMP_TOUCHES)
+    {
+        XANIM_ASSERT("iNumDecomps < MAX_NUM_DECOMP_TOUCHES",
+                     "c:\\cod\\code\\game\\AnimQueue.cpp", 415,
+                     "Bad Animation tree: too many opcodes in decompress list.");
+    }
 }
 
 // ea: 0x0053EF50
