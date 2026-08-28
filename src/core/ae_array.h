@@ -41,6 +41,7 @@ public:
     // ea: 0x005EA480
     // ea: 0x005EEB20
     // ea: 0x004AC550
+    // ea: 0x004AD0F0
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
@@ -48,6 +49,7 @@ public:
     // ea: 0x005EA8A0
     // ea: 0x005EABB0
     // ea: 0x004AC520
+    // ea: 0x004AD180
     // ea: 0x004AC5E0
     int size() const { return m_size; }
     // ea: 0x005EA490
@@ -58,6 +60,7 @@ public:
     // ea: 0x005EA120
     // ea: 0x004AC4A0
     // ea: 0x004AC560
+    // ea: 0x004AD100
     T& operator[](int idx) {
         if (idx < 0 || idx >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -71,6 +74,8 @@ public:
     }
 
     // ea: 0x005EA820
+    // ea: 0x004ACFF0
+    // ea: 0x004AD070
     T& operator[](unsigned int idx) {
         if (idx >= static_cast<unsigned int>(CAPACITY)) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -96,6 +101,7 @@ public:
     }
 
     // ea: 0x005EA1B0
+    // ea: 0x004AD190
     // ea: 0x005EA690
     // ea: 0x005EA4B0
     // ea: 0x004AC5F0
@@ -166,11 +172,14 @@ public:
         const_iterator(const T* ptr) : m_ptr(ptr) {}  // ??0const_iterator@...@@AAE@PBQAVEntity@@@Z (g.o 0x4AE5D0)
     public:
         // ea: 0x005EA730
+        // ea: 0x004ACFB0
         const T& operator*() const { return *m_ptr; }  // ??Dconst_iterator@...@@QBEAB...@@XZ
         const T* operator->() const { return m_ptr; }
         // ea: 0x005EA740
+        // ea: 0x004ACFC0
         const_iterator& operator++() { ++m_ptr; return *this; }  // ??Econst_iterator@...@@QAEAAV01@XZ
         // ea: 0x005EA750
+        // ea: 0x004ACFD0
         bool operator!=(const_iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9const_iterator@...@@QBE_NV01@@Z
     };
 
@@ -182,9 +191,12 @@ public:
     private:
         iterator(T* ptr) : m_ptr(ptr) {}  // ??0iterator@...@@AAE@PAPAVEntity@@@Z (g.o 0x4AE610)
     public:
+        // ea: 0x004AD230
         T& operator*() const { return *m_ptr; }  // ??Diterator@...@@QBEAAPAV...@@XZ / QBEAAV...@@XZ
         T* operator->() const { return m_ptr; }
+        // ea: 0x004AD240
         iterator& operator++() { ++m_ptr; return *this; }  // ??Eiterator@...@@QAEAAV01@XZ
+        // ea: 0x004AD250
         bool operator!=(iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9iterator@...@@QBE_NV01@@Z
     };
 
