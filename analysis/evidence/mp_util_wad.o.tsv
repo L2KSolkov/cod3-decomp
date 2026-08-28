@@ -647,8 +647,8 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00971FC0	??M@YA?AUbbool@@Ubint@@Ubfloat@@@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1835092-1835100	Release mixed bint/bfloat less-than uses the same comparison.
 0x00975FF0	??M@YA?AUbbool@@Ubfloat@@0@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6716-6718	Source implements bfloat less-than by comparing rhs greater than lhs.
 0x00975FF0	??M@YA?AUbbool@@Ubfloat@@0@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1837321-1837330	Release bfloat less-than matches source ordering and result construction.
-0x00977460	??4bint@@QAEHM@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6689-6694	Source asserts bint is defined, multiplies mVal, and returns it.
-0x00977460	??4bint@@QAEHM@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1838072-1838078	Release bint operator*= has the same assertion and multiplication.
+0x00977460	??Xbint@@QAEHH@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6689-6694	Source asserts bint is defined, multiplies mVal, and returns it.
+0x00977460	??Xbint@@QAEHH@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1838072-1838078	Release bint operator*= has the same assertion and multiplication.
 0x009774D0	??M@YA?AUbbool@@Ubfloat@@H@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6721-6723	Source compares integer rhs greater than bfloat lhs.
 0x009774D0	??M@YA?AUbbool@@Ubfloat@@H@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1838087-1838095	Release mixed bfloat/int less-than matches source.
 0x0097D020	??Fbint@@QAEHXZ	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6648-6651	Source asserts bint is defined and returns post-decrement mVal.
@@ -733,3 +733,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0096BB30	?DestroyIcon@_mp_scf@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-scf-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1831530-1831540	Release DestroyIcon notification and state clear match source.
 0x0096BB80	?WaitForNoTouchFlag@_mp_scf@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-scf-20260828	2026-08-28	src/broc/mp_util_wad.cpp:16008-16026	Source notifies, waits, polls last-touch time, then clears tutorial text and destroys the icon.
 0x0096BB80	?WaitForNoTouchFlag@_mp_scf@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-scf-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1831541-1831592	Release no-touch wait behavior matches source.
+0x00937A20	??DBroc@@YA?AUvector@0@ABU10@M@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6845-6847	Source scales each vector component by the float operand.
+0x00937A20	??DBroc@@YA?AUvector@0@ABU10@M@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1802448-1802454	Release vector scaling constructs the same component-wise result.
+0x009540F0	??4bint@@QAEHM@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6744-6747	Source assigns the float directly to bint mVal and returns the stored integer.
+0x009540F0	??4bint@@QAEHM@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1818574-1818579	Release bint float assignment matches source.
+0x00955090	??4targetname_struct@__unnamed@entity@Broc@@QAEABVstring@3@ABV43@@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5424-5428	Source forwards targetname assignment through the entity API and returns rhs.
+0x00955090	??4targetname_struct@__unnamed@entity@Broc@@QAEABVstring@3@ABV43@@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1819116-1819130	Release targetname assignment matches source API forwarding and return value.
+0x009658C0	??HBroc@@YA?AVstring@0@ABV10@H@Z	V3	PASS	ida-manual-operators-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6430-6434	Source copies the string and appends the integer to form the result.
+0x009658C0	??HBroc@@YA?AVstring@0@ABV10@H@Z	V4	PASS	ida-manual-operators-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1828118-1828131	Release string-plus-int construction and cleanup match source.
