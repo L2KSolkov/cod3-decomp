@@ -7309,35 +7309,38 @@ void IGOCompassWidget::UpdateEnemiesABS()
 // ea: 0x0058A4F0
 void IGOCompassWidget::UpdateTanksABS()
 {
-    if (dword_F62964[1580 * currCl] == 0 || level.vehicles == nullptr)
+    if (dword_F62964[1580 * currCl] == 0)
         return;
-    for (int i = 0; i < level.MaxVehicles; ++i)
+    if (level.vehicles != nullptr)
     {
-        unsigned int v4 =
-            *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal & 0xFFF;
-        if (v4 >= 0x540
-            || *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal >> 12
-                   != (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+        for (int i = 0; i < level.MaxVehicles; ++i)
         {
-            continue;
+            unsigned int v4 =
+                *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal & 0xFFF;
+            if (v4 >= 0x540
+                || *(unsigned int*)&level.vehicles[i].mEntity.mHandle.mVal >> 12
+                       != (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+            {
+                continue;
+            }
+            Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+            if (mObject == nullptr)
+                continue;
+            int index = 0;
+            bool enemy = false;
+            if (!G_GetTankIndex(mObject->mHandle, &index, &enemy))
+                continue;
+            if (gCvarShowEnemy.integer == 0 && enemy)
+                continue;
+            IGOFriendly& t = tanks[index];
+            t.last_update = cgGlobal.time;
+            t.last_pos[0] = mObject->s.lerpOrigin.v.m128_f32[0];
+            t.last_pos[1] = mObject->s.lerpOrigin.v.m128_f32[1];
+            t.last_yaw = mObject->s.lerpAngles.v.m128_f32[1];
+            t.flags &= ~2;
+            if (enemy)
+                t.flags |= 2;
         }
-        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
-        if (mObject == nullptr)
-            continue;
-        int index = 0;
-        bool enemy = false;
-        if (!G_GetTankIndex(mObject->mHandle, &index, &enemy))
-            continue;
-        if (gCvarShowEnemy.integer == 0 && enemy)
-            continue;
-        IGOFriendly& t = tanks[index];
-        t.last_update = cgGlobal.time;
-        t.last_pos[0] = mObject->s.lerpOrigin.v.m128_f32[0];
-        t.last_pos[1] = mObject->s.lerpOrigin.v.m128_f32[1];
-        t.last_yaw = mObject->s.lerpAngles.v.m128_f32[1];
-        t.flags &= ~2;
-        if (enemy)
-            t.flags |= 2;
     }
     if (*(int*)(dword_F62964[1580 * currCl] + 1316) != 0)
     {
