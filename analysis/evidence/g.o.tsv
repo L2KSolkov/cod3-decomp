@@ -1421,3 +1421,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A9010	??1RumbleData@RumbleEffect@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1014749	Release RumbleData destructor destroys rumble_notes, matching the inline destructor's member cleanup.
 0x004A9E20	??1RumbleEffect@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/core_systems.h:1311	Inline RumbleEffect destructor preserves automatic destruction of both RumbleData members.
 0x004A9E20	??1RumbleEffect@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1015372	Release RumbleEffect destructor runs the two-element RumbleData destructor sequence.
+0x004ACE00	??0?$IVPointer@VXModel@@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:243	IVPointer constructor initializes the model pointer to null and the pak identifier to the invalid sentinel.
+0x004ACE00	??0?$IVPointer@VXModel@@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016671	Release IVPointer constructor stores null in mValue and 0xFFFFFFFF in mPakId.
+0x004ACE20	?clear@?$IVPointer@VXModel@@@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:246	IVPointer clear resets both the model pointer and pak identifier to their initial invalid state.
+0x004ACE20	?clear@?$IVPointer@VXModel@@@@QAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016679	Release IVPointer clear stores null in mValue and 0xFFFFFFFF in mPakId.
