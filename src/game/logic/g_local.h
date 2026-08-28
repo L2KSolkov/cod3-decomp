@@ -68,15 +68,18 @@ public:
 
     // ea: 0x004ADC90
     // ea: 0x004ADE70
+    // ea: 0x004ADF10
     ae_vector() : mElements(nullptr), mCapacity(0), mSize(0) {}
     ~ae_vector() { destroy_all(); }
     T* begin() { return mElements; }
     T* end() { return &mElements[mSize]; }
     // ea: 0x004ADCA0
     // ea: 0x004ADE80
+    // ea: 0x004ADF20
     int size() const { return mSize; }              // ?size@?$ae_vector@...@@QBEHXZ
     // ea: 0x004ADCB0
     // ea: 0x004ADE90
+    // ea: 0x004ADF30
     T& operator[](int iIndex) { return mElements[iIndex]; }  // ??A?$ae_vector@...@@QAEAA...@@H@Z
     void pop_back();                                // ?pop_back@?$ae_vector@...@@QAEXXZ
     void reserve(int iCapacity);

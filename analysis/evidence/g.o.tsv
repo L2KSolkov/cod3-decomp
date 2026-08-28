@@ -1533,6 +1533,20 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004ADDB0	?size@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0DOI@@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017504	Release handle-array size returns m_size directly.
 0x004ADDC0	?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0DOI@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:107	The ae_sized_array push_back checks capacity, stores the handle, and increments m_size.
 0x004ADDC0	?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0DOI@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017511	Release handle-array push_back enforces capacity, copies the element, and increments m_size.
+0x004ADF10	??0?$ae_vector@Udebug_aabb@@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:71	The ae_vector constructor clears element storage, capacity, and size.
+0x004ADF10	??0?$ae_vector@Udebug_aabb@@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017572	Release debug-aabb vector construction initializes all three fields to zero/null.
+0x004ADF20	?size@?$ae_vector@Udebug_aabb@@@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:78	The ae_vector size accessor returns mSize directly.
+0x004ADF20	?size@?$ae_vector@Udebug_aabb@@@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017581	Release debug-aabb vector size returns mSize.
+0x004ADF30	??A?$ae_vector@Udebug_aabb@@@@QAEAAUdebug_aabb@@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:82	The ae_vector indexer returns the element at the requested index.
+0x004ADF30	??A?$ae_vector@Udebug_aabb@@@@QAEAAUdebug_aabb@@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017587	Release debug-aabb indexing applies the vector bounds assertion and returns mElements[iIndex].
+0x004ADFD0	??0?$ae_sized_array@H$0CN@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:45	The ae_sized_array constructor initializes m_size to zero.
+0x004ADFD0	??0?$ae_sized_array@H$0CN@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017612	Release integer array construction stores zero in m_size.
+0x004ADFE0	??A?$ae_sized_array@H$0CN@@@QAEAAHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:82	The unsigned ae_sized_array indexer applies the capacity assertion and returns the indexed element.
+0x004ADFE0	??A?$ae_sized_array@H$0CN@@@QAEAAHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017619	Release integer array indexing checks the 45-element capacity and returns m_elements[idx].
+0x004AE060	?size@?$ae_sized_array@H$0CN@@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:55	The ae_sized_array size accessor returns m_size directly.
+0x004AE060	?size@?$ae_sized_array@H$0CN@@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017634	Release integer array size returns m_size directly.
+0x004AE070	?push_back@?$ae_sized_array@H$0CN@@@QAEXABH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_array.h:111	The ae_sized_array push_back checks capacity, stores the integer, and increments m_size.
+0x004AE070	?push_back@?$ae_sized_array@H$0CN@@@QAEXABH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017640	Release integer array push_back enforces capacity, copies the element, and increments m_size.
 0x004ADE70	??0?$ae_vector@Udebug_sphere@@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:70	The ae_vector constructor clears element storage, capacity, and size.
 0x004ADE70	??0?$ae_vector@Udebug_sphere@@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017542	Release debug-sphere vector construction initializes all three fields to zero/null.
 0x004ADE80	?size@?$ae_vector@Udebug_sphere@@@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:76	The ae_vector size accessor returns mSize directly.

@@ -42,6 +42,7 @@ public:
     // ea: 0x005EEB20
     // ea: 0x004AC550
     // ea: 0x004AD0F0
+    // ea: 0x004ADFD0
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
@@ -51,6 +52,7 @@ public:
     // ea: 0x004AC520
     // ea: 0x004AD180
     // ea: 0x004ADDB0
+    // ea: 0x004AE060
     // ea: 0x004AC5E0
     int size() const { return m_size; }
     // ea: 0x005EA490
@@ -77,6 +79,7 @@ public:
     // ea: 0x005EA820
     // ea: 0x004ACFF0
     // ea: 0x004AD070
+    // ea: 0x004ADFE0
     T& operator[](unsigned int idx) {
         if (idx >= static_cast<unsigned int>(CAPACITY)) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -105,6 +108,7 @@ public:
     // ea: 0x005EA1B0
     // ea: 0x004AD190
     // ea: 0x004ADDC0
+    // ea: 0x004AE070
     // ea: 0x005EA690
     // ea: 0x005EA4B0
     // ea: 0x004AC5F0
