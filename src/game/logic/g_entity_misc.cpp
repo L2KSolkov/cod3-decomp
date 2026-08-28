@@ -4243,7 +4243,13 @@ namespace BrocSys {
 void Init()
 {
     ae_sized_array<PoolAllocator::PoolConfig, 16> cfgList;
-    memset(&cfgList, 0, sizeof(cfgList));
+    for (int i = 0; i < 16; ++i)
+    {
+        cfgList.m_elements[i].blockSize = 0;
+        cfgList.m_elements[i].blockAlign = 4;
+        cfgList.m_elements[i].numBlocks = 0;
+        cfgList.m_elements[i].block = nullptr;
+    }
     cfgList.m_size = 0;
 
     PoolAllocator::PoolConfig elt;
