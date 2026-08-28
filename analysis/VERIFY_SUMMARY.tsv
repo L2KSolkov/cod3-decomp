@@ -291,7 +291,7 @@ rbc_def_vehicle.o	46	32	7	7	0	0	0
 render.o	1038	694	2	316	0	26	0
 rigid_body.o	13	5	1	7	0	0	0
 scr.o	1540	242	3	123	0	1172	0
-shell.o	2214	836	27	1277	4	70	0
+shell.o	2214	836	27	1266	4	81	0
 streamer.o	730	372	84	272	0	2	0
 sv.o	148	15	7	125	0	1	0
 tl_initlist.o	1	0	0	0	0	1	0
