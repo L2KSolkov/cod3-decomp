@@ -1,5 +1,3 @@
-// ea: 0x7BF240 (InitController), 0x7BF250 (PollController)
-
 #include "input/controller.h"
 #include <stdint.h>
 
@@ -53,11 +51,13 @@ static DWORD get_state(int, XINPUT_STATE*) { return 1167; }
 #endif
 }
 
+// ea: 0x7BF240
 void InitController(int handle)
 {
     s_handleForAssert = reinterpret_cast<void*>(static_cast<uintptr_t>(handle));
 }
 
+// ea: 0x7BF250
 int PollController(int whichButtons, int* whichButtonHit)
 {
     controller* pad = controller::inst();
