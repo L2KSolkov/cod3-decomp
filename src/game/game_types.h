@@ -194,6 +194,10 @@ public:
     T*           mList;  // +0x04
 
     // ea: 0x005EA2B0
+    // ea: 0x004AC980
+    // ea: 0x004ACA20
+    // ea: 0x004ACB20
+    // ea: 0x004ACBA0
     T& operator[](unsigned int i)
     {
         unsigned int index = i;
@@ -211,6 +215,7 @@ public:
         return mList[index];
     }
     // ea: 0x005EA7A0 (const InplaceTreeElement<InplaceString,InplaceString>)
+    // ea: 0x004ACAA0
     const T& operator[](unsigned int i) const
     {
         unsigned int index = i;
@@ -228,6 +233,9 @@ public:
         return mList[index];
     }
     // ea: 0x005EA790
+    // ea: 0x004ACA10
+    // ea: 0x004ACE60
+    // ea: 0x004ACE70
     unsigned int size() const { return mSize; }
 };
 static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");
