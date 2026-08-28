@@ -4736,9 +4736,6 @@ void IGOTankIconWidget::UpdateWidescreen(bool widescreen, float about_x)
                 occupants[i][j][0]->ResetToInitialXY();
                 occupants[i][j][0]->FattenMeForWidescreen(widescreen,
                                                           about_x);
-            }
-            if (occupants[i][j][1] != nullptr)
-            {
                 occupants[i][j][1]->ResetToInitialXY();
                 occupants[i][j][1]->FattenMeForWidescreen(widescreen,
                                                           about_x);
