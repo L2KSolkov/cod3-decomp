@@ -19,6 +19,11 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void mem_heap_free(void* ptr);
 
+class subtitle_manager {
+public:
+    static bool play_subtitle(const char* tag, char* prefix);
+};
+
 // Minimal view of PakManager (full class in game/sv/sv_stubs.h).
 class PakManager {
 public:
@@ -664,12 +669,10 @@ void Sound_SetVolume(Sound* s, float vol)
 {
     (void)s; (void)vol;
 }
-// ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o; stub
-// until subtitle_manager is ported - subtitles disabled)
+// ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o)
 bool subtitle_manager_play_subtitle(const char* tag, const char* prefix)
 {
-    (void)tag; (void)prefix;
-    return false;
+    return subtitle_manager::play_subtitle(tag, const_cast<char*>(prefix));
 }
 
 static Sound* SoundFromHandle(unsigned int handleVal)
