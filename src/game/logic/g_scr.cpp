@@ -435,6 +435,7 @@ AeThreadState::EAction AeThreadState::GetResult() const
 struct AeThreadWaitState : AeThreadState {
     float mTimeRemaining;  // +0x14
 
+    ~AeThreadWaitState() override;  // 0x5EE3F0
     AeThreadWaitState(float t);  // ??0AeThreadWaitState@@QAE@M@Z (scr.o 0x5C1FB0)
     EAction NewAction(AeThread& t) override;  // scr.o 0x5BC150
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C1FE0
@@ -444,6 +445,7 @@ struct AeThreadWaitState : AeThreadState {
 struct AeThreadWaitFramesState : AeThreadState {
     int mFramesRemaining;  // +0x14
 
+    ~AeThreadWaitFramesState() override;  // 0x5EE430
     AeThreadWaitFramesState(int numFrames);  // ??0AeThreadWaitFramesState@@QAE@H@Z (0x5C2030)
     EAction NewAction(AeThread& t) override;  // 0x5BC180
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C2060
@@ -459,6 +461,7 @@ struct AeThreadPakNotifyState : AeThreadState {
     const PakInfoNode* mPak;      // +0x14
     ePakState mWaitState;         // +0x18
 
+    ~AeThreadPakNotifyState() override;  // 0x5EE3B0
     AeThreadPakNotifyState(const PakInfoNode* pak, ePakState state);  // 0x5C1F80
     EAction NewAction(AeThread& t) override;  // 0x5BC0F0
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7B00
@@ -1015,6 +1018,7 @@ struct AeThreadEntityNotifyTimeoutState : AeThreadState {
     HashString mNotifyStr;                        // +0x18
     float mTimeRemaining;                         // +0x1C
 
+    ~AeThreadEntityNotifyTimeoutState() override;  // 0x5EE370
     AeThreadEntityNotifyTimeoutState(
         DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label,
         float t, AeThreadState::EAction result);  // 0x5C1F40
@@ -1030,6 +1034,7 @@ struct AeThreadEntityNotifyMatchState : AeThreadState {
     bool mWaitForAll;                             // +0x2C
     ae_array<HashString, 4> mDebugNotifys;        // +0x30
 
+    ~AeThreadEntityNotifyMatchState() override;  // 0x5EF670
     AeThreadEntityNotifyMatchState(
         DbLinkedHandle<EntityHandleDb, Entity> ent, unsigned int label1,
         unsigned int label2, unsigned int label3, unsigned int label4,
@@ -1270,6 +1275,12 @@ AeThreadWaitState::AeThreadWaitState(float t)
     mTimeRemaining = t;
 }
 
+// ea: 0x005EE3C0 (release vector-deleting alias)
+// ea: 0x005EE3F0
+AeThreadWaitState::~AeThreadWaitState()
+{
+}
+
 // ea: 0x005BC150
 AeThreadState::EAction AeThreadWaitState::NewAction(AeThread& /*t*/)
 {
@@ -1307,6 +1318,12 @@ AeThreadWaitFramesState::AeThreadWaitFramesState(int numFrames)
     mFinished = false;
     mResult = AeThreadState::kActionWakeUp;
     mFramesRemaining = numFrames;
+}
+
+// ea: 0x005EE400 (release vector-deleting alias)
+// ea: 0x005EE430
+AeThreadWaitFramesState::~AeThreadWaitFramesState()
+{
 }
 
 // ea: 0x005BC180
@@ -1352,6 +1369,12 @@ AeThreadPakNotifyState::AeThreadPakNotifyState(const PakInfoNode* pak,
     mResult = AeThreadState::kActionWakeUp;
     mPak = pak;
     mWaitState = state;
+}
+
+// ea: 0x005EE380 (release vector-deleting alias)
+// ea: 0x005EE3B0
+AeThreadPakNotifyState::~AeThreadPakNotifyState()
+{
 }
 
 // ea: 0x005BC0F0
@@ -23119,6 +23142,12 @@ AeThreadEntityNotifyTimeoutState::AeThreadEntityNotifyTimeoutState(
     mTimeRemaining = t;
 }
 
+// ea: 0x005EE340 (release scalar-deleting alias)
+// ea: 0x005EE370
+AeThreadEntityNotifyTimeoutState::~AeThreadEntityNotifyTimeoutState()
+{
+}
+
 // ea: 0x005C99A0
 AeThreadState::EAction AeThreadEntityNotifyTimeoutState::NewAction(
     AeThread& t)
@@ -23177,6 +23206,12 @@ AeThreadEntityNotifyMatchState::AeThreadEntityNotifyMatchState(
     mDebugNotifys[1].mHash = mNotifySet[1].mHash;
     mDebugNotifys[2].mHash = mNotifySet[2].mHash;
     mDebugNotifys[3].mHash = mNotifySet[3].mHash;
+}
+
+// ea: 0x005EF640 (release scalar-deleting alias)
+// ea: 0x005EF670
+AeThreadEntityNotifyMatchState::~AeThreadEntityNotifyMatchState()
+{
 }
 
 // ea: 0x005C9A40
