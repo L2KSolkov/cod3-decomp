@@ -5971,6 +5971,7 @@ AeThreadEntityNotifyState::AeThreadEntityNotifyState(
     }
 }
 
+// ea: 0x00600D70 (release scalar-deleting alias)
 // ea: 0x005C9880
 AeThreadEntityNotifyState::~AeThreadEntityNotifyState()
 {
