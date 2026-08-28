@@ -385,7 +385,10 @@ int controller_num_controllers()
 {
     return controller::inst()->get_num_controllers();
 }
-namespace LocalClient { extern int ClientToPort(int client); }
+namespace LocalClient {
+extern int ClientToPort(int client);
+extern int PortToClient(int port);
+}
 extern STBManager* STBManager_sInst;
 // The call-site artifact forwards to the IDA-verified member at 0x004C5E30.
 const char* STBManager_GetSTBString(void* self, const char* pszReference)
@@ -1011,7 +1014,7 @@ void Com_PrintMessage(print_msg_type_t type, const char* msg)
     else if (type != 4)
     {
         CL_ConsolePrint((print_msg_type_t)type, msg, 0, 0, 0);
-        printf("%s", msg);
+        printf(msg);
     }
 }
 
@@ -1036,7 +1039,7 @@ void Com_Printf(const char* fmt, ...)
     else
     {
         CL_ConsolePrint((print_msg_type_t)0, msg, 0, 0, 0);
-        printf("%s", msg);
+        printf(msg);
     }
 }
 
@@ -1935,7 +1938,7 @@ bool Com_ControllerTest(int port)
 {
     if (!g_enableControllerTest)
         return true;
-    int v1 = LocalClient::ClientToPort(port);
+    int v1 = LocalClient::PortToClient(port);
     if (!g_controllerConnected[port])
     {
         if (&g_femanager != nullptr
