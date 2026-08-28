@@ -2164,7 +2164,10 @@ void Cmd_MenuResponse_f(Entity* pEnt)
         szMenuName[0] = 0;
         szResponse[0] = 0;
     }
-    Scr_Notify(pEnt, hash_const.menuresponse, 0);
+    Broc::string response(szResponse);
+    Broc::string menuName(szMenuName);
+    // Release passes the response first and menu name second.
+    pEnt->Notify(hash_const.menuresponse, response, menuName);
 }
 
 // ea: 0x00456400
