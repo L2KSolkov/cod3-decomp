@@ -934,7 +934,7 @@ void Cmd_Where_f(Entity* ent)
         {
             unsigned int mVal = ent->mHandle.mHandle.mVal;
             char* v3 = vtos(client->ps.origin);
-            SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), va("print \"%s\"", v3));
+            SV_GameSendServerCommand(ent->mHandle, va("print \"%s\"", v3));
             strcpy(cg_drawPosition.string, vtos(ent->client->ps.origin));
         }
     }
@@ -1720,13 +1720,14 @@ void G_setfog(const char* fogstring)
     level.fFogOpaqueDist = 3.4028235e38f;
     level.fFogOpaqueDistSqrd = 3.4028235e38f;
     float fNear, fFar, fDensity;
-    int clr, v3, v4, time;
-    if (sscanf(fogstring, "%f %f %f %d %d %d %d", &fNear, &fFar, &fDensity,
+    float clr, v3, v4, time;
+    if (sscanf(fogstring, "%f %f %f %f %f %f %f", &fNear, &fFar, &fDensity,
                &clr, &v3, &v4, &time) == 7
         && fDensity >= 1.0f)
     {
         level.fFogOpaqueDist = ((fFar - fNear) * 0.82800001f) + fNear;
-        level.fFogOpaqueDistSqrd = level.fFogOpaqueDist * level.fFogOpaqueDist;
+        level.fFogOpaqueDistSqrd = (((fFar - fNear) * 0.82800001f) + fNear)
+                                   * (((fFar - fNear) * 0.82800001f) + fNear);
     }
 }
 
