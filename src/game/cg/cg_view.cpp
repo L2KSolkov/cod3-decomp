@@ -1007,9 +1007,9 @@ extern int FS_FOpenFileByMode(const char* qpath, int* f, fsMode_t mode);
 extern int FS_Write(const void* buffer, int len, int h);
 extern int FS_Read(void* buffer, int len, int f);
 extern void FS_FCloseFile(int f);
-extern int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars,
+extern int Com_SaveCvarsToBuffer(const char** const cvarnames, int numCvars,
                                  char* buffer, int bufsize);
-extern int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
+extern int Com_LoadCvarsFromBuffer(const char** const cvarnames, int numCvars,
                                    const char* buffer, const char* filename);
 struct vmCvar_t;
 extern void Cvar_Update(vmCvar_t* vmCvar);

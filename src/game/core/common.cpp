@@ -2100,8 +2100,8 @@ void Com_CheckControllerUnplugged(bool signedIn, int client)
 }
 
 // ea: 0x004CA240
-int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars, char* buffer,
-                          int bufsize)
+int Com_SaveCvarsToBuffer(const char** const cvarnames, int numCvars,
+                          char* buffer, int bufsize)
 {
     int v4 = 0;
     if (numCvars <= 0)
@@ -2138,7 +2138,7 @@ int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars, char* buffer,
 }
 
 // ea: 0x004CA2E0
-int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
+int Com_LoadCvarsFromBuffer(const char** const cvarnames, int numCvars,
                             const char* buffer, const char* filename)
 {
     int v4 = numCvars;

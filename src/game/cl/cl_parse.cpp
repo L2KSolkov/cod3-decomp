@@ -342,7 +342,17 @@ struct KeyInfoEntry3 {
     int mState;
     char* mBoundCmdName;
 };
-extern KeyInfoEntry3 KeyInfo_mKeys[2][256];
+extern KeyInfoEntry3 (*KeyInfo_mKeys)[256];
+
+class FEManager;
+extern FEManager g_femanager;
+extern void* FEManager_GetIGMS(void* self, int client);
+extern void InGameMenuSystem_ActivatePauseMenu(void* self);
+extern void Console_Key(int key);
+class FEManager {
+public:
+    void SetInGameMenusActive(bool active, int client);
+};
 
 // ============================================================================
 // Command generation
@@ -548,7 +558,8 @@ void CL_InitInput()
 // ea: 0x535120
 void CL_KeyEvent(int key, int down, unsigned int time)
 {
-    (void)time;
+    if ((unsigned int)key >= 256)
+        return;
     KeyInfoEntry3* e = &KeyInfo_mKeys[currCl][key];
     e->mState ^= (down ^ e->mState) & 3;
     if (down == 0)
@@ -581,9 +592,68 @@ void CL_KeyEvent(int key, int down, unsigned int time)
         if (down != 0)
             Con_ToggleConsole_f();
     }
-    // bound command execution
-    if (down != 0 && e->mBoundCmdName != nullptr)
-        Cbuf_AddText(e->mBoundCmdName);
+    // Escape is handled directly by the release client input path.  It is
+    // intentionally not a console command: the stock config contains a
+    // "togglemenu" binding, but the release binary intercepts key 27 before
+    // bound-command dispatch and activates the pause menu here.
+    if (key == 27 && down != 0)
+    {
+        if ((cls.keyCatchers & 8) != 0)
+        {
+            cls.keyCatchers &= ~8;
+        }
+        else if ((cls.keyCatchers & 2) == 0 && cls.state == 2)
+        {
+            g_femanager.SetInGameMenusActive(true, currCl);
+            void* igms = FEManager_GetIGMS(&g_femanager, currCl);
+            if (igms != nullptr)
+                InGameMenuSystem_ActivatePauseMenu(igms);
+            e->mState &= 3;
+        }
+        if (cls.state == 3 || cls.state == 4)
+            SoundDevice_StopAllSounds(SoundDevice::sInst);
+        return;
+    }
+
+    // Console text is delivered as character events, but Enter/line-editing
+    // keys arrive through this key-event path.  Consume them while the
+    // console catcher is active instead of dispatching gameplay bindings.
+    if ((cls.keyCatchers & 1) != 0)
+    {
+        if (down != 0)
+            Console_Key(key);
+        return;
+    }
+
+    if (down == 0)
+    {
+        if (e->mBoundCmdName != nullptr && e->mBoundCmdName[0] == '+')
+        {
+            char releaseName[512];
+            Com_sprintf(releaseName, sizeof(releaseName), "-%s %i %i\n",
+                        e->mBoundCmdName + 1, key, time);
+            Cbuf_AddText(releaseName);
+        }
+        return;
+    }
+
+    if ((cls.keyCatchers & 1) != 0 || cls.state == 0)
+        return;
+    if (e->mBoundCmdName != nullptr)
+    {
+        if (e->mBoundCmdName[0] == '+')
+        {
+            char pressName[512];
+            Com_sprintf(pressName, sizeof(pressName), "%s %i %i\n",
+                        e->mBoundCmdName, key, time);
+            Cbuf_AddText(pressName);
+        }
+        else
+        {
+            Cbuf_AddText(e->mBoundCmdName);
+            Cbuf_AddText("\n");
+        }
+    }
 }
 
 // ea: 0x5355C0
@@ -997,8 +1067,8 @@ void CL_InitRef()
     extern int FS_Write(const void*, int, int);
     extern class BspPlane* CM_GetPlaneNum(int);
     extern struct cvar_t* Cvar_FindVar(const char*);
-    extern int Com_SaveCvarsToBuffer(const char**, int, char*, int);
-    extern int Com_LoadCvarsFromBuffer(const char**, int, const char*,
+    extern int Com_SaveCvarsToBuffer(const char** const, int, char*, int);
+    extern int Com_LoadCvarsFromBuffer(const char** const, int, const char*,
                                        const char*);
     extern int CG_GetGameModel(short);
     extern void CG_DObjCalcPose(void*, void*, int*);
