@@ -695,6 +695,7 @@ bool reserved_dlist<T>::const_iterator::compare(
 }
 
 template <typename T>
+// ea: 0x005EA400
 typename reserved_dlist<T>::const_iterator&
 reserved_dlist<T>::const_iterator::operator++()
 {
@@ -714,6 +715,7 @@ reserved_dlist<T>::const_iterator::operator++()
 }
 
 template <typename T>
+// ea: 0x005EACD0
 const typename reserved_dlist<T>::dlist_node*
 reserved_dlist<T>::get_head() const
 {
@@ -766,18 +768,23 @@ const T* reserved_dlist<T>::node_to_object(const dlist_node* node)
 }
 
 template <typename T>
+// ea: 0x005EE960
 T* reserved_dlist<T>::iterator::operator*()
 {
     return reserved_dlist<T>::node_to_object(m_node);
 }
 
 template <typename T>
+// ea: 0x005EEA50
+// ea: 0x005EEA90
 const T* reserved_dlist<T>::const_iterator::operator*() const
 {
     return reserved_dlist<T>::node_to_object(m_node);
 }
 
 template <typename T>
+// ea: 0x005EEA60
+// ea: 0x005EEAA0
 bool reserved_dlist<T>::const_iterator::operator!=(
     const const_iterator& rhs) const
 {
