@@ -258,6 +258,7 @@ void RadiusDamageFromEnt(Broc::entity* which, const Broc::vector* origin,
                                   max_damage, min_damage, damageType);
 }
 
+// ea: 0x005E9EE0 (scr.o export aliases the same script math body)
 float MathsLog(float fVal)
 {
     if (fVal <= 0.0f)

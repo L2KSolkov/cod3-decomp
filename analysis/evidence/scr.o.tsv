@@ -2428,6 +2428,12 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E9E70	?MathsRandomIntRange@Broc@@YAHHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202928	Release selects irand(iMin,iMax) or the reversed ordering exactly as source.
 0x005E9EA0	?MathsRandomFloatRange@Broc@@YAMMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:154	Source orders float bounds and returns flrand over the ordered interval.
 0x005E9EA0	?MathsRandomFloatRange@Broc@@YAMMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202937	Release chooses flrand(fMin,fMax) or the reversed ordering exactly as source.
+0x005E99E0	?fmod@@YAMMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:3471	Global float overload delegates directly to fmodf, matching the release math glue.
+0x005E99E0	?fmod@@YAMMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202728	Release float fmod wrapper delegates to the runtime fmod operation; source delegates to fmodf for the same x86 float contract.
+0x005E9A00	?log@@YAMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:3477	Global float overload delegates directly to logf, matching the release math glue.
+0x005E9A00	?log@@YAMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202734	Release float log wrapper computes natural logarithm through the runtime; source delegates to logf for the same result.
+0x005E9EE0	?MathsLog@Broc@@YAMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/Broc.cpp:261	Script MathsLog preserves the release positive-domain warning and returns logf of the input.
+0x005E9EE0	?MathsLog@Broc@@YAMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202946	Release validates non-positive input, warns, and returns the natural log; source body matches.
 0x005E9490	??1AeThreadState@@UAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:393	Out-of-line destructor preserves the release virtual-base teardown body.
 0x005E9490	??1AeThreadState@@UAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202423	Release destructor resets the AeThreadState vtable; source emits the matching virtual destructor.
 0x005E94A0	??_GAeThreadState@@UAEPAXI@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr.cpp:394	Release vector-deleting alias is represented by the same class destructor definition.

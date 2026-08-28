@@ -3465,6 +3465,26 @@ float SquareRootX(float v)
 }
 
 }  // namespace BrocSys
+
+// Release scr.o exports these as global float overloads beside the CRT
+// imports.  Keep them outside BrocSys so their MSVC decorations match.
+// ea: 0x005E99E0
+float fmod(float x, float y)
+{
+    return fmodf(x, y);
+}
+
+// ea: 0x005E9A00
+float log(float x)
+{
+    return logf(x);
+}
+
+typedef float (*ScrBinaryFloatFn)(float, float);
+typedef float (*ScrUnaryFloatFn)(float);
+static volatile ScrBinaryFloatFn scrFmodAnchor = &fmod;
+static volatile ScrUnaryFloatFn scrLogAnchor = &log;
+
 // scr.o batch 10 - AeThread lifecycle cluster
 // ============================================================================
 
