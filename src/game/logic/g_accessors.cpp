@@ -3335,6 +3335,7 @@ void cFreeList<T>::Shutdown()
     }
 }
 template <typename T>
+// ea: 0x004AD540
 void cFreeList<T>::Free(T* ptr)
 {
     if (ptr != nullptr)

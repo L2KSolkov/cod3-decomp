@@ -50,6 +50,7 @@ public:
     // ea: 0x005EABB0
     // ea: 0x004AC520
     // ea: 0x004AD180
+    // ea: 0x004ADDB0
     // ea: 0x004AC5E0
     int size() const { return m_size; }
     // ea: 0x005EA490
@@ -88,6 +89,7 @@ public:
         return m_elements[idx];
     }
 
+    // ea: 0x004ADD30
     const T& operator[](int idx) const {
         if (idx < 0 || idx >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -102,6 +104,7 @@ public:
 
     // ea: 0x005EA1B0
     // ea: 0x004AD190
+    // ea: 0x004ADDC0
     // ea: 0x005EA690
     // ea: 0x005EA4B0
     // ea: 0x004AC5F0
