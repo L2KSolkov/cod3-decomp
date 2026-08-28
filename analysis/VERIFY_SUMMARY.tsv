@@ -45,7 +45,7 @@ apsRectangleNode.o	16	1	0	1	0	14	0
 apsRectangleRenderer.o	11	4	0	3	0	4	0
 apsRegister.o	515	497	0	18	0	0	0
 apsRenderer.o	3	0	0	3	0	0	0
-apsShrimpNode.o	24	0	0	1	0	23	0
+apsShrimpNode.o	24	0	0	0	0	24	0
 apsShrimpRenderer.o	14	6	1	3	0	4	0
 apsSimpleMeshNode.o	10	0	0	0	0	10	0
 apsSimpleMeshRenderer.o	30	6	7	6	0	10	1
