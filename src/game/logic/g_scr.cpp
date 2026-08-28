@@ -101,7 +101,7 @@ unsigned int (__cdecl* GetBroFuncByName(const char* name,
                                         bool enforceExists))(void*);
 void SetLoadedTrees(int num);  // ?SetLoadedTrees@BrocHelper@@YAXH@Z
 int  GetLoadedTrees();         // ?GetLoadedTrees@BrocHelper@@YAHXZ
-int Init();                    // ?Init@BrocHelper@@YAHXZ (scr.o 0x5BE180)
+void Init();                   // ?Init@BrocHelper@@YAXXZ (scr.o 0x5BE180)
 void AnimationToBroLookup(const tlFixedString& tree_name, int tree_index,
                           const tlFixedString& animation_name,
                           int animation_index);  // ?AnimationToBroLookup@BrocHelper@@YAXABVtlFixedString@@H0H@Z
@@ -2218,6 +2218,14 @@ void Broc::dyn_array<Broc::entity>::push_back(const Broc::entity& iElement)
     }
     this->mElements[this->mSize++].___u0 = iElement.___u0;
 }
+
+// These release-visible template entry points are called through the Broc
+// API function table even when no direct C++ call exists in this port.
+template Broc::entity* Broc::dyn_array<Broc::entity>::end();
+template Broc::string* Broc::dyn_array<Broc::string>::begin();
+template Broc::string* Broc::dyn_array<Broc::string>::construct_array(
+    unsigned int, unsigned int);
+template void Broc::dyn_array<Broc::entity>::resize(unsigned int);
 
 namespace MemCount {
 // IDA types: enum MemCount::eGamePhase : int
@@ -23500,12 +23508,11 @@ void AeThreadEntityNotifyMatchState::GetDebugTxt(
 
 // BrocHelper::Init - ea: 0x005BE180 (rep stosd 0x8C dwords = 0x230 bytes = 70 entries)
 BrocHelper::brocFunctionLookup BrocHelper::broFuncLookupTable[70];
-int BrocHelper::Init()
+void BrocHelper::Init()
 {
     memset(BrocHelper::broFuncLookupTable, 0,
            sizeof(BrocHelper::broFuncLookupTable));
     BrocHelper::m_treeCount = 0;
-    return 0;
 }
 
 // ea: 0x005BE210
@@ -25655,6 +25662,8 @@ inline Broc::string pnode_get_type_value<Broc::string>(
     return Broc::string(nodeStringTable[node->mConstant.mType]);
 }
 
+namespace BrocSys {
+
 // hud_set_field<T,OFF> (binary 0x5EB090+) - writes g_hudelems[handle]
 // elem byte offset OFF
 // ea: 0x005EB090
@@ -26402,10 +26411,20 @@ T entity_get_persistent_player_field(unsigned int handle)
     return T();
 }
 
+} // namespace BrocSys
+
+// Force the release-visible iterator specializations that are only reached
+// through script-thread and entity-handle traversal paths.
+template typename reserved_dlist<AeThreadState>::iterator
+reserved_dlist<AeThreadState>::iterator::operator++(int);
+template typename reserved_dlist<AeThread>::iterator&
+reserved_dlist<AeThread>::iterator::operator++();
 
 // ea: 0x005DD690
 void BrocSys::InitEntity()
-{    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerArray = BrocSys::GetPlayerArray;
+{
+    using namespace BrocSys;
+    reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerArray = BrocSys::GetPlayerArray;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetLocalPlayerArray = BrocSys::GetLocalPlayerArray;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetPlayerIndex = BrocSys::GetPlayerIndex;
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mGetEnt = BrocSys::GetEnt;

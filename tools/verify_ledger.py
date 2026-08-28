@@ -638,6 +638,15 @@ def symbol_variants(name: str) -> set[str]:
         "??3EntityNotifySet@@SAXPAX_NPBDH@Z": "??3EntityNotifySet@@SAXPAX@Z",
         "??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z":
             "??0apsSimpleMeshRenderer@@QAE@PBUcArgs@0@@Z",
+        # Older VC7 map spelling omits the pointer decoration on the const
+        # operands for this free Broc template; current MSVC emits PBI.
+        "??$min_val@I@Broc@@YAIABI0@Z":
+            "??$min_val@I@Broc@@YAIPBI0@Z",
+        # The repeated float parameter in this script helper is encoded as a
+        # back-reference by the release compiler and as a direct type by the
+        # current compiler.
+        "?BadPlaceCylinder@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM0@Z":
+            "?BadPlaceCylinder@BrocSys@@YAXABVstring@Broc@@MABUvector@3@MM@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:

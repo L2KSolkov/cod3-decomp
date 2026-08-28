@@ -4197,7 +4197,7 @@ static_assert(sizeof(ae_heap) == 0x4A0, "ae_heap size mismatch");
 extern BrocExports gBrocExports;  // scr.o @ 0xF3A7B0
 
 namespace BrocHelper {
-int Init();
+void Init();
 void RegisterBroFunc(char* name, unsigned int (__cdecl* func)(void*));
 }
 

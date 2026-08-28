@@ -2026,5 +2026,7 @@ namespace EEDefault {
 // Force the release-visible entity specialization into the object even when
 // no current caller needs begin(); the Xbox map contains this exported body.
 template Broc::entity* Broc::dyn_array<Broc::entity>::begin();
+template unsigned int Broc::min_val<unsigned int>(
+    const unsigned int*, const unsigned int*);
 
 } // namespace Broc

@@ -11,6 +11,10 @@
 #include <string.h>
 #include <new>
 
+// scr.o exposes the BitSet<256> iterator constructor even though this port's
+// direct traversal uses the larger entity-handle specialization.
+template class BitSet<256>;
+
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
 
