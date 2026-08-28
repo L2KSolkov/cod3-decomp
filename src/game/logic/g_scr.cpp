@@ -964,6 +964,8 @@ template void ae_sized_array<ae_pair<void*, unsigned int>, 15>::push_back(
 template ae_sized_array<AeThread*, 64>::ae_sized_array();
 template int ae_sized_array<AeThread*, 64>::size() const;
 template void ae_sized_array<AeThread*, 64>::set_size(int);
+template void ae_sized_array<AeThread*, 64>::clear();
+template AeThread*& ae_sized_array<AeThread*, 64>::back();
 template bool ae_sized_array<AeThread*, 64>::empty() const;
 template void ae_sized_array<AeThread*, 64>::push_back(AeThread* const&);
 template AeThread*& ae_sized_array<AeThread*, 64>::pop_back();
@@ -3687,6 +3689,7 @@ public:
 
 template class SizedHandle<8, 24>;
 template class HandleDb<AeThread, 256, SizedHandle<8, 24>>;
+template class IVPointer<AIType>;
 
 template <typename T, int CAPACITY, typename H>
 HandleDb<T, CAPACITY, H>::HandleDb()
@@ -3731,6 +3734,7 @@ void HandleDb<T, CAPACITY, H>::ReleaseHandle(Handle h)
 }
 
 template <typename T, int CAPACITY, typename H>
+// ea: 0x005EEA10
 T* HandleDb<T, CAPACITY, H>::DereferenceHandle(Handle h) const
 {
     unsigned int v2 = h.mVal & ((1u << 8) - 1);
@@ -3741,6 +3745,7 @@ T* HandleDb<T, CAPACITY, H>::DereferenceHandle(Handle h) const
 }
 
 template <typename T, int CAPACITY, typename H>
+// ea: 0x005EE970
 void HandleDb<T, CAPACITY, H>::BindObjectToHandle(Handle handle, T* obj)
 {
     unsigned int v3 = handle.mVal & ((1u << 8) - 1);

@@ -47,6 +47,7 @@ public:
     int size() const { return m_size; }
     // ea: 0x005EA490
     bool empty() const { return m_size == 0; }
+    // ea: 0x005EEAD0
     void clear() { m_size = 0; }
 
     // ea: 0x005EA120
@@ -139,6 +140,7 @@ public:
         if (m_size != 0)
             --m_size;
     }
+    // ea: 0x005EEAE0
     T& back() { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }  // ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ (g.o 0x4B1660)
     // ea: 0x005EE7D0
     const T& back() const { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }
