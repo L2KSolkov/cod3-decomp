@@ -2009,3 +2009,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B5330	?IsDefined@vector@Broc@@QBE_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022746	Release IsDefined uses the same three-component sentinel comparison.
 0x004B53B0	?GetVal@FourCC@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/render/tr_aeps2.cpp:121	GetVal returns the FourCC value as a signed integer.
 0x004B53B0	?GetVal@FourCC@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022770	Release GetVal returns the stored mVal field.
+0x004B5470	?c_str@tlFixedString@@QAEPADXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/tlFixedString.h:83	c_str returns the inline string storage pointer.
+0x004B5470	?c_str@tlFixedString@@QAEPADXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022816	Release c_str returns this->str unchanged.
+0x004B5590	?DeleteInst@DestructibleBankManager@@SAXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/physics/g_physics.cpp:13043	DeleteInst asserts on an absent singleton, destroys an existing instance, frees it, and clears sInst.
+0x004B5590	?DeleteInst@DestructibleBankManager@@SAXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022878	Release DeleteInst performs the same absent-singleton assert, deleting-destructor call, and sInst reset.
+0x004B5650	??1EntityNotify@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:177	Destructor deletes a non-null WaitTilOutput parameter and then clears the member.
+0x004B5650	??1EntityNotify@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022924	Release destructor invokes the WaitTilOutput deleting-destructor path and clears mParam.
+0x004B5670	?FS_Initialized@@YAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:117	FS_Initialized returns whether the filesystem search-path list exists.
+0x004B5670	?FS_Initialized@@YAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022935	Release FS_Initialized returns fs_searchpaths != nullptr.
+0x004B56D0	?FS_LoadStack@@YAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:132	FS_LoadStack returns the global load-stack counter.
+0x004B56D0	?FS_LoadStack@@YAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022964	Release FS_LoadStack returns fs_loadStack unchanged.
+0x004B56E0	?FS_UseSearchPath@@YAHPBUsearchpath_s@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:138	FS_UseSearchPath accepts non-localized paths or matching localized paths when localization is enabled.
+0x004B56E0	?FS_UseSearchPath@@YAHPBUsearchpath_s@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022970	Release FS_UseSearchPath uses the same localized flag, ignore-localized cvar, and language test.
+0x004B5720	?FS_LanguageHasAssets@@YAHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:146	FS_LanguageHasAssets scans search paths for a localized entry matching the requested language.
+0x004B5720	?FS_LanguageHasAssets@@YAHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022977	Release FS_LanguageHasAssets uses the same null-safe linked-list scan and result values.
+0x004B5750	?FS_HashFileName@@YAJPBDH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:161	FS_HashFileName lowercases path bytes, normalizes separators, stops at an extension, and masks the mixed hash.
+0x004B5750	?FS_HashFileName@@YAJPBDH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022994	Release FS_HashFileName has the same tolower, separator, extension, weighted-index, and mask sequence.
+0x004B57C0	?FS_FileForHandle@@YAPAU_iobuf@@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:186	FS_FileForHandle validates the handle and file state before returning the FILE pointer.
+0x004B57C0	?FS_FileForHandle@@YAPAU_iobuf@@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023024	Release FS_FileForHandle performs the same three assertions and returns fsh[f].handleFiles.file.file.
