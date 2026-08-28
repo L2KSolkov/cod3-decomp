@@ -192,14 +192,17 @@ int EntityNotify::get_dlist_node_offset()
 {
     return 0;
 }
+// ea: 0x004B3FD0
 void EntityNotify::SetAllocator(PoolAllocator* allocator)
 {
     EntityNotify::sAllocator = allocator;
 }
+// ea: 0x004B3FB0
 unsigned int EntityNotify::GetStr() const
 {
     return mStr;
 }
+// ea: 0x004B3FC0
 WaitTilOutput* EntityNotify::GetParam() const
 {
     return mParam;
@@ -211,6 +214,7 @@ void* EntityNotify::operator new(size_t size, bool forceHeapAlloc,
     return EntityNotify::sAllocator->Allocate((unsigned int)size,
                                                forceHeapAlloc);
 }
+// ea: 0x004B3F90
 void EntityNotify::operator delete(void* ptr)
 {
     EntityNotify::sAllocator->Release(ptr);
@@ -238,18 +242,22 @@ void* EntityNotifySet::operator new(size_t size, bool forceHeapAlloc)
 }
 
 // ea: 0x005E95A0
+// ea: 0x004B4000
 void EntityNotifySet::operator delete(void* ptr)
 {
     EntityNotifySet::sAllocator->Release(ptr);
 }
+// ea: 0x004B3FE0
 void* EntityNotifySet::get_dlist_node()
 {
     return this;
 }
+// ea: 0x004B3FF0
 int EntityNotifySet::get_dlist_node_offset()
 {
     return 0;
 }
+// ea: 0x004B4020
 void EntityNotifySet::SetAllocator(PoolAllocator* allocator)
 {
     EntityNotifySet::sAllocator = allocator;

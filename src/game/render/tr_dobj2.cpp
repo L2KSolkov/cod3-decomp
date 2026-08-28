@@ -303,6 +303,7 @@ DObjHandleDb::DObjHandleDb() : HandleDb<DObj, 1344, SizedHandle<12, 20>>()
 void DObjHandleDb::Init()
 {
 }
+// ea: 0x004B5310
 DObjHandleDb* DObjHandleDb::Inst()
 {
     return &DObjHandleDb::sInst;

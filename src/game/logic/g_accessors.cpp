@@ -335,13 +335,13 @@ void* DestructibleBankManager::operator new(size_t, void* p)
 
 PoolAllocator* AeThreadFunctor::sAllocator;
 
-// core.o 0x4B5320
+// ea: 0x004B5320
 void AeThreadFunctor::SetAllocator(PoolAllocator* allocator)
 {
     AeThreadFunctor::sAllocator = allocator;
 }
 
-// core.o 0x4B5330
+// ea: 0x004B5330
 bool Broc::vector::IsDefined() const
 {
     return x != sNaN || y != sNaN || z != sNaN;

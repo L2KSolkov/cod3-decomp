@@ -1985,3 +1985,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B2430	??0vehicle_backup_s@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020508	Release constructor runs the two-element vehicle_node_t constructor iterator.
 0x004B2460	??1vehicle_backup_s@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4513	Destructor tears down both embedded vehicle nodes in reverse order.
 0x004B2460	??1vehicle_backup_s@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020520	Release destructor runs the two-element vehicle_node_t destructor iterator.
+0x004B3F90	??3EntityNotify@@SAXPAX@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:217	operator delete releases the notification through the class pool allocator.
+0x004B3F90	??3EntityNotify@@SAXPAX@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021875	Release operator delete forwards the object to EntityNotify's allocator release path.
+0x004B3FB0	?GetStr@EntityNotify@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:200	GetStr returns the stored notification string identifier without mutation.
+0x004B3FB0	?GetStr@EntityNotify@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021881	Release GetStr returns the same mStr field.
+0x004B3FC0	?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:205	GetParam returns the notification's WaitTilOutput parameter pointer.
+0x004B3FC0	?GetParam@EntityNotify@@QBEPAVWaitTilOutput@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021887	Release GetParam returns the same mParam field.
+0x004B3FD0	?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:195	SetAllocator stores the process-wide EntityNotify pool allocator pointer.
+0x004B3FD0	?SetAllocator@EntityNotify@@SAXPAVPoolAllocator@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021893	Release SetAllocator assigns the same static allocator slot.
+0x004B3FE0	?get_dlist_node@EntityNotifySet@@QAEPAXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:250	get_dlist_node returns the notification-set object as its intrusive-list node.
+0x004B3FE0	?get_dlist_node@EntityNotifySet@@QAEPAXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021899	Release get_dlist_node returns this unchanged.
+0x004B3FF0	?get_dlist_node_offset@EntityNotifySet@@SAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:255	get_dlist_node_offset reports the zero offset of the embedded list node.
+0x004B3FF0	?get_dlist_node_offset@EntityNotifySet@@SAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021905	Release get_dlist_node_offset returns zero.
+0x004B4000	??3EntityNotifySet@@SAXPAX@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:245	operator delete releases the notification set through its class pool allocator.
+0x004B4000	??3EntityNotifySet@@SAXPAX@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021911	Release operator delete forwards the set object to EntityNotifySet's allocator.
+0x004B4020	?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:260	SetAllocator stores the process-wide EntityNotifySet pool allocator pointer.
+0x004B4020	?SetAllocator@EntityNotifySet@@SAXPAVPoolAllocator@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1021917	Release SetAllocator assigns the same static allocator slot.
+0x004B5310	?Inst@DObjHandleDb@@SAPAV1@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/render/tr_dobj2.cpp:306	Inst returns the singleton DObj handle database address.
+0x004B5310	?Inst@DObjHandleDb@@SAPAV1@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022734	Release Inst returns the address of DObjHandleDb::sInst.
+0x004B5320	?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:339	SetAllocator stores the AeThreadFunctor pool allocator pointer.
+0x004B5320	?SetAllocator@AeThreadFunctor@@SAXPAVPoolAllocator@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022740	Release SetAllocator assigns the same static allocator slot.
+0x004B5330	?IsDefined@vector@Broc@@QBE_NXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:345	IsDefined reports true when any vector component differs from the NaN sentinel.
+0x004B5330	?IsDefined@vector@Broc@@QBE_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022746	Release IsDefined uses the same three-component sentinel comparison.
+0x004B53B0	?GetVal@FourCC@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/render/tr_aeps2.cpp:121	GetVal returns the FourCC value as a signed integer.
+0x004B53B0	?GetVal@FourCC@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1022770	Release GetVal returns the stored mVal field.

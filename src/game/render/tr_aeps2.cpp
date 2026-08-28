@@ -118,6 +118,7 @@ public:
 };
 
 // InplaceAssetBank<T, Tree> (ae/inplace/InplaceAssetBank.h)
+// ea: 0x004B53B0
 int FourCC::GetVal() const
 {
     return (int)mVal;
