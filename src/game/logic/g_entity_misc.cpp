@@ -1843,6 +1843,7 @@ PlayerState& GetPlayerState(int idx)
     Entity* player = EntityManager::sInst->GetPlayer(idx);
     return *reinterpret_cast<PlayerState*>(player->client);
 }
+// ea: 0x005C1AB0
 int Scr_IsSystemActive(unsigned char sys)
 {
     (void)sys;
@@ -3025,6 +3026,7 @@ void BrocAddEntityThread(Entity* e, unsigned int a, void* b)
         static_cast<BrocThreadFn>(&BrocAddEntityThread);
     fn(e, a, reinterpret_cast<ScriptEventParams*>(b));
 }
+// ea: 0x005BE390
 void BrocDestroyEntity(Entity* e)
 {
     if (e->mBrocExtendedEntity != nullptr)
@@ -3869,6 +3871,7 @@ void Scr_Error(const char* error)
 }
 extern int g_xanim_num;
 extern void Scr_FreeAnimTreeAtIndex(int treeindex);
+// ea: 0x005C7910
 void Scr_FreePrecachedAnimTrees()
 {
     for (int i = 1; i < g_xanim_num; ++i)
@@ -3888,6 +3891,7 @@ void Scr_ParamError(unsigned int index, const char* error)
 extern void Scr_LoadAnimTreeAtIndex(int treeindex, void* (__cdecl* Alloc)(int),
                                     bool restart);
 namespace BrocHelper { void AnimationValidator(int numTrees); }
+// ea: 0x005C78C0
 void Scr_PrecacheAnimTrees(void* (*cb)(int), bool restart)
 {
     for (int i = 1; i < g_xanim_num; ++i)

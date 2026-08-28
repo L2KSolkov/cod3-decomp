@@ -2903,6 +2903,7 @@ extern void G_CallEntitySpawnFunction(Entity* ent);  // g.o (g_spawn.cpp)
 extern void BrocAddEntityThread(Entity* ent,
                                 const char* fcnName);  // scr.o
 extern bool gIsWorkspaceMap;                         // sv_ccmds.cpp
+// ea: 0x005BE560
 void BrocAddEntityThread(Entity* ent, const char* fcnName)
 {
     if (gpBrocAPI == nullptr)
