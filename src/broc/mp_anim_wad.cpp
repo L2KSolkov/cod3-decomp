@@ -446,13 +446,13 @@ Broc::bbool* IsEEDefined_dontdropweapon(Broc::bbool* result, Broc::entity ent) {
 }
 
 // GetEE_script_prespawn_delay / IsEEDefined_script_prespawn_delay (key 0x531ABA72)
-Broc::bfloat* GetEE_script_prespawn_delay(Broc::entity ent) {
+Broc::bfloat* GetEE_script_prespawn_delay_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bfloat>(0x531ABA72);
 }
 
-Broc::bbool* IsEEDefined_script_prespawn_delay(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_prespawn_delay_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -470,13 +470,13 @@ Broc::bbool* IsEEDefined_script_prespawn_delay(Broc::bbool* result, Broc::entity
 }
 
 // GetEE_script_burst_max / IsEEDefined_script_burst_max (key 0xD74DC709)
-Broc::bfloat* GetEE_script_burst_max(Broc::entity ent) {
+Broc::bfloat* GetEE_script_burst_max_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bfloat>(0xD74DC709);
 }
 
-Broc::bbool* IsEEDefined_script_burst_max(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_burst_max_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -494,13 +494,13 @@ Broc::bbool* IsEEDefined_script_burst_max(Broc::bbool* result, Broc::entity ent)
 }
 
 // GetEE_script_offradius / IsEEDefined_script_offradius (key 0x4A5EE717)
-Broc::bint* GetEE_script_offradius(Broc::entity ent) {
+Broc::bint* GetEE_script_offradius_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x4A5EE717);
 }
 
-Broc::bbool* IsEEDefined_script_offradius(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_offradius_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -518,13 +518,13 @@ Broc::bbool* IsEEDefined_script_offradius(Broc::bbool* result, Broc::entity ent)
 }
 
 // GetEE_script_random / IsEEDefined_script_random (key 0x47947B55)
-Broc::bint* GetEE_script_random(Broc::entity ent) {
+Broc::bint* GetEE_script_random_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x47947B55);
 }
 
-Broc::bbool* IsEEDefined_script_random(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_random_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -542,13 +542,13 @@ Broc::bbool* IsEEDefined_script_random(Broc::bbool* result, Broc::entity ent) {
 }
 
 // GetEE_script_health / IsEEDefined_script_health (key 0x308248CA)
-Broc::bint* GetEE_script_health(Broc::entity ent) {
+Broc::bint* GetEE_script_health_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x308248CA);
 }
 
-Broc::bbool* IsEEDefined_script_health(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_health_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -562,6 +562,68 @@ Broc::bbool* IsEEDefined_script_health(Broc::bbool* result, Broc::entity ent) {
     } else {
         result->mVal = false;
     }
+    return result;
+}
+
+// Release ABI entry points return references/value bbools.  The pointer
+// implementations above retain the shared ExtendedEntity logic.
+::bfloat& GetEE_script_prespawn_delay(Broc::entity ent) {
+    return *reinterpret_cast<::bfloat*>(GetEE_script_prespawn_delay_ptr(ent));
+}
+
+// ea: 0x0098CDB0
+::bbool IsEEDefined_script_prespawn_delay(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_prespawn_delay_ptr(
+        reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+
+::bfloat& GetEE_script_burst_max(Broc::entity ent) {
+    return *reinterpret_cast<::bfloat*>(GetEE_script_burst_max_ptr(ent));
+}
+
+// ea: 0x0098CEB0
+::bbool IsEEDefined_script_burst_max(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_burst_max_ptr(
+        reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+
+::bint& GetEE_script_offradius(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_offradius_ptr(ent));
+}
+
+// ea: 0x0098CFB0
+::bbool IsEEDefined_script_offradius(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_offradius_ptr(
+        reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+
+::bint& GetEE_script_random(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_random_ptr(ent));
+}
+
+// ea: 0x0098D4A0
+::bbool IsEEDefined_script_random(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_random_ptr(
+        reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+
+::bint& GetEE_script_health(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_health_ptr(ent));
+}
+
+// ea: 0x0098D5A0
+::bbool IsEEDefined_script_health(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_health_ptr(
+        reinterpret_cast<Broc::bbool*>(&result), ent);
     return result;
 }
 
