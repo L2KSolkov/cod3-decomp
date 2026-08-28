@@ -3063,6 +3063,12 @@ public:
 };
 template <typename T>
 // ea: 0x004AC790
+// ea: 0x004B1010
+// ea: 0x004B1060
+// ea: 0x004B10B0
+// ea: 0x004B1100
+// ea: 0x004B1150
+// ea: 0x004B11A0
 const T& cdl_array<T>::operator[](unsigned int index) const
 {
     if (index >= m_count
@@ -3191,6 +3197,7 @@ T* phys_static_array<T, CAPACITY>::add_fast()
     return &m_slot_array[m_alloc_count++];
 }
 template <typename T, int CAPACITY>
+// ea: 0x004B1230
 void phys_static_array<T, CAPACITY>::remove_all_ndc()
 {
     m_alloc_count = 0;
@@ -3210,6 +3217,7 @@ int phys_static_array<T, CAPACITY>::get_available_slots() const
     return CAPACITY - m_alloc_count;
 }
 template <typename T, int CAPACITY>
+// ea: 0x004AE490
 void phys_static_array<T, CAPACITY>::call_destructors()
 {
 }
@@ -3220,6 +3228,8 @@ void phys_static_array<T, CAPACITY>::reset_buffer()
     m_alloc_count = 0;
 }
 template <typename T, int CAPACITY>
+// ea: 0x004B1210
+// ea: 0x004B1220
 phys_static_array<T, CAPACITY>::~phys_static_array()
 {
 }
@@ -3633,6 +3643,7 @@ Entity* EntityHandleDb::GetObject(int idx) const
     }
     return mElements[idx].mObject;
 }
+// ea: 0x004B0E20
 void EntityHandleDb::BindObjectToHandle(Handle handle, Entity* obj)
 {
     unsigned int v3 = handle.mVal & 0xFFF;

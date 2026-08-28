@@ -1829,6 +1829,7 @@ void reserved_dlist<PakFile>::validate() const
 }
 
 template <>
+// ea: 0x004B11F0
 reserved_dlist<PakFile>::const_iterator reserved_dlist<PakFile>::end() const
 {
     const_iterator result((const dlist_node*)m_end, (const dlist_node*)nullptr);

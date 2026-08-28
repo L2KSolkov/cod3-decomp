@@ -16,7 +16,10 @@
 namespace AeStringSupport {
 void Concat(char* dst, int* const dstLen, int dstCapacity, const char* src);
 bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff,
-                int rhsLen);
+               int rhsLen);
+void CStrToAeStr(char* dst, int* const dstLen, int dstCapacity, const char* src);
+void SubStr(char* dst, int* const dstLen, const char* src, int begin, int count,
+            int srcCapacity);
 void Split(char* dstBuff, int* const dstLen, char* srcBuff, int* const srcLen,
            char splitOn, int capacity);
 }
@@ -40,21 +43,11 @@ public:
         memcpy(this, &rhs, sizeof(*this));
     }
 
-    // ea: 0x4E4890 — CStrToAeStr + length store
+    // ea: 0x004B0F40
     ae_fixed_string(const char* txt) {
-        char* d = (char*)mBuff;
-        int cap = capacity();
-        int i = 0;
-        if (txt != nullptr && *txt != 0) {
-            while (txt[i] != 0 && i < cap) {
-                d[i] = txt[i];
-                ++i;
-            }
-        } else {
-            d[0] = 0;
-        }
-        d[i] = 0;
-        mLength = (unsigned char)i;
+        int length = 0;
+        AeStringSupport::CStrToAeStr((char*)mBuff, &length, capacity(), txt);
+        mLength = (unsigned char)length;
     }
 
     const char* c_str() const { return (const char*)mBuff; }
@@ -105,25 +98,11 @@ public:
         _strlwr((char*)mBuff);
     }
 
-    // ea: 0x4E48D0 — SubStr into dst, then store output length
+    // ea: 0x004B0F70
     ae_fixed_string& substr(ae_fixed_string& dst, int begin, int len) const {
-        int cap = capacity();
         int out = len;
-        if (begin < cap) {
-            int end = cap - 1;
-            if (end >= begin + len)
-                end = begin + len;
-            const char* src = (const char*)mBuff;
-            char* d = (char*)dst.mBuff;
-            out = 0;
-            for (int i = begin; i < end; ++i) {
-                char c = src[i];
-                if (c == 0)
-                    break;
-                d[out++] = c;
-            }
-            d[out] = 0;
-        }
+        AeStringSupport::SubStr((char*)dst.mBuff, &out, (const char*)mBuff,
+                                 begin, len, capacity());
         dst.mLength = (unsigned char)out;
         return dst;
     }
@@ -179,6 +158,7 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
         this->mLength = (unsigned char)l;
     }
 
+    // ea: 0x004B0FB0
     // Narrow-format overload (formats into a wide buffer via %ls-style values).
     ae_formatted_string(const char* fmt, ...) {
         char tmp[512];

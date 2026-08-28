@@ -262,8 +262,9 @@ public:
     // ea: 0x004ACE20
     void clear() { mValue = nullptr; mPakId = PAK_ID_INVALID; }  // ?clear@?$IVPointer@VXModel@@@@QAEXXZ (g.o 0x4ACE20)
 
+    // ea: 0x004B1240
     T* operator*() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??D?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1240)
-    // ea: 0x005EEBD0
+    // ea: 0x004B1260
     T* operator->() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1260)
     const T* operator->() const { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QBEPBVXModel@@XZ (g.o 0x4B18C0)
     operator bool() const { ValidatePakId((TPakId)mPakId); return mValue != nullptr; }  // ??B?$IVPointer@VXModel@@@@QBE_NXZ (g.o 0x4B27B0)

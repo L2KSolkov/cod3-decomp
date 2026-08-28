@@ -379,6 +379,7 @@ struct BitSet {
         return it;
     }
     // ea: 0x005EF0B0
+    // ea: 0x004B0EC0
     iterator end() const  // ?end@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B0EC0)
     {
         iterator it;

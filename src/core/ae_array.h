@@ -216,10 +216,14 @@ public:
         bool operator!=(iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9iterator@...@@QBE_NV01@@Z
     };
 
+    // ea: 0x004B0EE0
     iterator begin() { return iterator(m_elements); }  // ?begin@...@@QAE?AViterator@1@XZ
+    // ea: 0x004B0EF0
     iterator end() { return iterator(&m_elements[m_size]); }  // ?end@...@@QAE?AViterator@1@XZ
+    // ea: 0x004B0F10
     // ea: 0x005EEB40
     const_iterator begin() const { return const_iterator(m_elements); }  // ?begin@...@@QBE?AVconst_iterator@1@XZ
+    // ea: 0x004B0F20
     // ea: 0x005EEB60
     const_iterator end() const { return const_iterator(&m_elements[m_size]); }  // ?end@...@@QBE?AVconst_iterator@1@XZ
 };
