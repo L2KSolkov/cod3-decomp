@@ -1228,7 +1228,7 @@ void IGOAmmoWidget::Init(PanelFile* panel)
 // ea: 0x00566560
 void IGOAmmoWidget::Draw()
 {
-    if (is_shown)
+    if (is_shown && !dont_draw)
     {
         frame->Draw();
         clipAmmo->Draw();
