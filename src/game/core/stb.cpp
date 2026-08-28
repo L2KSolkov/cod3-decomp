@@ -343,6 +343,28 @@ void PtrFixupTable_Fixup(void* self, void* basePtr)
 {
     reinterpret_cast<PtrFixupTable*>(self)->Fixup(basePtr);
 }
+// InplaceAssetBank<DbTableSet,InplaceTree<InplaceString,unsigned int>>::Fixup
+// (core.o inline at 0x004E3820).  DbTablesetBank has the same serialized
+// header layout as the other inplace banks, but its release instantiation is
+// local to core.o rather than exported as a separately named wrapper.
+static void InplaceAssetBank_Fixup_DbTableset(void* data)
+{
+    GenericAssetBankLayout* bank =
+        reinterpret_cast<GenericAssetBankLayout*>(data);
+    if (reinterpret_cast<uintptr_t>(bank->mPtrFixupTable) >= 0x10000000u) {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+        AeAssert::gCurrentLine = 122;
+        AeAssert::gCurrentExpr = "((unsigned)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    void* fixup = reinterpret_cast<unsigned char*>(bank)
+                  + reinterpret_cast<uintptr_t>(bank->mPtrFixupTable);
+    bank->mPtrFixupTable = fixup;
+    PtrFixupTable_Fixup(fixup, bank);
+}
 void InplaceAssetBankSet_AddBank_DbTableset(void* self, TPakId pak, void* bank)
 {
     DbTablesetManagerLayout* manager =
@@ -704,7 +726,9 @@ void DecodeConfigStrings(const char* name, unsigned char* data, int size,
 void DbTablesetMgr_DecodeBank(const char* name, void* data, int size,
                               TPakId pakId)
 {
+    (void)name; (void)size;
     extern void* DbTablesetMgr_sInst;
+    InplaceAssetBank_Fixup_DbTableset(data);
     InplaceAssetBankSet_AddBank_DbTableset(DbTablesetMgr_sInst, pakId, data);
 }
 
