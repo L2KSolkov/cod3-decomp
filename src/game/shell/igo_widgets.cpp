@@ -6259,12 +6259,14 @@ void IGOCompassWidget::Draw3DObjective(int index)
         return;
     int base = 3208 * mClient + 176 * index;
     float* objBlock = &unk_F6A2B0[base];
-    if (objBlock[0] < 0.0f)
+    if (objBlock[1] < 0.0f)
         return;
     float d[3] = {objBlock[4], objBlock[5], objBlock[6]};
     if (sqrtf(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]) < 0.2f)
         return;
     Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    (void)VectorDistance(&objBlock[4],
+                         Player->r.currentOrigin.v.m128_f32);
     float pos[3] = {objBlock[4], objBlock[5], objBlock[6] + objBlock[1]};
     math::Position3 in;
     in.v.m128_f32[0] = pos[0];
