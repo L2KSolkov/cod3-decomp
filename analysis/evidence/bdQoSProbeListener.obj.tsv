@@ -1,2 +1,4 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x008B7410	??1bdQoSProbeListener@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:19	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdQoSProbeListener::~bdQoSProbeListener); no user logic is omitted.
+0x008B7400	??0bdQoSProbeListener@@QAE@XZ	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdQoSProbeListener.cpp:13-15	Source constructor is intentionally empty; compiler-generated vtable initialization supplies the complete body.
+0x008B7400	??0bdQoSProbeListener@@QAE@XZ	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1695466-1695473	Release QoS listener constructor only installs the vtable, matching source.

@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x009EC020	?getRandomUInt@bdTrulyRandomImpl@@QAEIXZ	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdPlatform.cpp:247-253	Source obtains four random bytes and assembles the same three high-order bytes used by the release implementation.
+0x009EC020	?getRandomUInt@bdTrulyRandomImpl@@QAEIXZ	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1913833-1913842	Release reads four bytes and returns byte3<<8 | byte2<<16 | byte1<<24; source matches and intentionally ignores byte0.

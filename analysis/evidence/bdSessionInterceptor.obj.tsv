@@ -1,2 +1,4 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x008B5C70	??1bdSessionInterceptor@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:20	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdSessionInterceptor::~bdSessionInterceptor); no user logic is omitted.
+0x008B5C60	??0bdSessionInterceptor@@QAE@XZ	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdSessionInterceptor.cpp:13-15	Source constructor is intentionally empty; the compiler-generated vtable initialization is the complete implementation.
+0x008B5C60	??0bdSessionInterceptor@@QAE@XZ	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1693830-1693837	Release constructor only installs the interceptor vtable, matching the empty source constructor.

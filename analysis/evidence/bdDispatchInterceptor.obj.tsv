@@ -1,2 +1,4 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x009ED140	??1bdDispatchInterceptor@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:19	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdDispatchInterceptor::~bdDispatchInterceptor); no user logic is omitted.
+0x009ED130	??0bdDispatchInterceptor@@QAE@XZ	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdDispatchInterceptor.cpp:13-15	Source constructor is intentionally empty; compiler-generated vtable initialization supplies the complete body.
+0x009ED130	??0bdDispatchInterceptor@@QAE@XZ	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1914725-1914732	Release dispatch-interceptor constructor only installs the vtable, matching source.

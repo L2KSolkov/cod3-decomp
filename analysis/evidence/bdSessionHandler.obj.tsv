@@ -1,2 +1,6 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x008B5CB0	??1bdSessionHandler@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:19	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdSessionHandler::~bdSessionHandler); no user logic is omitted.
+0x008B5CA0	??0bdSessionHandler@@QAE@XZ	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdSessionHandler.cpp:13-15	Source constructor is intentionally empty; compiler-generated vtable initialization supplies the complete body.
+0x008B5CA0	??0bdSessionHandler@@QAE@XZ	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1693860-1693867	Release constructor only installs the session-handler vtable, matching source.
+0x008B5CE0	?onSessionConnectRequest@bdSessionHandler@@UAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdSessionHandler.cpp:27-35	Source releases the incoming reference when present and accepts the request.
+0x008B5CE0	?onSessionConnectRequest@bdSessionHandler@@UAE_NV?$bdReference@VbdBitBuffer@@@@QAVbdBitBuffer@@@Z	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1693888-1693894	Release connect-request handler decrements/releases the reference and returns true, matching source.
