@@ -220,10 +220,27 @@ template <typename T, int CAPACITY>
 struct ae_array {
     T m_elements[CAPACITY];  // +0x00
 
+    // ea: 0x005EA070
+    int capacity() const { return CAPACITY; }
+
     // ea: 0x005EA080
-    T& operator[](int idx) { return m_elements[idx]; }
+    T& operator[](int idx) {
+        if (idx < 0 || idx >= CAPACITY)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return m_elements[idx];
+    }
     const T& operator[](int idx) const { return m_elements[idx]; }
 };
+
+template int ae_array<HashString, 4>::capacity() const;
 
 // BrocDtorBase (mp_level.xboxd; vtable[0] = Destroy)
 class BrocDtorBase {
