@@ -2075,3 +2075,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B64E0	?CrossProduct@@YAXQBM0QAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023760	Release CrossProduct uses the same three cross-product equations.
 0x004B6540	?CrossProductUp@@YAXQBMQAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:414	CrossProductUp computes the horizontal cross with the up axis.
 0x004B6540	?CrossProductUp@@YAXQBMQAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023768	Release CrossProductUp writes y, negative x, and zero z.
+0x004B6920	?VectorInverse@@YAXQAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:515	VectorInverse negates all three vector components in place.
+0x004B6920	?VectorInverse@@YAXQAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023903	Release VectorInverse uses the same in-place negation sequence.
+0x004B6950	?Vector4Scale@@YAXQBMMQAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:524	Vector4Scale multiplies all four components by the scalar.
+0x004B6950	?Vector4Scale@@YAXQBMMQAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023914	Release Vector4Scale writes the same four products.
+0x004B69A0	?VectorMax@@YAMQBM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:533	VectorMax returns the greatest of the three vector components.
+0x004B69A0	?VectorMax@@YAMQBM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023923	Release VectorMax uses the same three comparisons.
+0x004B69D0	?VectorRotate@@YAXQBMQAY02$$CBMQAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:544	VectorRotate asserts distinct input/output and computes the 3x3 matrix product.
+0x004B69D0	?VectorRotate@@YAXQBMQAY02$$CBMQAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023936	Release VectorRotate has the same alias assertion and three output equations.
+0x004B6AB0	?MakeNormalVectors@@YAXQBMQAM1@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:554	MakeNormalVectors derives, normalizes, and crosses the right/up vectors using the release arithmetic.
+0x004B6AB0	?MakeNormalVectors@@YAXQBMQAM1@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023953	Release MakeNormalVectors uses the same initialization, projection, normalization, and cross-product sequence.
+0x004B6C10	?GetPerpendicularViewVector@@YAXQBM00QAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:581	GetPerpendicularViewVector normalizes point-to-endpoint vectors, crosses them, and normalizes the result.
+0x004B6C10	?GetPerpendicularViewVector@@YAXQBM00QAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023984	Release GetPerpendicularViewVector follows the same zero-length branches, cross product, and final normalization.
+0x004B6E50	?ProjectPointOntoVector@@YAXQAM000@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:633	ProjectPointOntoVector normalizes the segment direction, projects the point, and writes the nearest point.
+0x004B6E50	?ProjectPointOntoVector@@YAXQAM000@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024048	Release ProjectPointOntoVector uses the same zero-length fallback, dot projection, and output equations.
+0x004B6F90	?MatrixMultiply@@YAXQAY02$$CBM0QAY02M@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:668	MatrixMultiply computes all nine entries of the 3x3 product with release-compatible ordering.
+0x004B6F90	?MatrixMultiply@@YAXQAY02$$CBM0QAY02M@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1024088	Release MatrixMultiply uses the same nine component products and sums.
