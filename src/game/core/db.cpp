@@ -15,6 +15,8 @@ extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
+bool Error(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
 }
 
 #define ASSERT(expr, file, line)                                          \
@@ -650,6 +652,12 @@ int DbQuery::CompareField(int colId, const void* db_value)
             return -_stricmp((const char*)FieldById + 4, (const char*)db_value);
         return strcmp((const char*)FieldById + 4, (const char*)db_value);
     default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.cpp";
+        AeAssert::gCurrentLine = 131;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("Unhandled db column type in CompareField"))
+            __debugbreak();
         return 0;
     }
 }
@@ -694,7 +702,15 @@ bool DbQuery::TestField(int colId, const void* db_value)
         case 4: return *(int*)((char*)FieldById + 4) >= *(const int*)db_value;
         case 5: return *(int*)((char*)FieldById + 4) <= *(const int*)db_value;
         case 8: return *(int*)((char*)FieldById + 4) != *(const int*)db_value;
-        default: return false;
+        default:
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.cpp";
+            AeAssert::gCurrentLine = 170;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("invalid integer match type"))
+                __debugbreak();
+            return false;
         }
     case 2u:
     case 0xBu:
@@ -706,20 +722,55 @@ bool DbQuery::TestField(int colId, const void* db_value)
         case 4: return *(float*)((char*)FieldById + 4) >= *(const float*)db_value;
         case 5: return *(float*)((char*)FieldById + 4) <= *(const float*)db_value;
         case 8: return *(float*)((char*)FieldById + 4) != *(const float*)db_value;
-        default: return false;
+        default:
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.cpp";
+            AeAssert::gCurrentLine = 187;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("invalid float match type"))
+                __debugbreak();
+            return false;
         }
     case 4u:
         if (m_match_type != 0)
         {
             if (m_match_type != 9)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.cpp";
+                AeAssert::gCurrentLine = 211;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::IsIgnored()
+                    || !AeAssert::Warning("invalid string match type"))
+                    return false;
+                __debugbreak();
                 return false;
+            }
             return _stricmp((char*)FieldById + 4, (const char*)db_value) == 0;
         }
         return strcmp((char*)FieldById + 4, (const char*)db_value) == 0;
     case 9u:
-        return m_match_type == 0
-            && *(int*)((char*)FieldById + 4) == *(const int*)db_value;
+        if (m_match_type != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.cpp";
+            AeAssert::gCurrentLine = 198;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::IsIgnored()
+                || !AeAssert::Warning("invalid FourCC match type"))
+                return false;
+            __debugbreak();
+            return false;
+        }
+        return *(int*)((char*)FieldById + 4) == *(const int*)db_value;
     default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DbQuery.cpp";
+        AeAssert::gCurrentLine = 217;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("Unhandled db column type in TestField"))
+            __debugbreak();
         return false;
     }
 }
@@ -727,29 +778,151 @@ bool DbQuery::TestField(int colId, const void* db_value)
 // ea: 0x004C4DD0
 void DbQuery::FindMatches(DbQueryResults& results)
 {
-    // Best-effort: iterate the schema column types and accept leaves that
-    // satisfy all constraints. Full graph traversal needs the NodeAttach
-    // layout; keep a faithful structural port of the walk.
     if (mAutomaticFail)
         return;
-    DbGraphNode* cur = (DbGraphNode*)mDb->mIndexRoot;
-    if (cur == nullptr)
+
+    enum NodeFlag { NODE_PASS = 0, NODE_TEST = 1 };
+    unsigned char node_flags[256];
+    const DbGraphNode* nodes[128];
+    unsigned int node_count = 0;
+    const DbGraphNode* root = (const DbGraphNode*)mDb->mIndexRoot;
+    nodes[node_count++] = root;
+    if (nodes[node_count - 1] == nullptr)
     {
         ASSERT("nodes.back()", "c:\\cod\\code\\game\\DbQuery.cpp", 233);
-        return;
     }
-    if ((cur->mFieldId & 0x8000) != 0)
+
+    while (true)
     {
-        AcceptMatchingLeaf(cur, results);
-        return;
-    }
-    // non-leaf: evaluate children against constraints
-    int numChildren = cur->GetNumChildren();
-    for (int i = 0; i < numChildren && i < 256; ++i)
-    {
-        DbGraphNode* child = cur->GetChild((uint16_t)i);
-        if (child != nullptr && (child->mFieldId & 0x8000) != 0)
-            AcceptMatchingLeaf(child, results);
+        const DbGraphNode* cur = nodes[node_count - 1];
+        if (node_count != 0)
+            --node_count;
+        if (cur == nullptr)
+            ASSERT("cur", "c:\\cod\\code\\game\\DbQuery.cpp", 240);
+
+        if (cur->IsLeaf())
+        {
+            AcceptMatchingLeaf(cur, results);
+            if (node_count == 0)
+                return;
+            continue;
+        }
+
+        unsigned int numChildren = cur->mAttachments.nonLeaf.numChildren;
+        if (numChildren == 0)
+            ASSERT("cur->GetNumChildren() > 0",
+                   "c:\\cod\\code\\game\\DbQuery.cpp", 254);
+        if (cur->IsLeaf())
+            ASSERT("!IsLeaf()", "c:\\cod\\code\\DbDefs.h", 299);
+        if (numChildren > 0x100u)
+            ASSERT("cur->GetNumChildren() <= 256",
+                   "c:\\cod\\code\\game\\DbQuery.cpp", 258);
+
+        const unsigned int fieldId = cur->mFieldId & 0x7FFFu;
+        bool all_pass = false;
+        if (!BitSet255_Test(&mConstraints.mSpecifiedById, (int)fieldId))
+        {
+            all_pass = true;
+        }
+        else
+        {
+            for (unsigned int i = 0; i < numChildren; ++i)
+            {
+                if (cur->IsLeaf())
+                    ASSERT("!IsLeaf()", "c:\\cod\\code\\DbDefs.h", 299);
+                if (cur->GetValue(mDb, (uint16_t)i) != nullptr)
+                    node_flags[i] = NODE_TEST;
+                else
+                    node_flags[i] = (unsigned char)!
+                        BitSet255_Test(&mConstraints.mWeakById,
+                                       (int)fieldId);
+            }
+
+            DbSchema* schema = mDb->mSchema;
+            if (fieldId >= schema->mNumColumnTypes)
+                ASSERT("columnId < mNumColumnTypes",
+                       "c:\\cod\\code\\game\\DbDefs.h", 435);
+            int match_type = schema->mMatchTypes[fieldId];
+            if (match_type == 0 || match_type == 9)
+            {
+                int lower = 0;
+                int upper = (int)numChildren;
+                int mid = upper >> 1;
+                if (mid != -1)
+                {
+                    int prev;
+                    do
+                    {
+                        prev = mid;
+                        const void* value = cur->GetValue(
+                            mDb, (uint16_t)mid);
+                        if (value != nullptr)
+                        {
+                            int cmp = CompareField((int)fieldId, value);
+                            if (cmp == 0)
+                            {
+                                node_flags[mid] = NODE_PASS;
+                                break;
+                            }
+                            if (cmp <= 0)
+                                lower = mid;
+                            else
+                                upper = mid;
+                        }
+                        else
+                        {
+                            if (cur->IsLeaf())
+                                ASSERT("!IsLeaf()",
+                                       "c:\\cod\\code\\DbDefs.h", 299);
+                            if (mid != (int)numChildren - 1)
+                                ASSERT("mid == cur->GetNumChildren() - 1",
+                                       "c:\\cod\\code\\game\\DbQuery.cpp",
+                                       311);
+                            --upper;
+                        }
+                        mid = (upper + lower) / 2;
+                    }
+                    while (prev != mid);
+                }
+            }
+            else
+            {
+                for (unsigned int i = 0; i < numChildren; ++i)
+                {
+                    if (cur->IsLeaf())
+                        ASSERT("!IsLeaf()",
+                               "c:\\cod\\code\\DbDefs.h", 299);
+                    if (node_flags[i] == NODE_TEST)
+                    {
+                        const void* value = cur->GetValue(mDb,
+                                                           (uint16_t)i);
+                        node_flags[i] = (unsigned char)!
+                            TestField((int)fieldId, value);
+                    }
+                }
+            }
+        }
+
+        unsigned int stack_size = node_count;
+        for (unsigned int i = 0; i < numChildren; ++i)
+        {
+            if (cur->IsLeaf())
+                ASSERT("!IsLeaf()", "c:\\cod\\code\\DbDefs.h", 299);
+            if (!all_pass && node_flags[i] != NODE_PASS)
+                continue;
+            const DbGraphNode* child = cur->GetChild((uint16_t)i);
+            if (stack_size < 128)
+            {
+                nodes[stack_size] = child;
+                stack_size = ++node_count;
+            }
+            else
+            {
+                ASSERT("m_size < _CAPACITY", "../ae\\core/ae_array.h", 174);
+            }
+        }
+        if (node_count == 0)
+            return;
     }
 }
 
