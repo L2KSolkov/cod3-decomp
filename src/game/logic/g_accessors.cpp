@@ -3594,7 +3594,7 @@ public:
         : mFp(fp), mA1(a1)
     {
     }
-    virtual ~TaskFunctor1() {}
+    virtual ~TaskFunctor1();
     virtual void Update(Task* t, Entity* e)
     {
         (((T*)t)->*mFp)(e, mA1);
@@ -3602,6 +3602,16 @@ public:
 };
 template class TaskFunctor1<AnimationUpdateTask, float>;
 template class TaskFunctor1<XAnimUpdateTask, float>;
+// ea: 0x004A9F90
+template <>
+TaskFunctor1<AnimationUpdateTask, float>::~TaskFunctor1()
+{
+}
+// ea: 0x004A9FA0
+template <>
+TaskFunctor1<XAnimUpdateTask, float>::~TaskFunctor1()
+{
+}
 void force_taskfunctor1_delete(TaskFunctor1<AnimationUpdateTask, float>* p)
 {
     delete p;
