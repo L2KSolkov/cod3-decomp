@@ -3628,3 +3628,29 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0072E1A0	?ClearOccupants@MPVehicle@@QAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1392812-1392821	Live IDA matches count reset and the complete seat sentinel pattern.
 0x0072E1C0	?Reset@MPVehicle@@QAEX_N@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:9907-9972	Reset optionally clears occupants, zeros network/interpolation state, refreshes timestamps, and seeds network state from an attached entity.
 0x0072E1C0	?Reset@MPVehicle@@QAEX_N@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1392822-1392927	Live IDA matches occupant gating, vector zeroing, interpolation/timestamp reset, and attached-entity position/angle copy.
+0x0072F760	?GameListingEnd@MPUIInterface@@SAXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:4911-4915	GameListingEnd is an intentional release no-op.
+0x0072F760	?GameListingEnd@MPUIInterface@@SAXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x0072F760	Live release body is a no-op.
+0x0072FFF0	?StartDevice@MPUIInterface@@SAXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:4916-4920	StartDevice is an intentional release no-op.
+0x0072FFF0	?StartDevice@MPUIInterface@@SAXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x0072FFF0	Live release body is a no-op.
+0x00730220	?getLocalAddresses@MPUIInterface@@SAXAAV?$bdArray@VbdInetAddr@@@@@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:7303-7307	getLocalAddresses is an intentional release no-op.
+0x00730220	?getLocalAddresses@MPUIInterface@@SAXAAV?$bdArray@VbdInetAddr@@@@@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x00730220	Live release body is a no-op.
+0x00730230	?Logging@MPUIInterface@@SAX_N@Z	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:7308-7312	Logging is an intentional release no-op.
+0x00730230	?Logging@MPUIInterface@@SAX_N@Z	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x00730230	Live release body is a no-op.
+0x0072CAE0	?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:7671-7675	DebugPrintTTYSessionInfo is an intentional release no-op.
+0x0072CAE0	?DebugPrintTTYSessionInfo@MPPeer@@QAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x0072CAE0	Live release body is a no-op.
+0x007342E0	??0cBezier@kuju@@QAE@XZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8315-8319	Default cBezier constructor is an intentional release no-op for its aggregate storage.
+0x007342E0	??0cBezier@kuju@@QAE@XZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1397676-1397680	Release constructor body is empty.
+0x00734C30	?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8320-8324	Voice network deinitialise is an intentional release no-op.
+0x00734C30	?deinitialise@cVoiceNetworkManager@knetuser@kuju@@QAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x00734C30	Live release body is a no-op.
+0x007348C0	?loadIRXModules@cVoiceManager@kvoicemanager@kuju@@QAEXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8332-8336	loadIRXModules is an intentional release no-op.
+0x007348C0	?loadIRXModules@cVoiceManager@kvoicemanager@kuju@@QAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x007348C0	Live release body is a no-op.
+0x00734950	?stopSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8343-8347	stopSystem is an intentional release no-op.
+0x00734950	?stopSystem@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x00734950	Live release body is a no-op.
+0x00734960	?startLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8348-8352	startLoopback is an intentional release no-op.
+0x00734960	?startLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x00734960	Live release body is a no-op.
+0x00734970	?stopLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8353-8357	stopLoopback is an intentional release no-op.
+0x00734970	?stopLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x00734970	Live release body is a no-op.
+0x00734980	?updateLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8358-8362	updateLoopback is an intentional release no-op.
+0x00734980	?updateLoopback@cVoiceManager@kvoicemanager@kuju@@AAEXXZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	IDA live 0x00734980	Live release body is a no-op.
+0x0073EF10	??0cBezierTrajectoryInterpolator@kuju@@QAE@XZ	V3	PASS	ida-live-mp-basic-20260828	2026-08-28	src/game/mp/mp_basic.cpp:8504-8509	Trajectory interpolator constructor initializes initial date and interval to zero.
+0x0073EF10	??0cBezierTrajectoryInterpolator@kuju@@QAE@XZ	V4	PASS	ida-live-mp-basic-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1405473-1405480	Release constructor matches zero field initialization.

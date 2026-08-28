@@ -4908,10 +4908,12 @@ sServerCreateParams* MPUIInterface::GetServerParams()
     return &mServerParams;
 }
 
+// ea: 0x0072F760 (release no-op)
 void MPUIInterface::GameListingEnd()
 {
 }
 
+// ea: 0x0072FFF0 (release no-op)
 void MPUIInterface::StartDevice()
 {
 }
@@ -7297,10 +7299,12 @@ void MPPlayerManager::HandleAARGameModeVoteRequest(
     }
 }
 
+// ea: 0x00730220 (release no-op)
 void MPUIInterface::getLocalAddresses(bdArray<bdInetAddr>&)
 {
 }
 
+// ea: 0x00730230 (release no-op)
 void MPUIInterface::Logging(bool)
 {
 }
@@ -7663,6 +7667,7 @@ void MPPeer::operator delete(void* p)
     tlMemFree(p);
 }
 
+// ea: 0x0072CAE0 (release no-op)
 void MPPeer::DebugPrintTTYSessionInfo()
 {
 }
@@ -8306,10 +8311,12 @@ MPOptionsPreferencesMenu::~MPOptionsPreferencesMenu()
 // ============================================================================
 // kuju (mp.o)
 // ============================================================================
+// ea: 0x007342E0 (release no-op)
 kuju::cBezier::cBezier()
 {
 }
 
+// ea: 0x00734C30 (release no-op)
 void kuju::knetuser::cVoiceNetworkManager::deinitialise()
 {
 }
@@ -8321,6 +8328,7 @@ void kuju::kvoicemanager::cVoiceManager::deinitialise()
     mVoiceNetworkManager.mVoiceHandlerInterface = nullptr;
 }
 
+// ea: 0x007348C0 (release no-op)
 void kuju::kvoicemanager::cVoiceManager::loadIRXModules()
 {
 }
@@ -8331,18 +8339,22 @@ void kuju::kvoicemanager::cVoiceManager::setRemoteListeners(MPPlayerSet& players
     mRemoteListeners.mBitPlayers = players.mBitPlayers;
 }
 
+// ea: 0x00734950 (release no-op)
 void kuju::kvoicemanager::cVoiceManager::stopSystem()
 {
 }
 
+// ea: 0x00734960 (release no-op)
 void kuju::kvoicemanager::cVoiceManager::startLoopback()
 {
 }
 
+// ea: 0x00734970 (release no-op)
 void kuju::kvoicemanager::cVoiceManager::stopLoopback()
 {
 }
 
+// ea: 0x00734980 (release no-op)
 void kuju::kvoicemanager::cVoiceManager::updateLoopback()
 {
 }
@@ -8488,6 +8500,7 @@ void kuju::knetuser::cVoiceNetworkManager::updateVoiceNetwork(
     checkForPendingPacketsAwaitingDispatch(time);
 }
 
+// ea: 0x0073EF10 (release field initializer)
 kuju::cBezierTrajectoryInterpolator::cBezierTrajectoryInterpolator()
 {
     mInitialDate = 0.0f;
@@ -9684,18 +9697,18 @@ MPGameInfo::MPGameInfo(unsigned int titleID, const XNKID& securityID,
 void MPGameInfo::updateSlots(char publicOpenDelta, char privateOpenDelta,
                              char publicFilledDelta, char privateFilledDelta)
 {
-    unsigned char m_publicOpen = m_publicOpen;
+    unsigned char m_publicOpen = this->m_publicOpen;
     if (publicOpenDelta + m_publicOpen > 0)
-        m_publicOpen = (unsigned char)(publicOpenDelta + m_publicOpen);
-    unsigned char m_privateOpen = m_privateOpen;
+        this->m_publicOpen = (unsigned char)(publicOpenDelta + m_publicOpen);
+    unsigned char m_privateOpen = this->m_privateOpen;
     if (privateOpenDelta + m_privateOpen > 0)
-        m_privateOpen = (unsigned char)(privateOpenDelta + m_privateOpen);
-    unsigned char m_publicFilled = m_publicFilled;
+        this->m_privateOpen = (unsigned char)(privateOpenDelta + m_privateOpen);
+    unsigned char m_publicFilled = this->m_publicFilled;
     if (publicFilledDelta + m_publicFilled > 0)
-        m_publicFilled = (unsigned char)(publicFilledDelta + m_publicFilled);
-    unsigned char m_privateFilled = m_privateFilled;
+        this->m_publicFilled = (unsigned char)(publicFilledDelta + m_publicFilled);
+    unsigned char m_privateFilled = this->m_privateFilled;
     if (privateFilledDelta + m_privateFilled > 0)
-        m_privateFilled = (unsigned char)(privateFilledDelta + m_privateFilled);
+        this->m_privateFilled = (unsigned char)(privateFilledDelta + m_privateFilled);
 }
 
 // ============================================================================
