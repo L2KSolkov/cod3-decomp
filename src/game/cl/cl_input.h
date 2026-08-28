@@ -172,7 +172,7 @@ struct cvar_t;
 extern cvar_t* com_cl_running;
 extern const signed char ClampChar(int i);
 extern bool CL_IsADS(int client);
-extern int CL_StanceButtonUpdate();
+extern void CL_StanceButtonUpdate();
 extern int BG_AmmoForWeapon(int iWeapon);
 extern int BG_ClipForWeapon(int iWeapon);
 
@@ -297,7 +297,7 @@ void IN_Wbutton6Down(int key, int time);
 void IN_Wbutton6Up(int key, int time);
 void IN_Wbutton7Down(int key, int time);
 void IN_Wbutton7Up(int key, int time);
-void IN_ToggleADS();
+void IN_ToggleADS(int key, int time);
 void IN_AnalogStickLeanDown();
 void IN_AnalogStickLeanUp();
 void IN_EnableAsserts();

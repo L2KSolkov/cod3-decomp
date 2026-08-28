@@ -618,7 +618,7 @@ void CLSwirlControl()
 // ============================================================================
 // CL_GamepadMove - gamepad -> usercmd + view angle
 // ============================================================================
-extern float CL_GamepadAxisValue(unsigned int virtualAxis);
+extern float CL_GamepadAxisValue(int virtualAxis);
 extern float CL_GamepadPhysicalAxisValue(int physicalAxis);
 extern unsigned int frame_msec;
 extern int dword_F6A28C[4 * 802];

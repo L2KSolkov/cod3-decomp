@@ -33,7 +33,7 @@ extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern void Cbuf_Execute();
 extern void XModelEnforceExist(int bEnforce);
 extern void CL_InitRenderer();
-extern char CL_InitUI();
+extern void CL_InitUI();
 extern void Com_CvarDump(print_msg_type_t type);
 extern void Axis_Bind_f();
 extern void Axis_Unbindall_f();
@@ -223,7 +223,7 @@ extern Broc::string cls_configstrings[1024];
 // ============================================================================
 
 // ea: 0x5327E0
-int CL_ClearState()
+void CL_ClearState()
 {
     SoundDevice_StopAllSounds(SoundDevice::sInst);
     SoundDevice::sInst->FrameAdvance( 0.0f);
@@ -237,7 +237,6 @@ int CL_ClearState()
     }
     memset(cl, 0, sizeof(clientActive_t) * 2);
     memset(&clc, 0, sizeof(clc));
-    return 0;
 }
 
 // ea: 0x532880
@@ -280,7 +279,7 @@ const char* CL_GetConfigString(int index)
 }
 
 // ea: 0x52F210
-int CL_Restart()
+void CL_Restart()
 {
     for (int i = 0; i < 1024; ++i)
     {
@@ -291,7 +290,7 @@ int CL_Restart()
         }
         cls_configstrings[i] = defaultFileName;
     }
-    return VM_Call(cgvm, 19);
+    VM_Call(cgvm, 19);
 }
 
 // ea: 0x533080

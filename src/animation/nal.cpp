@@ -6998,7 +6998,7 @@ public:
     void ResetAnimationPlayer();           // 0x53F0E0
     void ClearRenderText(int index);  // 0x53F1E0
     void ClearAllRenderText();             // 0x53F280
-    int DoRenderText(int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o)
+    int DoRenderText(int index) const;  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o)
 
     // accessor cluster (anim.o; smallest-first batch)
     AnimationPlayer::nalAnimCallback* GetNextPlayerCallback();  // 0x53C220
@@ -27745,7 +27745,7 @@ extern float sStickDownMaxProgress;
 extern float CL_GamepadPhysicalAxisValue(int physicalAxis);
 extern void GetSwirlSpeedDirect(float* fCosDeltaAngle, int* iRotationDir,
                                 int iStickIndex);
-extern void GetAverageDelta(float* deltaAngle, int* index, int iStickIndex);
+extern void GetAverageDelta(float& deltaAngle, int& index, int iStickIndex);
 struct cvar_t;
 struct cvar_t {
     unsigned char _pad[0x1C];
@@ -28003,7 +28003,7 @@ void InteractInputRcvrStickSwirl::MeasureInput(float& inputRate,
     else
     {
         mRate = mTotalAngle / mTotalTime;
-        GetAverageDelta(&mRate, &mCounter, mInfo->leftStick == 0);
+        GetAverageDelta(mRate, mCounter, mInfo->leftStick == 0);
         ++mCounter;
         mTotalTime = 0.0f;
         mTotalAngle = 0.0f;

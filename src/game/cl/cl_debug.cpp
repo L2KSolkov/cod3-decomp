@@ -211,9 +211,9 @@ void CL_ConnectResponse(netadr_t from)
 }
 
 // ea: 0x52CFE0
-int CG_GetGameModel(short modelindex)
+short CG_GetGameModel(short modelindex)
 {
-    return VM_Call(cgvm, 8, modelindex);
+    return (short)VM_Call(cgvm, 8, modelindex);
 }
 
 // ea: 0x52D000

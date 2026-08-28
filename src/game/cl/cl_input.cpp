@@ -689,7 +689,7 @@ void IN_Wbutton7Up(int key, int time)
 }
 
 // ea: 0x52AFF0
-void IN_ToggleADS()
+void IN_ToggleADS(int /*key*/, int /*time*/)
 {
     cl_aADS[currCl] = cl_aADS[currCl] == 0;
 }

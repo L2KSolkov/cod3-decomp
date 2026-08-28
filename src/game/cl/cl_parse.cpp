@@ -95,7 +95,7 @@ extern void CL_FinishMove(usercmd_s* cmd);
 extern void CL_AddReliableCommand(const char* cmd);
 extern void Field_AdjustScroll(field_t* edit);
 extern void Field_Clear(field_t* edit);
-extern int CL_ClearState();
+extern void CL_ClearState();
 extern void CL_StartHunkUsers();
 extern void GamePause_SetAllPaused(bool paused);
 extern float Com_GetScreenTimeDelta();
@@ -247,7 +247,7 @@ struct refimport_t {
     int (*FS_Read)(void*, int, int);
     int (*FS_Write)(const void*, int, int);
     class BspPlane* (*CM_GetPlaneNum)(int);
-    int (*CG_GetGameModel)(short);
+    short (*CG_GetGameModel)(short);
     void (*CG_DObjCalcPose)(void*, void*, int*);
     void (*AdjustFrom640)(float*, float*, float*, float*);
     void* (*UI_GetFontInfo)(int, float);
@@ -1070,7 +1070,7 @@ void CL_InitRef()
     extern int Com_SaveCvarsToBuffer(const char** const, int, char*, int);
     extern int Com_LoadCvarsFromBuffer(const char** const, int, const char*,
                                        const char*);
-    extern int CG_GetGameModel(short);
+    extern short CG_GetGameModel(short);
     extern void CG_DObjCalcPose(void*, void*, int*);
     extern void SCR_AdjustFrom640(float*, float*, float*, float*);
     extern nglFont* CL_GetFontInfo(int, float);

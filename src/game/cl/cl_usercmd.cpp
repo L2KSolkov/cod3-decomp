@@ -22,7 +22,7 @@ extern int currCl;
 int dword_106000 = 0;  // cl.o BSS (EF_* flags mask)
 extern int anykeydown;
 extern bool CL_IsADS(int client);
-extern int CL_StanceButtonUpdate();
+extern void CL_StanceButtonUpdate();
 extern const signed char ClampChar(int i);
 int dword_F12110;     // mlook active
 int dword_F170F0 = 0;  // cl.o BSS @ 0xF170F0 (base turn speed)
@@ -333,14 +333,13 @@ void CL_AdjustAngles()
 }
 
 // ea: 0x52BB50
-int CL_StanceButtonUpdate()
+void CL_StanceButtonUpdate()
 {
     if (kb[KB_WBUTTON6].active != 0 || kb[KB_CROUCH].active != 0)
     {
         ASSERT("!((kb[KB_PRONE].active) || (kb[KB_DOWN].active))",
                "c:\\cod\\code\\game\\cl_input.cpp", 1094);
     }
-    int result = 6320 * currCl;
     if (cl[currCl].stanceHeld
         && (0x100000 & cl[currCl].snap.ps.eFlags) == 0
         && com_frameTime - cl[currCl].stanceTime >= cl_stanceHoldTime->integer)
@@ -349,7 +348,6 @@ int CL_StanceButtonUpdate()
         cl[currCl].stanceHeld = false;
         cl_stance_ss[currCl] = stancePosition == 2 ? 0 : 2;
     }
-    return result;
 }
 
 // ea: 0x52BE60
@@ -362,7 +360,7 @@ void CL_MouseEvent(int dx, int dy, int time)
 }
 
 // ea: 0x52BEB0
-void CL_JoystickEvent(int axis, int value)
+void CL_JoystickEvent(int axis, int value, int /*time*/)
 {
     if (axis < 0 || axis >= 6)
         Com_Error((errorParm_t)1, "CL_JoystickEvent: bad axis %i", axis);
@@ -392,17 +390,17 @@ void CL_JoystickMove(usercmd_s* cmd)
 }
 
 // ea: 0x52BFF0
-void GetAverageDelta(float* deltaAngle, int* index, int iStickIndex)
+void GetAverageDelta(float& deltaAngle, int& index, int iStickIndex)
 {
-    if (*index >= 5)
-        *index = 0;
-    Deltas[iStickIndex][*index] = *deltaAngle;
-    *deltaAngle = 0.0f;
-    *deltaAngle = Deltas[iStickIndex][0];
-    *deltaAngle = dword_F133C4[5 * iStickIndex] + *deltaAngle;
-    *deltaAngle = dword_F133C4[5 * iStickIndex + 1] + *deltaAngle;
-    *deltaAngle = dword_F133C4[5 * iStickIndex + 2] + *deltaAngle;
-    *deltaAngle = (dword_F133C4[5 * iStickIndex + 3] + *deltaAngle) * 0.2f;
+    if (index >= 5)
+        index = 0;
+    Deltas[iStickIndex][index] = deltaAngle;
+    deltaAngle = 0.0f;
+    deltaAngle = Deltas[iStickIndex][0];
+    deltaAngle = dword_F133C4[5 * iStickIndex] + deltaAngle;
+    deltaAngle = dword_F133C4[5 * iStickIndex + 1] + deltaAngle;
+    deltaAngle = dword_F133C4[5 * iStickIndex + 2] + deltaAngle;
+    deltaAngle = (dword_F133C4[5 * iStickIndex + 3] + deltaAngle) * 0.2f;
 }
 
 // ea: 0x52C560

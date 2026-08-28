@@ -87,7 +87,7 @@ public:
     void*   mRenderText[5];  // +0x1B8 (InteractionRenderText*)
 
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
-    int DoRenderText(int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o 0x5397F0)
+    int DoRenderText(int index) const;  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o 0x5397F0)
 };
 
 
@@ -220,7 +220,7 @@ void PauseMenu::UnPause()
 }
 
 // ea: 0x5397F0
-int InteractionController::DoRenderText(int index)
+int InteractionController::DoRenderText(int index) const
 {
     if (index < 0 || index >= 5)
     {
@@ -711,7 +711,7 @@ void CL_GamepadEvent(int physicalAxis, int value, int time)
 }
 
 // ea: 0x52EE40
-float CL_GamepadAxisValue(unsigned int virtualAxis)
+float CL_GamepadAxisValue(int virtualAxis)
 {
     if (virtualAxis >= 6)
     {
@@ -723,7 +723,7 @@ float CL_GamepadAxisValue(unsigned int virtualAxis)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", virtualAxis))
             __debugbreak();
     }
-    int v1 = 2 * (currCl + (int)virtualAxis + 8 * currCl);
+    int v1 = 2 * (currCl + virtualAxis + 8 * currCl);
     int v2 = dword_F13368[v1];
     if (v2 == -1)
         return 0.0f;
@@ -783,14 +783,13 @@ void CL_ShutdownUI()
 }
 
 // ea: 0x52E500
-char CL_InitUI()
+void CL_InitUI()
 {
-    char result = 0;
     if (g_femanager.fems != nullptr
         && g_femanager.fems->IsSystemActive())
-        return 1;
+        return;
     if (g_femanager.inGame)
-        return 1;
+        return;
 
     g_femanager.LoadFrontEnd();
     if (g_femanager.fems != nullptr)
@@ -818,14 +817,13 @@ char CL_InitUI()
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("Can't find FrontEnd pak"))
             __debugbreak();
-        return result;
+        return;
     }
     if (PakManager::sInst->IsLoaded(sFrontEndInfo->pakId))
-        return 1;
+        return;
     if (gSkipFrontEnd)
-        return 1;
+        return;
 
     PakManager::sInst->SetUserDistance(sFrontEndInfo, 0.0f);
-    result = (char)PakManager::sInst->SyncLoadPak(sFrontEndInfo);
-    return result;
+    PakManager::sInst->SyncLoadPak(sFrontEndInfo);
 }

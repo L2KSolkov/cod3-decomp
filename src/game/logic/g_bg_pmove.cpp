@@ -66,7 +66,7 @@ extern const char* szWeapTypeNames[9];    // ?szWeapTypeNames@@3PAPBDA (game.o)
 extern Entity* GetPlayer(int idx);        // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
 extern int LocalClient_ClientToPort(int client);  // ?ClientToPort@LocalClient@@YAHH@Z
 extern bool CL_IsADS(int client);                // ?CL_IsADS@@YA_NH@Z
-extern float CL_GamepadAxisValue(unsigned int virtualAxis);  // cl.o
+extern float CL_GamepadAxisValue(int virtualAxis);  // cl.o
 extern float intersect(const math::Position3& po, const math::Dir3& pn,
                        const math::Position3& ro, const math::Dir3& rd);
     // ?intersect@@YAMABVPosition3@math@@ABVDir3@2@01@Z (cdl_base)
