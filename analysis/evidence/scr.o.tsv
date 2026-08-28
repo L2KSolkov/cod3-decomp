@@ -3006,3 +3006,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005E94D0	?get_dlist_node@EndOnScriptNode@@QAEPAXXZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202439-1202443	Release EndOnScriptNode dlist getter matches source.
 0x005E9500	??3EndOnScriptNode@@SAXPAX_NPBDH@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:5987-5989	Source releases EndOnScriptNode storage through its pool allocator.
 0x005E9500	??3EndOnScriptNode@@SAXPAX_NPBDH@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202451-1202455	Release EndOnScriptNode delete forwards to the same allocator.
+0x005E9560	?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/core/ctor_dtor.cpp:230-234	Source copies the EntityNotify owner handle into the returned linked handle.
+0x005E9560	?GetOwner@EntityNotify@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202470-1202477	Release EntityNotify owner getter matches source handle copying.
