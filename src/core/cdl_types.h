@@ -15,6 +15,8 @@ struct cdlConvex;
 struct cdl_cinfo1 {
     math::Position3 pi;
     math::Dir3      ni;
+
+    cdl_cinfo1() {}
 };
 static_assert(sizeof(cdl_cinfo1) == 0x20, "cdl_cinfo1 size mismatch");
 

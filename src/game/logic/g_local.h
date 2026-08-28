@@ -4264,6 +4264,9 @@ struct cdl_array_t {
 struct cdl_cinfo1 {
     math::Position3 pi;   // +0x00 (hit point; verified vs disasm collide_segment)
     math::Dir3 ni;        // +0x10 (hit normal)
+
+    // ea: 0x004AECB0
+    cdl_cinfo1() {}  // ??0cdl_cinfo1@@QAE@XZ (g.o 0x4AECB0)
 };
 static_assert(sizeof(cdl_cinfo1) == 0x20, "cdl_cinfo1 size mismatch");
 

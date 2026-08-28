@@ -12624,6 +12624,7 @@ void Destructible::AddPiece(Entity* ent, const char* exploderType)
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void mem_heap_free(void* ptr);
+extern char* GetNullBuffer(int size);
 
 namespace AeStringSupport {
 void CStrToAeStr(char* dst, int* const dstLen, int capacity, const char* src);
@@ -12648,6 +12649,7 @@ struct InplaceTree {
     unsigned int mSize;  // +0x00
     Element* m_array;    // +0x04
 
+    // ea: 0x004AEB00
     bool IsUsed(unsigned int index) const
     {
         if (index >= mSize)
@@ -12660,14 +12662,8 @@ struct InplaceTree {
                 && AeAssert::Assert("out of bounds"))
                 __debugbreak();
         }
-        const unsigned char* bytes =
-            reinterpret_cast<const unsigned char*>(&m_array[index]);
-        for (unsigned int i = 0; i < sizeof(Element); ++i)
-        {
-            if (bytes[i] != 0)
-                return true;
-        }
-        return false;
+        return memcmp(&m_array[index], GetNullBuffer(sizeof(Element)),
+                      sizeof(Element)) != 0;
     }
 
     template <typename LookupKey>

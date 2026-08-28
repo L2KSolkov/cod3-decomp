@@ -3400,6 +3400,7 @@ template class cFreeList<DObj>;
 template class cFreeList<trRefEntity>;
 
 // tl_clamp / ae_max / ae_min (g.o 0x4AEA60-0x4AEAB0)
+// ea: 0x004AEA60
 template <typename T, typename U, typename V>
 T tl_clamp(const T& v, const U& mn, const V& mx)
 {
@@ -3411,12 +3412,14 @@ T tl_clamp(const T& v, const U& mn, const V& mx)
 }
 template float tl_clamp<float, float, float>(const float&, const float&,
                                              const float&);
+// ea: 0x004AEA90
 template <typename T>
 T ae_max(const T& lhs, const T& rhs)
 {
     return (lhs <= rhs) ? rhs : lhs;
 }
 template int ae_max<int>(const int&, const int&);
+// ea: 0x004AEAB0
 template <typename T>
 T ae_min(const T& lhs, const T& rhs)
 {
@@ -3425,6 +3428,7 @@ T ae_min(const T& lhs, const T& rhs)
 template int ae_min<int>(const int&, const int&);
 
 // PakDelete (g.o 0x4AEAD0)
+// ea: 0x004AEAD0
 template <typename T>
 void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
 {
@@ -3437,6 +3441,7 @@ void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
 template void PakDelete<vehicle_follow>(TPakId, vehicle_follow*, bool);
 
 // inside_aabb_aabb (g.o 0x4AEBB0)
+// ea: 0x004AEBB0
 bool inside_aabb_aabb(const math::Position3& min0, const math::Position3& max0,
                       const math::Position3& min1, const math::Position3& max1)
 {
@@ -3446,6 +3451,7 @@ bool inside_aabb_aabb(const math::Position3& min0, const math::Position3& max0,
 }
 
 // trace_t::Clear (g.o 0x4AEC20)
+// ea: 0x004AEC20
 void trace_t::Clear()
 {
     normal.v = _mm_setzero_ps();
@@ -3463,18 +3469,21 @@ void trace_t::Clear()
 }
 
 // cdl_object_t accessors (g.o 0x4AECC0-0x4AEDA0)
+// ea: 0x004AECC0
 const math::Position3 cdl_object_t::get_center_local() const
 {
     math::Position3 r;
     r.v = _mm_set_ps(0.0f, center[2], 0.0f, center[0]);
     return r;
 }
+// ea: 0x004AED30
 math::Dir3 cdl_object_t::get_box_radius() const
 {
     math::Dir3 r;
     r.v = _mm_set_ps(0.0f, box_radius[2], 0.0f, box_radius[0]);
     return r;
 }
+// ea: 0x004AEDA0
 math::Position3 cdl_object_t::get_max() const
 {
     math::Position3 r;
@@ -3484,22 +3493,55 @@ math::Position3 cdl_object_t::get_max() const
 }
 
 // DCGSet / CGBank (g.o 0x4AEE40-0x4AEFC0)
+// ea: 0x004AEE40
 unsigned int DCGSet::size() const
 {
     return (unsigned int)objects_m_count;
 }
+// ea: 0x004AEE50
 const cdl_object_t& DCGSet::get_object(unsigned short index) const
 {
+    if (index >= (unsigned short)objects_m_count)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 77;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+        if (index >= (unsigned short)objects_m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                         89, "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+    }
     return ((const cdl_object_t*)objects_m_elements)[index];
 }
+// ea: 0x004AEF00
 unsigned int CGBank::size() const
 {
     return (unsigned int)objects.m_count;
 }
+// ea: 0x004AEF10
 const cdl_object_t& CGBank::get_object(unsigned short index) const
 {
+    if (index >= (unsigned short)objects.m_count)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 233;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+        if (index >= (unsigned short)objects.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                         89, "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+    }
     return ((const cdl_object_t*)objects.m_elements)[index];
 }
+// ea: 0x004AEFC0
 CGBank* CGBankManager::GetBank(TPakId pakId)
 {
     return mBankArray[pakId];
@@ -3643,6 +3685,7 @@ void force_taskfunctor1_delete_x(TaskFunctor1<XAnimUpdateTask, float>* p)
 }
 
 // collision_context_t::filter (g.o 0x4AF020)
+// ea: 0x004AF020
 bool collision_context_t::filter(Entity* ent) const
 {
     (void)ent;

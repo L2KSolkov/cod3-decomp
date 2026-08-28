@@ -1675,3 +1675,37 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004AE8D0	?end@?$ae_vector@Udebug_aabb@@@@QAEPAUdebug_aabb@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018162	Release debug-aabb end returns the element after mSize.
 0x004AE8F0	?construct_array@?$ae_vector@Udebug_aabb@@@@AAEPAUdebug_aabb@@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:140	The debug-aabb vector one-argument constructor helper allocates aligned storage.
 0x004AE8F0	?construct_array@?$ae_vector@Udebug_aabb@@@@AAEPAUdebug_aabb@@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018168	Release debug-aabb one-argument construction allocates sizeof(debug_aabb) times the requested count.
+0x004AEA60	??$tl_clamp@MMM@@YAMABM00@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3403	Manual source body matches release clamp ordering and return behavior.
+0x004AEA60	??$tl_clamp@MMM@@YAMABM00@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018207	Release float clamp checks minimum, then maximum, then returns the input.
+0x004AEA90	??$ae_max@H@@YAHABH0@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3416	Manual source body matches release max comparison and result selection.
+0x004AEA90	??$ae_max@H@@YAHABH0@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018222	Release int max returns rhs when lhs is less than or equal to rhs.
+0x004AEAB0	??$ae_min@H@@YAHABH0@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3423	Manual source body matches release min comparison and result selection.
+0x004AEAB0	??$ae_min@H@@YAHABH0@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018233	Release int min returns rhs when lhs is greater than or equal to rhs.
+0x004AEAD0	??$PakDelete@Uvehicle_follow@@@@YAXW4TPakId@@PAUvehicle_follow@@_N@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3432	Manual source body confirms null guard and PakManager release path; vehicle_follow destructor is trivial.
+0x004AEAD0	??$PakDelete@Uvehicle_follow@@@@YAXW4TPakId@@PAUvehicle_follow@@_N@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018244	Release vehicle_follow deletion null-checks and calls PakManager::MemFree.
+0x004AEB00	?IsUsed@?$InplaceTree@VInplaceString@@V1@@@ABE_NI@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/physics/g_physics.cpp:12653	Manual source body matches bounds assertion and fixed eight-byte zero-buffer comparison.
+0x004AEB00	?IsUsed@?$InplaceTree@VInplaceString@@V1@@@ABE_NI@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018251	Release IsUsed asserts on out-of-range and compares the eight-byte element to GetNullBuffer.
+0x004AEBB0	?inside_aabb_aabb@@YA_NABVPosition3@math@@000@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3445	Manual SIMD source body matches release separation test and xyz mask.
+0x004AEBB0	?inside_aabb_aabb@@YA_NABVPosition3@math@@000@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018274	Release computes max of the two AABB separations and tests all three coordinates negative.
+0x004AEC20	?Clear@trace_t@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3455	Manual source body clears every trace field in release order.
+0x004AEC20	?Clear@trace_t@@QAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018285	Release Clear zeroes vectors, scalar flags, handles, shader, hit location, and decal state.
+0x004AECB0	??0cdl_cinfo1@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:4269	Manual source type has an explicit empty constructor matching the release no-op.
+0x004AECB0	??0cdl_cinfo1@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018302	Release cdl_cinfo1 constructor returns this without field writes.
+0x004AECC0	?get_center_local@cdl_object_t@@QBE?BVPosition3@math@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3473	Manual source body returns center x and z in the release Position3 layout.
+0x004AECC0	?get_center_local@cdl_object_t@@QBE?BVPosition3@math@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018308	Release center accessor copies center x and z into the SIMD result.
+0x004AED30	?get_box_radius@cdl_object_t@@QBE?AVDir3@math@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3481	Manual source body returns box-radius x and z in the release Dir3 layout.
+0x004AED30	?get_box_radius@cdl_object_t@@QBE?AVDir3@math@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018320	Release box-radius accessor copies box_radius x and z into the SIMD result.
+0x004AEDA0	?get_max@cdl_object_t@@QBE?AVPosition3@math@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3488	Manual source body adds center and box radius using the release SIMD layout.
+0x004AEDA0	?get_max@cdl_object_t@@QBE?AVPosition3@math@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018332	Release get_max adds center and box-radius vectors.
+0x004AEE40	?size@DCGSet@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3497	Manual source body returns the DCG object count.
+0x004AEE40	?size@DCGSet@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018349	Release size returns objects.m_count.
+0x004AEE50	?get_object@DCGSet@@QBEABUcdl_object_t@@G@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3502	Manual source body includes release JSV and tlAssert bounds paths before indexed access.
+0x004AEE50	?get_object@DCGSet@@QBEABUcdl_object_t@@G@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018355	Release DCG accessor asserts index < size and returns the indexed object.
+0x004AEF00	?size@CGBank@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3521	Manual source body returns the CGBank object count.
+0x004AEF00	?size@CGBank@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018375	Release size returns objects.m_count.
+0x004AEF10	?get_object@CGBank@@QBEABUcdl_object_t@@G@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3526	Manual source body includes release JSV and tlAssert bounds paths before indexed access.
+0x004AEF10	?get_object@CGBank@@QBEABUcdl_object_t@@G@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018381	Release CGBank accessor asserts index < size and returns the indexed object.
+0x004AEFC0	?GetBank@CGBankManager@@QAEPAVCGBank@@W4TPakId@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3545	Manual source body returns the bank-array entry for the pak id.
+0x004AEFC0	?GetBank@CGBankManager@@QAEPAVCGBank@@W4TPakId@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018401	Release GetBank returns mBankArray[pakId] through ae_array indexing.
+0x004AF020	?filter@collision_context_t@@UBE_NPAVEntity@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3699	Manual source body intentionally ignores Entity and returns false, matching the base filter.
+0x004AF020	?filter@collision_context_t@@UBE_NPAVEntity@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018424	Release base collision filter returns false without inspecting the entity.
