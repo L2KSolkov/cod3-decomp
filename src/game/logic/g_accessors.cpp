@@ -3548,25 +3548,28 @@ CGBank* CGBankManager::GetBank(TPakId pakId)
 }
 
 // XModel / XModelParts (g.o 0x4AF100 / 0x4AF110)
+// ea: 0x004AF100
 int XModelParts::GetNumBones() const
 {
     return (int)mHierarchy.mSize;
 }
+// ea: 0x004AF110
 int XModel::GetNumBones(int lodIndex) const
 {
-    const XModelParts* parts = GetXModelParts(lodIndex);
-    if (parts != nullptr)
-        return (int)parts->mHierarchy.mSize;
+    if (GetXModelParts(lodIndex) != nullptr)
+        return (int)GetXModelParts(lodIndex)->mHierarchy.mSize;
     return 0;
 }
 
 // Task::IsActive (g.o 0x4AF150)
+// ea: 0x004AF150
 bool Task::IsActive() const
 {
     return (mFlags & 4) == 0;
 }
 
 // EntityState::SetLerpOrigin (g.o 0x4AF2A0)
+// ea: 0x004AF2A0
 void EntityState::SetLerpOrigin(const math::Position3& origin)
 {
     if (lerpOrigin.v.m128_f32[0] != origin.v.m128_f32[0]
@@ -3579,12 +3582,14 @@ void EntityState::SetLerpOrigin(const math::Position3& origin)
 }
 
 // Entity::AssignHandle (g.o 0x4AF3A0)
+// ea: 0x004AF3A0
 void Entity::AssignHandle(Handle h)
 {
     mHandle.mHandle.mVal = h.mVal;
 }
 
 // trigger_info_t::Clear (g.o 0x4AFD20)
+// ea: 0x004AFD20
 void trigger_info_t::Clear()
 {
     mEntity.mHandle.mVal = 0;
@@ -3594,6 +3599,7 @@ void trigger_info_t::Clear()
 }
 
 // VehicleNodeAllocator ctor (g.o 0x4B0040)
+// ea: 0x004B0040
 VehicleNodeAllocator::VehicleNodeAllocator()
 {
     m_numNodes = 0;
@@ -3693,6 +3699,7 @@ bool collision_context_t::filter(Entity* ent) const
 }
 
 // player_collision_context_t ctor (g.o 0x4B0000)
+// ea: 0x004B0000
 player_collision_context_t::player_collision_context_t(
     DbLinkedHandle<EntityHandleDb, Entity> handle, int mask)
     : collision_context_t()

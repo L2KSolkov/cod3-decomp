@@ -1709,3 +1709,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004AEFC0	?GetBank@CGBankManager@@QAEPAVCGBank@@W4TPakId@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018401	Release GetBank returns mBankArray[pakId] through ae_array indexing.
 0x004AF020	?filter@collision_context_t@@UBE_NPAVEntity@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3699	Manual source body intentionally ignores Entity and returns false, matching the base filter.
 0x004AF020	?filter@collision_context_t@@UBE_NPAVEntity@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018424	Release base collision filter returns false without inspecting the entity.
+0x004AF100	?GetNumBones@XModelParts@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3552	Manual source body returns mHierarchy.mSize.
+0x004AF100	?GetNumBones@XModelParts@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018488	Release XModelParts bone count returns mHierarchy.mSize.
+0x004AF110	?GetNumBones@XModel@@QBEHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3557	Manual source body performs the release double lookup and returns the hierarchy size or zero.
+0x004AF110	?GetNumBones@XModel@@QBEHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018494	Release XModel bone count looks up parts twice, returning hierarchy size or zero.
+0x004AF150	?IsActive@Task@@QBE_NXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3566	Manual source body tests the task active flag bit.
+0x004AF150	?IsActive@Task@@QBE_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018503	Release Task::IsActive returns true when mFlags bit 2 is clear.
+0x004AF230	?native_to_cdl_dir3@@YA?BVDir3@math@@QBM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:4767	Manual inline conversion copies native x, y, and z into Dir3.
+0x004AF230	?native_to_cdl_dir3@@YA?BVDir3@math@@QBM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018541	Release conversion copies the three native direction components into the returned Dir3.
+0x004AF2A0	?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3573	Manual source body compares xyz, copies the origin vector, and sets the lerp flag.
+0x004AF2A0	?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018553	Release SetLerpOrigin updates the vector and sets eFlags bit 30 only when xyz changes.
+0x004AF3A0	?AssignHandle@Entity@@QAEXVHandle@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3586	Manual source body assigns the handle value to Entity::mHandle.
+0x004AF3A0	?AssignHandle@Entity@@QAEXVHandle@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018576	Release AssignHandle stores h.mVal in the entity handle.
+0x004AFD20	?Clear@trigger_info_t@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3593	Manual source body clears both entity handles and use counters.
+0x004AFD20	?Clear@trigger_info_t@@QAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1018897	Release trigger clear zeroes entity handles and both use counts.
+0x004B0000	??0player_collision_context_t@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3703	Manual source body initializes the four pass handles, stores the supplied entity handle, and sets contentmask.
+0x004B0000	??0player_collision_context_t@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019011	Release player collision constructor initializes base fields, binds pass_entity1, sets mask, and installs the derived vtable.
+0x004B0040	??0VehicleNodeAllocator@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3603	Manual source body zeroes allocator counters and all sixteen block pointers.
+0x004B0040	??0VehicleNodeAllocator@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1019031	Release VehicleNodeAllocator constructor zeroes counters and sixteen node blocks.

@@ -4763,6 +4763,7 @@ void  MultiplayerMgr_DropWeapon(void* self, int weapon, int netIndex,
                                 const math::Dir3* velocity, int clipCount,
                                 int ammoCount);  // mp.o
 const math::Dir3 native_to_cdl_dir3(const float* v);  // ?native_to_cdl_dir3@@YA?BVDir3@math@@QBM@Z (g.o inline)
+// ea: 0x004AF230
 inline const math::Dir3 native_to_cdl_dir3(const float* v)
 {
     math::Dir3 v3;
