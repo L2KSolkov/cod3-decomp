@@ -2585,8 +2585,9 @@ void VectorPolar(float* const v, float radius, float theta, float phi)
 // ea: 0x004C3260
 float PitchForYawOnNormal(float fYaw, const float* const vNormal)
 {
-    ASSERT("vNormal[0] || vNormal[1] || vNormal[2]",
-           "c:\\cod\\code\\game\\com_math.cpp", 3207);
+    if (vNormal[0] == 0.0f && vNormal[1] == 0.0f && vNormal[2] == 0.0f)
+        ASSERT("vNormal[0] || vNormal[1] || vNormal[2]",
+               "c:\\cod\\code\\game\\com_math.cpp", 3207);
     float vForward[3];
     float vProjected[3];
     float sy, cy;
