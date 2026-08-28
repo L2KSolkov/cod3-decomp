@@ -20,6 +20,7 @@ typedef int bdInt;
 class bdReferencable {
 public:
     bdReferencable() : m_refCount(0) {}
+    // ea: 0x89EB80
     virtual ~bdReferencable() {}
 
     bdInt addRef() {
