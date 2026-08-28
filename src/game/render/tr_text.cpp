@@ -8,6 +8,7 @@
 #include "ngl/ngl_dx_quad.h"
 
 #include <string.h>
+#include <string>
 
 struct nglTexture;
 struct nglFont;
@@ -81,12 +82,11 @@ void RE_Text_PaintWithCursor(float x, float y, int font, float scale,
 
     const char* p_texta = text;
     const float* v8;
+    std::string colorText;
     if (text != nullptr)
     {
         if (*text == 94 && (text[1] - 48) < 10 && (text[1] - 48) > 0)
         {
-            char buf[2];
-            strcpy(buf, text);
             const float* colors[11];
             colors[0] = colorBlack;
             colors[1] = colorRed;
@@ -100,10 +100,12 @@ void RE_Text_PaintWithCursor(float x, float y, int font, float scale,
             colors[9] = colorLtGreen;
             colors[10] = colorLtOrange;
             v8 = colors[text[1] - 48];
-            p_texta = buf + 2;  // strip leading "^<digit>" color tag
-            char* v9 = &buf[strlen(buf)];
-            if (*v9 == 94 && v9[1] == 55)
-                *v9 = 0;
+            colorText.assign(text + 2);  // strip leading "^<digit>" color tag
+            if (colorText.size() >= 2
+                && colorText[colorText.size() - 2] == '^'
+                && colorText[colorText.size() - 1] == '7')
+                colorText.resize(colorText.size() - 2);
+            p_texta = colorText.c_str();
         }
         else
         {
