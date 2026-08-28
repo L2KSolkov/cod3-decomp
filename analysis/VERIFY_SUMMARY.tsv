@@ -268,7 +268,7 @@ nslUpdate.o	2	0	0	2	0	0	0
 nslVoice.o	5	0	0	5	0	0	0
 nslWave.o	15	0	0	15	0	0	0
 nslWaveBank.o	48	10	0	38	0	0	0
-nslWaveBankFixup.o	1	0	0	1	0	0	0
+nslWaveBankFixup.o	1	0	0	0	0	1	0
 nslWaveBankLoader.o	5	3	0	2	0	0	0
 nslWaveBankSort.o	3	0	0	3	0	0	0
 nvl_afmv.o	32	32	0	0	0	0	0

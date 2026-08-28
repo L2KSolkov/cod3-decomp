@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00829DD0	?nslWaveBankFixup@@YAHPAUnslWaveBank@@@Z	V3	PASS	ida-manual-nsl-20260828	2026-08-28	src/sound/nsl.cpp:2547-2615	Source fixes up bank-relative pointers, clears backing/MD5 state, adjusts wave/name/info records, resolves groups, and sets the fixed-up flag.
+0x00829DD0	?nslWaveBankFixup@@YAHPAUnslWaveBank@@@Z	V4	PASS	ida-manual-nsl-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1567647-1567716	Release null/flag guards, pointer fixups, wave/info loops, group resolution, sound flag normalization, and final flag update match source.
