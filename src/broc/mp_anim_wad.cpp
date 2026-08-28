@@ -1087,13 +1087,13 @@ Broc::bbool* IsEEDefined_script_speed_ptr(Broc::bbool* result, Broc::entity ent)
 }
 
 // GetEE_script_panzer / IsEEDefined_script_panzer (key 0x42EA8664)
-Broc::bint* GetEE_script_panzer(Broc::entity ent) {
+Broc::bint* GetEE_script_panzer_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x42EA8664);
 }
 
-Broc::bbool* IsEEDefined_script_panzer(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_panzer_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1111,13 +1111,13 @@ Broc::bbool* IsEEDefined_script_panzer(Broc::bbool* result, Broc::entity ent) {
 }
 
 // GetEE_script_tankmgaccuracy / IsEEDefined_script_tankmgaccuracy (key 0xA565DE41)
-Broc::bint* GetEE_script_tankmgaccuracy(Broc::entity ent) {
+Broc::bint* GetEE_script_tankmgaccuracy_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0xA565DE41);
 }
 
-Broc::bbool* IsEEDefined_script_tankmgaccuracy(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_tankmgaccuracy_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1135,13 +1135,13 @@ Broc::bbool* IsEEDefined_script_tankmgaccuracy(Broc::bbool* result, Broc::entity
 }
 
 // GetEE_script_colorid_startindex / IsEEDefined_script_colorid_startindex (key 0xD678CA45)
-Broc::bint* GetEE_script_colorid_startindex(Broc::entity ent) {
+Broc::bint* GetEE_script_colorid_startindex_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0xD678CA45);
 }
 
-Broc::bbool* IsEEDefined_script_colorid_startindex(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_colorid_startindex_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1159,13 +1159,13 @@ Broc::bbool* IsEEDefined_script_colorid_startindex(Broc::bbool* result, Broc::en
 }
 
 // GetEE_script_burst_min / IsEEDefined_script_burst_min (key 0xD74DC807)
-Broc::bfloat* GetEE_script_burst_min(Broc::entity ent) {
+Broc::bfloat* GetEE_script_burst_min_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bfloat>(0xD74DC807);
 }
 
-Broc::bbool* IsEEDefined_script_burst_min(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_burst_min_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1183,13 +1183,13 @@ Broc::bbool* IsEEDefined_script_burst_min(Broc::bbool* result, Broc::entity ent)
 }
 
 // GetEE_script_timer / IsEEDefined_script_timer (key 0x48254DD5)
-Broc::bint* GetEE_script_timer(Broc::entity ent) {
+Broc::bint* GetEE_script_timer_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x48254DD5);
 }
 
-Broc::bbool* IsEEDefined_script_timer(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_timer_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1203,6 +1203,58 @@ Broc::bbool* IsEEDefined_script_timer(Broc::bbool* result, Broc::entity ent) {
     } else {
         result->mVal = false;
     }
+    return result;
+}
+
+// Release ABI wrappers for the next animation state fields.
+// ea: 0x0098EDD0
+::bint& GetEE_script_panzer(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_panzer_ptr(ent));
+}
+// ea: 0x0098EE20
+::bbool IsEEDefined_script_panzer(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_panzer_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098EED0
+::bint& GetEE_script_tankmgaccuracy(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_tankmgaccuracy_ptr(ent));
+}
+// ea: 0x0098EF20
+::bbool IsEEDefined_script_tankmgaccuracy(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_tankmgaccuracy_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098EFD0
+::bint& GetEE_script_colorid_startindex(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_colorid_startindex_ptr(ent));
+}
+// ea: 0x0098F020
+::bbool IsEEDefined_script_colorid_startindex(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_colorid_startindex_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098F370
+::bfloat& GetEE_script_burst_min(Broc::entity ent) {
+    return *reinterpret_cast<::bfloat*>(GetEE_script_burst_min_ptr(ent));
+}
+// ea: 0x0098F3C0
+::bbool IsEEDefined_script_burst_min(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_burst_min_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098F470
+::bint& GetEE_script_timer(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_timer_ptr(ent));
+}
+// ea: 0x0098F4C0
+::bbool IsEEDefined_script_timer(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_timer_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
     return result;
 }
 
