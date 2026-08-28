@@ -453,8 +453,8 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0092F170	?IsDefined@entity@Broc@@QBE_NXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1797644	Release entity-existence check matches source.
 0x0092F6F0	?IsDefined@Broc@@YA_NABVstring@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/engine/broc_types.h:1063-1064	Source string IsDefined overload forwards to the string validity test.
 0x0092F6F0	?IsDefined@Broc@@YA_NABVstring@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1797874	Release string IsDefined forwarding matches source.
-0x00934830	??HBroc@@YA?AVstring@0@ABV10@M@	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6437-6443	Source copies a string and appends a floating-point value.
-0x00934830	??HBroc@@YA?AVstring@0@ABV10@M@	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1801054	Release string-plus-float construction and append match source.
+0x00934830	??HBroc@@YA?AVstring@0@ABV10@M@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6437-6443	Source copies a string and appends a floating-point value.
+0x00934830	??HBroc@@YA?AVstring@0@ABV10@M@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1801054	Release string-plus-float construction and append match source.
 0x00935870	?endon@Broc@@YAXVentity@1@UHashStr@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:1671-1674	Source terminates an entity thread on the supplied event hash.
 0x00935870	?endon@Broc@@YAXVentity@1@UHashStr@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1801539	Release hash conversion and thread-termination API call match source.
 0x009360D0	?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5994-5996	Source forwards entity, label hash, and function hash to the event-handler API.
