@@ -7310,7 +7310,9 @@ int VEH_SlideMove(Entity* ent, int gravity, int msec)
     VectorNormalize2(veh->phys.vel, veh->phys.vel);
     collision_context_t context;
 
-    context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    // The release vehicle slide trace deliberately leaves pass_entity1 empty;
+    // only the vehicle clipmask is supplied through pass_entity2.
+    context.pass_entity1.mHandle.mVal = 0;
     context.pass_entity2.mHandle.mVal = ent->clipmask;
     context.pass_owner1.mHandle.mVal = 0;
     context.pass_owner2.mHandle.mVal = 0;
