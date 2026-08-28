@@ -325,6 +325,7 @@ struct BitSet {
             operator++();
         }
         // ea: 0x005EAF90
+        // ea: 0x004AE5A0
         bool compare(const iterator& rhs)  // ?compare@iterator@?$BitSet@$0FEA@@@QAE_NABV12@@Z (g.o 0x4AE5A0)
         {
             return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
@@ -399,6 +400,7 @@ struct reserved_dlist {
         dlist_node* mPrev;  // +0x04
 
         dlist_node() : mNext(nullptr), mPrev(nullptr) {}
+        // ea: 0x004AE510
         dlist_node(dlist_node* prev, dlist_node* next)
             : mNext(next), mPrev(prev) {}  // ??0dlist_node@?$reserved_dlist@VWaitTilOutput@@@@QAE@PAU01@0@Z (g.o 0x4AE510)
 

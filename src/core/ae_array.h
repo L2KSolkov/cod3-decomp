@@ -177,6 +177,7 @@ public:
         const_iterator() : m_ptr(nullptr) {}
     private:
         // ea: 0x005EAC80
+        // ea: 0x004AE5D0
         const_iterator(const T* ptr) : m_ptr(ptr) {}  // ??0const_iterator@...@@AAE@PBQAVEntity@@@Z (g.o 0x4AE5D0)
     public:
         // ea: 0x005EA730
@@ -197,6 +198,9 @@ public:
         T* m_ptr;  // +0x00
         iterator() : m_ptr(nullptr) {}
     private:
+        // ea: 0x004AE610
+        // ea: 0x004AE610
+        // ea: 0x004AE650
         iterator(T* ptr) : m_ptr(ptr) {}  // ??0iterator@...@@AAE@PAPAVEntity@@@Z (g.o 0x4AE610)
     public:
         // ea: 0x004AD230

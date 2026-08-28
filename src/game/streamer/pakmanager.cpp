@@ -1797,6 +1797,7 @@ const PakFile* reserved_dlist<PakFile>::node_to_object(
 }
 
 template <>
+// ea: 0x004AE560
 reserved_dlist<PakFile>::const_iterator::const_iterator(
     const reserved_dlist<PakFile>::dlist_node* cur,
     const reserved_dlist<PakFile>::dlist_node* next)
@@ -1805,6 +1806,7 @@ reserved_dlist<PakFile>::const_iterator::const_iterator(
 }
 
 template <>
+// ea: 0x004AE580
 bool reserved_dlist<PakFile>::const_iterator::compare(
     const reserved_dlist<PakFile>::const_iterator& rhs) const
 {

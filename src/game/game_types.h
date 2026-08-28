@@ -155,6 +155,8 @@ public:
     unsigned char m_elementdata[
         sizeof(DbLinkedHandle<HandleDb, T>) * CAPACITY];  // +0x04
 
+    // ea: 0x004AE5F0
+    // ea: 0x004AE600
     ae_sized_array_base()
         : m_elements(reinterpret_cast<DbLinkedHandle<HandleDb, T>*>(
               m_elementdata))
@@ -276,6 +278,7 @@ template <typename T>
 // ea: 0x005EACA0
 // ea: 0x004AE4C0
 // ea: 0x004AE4F0
+// ea: 0x004AE540
 T* IVPointer<T>::Deref() const
 {
     ValidatePakId((TPakId)mPakId);
