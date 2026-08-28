@@ -5189,6 +5189,16 @@ Broc::bbool IsEEDefined_script_effect_id(Broc::entity ent) {
     mp_util_wad::IsEEDefined_script_effect_id(&result, ent);
     return result;
 }
+// ea: 0x0098F970
+Broc::string& GetEE_script_fxid(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_fxid(ent);
+}
+// ea: 0x0098F9C0
+Broc::bbool IsEEDefined_script_fxid(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_fxid(&result, ent);
+    return result;
+}
 
 // ============================================================================
 // _mp_airplanes - airplane flyby script (72-byte mp_plane).

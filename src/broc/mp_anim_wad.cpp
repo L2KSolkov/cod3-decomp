@@ -1259,13 +1259,13 @@ Broc::bbool* IsEEDefined_script_timer_ptr(Broc::bbool* result, Broc::entity ent)
 }
 
 // GetEE_script_noautoreenforcements / IsEEDefined_script_noautoreenforcements (key 0x8806E5AA)
-Broc::bint* GetEE_script_noautoreenforcements(Broc::entity ent) {
+Broc::bint* GetEE_script_noautoreenforcements_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x8806E5AA);
 }
 
-Broc::bbool* IsEEDefined_script_noautoreenforcements(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_noautoreenforcements_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1283,13 +1283,13 @@ Broc::bbool* IsEEDefined_script_noautoreenforcements(Broc::bbool* result, Broc::
 }
 
 // GetEE_script_exploder / IsEEDefined_script_exploder (key 0x6EFF46F7)
-Broc::bint* GetEE_script_exploder(Broc::entity ent) {
+Broc::bint* GetEE_script_exploder_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x6EFF46F7);
 }
 
-Broc::bbool* IsEEDefined_script_exploder(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_exploder_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1307,13 +1307,13 @@ Broc::bbool* IsEEDefined_script_exploder(Broc::bbool* result, Broc::entity ent) 
 }
 
 // GetEE_script_startinghealth / IsEEDefined_script_startinghealth (key 0xBA634DF6)
-Broc::bint* GetEE_script_startinghealth(Broc::entity ent) {
+Broc::bint* GetEE_script_startinghealth_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0xBA634DF6);
 }
 
-Broc::bbool* IsEEDefined_script_startinghealth(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_startinghealth_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1331,13 +1331,13 @@ Broc::bbool* IsEEDefined_script_startinghealth(Broc::bbool* result, Broc::entity
 }
 
 // GetEE_script_flashlight / IsEEDefined_script_flashlight (key 0xED5D0E1A)
-Broc::bint* GetEE_script_flashlight(Broc::entity ent) {
+Broc::bint* GetEE_script_flashlight_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0xED5D0E1A);
 }
 
-Broc::bbool* IsEEDefined_script_flashlight(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_flashlight_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1351,6 +1351,48 @@ Broc::bbool* IsEEDefined_script_flashlight(Broc::bbool* result, Broc::entity ent
     } else {
         result->mVal = false;
     }
+    return result;
+}
+
+// Release ABI wrappers for the remaining animation flags in this group.
+// ea: 0x0098F570
+::bint& GetEE_script_noautoreenforcements(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_noautoreenforcements_ptr(ent));
+}
+// ea: 0x0098F5C0
+::bbool IsEEDefined_script_noautoreenforcements(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_noautoreenforcements_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098F670
+::bint& GetEE_script_exploder(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_exploder_ptr(ent));
+}
+// ea: 0x0098F6C0
+::bbool IsEEDefined_script_exploder(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_exploder_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098F770
+::bint& GetEE_script_startinghealth(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_startinghealth_ptr(ent));
+}
+// ea: 0x0098F7C0
+::bbool IsEEDefined_script_startinghealth(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_startinghealth_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098F870
+::bint& GetEE_script_flashlight(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_flashlight_ptr(ent));
+}
+// ea: 0x0098F8C0
+::bbool IsEEDefined_script_flashlight(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_flashlight_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
     return result;
 }
 
