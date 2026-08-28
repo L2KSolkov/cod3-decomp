@@ -14,6 +14,8 @@ float (*bytedirs)[3] = s_bytedirs;  // filled at runtime by table init
 #include <math.h>
 #include <string.h>
 
+extern "C" int __fpclass(float);
+
 namespace math {
 
 // ea: 0x004DC020
@@ -1740,6 +1742,8 @@ void MatrixInverseOrthogonal43(const float (*const in)[3],
 // ea: 0x004BFCE0
 const float AngleNormalize360Accurate(float angle)
 {
+    if ((__fpclass(angle) & 0x297) != 0)
+        ASSERT("!IS_NAN(angle)", "c:\\cod\\code\\game\\com_math.cpp", 2123);
     float v1 = angle;
     if (angle >= 0.0f)
     {
@@ -1761,6 +1765,8 @@ const float AngleNormalize360Accurate(float angle)
 // ea: 0x004BFD90
 const float AngleNormalize180Accurate(float angle)
 {
+    if ((__fpclass(angle) & 0x297) != 0)
+        ASSERT("!IS_NAN(angle)", "c:\\cod\\code\\game\\com_math.cpp", 2155);
     float v1 = angle;
     if (angle > -180.0f)
     {
@@ -1784,8 +1790,11 @@ void ProjectPointOnPlane(float* const dst, const float* const p,
                          const float* const normal)
 {
     float lengthSqrd = *normal * *normal + normal[1] * normal[1] + normal[2] * normal[2];
-    ASSERT("lengthSqrd", "c:\\cod\\code\\game\\com_math.cpp", 2497);
+    if (lengthSqrd == 0.0f)
+        ASSERT("lengthSqrd", "c:\\cod\\code\\game\\com_math.cpp", 2497);
     float lengthSqrda = 1.0f / lengthSqrd;
+    if ((__fpclass(lengthSqrda) & 0x297) != 0)
+        ASSERT("!IS_NAN(inv_denom)", "c:\\cod\\code\\game\\com_math.cpp", 2501);
     float v4 = (p[2] * normal[2] + *p * *normal + p[1] * normal[1]) * lengthSqrda;
     float v5 = lengthSqrda * normal[1];
     float v6 = lengthSqrda * normal[2];
