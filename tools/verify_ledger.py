@@ -154,6 +154,14 @@ def source_files() -> list[Path]:
     return sorted(result)
 
 
+def asm_source_files() -> list[Path]:
+    result: list[Path] = []
+    for root in SOURCE_ROOTS:
+        if root.exists():
+            result.extend(path for path in root.rglob("*.asm"))
+    return sorted(result)
+
+
 def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
     """Find the first plausible definition after a marker.
 
@@ -299,6 +307,50 @@ def matching_body(lines: list[str], brace_line: int) -> str:
     return text[open_at:end]
 
 
+def scan_asm_markers() -> list[Marker]:
+    """Read EA-annotated MASM wrappers without treating them as C++ stubs."""
+    markers: list[Marker] = []
+    marker_pattern = re.compile(
+        r";[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)(?=\s*(?:-|$))")
+    public_pattern = re.compile(r"^\s*PUBLIC\s+(\S+)", re.IGNORECASE)
+    proc_pattern = re.compile(r"^\s*(\S+)\s+PROC\b", re.IGNORECASE)
+    for path in asm_source_files():
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        for number, line in enumerate(lines):
+            match = marker_pattern.search(line)
+            if not match:
+                continue
+            symbol = ""
+            public_line = number
+            for index in range(number + 1, min(len(lines), number + 12)):
+                public = public_pattern.match(lines[index])
+                if public:
+                    symbol = public.group(1)
+                    public_line = index
+                    break
+            if not symbol:
+                markers.append(Marker(int(match.group(1), 16),
+                                      str(path.relative_to(ROOT)), number + 1,
+                                      "", ""))
+                continue
+            body_start = public_line
+            body_end = min(len(lines), body_start + 256)
+            for index in range(body_start, body_end):
+                proc = proc_pattern.match(lines[index])
+                if proc and proc.group(1).lower() == symbol.lower():
+                    body_start = index
+                    break
+            for index in range(body_start + 1, body_end):
+                if re.match(r"^\s*" + re.escape(symbol) + r"\s+ENDP\b",
+                            lines[index], re.IGNORECASE):
+                    body_end = index + 1
+                    break
+            markers.append(Marker(int(match.group(1), 16),
+                                  str(path.relative_to(ROOT)), number + 1,
+                                  symbol, "\n".join(lines[body_start:body_end])))
+    return markers
+
+
 def scan_markers() -> list[Marker]:
     markers: list[Marker] = []
     # Accept both the canonical ``// ea:`` form and the descriptive form
@@ -330,6 +382,7 @@ def scan_markers() -> list[Marker]:
             candidate, brace_line = candidate_info
             markers.append(Marker(int(match.group(1), 16), str(path.relative_to(ROOT)),
                                   number + 1, candidate, matching_body(lines, brace_line)))
+    markers.extend(scan_asm_markers())
     return markers
 
 

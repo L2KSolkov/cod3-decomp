@@ -16,7 +16,7 @@ ae_fixed_string.o	9	0	0	0	0	9	0
 ae_heap.o	12	12	0	0	0	0	0
 afmv_dx_idct.o	3	0	0	0	0	3	0
 afmv_dx_rgb.o	2	0	0	0	0	2	0
-anim.o	741	242	9	304	6	180	0
+anim.o	741	230	9	316	6	180	0
 apk.o	24	0	0	23	0	1	0
 apsAction.o	19	10	1	8	0	0	0
 apsActionList.o	26	18	1	7	0	0	0
@@ -183,7 +183,7 @@ core.o	1437	615	26	679	1	116	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	417	0	427	0	626	0
+g.o	1470	379	0	454	0	637	0
 game.o	1158	461	11	674	3	9	0
 game2.o	1040	415	94	487	8	36	0
 game_xbox.o	365	151	93	111	0	10	0
@@ -288,7 +288,7 @@ rbc_def_custom.o	4	2	0	2	0	0	0
 rbc_def_generic.o	26	9	5	12	0	0	0
 rbc_def_ragdoll.o	38	19	5	14	0	0	0
 rbc_def_vehicle.o	46	32	7	7	0	0	0
-render.o	1038	695	2	315	0	26	0
+render.o	1038	694	2	316	0	26	0
 rigid_body.o	13	5	1	7	0	0	0
 scr.o	1540	241	3	177	0	1119	0
 shell.o	2214	836	27	1297	4	50	0

@@ -692,9 +692,13 @@ float scr_vehicle_t::GetAverageWheelSpeed()
     return 0.0f;
 }
 
+// ea: 0x004A5120
 float cos(float x) { return (float)cos((double)x); }
+// ea: 0x004A5140
 float fabs(float x) { return (float)fabs((double)x); }
+// ea: 0x004A5150
 float pow(float x, float y) { return (float)pow((double)x, (double)y); }
+// ea: 0x004A5100
 float ceil(float x) { return (float)ceil((double)x); }
 
 namespace math {

@@ -2806,3 +2806,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004AC860	??0?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016430	Release proxy_obj_t array constructor sets the same inline slot pointer and zero count.
 0x004AC8E0	?get_count@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QBE?BHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_local.h:4218	phys_static_array get_count returns m_alloc_count.
 0x004AC8E0	?get_count@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QBE?BHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1016456	Release proxy_obj_t array get_count returns m_alloc_count.
+0x004A5070	_ceilf	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_math_shims.asm:103	MASM ceilf wrapper promotes the float argument and forwards to the CRT ceil routine.
+0x004A5070	_ceilf	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012639	Release ceilf performs the corresponding CRT ceil wrapper operation.
+0x004A5090	_cosf	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_math_shims.asm:20	MASM cosf wrapper promotes the float argument and forwards to the CRT cosine routine.
+0x004A5090	_cosf	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012646	Release cosf performs the corresponding cosine wrapper operation.
+0x004A50A0	_fabsf	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_math_shims.asm:76	MASM fabsf wrapper applies the x87 absolute-value operation to its float argument.
+0x004A50A0	_fabsf	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012652	Release fabsf performs the corresponding absolute-value operation.
+0x004A50B0	_powf	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_math_shims.asm:87	MASM powf wrapper promotes both float arguments and forwards to CRT pow.
+0x004A50B0	_powf	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012658	Release powf performs the corresponding two-argument power wrapper operation.
+0x004A50D0	_sinf	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_math_shims.asm:34	MASM sinf wrapper promotes the float argument and forwards to the CRT sine routine.
+0x004A50D0	_sinf	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012664	Release sinf performs the corresponding sine wrapper operation.
+0x004A50E0	_sqrtf	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_math_shims.asm:62	MASM sqrtf wrapper promotes the float argument and forwards to the CRT square-root routine.
+0x004A50E0	_sqrtf	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012670	Release sqrtf performs the corresponding square-root wrapper operation.
+0x004A50F0	_tanf	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_math_shims.asm:48	MASM tanf wrapper promotes the float argument and forwards to the CRT tangent routine.
+0x004A50F0	_tanf	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012676	Release tanf performs the corresponding tangent wrapper operation.
+0x004A5100	?ceil@@YAMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:701	The single-precision ceil wrapper forwards to the double-precision CRT ceil and narrows the result.
+0x004A5100	?ceil@@YAMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012682	Release ceil wrapper performs the corresponding CRT rounding operation.
+0x004A5120	?cos@@YAMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:695	The single-precision cosine wrapper forwards to the double-precision CRT cosine and narrows the result.
+0x004A5120	?cos@@YAMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012689	Release cos wrapper performs the corresponding CRT cosine operation.
+0x004A5140	?fabs@@YAMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:697	The single-precision absolute-value wrapper forwards to CRT fabs and narrows the result.
+0x004A5140	?fabs@@YAMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012701	Release fabs wrapper performs the corresponding absolute-value operation.
+0x004A5150	?pow@@YAMMM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:699	The single-precision power wrapper forwards both arguments to CRT pow and narrows the result.
+0x004A5150	?pow@@YAMMM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012707	Release pow wrapper performs the corresponding two-argument power operation.
