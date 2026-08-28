@@ -31,7 +31,7 @@ void* CtrlIcon::operator new(size_t size, void* p)
 }
 
 // ea: 0x004E2900
-CtrlIcon* CtrlIcon::CreateInst()
+void CtrlIcon::CreateInst()
 {
     if (CtrlIcon::sInst != nullptr)
     {
@@ -46,7 +46,6 @@ CtrlIcon* CtrlIcon::CreateInst()
     CtrlIcon::sInst = static_cast<CtrlIcon*>(
         mem_heap_malloc_ctx(0x800u, 1, "ui",
                             "c:\\cod\\code\\game\\ctrlicon.h", 42));
-    return CtrlIcon::sInst;
 }
 
 // ea: 0x004E5FE0

@@ -15,7 +15,7 @@ class GdbFileManager { public: static void CreateInst(); static void DeleteInst(
 class DialogueManager { public: static void CreateInst(); static void DeleteInst(); };
 class EntityManager { public: static EntityManager* CreateInst(); static void DeleteInst(); };
 class ConfigStringManager { public: static void CreateInst(); };
-class CtrlIcon { public: static CtrlIcon* CreateInst(); static void DeleteInst(); };
+class CtrlIcon { public: static void CreateInst(); static void DeleteInst(); };
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
 class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
@@ -25,7 +25,7 @@ class AnimBankManager {
 public:
     static void CreateInst();
 };
-class RumbleManager { public: static RumbleManager* CreateInst(); static void DeleteInst(); };
+class RumbleManager { public: static void CreateInst(); static void DeleteInst(); };
 
 // j_nullsub_N no-op stubs. IDA-invented names for linker thunks that jump to
 // nullsubs (do-nothing functions); binary semantics are exactly no-ops.

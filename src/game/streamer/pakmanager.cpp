@@ -2452,7 +2452,7 @@ public:
     static DbTablesetMgr* sInst;
     static void* operator new(unsigned int size, void* p);
     static DbTablesetMgr* Inst();
-    static DbTablesetMgr* CreateInst();
+    static void CreateInst();
     static void DeleteInst();
     DbTablesetMgr();
     virtual ~DbTablesetMgr();
@@ -2530,7 +2530,7 @@ DbTablesetMgr::~DbTablesetMgr()
 }
 
 // ea: 0x004E8910
-DbTablesetMgr* DbTablesetMgr::CreateInst()
+void DbTablesetMgr::CreateInst()
 {
     if (DbTablesetMgr::sInst != nullptr)
     {
@@ -2549,10 +2549,9 @@ DbTablesetMgr* DbTablesetMgr::CreateInst()
     {
         DbTablesetMgr* result = new (memory) DbTablesetMgr();
         DbTablesetMgr::sInst = result;
-        return result;
+        return;
     }
     DbTablesetMgr::sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004DD060

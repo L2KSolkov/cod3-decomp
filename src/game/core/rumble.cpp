@@ -51,7 +51,7 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
 extern void mem_heap_free(void* ptr);
 
 // ea: 0x004E8B70
-RumbleManager* RumbleManager::CreateInst()
+void RumbleManager::CreateInst()
 {
     RumbleManager* result = nullptr;
     if (RumbleManager::sInstHolder.sInst[0] != nullptr)
@@ -92,7 +92,6 @@ RumbleManager* RumbleManager::CreateInst()
     {
         RumbleManager::sInstHolder.sInst[0] = nullptr;
     }
-    return result;
 }
 
 // ea: 0x004E9C50
@@ -336,7 +335,8 @@ void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle handle,
 }
 void RumbleEffectInstance_Dtor(void* self)
 {
-    (void)self;
+    if (self != nullptr)
+        static_cast<RumbleEffectInstance*>(self)->~RumbleEffectInstance();
 }
 
 // ea: 0x004DE420
@@ -538,14 +538,9 @@ RumbleEffectInstanceHandle RumbleManager::Play(const RumbleEffect& effect,
                     effect.GetSteadyDuration((ERumbleMotorID)v8),
                     effect.GetRampDownDuration((ERumbleMotorID)v8), notes,
                     looping);
-                // push into mRumbleLists[v8]
-                inst->m_dlist_node.mNext = mRumbleLists[v8].m_head;
-                inst->m_dlist_node.mPrev = mRumbleLists[v8].m_tail;
-                if (mRumbleLists[v8].m_tail)
-                    mRumbleLists[v8].m_tail->mNext = &inst->m_dlist_node;
-                mRumbleLists[v8].m_tail = &inst->m_dlist_node;
-                if (!mRumbleLists[v8].m_head)
-                    mRumbleLists[v8].m_head = &inst->m_dlist_node;
+                // The release list is sentinel-based: append before m_end,
+                // update the tail link, and account for the new node.
+                mRumbleLists[v8].push_back(inst);
             }
         }
         return result;
@@ -576,9 +571,11 @@ bool RumbleManager::IsPlaying(RumbleEffectInstanceHandle handle) const
     }
     for (int list = 0; list < 2; ++list)
     {
-        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
-            n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
+        const reserved_dlist<RumbleEffectInstance>& rumble_list = mRumbleLists[list];
+        reserved_dlist<RumbleEffectInstance>::const_iterator it = rumble_list.begin();
+        for (; it != rumble_list.end(); ++it)
         {
+            const RumbleEffectInstance* n = *it;
             if (n->m_handle.mVal == handle.mVal)
                 return true;
         }
@@ -597,9 +594,11 @@ float RumbleManager::TimeLeft(RumbleEffectInstanceHandle handle) const
     float v8 = 0.0f;
     for (int list = 0; list < 2; ++list)
     {
-        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
-             n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
+        const reserved_dlist<RumbleEffectInstance>& rumble_list = mRumbleLists[list];
+        reserved_dlist<RumbleEffectInstance>::const_iterator it = rumble_list.begin();
+        for (; it != rumble_list.end(); ++it)
         {
+            const RumbleEffectInstance* n = *it;
             if (n->m_handle.mVal == handle.mVal)
             {
                 if (n->m_duration - n->m_cur_time > v8)
@@ -626,9 +625,11 @@ void RumbleManager::SetIntensity(RumbleEffectInstanceHandle handle,
     }
     for (int list = 0; list < 2; ++list)
     {
-        for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
-             n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
+        reserved_dlist<RumbleEffectInstance>& rumble_list = mRumbleLists[list];
+        reserved_dlist<RumbleEffectInstance>::iterator it = rumble_list.begin();
+        for (; it != rumble_list.end(); ++it)
         {
+            RumbleEffectInstance* n = *it;
             if (n->m_handle.mVal == handle.mVal)
                 n->m_intensity = intensity;
         }
@@ -649,16 +650,21 @@ void RumbleManager::Reset()
 {
     for (int list = 0; list < 2; ++list)
     {
-        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
-        while (n != nullptr)
+        reserved_dlist<RumbleEffectInstance>& rumble_list = mRumbleLists[list];
+        reserved_dlist<RumbleEffectInstance>::iterator it = rumble_list.begin();
+        while (it != rumble_list.end())
         {
-            RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;
+            RumbleEffectInstance* n = *it;
+            it = rumble_list.erase(it);
             RumbleEffectInstance_Dtor(n);
             PoolAllocator_Release(RumbleEffectInstance::sAllocator, n);
-            n = next;
         }
-        mRumbleLists[list].m_head = nullptr;
-        mRumbleLists[list].m_tail = nullptr;
+        rumble_list.m_head = reinterpret_cast<reserved_dlist<RumbleEffectInstance>::dlist_node*>(
+            &rumble_list.m_end);
+        rumble_list.m_end = nullptr;
+        rumble_list.m_tail = reinterpret_cast<reserved_dlist<RumbleEffectInstance>::dlist_node*>(
+            &rumble_list.m_head);
+        rumble_list.m_size = 0;
     }
     controller_stop_all_rumble(controller::inst());
 }
@@ -673,17 +679,25 @@ void RumbleManager::Remove(RumbleEffectInstanceHandle handle)
     }
     for (int list = 0; list < 2; ++list)
     {
-        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].m_head;
-        while (n != nullptr)
+        reserved_dlist<RumbleEffectInstance>& rumble_list = mRumbleLists[list];
+        reserved_dlist<RumbleEffectInstance>::iterator it = rumble_list.begin();
+        while (it != rumble_list.end())
         {
-            RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;
+            RumbleEffectInstance* n = *it;
             if (n->m_handle.mVal == handle.mVal)
             {
+                const bool removed_tail =
+                    &n->m_dlist_node == rumble_list.m_tail;
+                reserved_dlist<RumbleEffectInstance>::dlist_node* previous_tail =
+                    n->m_dlist_node.mPrev;
+                it = rumble_list.erase(it);
+                if (removed_tail)
+                    rumble_list.m_tail = previous_tail;
                 RumbleEffectInstance_Dtor(n);
                 PoolAllocator_Release(RumbleEffectInstance::sAllocator, n);
                 break;
             }
-            n = next;
+            ++it;
         }
     }
 }
@@ -695,10 +709,13 @@ void RumbleManager::FrameAdvance(float delta_time)
     for (int vibrator_id = 0; vibrator_id < 2; ++vibrator_id)
     {
         float max_intensity = 0.0f;
-        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[vibrator_id].m_head;
-        while (n != nullptr)
+        reserved_dlist<RumbleEffectInstance>& list = mRumbleLists[vibrator_id];
+        reserved_dlist<RumbleEffectInstance>::iterator it = list.begin();
+        while (it != list.end())
         {
-            RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;
+            RumbleEffectInstance* n = *it;
+            reserved_dlist<RumbleEffectInstance>::iterator next_it = it;
+            ++next_it;
             float intensity = 0.0f;
             n->m_cur_time = delta_time + n->m_cur_time;
             bool looping = (n->m_flags.mVal & 2) != 0;
@@ -758,15 +775,22 @@ void RumbleManager::FrameAdvance(float delta_time)
             }
             if (intensity <= 0.0f)
             {
-                // expired: remove
+                const bool removed_tail =
+                    &n->m_dlist_node == list.m_tail;
+                reserved_dlist<RumbleEffectInstance>::dlist_node* previous_tail =
+                    n->m_dlist_node.mPrev;
+                it = list.erase(it);
+                if (removed_tail)
+                    list.m_tail = previous_tail;
                 RumbleEffectInstance_Dtor(n);
                 PoolAllocator_Release(RumbleEffectInstance::sAllocator, n);
+                continue;
             }
-            else if ((n->m_intensity * intensity) > max_intensity)
+            if ((n->m_intensity * intensity) > max_intensity)
             {
                 max_intensity = n->m_intensity * intensity;
             }
-            n = next;
+            it = next_it;
         }
         if (mClient != 0)
         {

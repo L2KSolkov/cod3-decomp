@@ -323,7 +323,7 @@ SoundOptions::SoundOptions()
 }
 
 // ea: 0x004E9B20
-EffectEventSys* EffectEventSys::CreateInst()
+void EffectEventSys::CreateInst()
 {
     if (EffectEventSys::sInst != nullptr)
     {
@@ -342,10 +342,9 @@ EffectEventSys* EffectEventSys::CreateInst()
     {
         EffectEventSys* result = new (memory) EffectEventSys();
         EffectEventSys::sInst = result;
-        return result;
+        return;
     }
     EffectEventSys::sInst = nullptr;
-    return nullptr;
 }
 
 // ea: 0x004EA010

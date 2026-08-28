@@ -1101,7 +1101,7 @@ class EffectEventSys {
 public:
     static void* operator new(size_t size, void* p);
     static EffectEventSys* sInst;       // ?sInst@EffectEventSys@@2PAV1@A @ 0x00F00E80
-    static EffectEventSys* CreateInst();  // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
+    static void CreateInst();             // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@EffectEventSys@@SAXXZ (core.o)
     bool IsStoppingAll() const;             // core.o 0x004DBB80
     template <typename T>
@@ -1315,7 +1315,7 @@ static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 
 class RumbleManager {
 public:
-    static RumbleManager* CreateInst();  // ?CreateInst@RumbleManager@@SAPAV1@XZ (core.o)
+    static void CreateInst();             // ?CreateInst@RumbleManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@RumbleManager@@SAXXZ (core.o)
     struct InstanceHolder;
     static InstanceHolder sInstHolder;  // ?sInstHolder@RumbleManager@@2UInstanceHolder@1@A
@@ -1724,7 +1724,7 @@ static_assert(sizeof(STBManager) == 0x190, "STBManager size mismatch");
 // ============================================================================
 class DbTablesetMgr {
 public:
-    static DbTablesetMgr* CreateInst();  // ?CreateInst@DbTablesetMgr@@SAXXZ (core.o)
+    static void CreateInst();             // ?CreateInst@DbTablesetMgr@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@DbTablesetMgr@@SAXXZ (core.o)
     IVPointer<DbTableSet> GetTableSet(TPakId pakId,
                                       const char* id) const;  // ea: 0x004CA630
@@ -2179,7 +2179,7 @@ static_assert(sizeof(AssetBankSet) == 0x4, "AssetBankSet size mismatch");
 
 class CtrlIcon {
 public:
-    static CtrlIcon* CreateInst();  // ?CreateInst@CtrlIcon@@SAPAV1@XZ (core.o)
+    static void CreateInst();       // ?CreateInst@CtrlIcon@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@CtrlIcon@@SAXXZ (core.o)
     static void* operator new(size_t size, void* p);
     static CtrlIcon* sInst;  // ?sInst@CtrlIcon@@2PAV1@A
