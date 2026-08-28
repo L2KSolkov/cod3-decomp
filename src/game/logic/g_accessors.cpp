@@ -4147,7 +4147,7 @@ void clientPersistent_t::ClearStats()
     mBaseScore = 0;
 }
 
-// clientPersistent_t::GetStat (g.o 0x5E9C80)
+// ea: 0x005E9C80
 int clientPersistent_t::GetStat(int stat)
 {
     if (stat > 0x1C) {
@@ -4159,7 +4159,7 @@ int clientPersistent_t::GetStat(int stat)
          + mStats[6][stat];
 }
 
-// clientPersistent_t::GetTotalScore (scr.o 0x5E9D40)
+// ea: 0x005E9D40
 int clientPersistent_t::GetTotalScore()
 {
     int totalScore = mBaseScore;

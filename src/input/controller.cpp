@@ -148,8 +148,14 @@ static void merge_host_keyboard(XBGAMEPAD& pad)
 
     if (down(VK_RETURN) || down(VK_SPACE))
         pad.raw[2] = 0xFF;
-    if (down(VK_ESCAPE) || down(VK_BACK))
+    if (down(VK_ESCAPE) || down(VK_BACK)) {
+        // ESC is the host equivalent of the Xbox START binding used by
+        // IN_Frame to open the in-game pause menu.  Keep the B/back level too
+        // so frontend menus retain their normal back behavior.
+        buttons |= 0x0010;
         pad.raw[3] = 0xFF;
+    }
+    *reinterpret_cast<WORD*>(pad.raw) = buttons;
 }
 #endif
 
@@ -299,8 +305,14 @@ void controller::poll()
             std::memset(pad.raw, 0, sizeof(pad.raw));
         }
 #ifdef _WIN32
-        if (use_host_keyboard)
+        if (use_host_keyboard) {
+            // Keep port 0 logically connected while the keyboard fallback is
+            // active.  IN_Frame clears edge bits for disconnected ports after
+            // polling; without this virtual handle it erases keyboard edges
+            // before ButtonEntry/FEMenuSystem can consume them.
+            pad.hDevice = reinterpret_cast<void*>(static_cast<uintptr_t>(1));
             merge_host_keyboard(pad);
+        }
 #endif
         const WORD buttons = *reinterpret_cast<const WORD*>(pad.raw);
         if (connected && !g_controllerConnectedErrorShown[i]
@@ -401,6 +413,7 @@ void controller::button_pressed_clear_all(int controller_num)
         button_pressed_clear(controller_num, static_cast<ButtonIndex>(button));
 }
 
+// ea: 0x005E9A20
 void controller::button_released_clear_all(int controller_num)
 {
     for (int button = LEFTBUTTON; button <= SELECT; ++button)

@@ -122,6 +122,7 @@ BrocAPI gBrocAPI = {};
 ExtendedEntity ExtendedEntity::nullEnt;
 ExtendedEntity::GetFunctionsFunc ExtendedEntity::sGetFunctions = nullptr;
 
+// ea: 0x005E9DD0
 int MathsRandomInt(int iMax)
 {
     if (iMax <= 0)
@@ -137,16 +138,19 @@ int MathsRandomInt(int iMax)
     return irand(0, iMax);
 }
 
+// ea: 0x005E9E50
 float MathsRandomFloat(float fMax)
 {
     return flrand(0.0f, fMax);
 }
 
+// ea: 0x005E9E70
 int MathsRandomIntRange(int iMin, int iMax)
 {
     return iMax > iMin ? irand(iMin, iMax) : irand(iMax, iMin);
 }
 
+// ea: 0x005E9EA0
 float MathsRandomFloatRange(float fMin, float fMax)
 {
     return fMin < fMax ? flrand(fMin, fMax) : flrand(fMax, fMin);
