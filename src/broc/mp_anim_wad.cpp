@@ -1397,13 +1397,13 @@ Broc::bbool* IsEEDefined_script_flashlight_ptr(Broc::bbool* result, Broc::entity
 }
 
 // GetEE_script_delete / IsEEDefined_script_delete (key 0x273390A7)
-Broc::bint* GetEE_script_delete(Broc::entity ent) {
+Broc::bint* GetEE_script_delete_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x273390A7);
 }
 
-Broc::bbool* IsEEDefined_script_delete(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_delete_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1421,13 +1421,13 @@ Broc::bbool* IsEEDefined_script_delete(Broc::bbool* result, Broc::entity ent) {
 }
 
 // GetEE_script_balcony / IsEEDefined_script_balcony (key 0x6A5B5D1C)
-Broc::bint* GetEE_script_balcony(Broc::entity ent) {
+Broc::bint* GetEE_script_balcony_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x6A5B5D1C);
 }
 
-Broc::bbool* IsEEDefined_script_balcony(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_balcony_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1445,13 +1445,13 @@ Broc::bbool* IsEEDefined_script_balcony(Broc::bbool* result, Broc::entity ent) {
 }
 
 // GetEE_script_vehiclegroup / IsEEDefined_script_vehiclegroup (key 0x0B5B16E1)
-Broc::bint* GetEE_script_vehiclegroup(Broc::entity ent) {
+Broc::bint* GetEE_script_vehiclegroup_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x0B5B16E1);
 }
 
-Broc::bbool* IsEEDefined_script_vehiclegroup(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_vehiclegroup_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1469,13 +1469,13 @@ Broc::bbool* IsEEDefined_script_vehiclegroup(Broc::bbool* result, Broc::entity e
 }
 
 // GetEE_script_friendlywave / IsEEDefined_script_friendlywave (key 0xC491D9C4)
-Broc::bint* GetEE_script_friendlywave(Broc::entity ent) {
+Broc::bint* GetEE_script_friendlywave_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0xC491D9C4);
 }
 
-Broc::bbool* IsEEDefined_script_friendlywave(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_friendlywave_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1493,13 +1493,13 @@ Broc::bbool* IsEEDefined_script_friendlywave(Broc::bbool* result, Broc::entity e
 }
 
 // GetEE_script_seekgoal / IsEEDefined_script_seekgoal (key 0x8A475CBF)
-Broc::bint* GetEE_script_seekgoal(Broc::entity ent) {
+Broc::bint* GetEE_script_seekgoal_ptr(Broc::entity ent) {
     unsigned int Handle = ent.GetHandle();
     Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
     return &ee->GetRef<Broc::bint>(0x8A475CBF);
 }
 
-Broc::bbool* IsEEDefined_script_seekgoal(Broc::bbool* result, Broc::entity ent) {
+Broc::bbool* IsEEDefined_script_seekgoal_ptr(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
         Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
@@ -1513,6 +1513,58 @@ Broc::bbool* IsEEDefined_script_seekgoal(Broc::bbool* result, Broc::entity ent) 
     } else {
         result->mVal = false;
     }
+    return result;
+}
+
+// Release ABI wrappers for the animation script flags.
+// ea: 0x0098FAC0
+::bint& GetEE_script_delete(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_delete_ptr(ent));
+}
+// ea: 0x0098FB10
+::bbool IsEEDefined_script_delete(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_delete_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098FBC0
+::bint& GetEE_script_balcony(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_balcony_ptr(ent));
+}
+// ea: 0x0098FC10
+::bbool IsEEDefined_script_balcony(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_balcony_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098FCC0
+::bint& GetEE_script_vehiclegroup(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_vehiclegroup_ptr(ent));
+}
+// ea: 0x0098FD10
+::bbool IsEEDefined_script_vehiclegroup(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_vehiclegroup_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098FDC0
+::bint& GetEE_script_friendlywave(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_friendlywave_ptr(ent));
+}
+// ea: 0x0098FE10
+::bbool IsEEDefined_script_friendlywave(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_friendlywave_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
+    return result;
+}
+// ea: 0x0098FEC0
+::bint& GetEE_script_seekgoal(Broc::entity ent) {
+    return *reinterpret_cast<::bint*>(GetEE_script_seekgoal_ptr(ent));
+}
+// ea: 0x0098FF10
+::bbool IsEEDefined_script_seekgoal(Broc::entity ent) {
+    ::bbool result;
+    IsEEDefined_script_seekgoal_ptr(reinterpret_cast<Broc::bbool*>(&result), ent);
     return result;
 }
 
