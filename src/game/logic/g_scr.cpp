@@ -1072,6 +1072,7 @@ void* AeThread::BackupStack::Block::operator new(size_t size,
 }
 
 // AeThread::BackupStack::Block::operator delete - ea: 0x005E9920 / 0x005E9940
+// ea: 0x005E9940
 void AeThread::BackupStack::Block::operator delete(void* ptr)
 {
     sAllocator->Release(ptr);
@@ -3880,6 +3881,7 @@ void* AeThread::operator new(size_t size, bool forceHeapAlloc)
 }
 
 // AeThread::operator delete - ea: 0x005E9890 / 0x005E98B0
+// ea: 0x005E98B0
 void AeThread::operator delete(void* ptr)
 {
     sAllocator->Release(ptr);
