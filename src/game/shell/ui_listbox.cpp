@@ -923,6 +923,15 @@ void UIListBox::UIListBoxRow::ClearItem()
 {
     for (int v2 = 0; v2 < mColumnCount; ++v2)
     {
+        if (v2 < 0 || v2 >= mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         UIListBoxItem* v3 = &mColumns.mElements[v2];
         v3->ClearText();
         v3->SetState(0);
@@ -1169,7 +1178,18 @@ void UIListBox::UIListBoxRow::SetSelected(int column, bool selected,
 void UIListBox::UIListBoxRow::SetEnabled(bool enabled)
 {
     for (int v3 = 0; v3 < mColumnCount; ++v3)
+    {
+        if (v3 < 0 || v3 >= mColumns.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
         mColumns.mElements[v3].SetEnabled(enabled);
+    }
 }
 
 // ea: 0x5B2A20
