@@ -35,6 +35,22 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0094AC50	??4sort_struct@__unnamed@hudelem@Broc@@QAEABMABM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813396	Release forwards mHandle and *rhs to hud_set_sort and returns rhs.
 0x0094AC90	??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5371	HUD alpha proxy forwards the assigned value through hud_set_alpha and returns the RHS reference.
 0x0094AC90	??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813403	Release forwards mHandle and *rhs to hud_set_alpha and returns rhs.
+0x0093BEC0	?Code_GetTeamGame@Broc@@YA_NXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5878	Code_GetTeamGame directly forwards to mGetTeamGame.
+0x0093BEC0	?Code_GetTeamGame@Broc@@YA_NXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1804713	Release directly returns gBrocAPI.mGetTeamGame().
+0x0093DEA0	?Code_DebugOut@Broc@@YAXPBD@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5851	Code_DebugOut directly forwards the string to mDebugOut.
+0x0093DEA0	?Code_DebugOut@Broc@@YAXPBD@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805634	Release directly forwards strOut to gBrocAPI.mDebugOut.
+0x0093E4D0	?Code_SetPlayerAlive@Broc@@YAXVentity@1@H@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5921	Code_SetPlayerAlive forwards the entity handle and health to mSetPlayerAlive.
+0x0093E4D0	?Code_SetPlayerAlive@Broc@@YAXVentity@1@H@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805893	Release forwards player.mHandle and health identically.
+0x0093E500	?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5939	Code_SendInitialGameState forwards the entity handle to mSendInitialGameState.
+0x0093E500	?Code_SendInitialGameState@Broc@@YAXVentity@1@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805904	Release forwards player.mHandle identically.
+0x0093E530	?SetTutorialText@Broc@@YAXHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5837	SetTutorialText directly forwards hash and viewport to mSetTutorialText.
+0x0093E530	?SetTutorialText@Broc@@YAXHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805913	Release directly forwards hash and viewport identically.
+0x0093E560	?SetActionHint@Broc@@YAXHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5846	SetActionHint directly forwards hash and viewport to mSetActionHint.
+0x0093E560	?SetActionHint@Broc@@YAXHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805919	Release directly forwards hash and viewport identically.
+0x0093E940	?Code_SendVehicleStates@Broc@@YAXVentity@1@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5944	Code_SendVehicleStates forwards the entity handle to mSendVehicleStates.
+0x0093E940	?Code_SendVehicleStates@Broc@@YAXVentity@1@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1806090	Release forwards player.mHandle identically.
+0x0093FCC0	?Code_IsInVehicle@Broc@@YA_NVentity@1@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5934	Code_IsInVehicle directly returns mIsInVehicle1 for the entity handle.
+0x0093FCC0	?Code_IsInVehicle@Broc@@YA_NVentity@1@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1807042	Release directly returns mIsInVehicle1(player.mHandle).
 0x0092F100	??0bbool@@QAE@_N@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/engine/broc_types.h:1009	Global bbool(bool) stores the input flag in mVal.
 0x0092F100	??0bbool@@QAE@_N@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1797625	Release constructor stores rhs in mVal and returns this.
 0x00935060	??4bint@@QAEHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6608	bint assignment stores the integer and returns the stored value.

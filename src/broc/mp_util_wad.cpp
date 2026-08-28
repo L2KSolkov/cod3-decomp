@@ -5833,6 +5833,7 @@ void Broc::Code_SendGameStateSCF(Broc::entity player, int defendingTeam,
 }
 
 // Broc API forwarding wrappers verified against IDA 0x0093E4D0-0x00978CC0.
+// ea: 0x0093E530
 void Broc::SetTutorialText(int hash, int viewport) {
     gBrocAPI.mSetTutorialText(hash, viewport);
 }
@@ -5841,10 +5842,12 @@ void Broc::SetTutorialTextAllPlayers(int hash) {
     gBrocAPI.mSetTutorialTextAllPlayers(hash);
 }
 
+// ea: 0x0093E560
 void Broc::SetActionHint(int hash, int viewport) {
     gBrocAPI.mSetActionHint(hash, viewport);
 }
 
+// ea: 0x0093DEA0
 void Broc::Code_DebugOut(const char* strOut) {
     gBrocAPI.mDebugOut(strOut);
 }
@@ -5871,6 +5874,7 @@ void Broc::Code_NextRound(bool allowChange) {
     gBrocAPI.mNextRound(allowChange);
 }
 
+// ea: 0x0093BEC0
 bool Broc::Code_GetTeamGame() {
     return gBrocAPI.mGetTeamGame();
 }
@@ -5913,6 +5917,7 @@ void Broc::Code_SendGameStateDOM(Broc::entity player, int flag0, int flag1,
                                flag4);
 }
 
+// ea: 0x0093E4D0
 void Broc::Code_SetPlayerAlive(Broc::entity player, int health) {
     gBrocAPI.mSetPlayerAlive(player.GetHandle(), health);
 }
@@ -5925,14 +5930,17 @@ void Broc::Code_GetOutOfVehicle(Broc::entity player) {
     gBrocAPI.mGetOutOfVehicle(player.GetHandle());
 }
 
+// ea: 0x0093FCC0
 bool Broc::Code_IsInVehicle(Broc::entity player) {
     return gBrocAPI.mIsInVehicle1(player.GetHandle());
 }
 
+// ea: 0x0093E500
 void Broc::Code_SendInitialGameState(Broc::entity player) {
     gBrocAPI.mSendInitialGameState(player.GetHandle());
 }
 
+// ea: 0x0093E940
 void Broc::Code_SendVehicleStates(Broc::entity player) {
     gBrocAPI.mSendVehicleStates(player.GetHandle());
 }
