@@ -3354,6 +3354,15 @@ void Cmd_SetViewpos_f(Entity* ent)
 // ea: 0x00455C10
 void G_AddInvalidatedNode(Entity* pEnt, PathNodes::PathNode* pNode)
 {
+    if (pEnt == nullptr || pEnt->client == nullptr || pNode == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 1407;
+        AeAssert::gCurrentExpr = "pEnt && pEnt->client && pNode";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
     if (pEnt != nullptr && pEnt->client != nullptr && pNode != nullptr
         && G_FindInvalidatedNode(pEnt, pNode) < 0)
     {

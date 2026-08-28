@@ -871,7 +871,7 @@ void G_UpdateHeadHitEnt(Entity* pSelf)
         pHitHitEnt->r.mOwner.mHandle.mVal = pSelf->mHandle.mHandle.mVal;
         pHitHitEnt->pain = 2;
         pHitHitEnt->die = 2;
-        pHitHitEnt->health = 100000;
+        pHitHitEnt->health = 0x1869F;
         pHitHitEnt->takedamage = 1;
     }
     G_SetOrigin(pHitHitEnt, vOrg);
@@ -971,7 +971,7 @@ void HeadHitEnt_Pain(Entity* pSelf, Entity* pAttacker, int iDamage,
                      hitLocation_t hitLoc)
 {
     unsigned int mVal = pSelf->r.mOwner.mHandle.mVal;
-    pSelf->health = 100000;
+    pSelf->health = 0x1869F;
     unsigned int v8 = mVal & 0xFFF;
     Entity* mObject = nullptr;
     if (v8 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v8].mKey)

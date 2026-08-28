@@ -2817,7 +2817,7 @@ void Blocked_Door(Entity* ent, Entity* other)
                         ? strstr(&defaultFileName[0], "chair") != nullptr
                         : strstr((const char*)(other->mClassName.mBlock + 1), "chair") != nullptr))
             {
-                G_Damage(other, ent, ent, nullptr, nullptr, 100000, 0, 20, HITLOC_NONE, -1);
+                G_Damage(other, ent, ent, nullptr, nullptr, 0x1869F, 0, 20, HITLOC_NONE, -1);
             }
             else
             {
@@ -2856,7 +2856,7 @@ void Blocked_DoorRotate(Entity* ent, Entity* other)
             return;
         }
         if (other->health <= 0)
-            G_Damage(other, ent, ent, nullptr, nullptr, 100000, 0, 20, HITLOC_NONE, -1);
+            G_Damage(other, ent, ent, nullptr, nullptr, 0x1869F, 0, 20, HITLOC_NONE, -1);
         int damage = ent->damage;
         if (damage != 0)
             G_Damage(other, ent, ent, nullptr, nullptr, damage, 0, 20, HITLOC_NONE, -1);
@@ -3232,7 +3232,7 @@ int G_MoverPush(Entity* pusher, const float* move, const float* amove)
         {
             if (pusher->s.pos.trType != TR_SINE && pusher->s.apos.trType != TR_SINE)
                 return 0;
-            G_Damage(v33, pusher, pusher, nullptr, nullptr, 100000, 0, 20, HITLOC_NONE, -1);
+            G_Damage(v33, pusher, pusher, nullptr, nullptr, 0x1869F, 0, 20, HITLOC_NONE, -1);
         }
     }
     for (int k = 0; k < listed; ++k)
