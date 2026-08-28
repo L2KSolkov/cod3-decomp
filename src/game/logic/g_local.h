@@ -1321,9 +1321,16 @@ extern PoolAllocator* gBrocPool;              // scr.o 0x0132A0E4
 extern PoolAllocator* gAeThreadBackupStackAllocator;  // core.o 0xF3ABCC
 struct ClientCmdPair {
     const char* first;  // +0x00
+    void (*function)(); // +0x04; raw slot is shared by both table signatures
 };
 extern ClientCmdPair sClientCommand0List[24];  // g.o .rdata
 extern ClientCmdPair sClientCommand1List[15];  // g.o .rdata
+void Cmd_TextureSize_f(void);
+void Cmd_Fogswitch_f(void);
+void Cmd_PFXReport_f(void);
+void Cmd_JumpToNode_f(Entity* ent);
+void Cmd_God_f(Entity* ent);
+void Cmd_Invinc_f(Entity* ent);
 void Cmd_MemPools_f(void);          // g.o 0x44ACC0
 void Cmd_ShotProf_f(void);          // g.o 0x44AD10
 void Cmd_ClientCommandCompletion(void (*callback)(const char*));  // g.o 0x44ADE0

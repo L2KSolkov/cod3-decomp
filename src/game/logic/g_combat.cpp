@@ -1034,6 +1034,18 @@ int G_BounceMissile(Entity* ent, trace_t* trace)
     off[2] = trace->normal.v.m128_f32[2] * 0.1f;
     if (off[2] > 0.0f)
         off[2] = 0.0f;
+    if (!(ent->r.currentOrigin.v.m128_f32[0] == ent->r.currentOrigin.v.m128_f32[0])
+        || !(ent->r.currentOrigin.v.m128_f32[1] == ent->r.currentOrigin.v.m128_f32[1])
+        || !(ent->r.currentOrigin.v.m128_f32[2] == ent->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 192;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
     ent->r.currentOrigin.v.m128_f32[0] = off[0] + ent->r.currentOrigin.v.m128_f32[0];
     ent->r.currentOrigin.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1] + off[1];
     ent->r.currentOrigin.v.m128_f32[2] = off[2] + ent->r.currentOrigin.v.m128_f32[2];

@@ -285,8 +285,49 @@ gitem_s bg_itemlist[138];           // ?bg_itemlist@@3PAUgitem_s@@A (game.o @ 0x
 sentient_s g_sentients[48];         // ?g_sentients@@3PAUsentient_s@@A (g.o)
 Client g_clients[16];               // ?g_clients@@3PAUClient@@A (g.o)
 CVarTable gameCvarTable[32];        // ?gameCvarTable@@3PAUCVarTable@@A (g.o @ 0x11C4CF8)
-ClientCmdPair sClientCommand0List[24];  // ?sClientCommand0List@@3PAUClientCmdPair@@A (g.o .rdata)
-ClientCmdPair sClientCommand1List[15];  // ?sClientCommand1List@@3PAUClientCmdPair@@A (g.o .rdata)
+ClientCmdPair sClientCommand0List[24] = {
+    { "nglstats", Cmd_NGLStats_f },
+    { "nglstatdisplay", Cmd_NGLStatDisplay_f },
+    { "nglfpsdisplay", Cmd_NGLFPSDisplay_f },
+    { "profilenodes", Cmd_ProfileNodes_f },
+    { "profileshaders", Cmd_ProfileShaders_f },
+    { "wireframe", Cmd_Wireframe_f },
+    { "fullbright", Cmd_Fullbright_f },
+    { "solidcolor", Cmd_SolidColor_f },
+    { "toggleshader", Cmd_ToggleShader_f },
+    { "texturesize", Cmd_TextureSize_f },
+    { "texturemip", Cmd_TextureMip_f },
+    { "texturetiling", Cmd_TextureTiling_f },
+    { "fogswitch", Cmd_Fogswitch_f },
+    { "killsound", Cmd_KillSound },
+    { "thread", Cmd_Thread_Debug_f },
+    { "entity_stats", Cmd_EntityStats_f },
+    { "pfx_stats", Cmd_PFXStats_f },
+    { "pfx_report", Cmd_PFXReport_f },
+    { "mempools", Cmd_MemPools_f },
+    { "shotprof", Cmd_ShotProf_f },
+    { "buildertest", Cmd_BuilderTest_f },
+    { "lockpvs", Cmd_LockPVS_f },
+    { "lockpvsflash", Cmd_LockPVSFlash_f },
+    { "testfps", Cmd_TestFPS },
+};
+ClientCmdPair sClientCommand1List[15] = {
+    { "mr", reinterpret_cast<void (*)()>(Cmd_MenuResponse_f) },
+    { "give", reinterpret_cast<void (*)()>(Cmd_Give_f) },
+    { "take", reinterpret_cast<void (*)()>(Cmd_Take_f) },
+    { "god", reinterpret_cast<void (*)()>(Cmd_God_f) },
+    { "invinc", reinterpret_cast<void (*)()>(Cmd_Invinc_f) },
+    { "notarget", reinterpret_cast<void (*)()>(Cmd_Notarget_f) },
+    { "noclip", reinterpret_cast<void (*)()>(Cmd_Noclip_f) },
+    { "ufo", reinterpret_cast<void (*)()>(Cmd_UFO_f) },
+    { "kill", reinterpret_cast<void (*)()>(Cmd_Kill_f) },
+    { "where", reinterpret_cast<void (*)()>(Cmd_Where_f) },
+    { "setviewpos", reinterpret_cast<void (*)()>(Cmd_SetViewpos_f) },
+    { "jumptonode", reinterpret_cast<void (*)()>(Cmd_JumpToNode_f) },
+    { "setspawnpt", reinterpret_cast<void (*)()>(Cmd_SetSpawnPoint_f) },
+    { "mr", reinterpret_cast<void (*)()>(Cmd_MenuResponse_f) },
+    { "dropweapon", reinterpret_cast<void (*)()>(Cmd_DropWeapon_f) },
+};
 vehicleAnimMap_t* vehicleAnimMaps[6];  // ?vehicleAnimMaps@@3PAPAUvehicleAnimMap_t@@A (g.o @ 0xDD6E6C)
 // --- bool/char/float scalar data sweep ---
 bool gNoTargetEnabled;              // ?gNoTargetEnabled@@3_NA (g.o)

@@ -476,6 +476,38 @@ void Cmd_SetSpawnPoint_f(Entity* /*ent*/)
     }
 }
 
+// ea: 0x00461A10
+void Cmd_JumpToNode_f(Entity* ent)
+{
+    if (g_cheats.integer == 0)
+    {
+        SV_GameSendServerCommand(ent->mHandle,
+                                 "print \"GAME_CHEATSNOTENABLED\"");
+        return;
+    }
+    if (Cmd_Argc() != 2)
+    {
+        SV_GameSendServerCommand(ent->mHandle, "print \"GAME_USAGE");
+        return;
+    }
+    char buffer[128];
+    Cmd_ArgvBuffer(1, buffer, sizeof(buffer));
+    int nodeIndex = atoi(buffer);
+    int totalNodeCount = PathNodeMgr::sInst->GetTotalNodeCount();
+    if (nodeIndex < 0 || nodeIndex >= totalNodeCount)
+    {
+        // The release passes the total count to the literal \"print \\\"\" format.
+        SV_GameSendServerCommand(ent->mHandle, va("print \"", totalNodeCount));
+        return;
+    }
+    PathNodes::NodeHandle handle(nodeIndex);
+    PathNodes::PathNode* node = PathNodeMgr::sInst->GetNode(handle);
+    if (node == nullptr)
+        return;
+    float angles[3] = { 0.0f, node->mConstant.mAngle, 0.0f };
+    TeleportPlayer(ent, node->mConstant.mOrigin, angles);
+}
+
 // ea: 0x004581C0
 void G_XAnimUpdateEnt(Entity* ent)
 {
@@ -2317,13 +2349,16 @@ void ClientCommand(DbLinkedHandle<EntityHandleDb, Entity> ent)
     for (unsigned int v1 = 0; v1 < 24; ++v1)
     {
         if (ae_stricmpn(cmd, sClientCommand0List[v1].first, 0xFFFFFFF) == 0)
-            return;  // dispatch table entry (commands w/o entity)
+        {
+            sClientCommand0List[v1].function();
+            return;
+        }
     }
     for (unsigned int i = 0; i < 15; ++i)
     {
         if (ae_stricmpn(cmd, sClientCommand1List[i].first, 0xFFFFFFF) == 0)
         {
-            // dispatch with entity - routed through command handlers below
+            reinterpret_cast<void (*)(Entity*)>(sClientCommand1List[i].function)(mObject);
             return;
         }
     }

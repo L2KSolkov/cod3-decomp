@@ -861,6 +861,28 @@ draw_box:
         sprintf(buf, "Persistent Index: %d",
                 Object->mPersistentIndex);
         CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+        if (Object->mPersistentIndex != -1
+            && SceneManager::sInst != nullptr
+            && SceneManager::sInst->mPersistantStorage != nullptr)
+        {
+            int persistentIndex = Object->mPersistentIndex;
+            InplaceVector<unsigned char>* storage =
+                SceneManager::sInst->mPersistantStorage;
+            unsigned char status = 0;
+            if (persistentIndex >= 0
+                && persistentIndex < (int)storage->mSize)
+                status = storage->mList[persistentIndex];
+            labelPos[2] -= 20.0f;
+            if (status == 1)
+                CL_AddDebugString(labelPos, vColor, 2.0f,
+                                  "NORMAL DELETED", 1);
+            else if (status == 2)
+                CL_AddDebugString(labelPos, vColor, 2.0f,
+                                  "CHECKPOINT DELETED", 1);
+            else
+                CL_AddDebugString(labelPos, vColor, 2.0f,
+                                  "NOT DELETED", 1);
+        }
         G_DebugBox(vMins, vColor, color, g_drawEntBBoxes.integer, 0, 0);
         if (Object->r.bmodel != nullptr)
         {
@@ -880,6 +902,29 @@ draw_box:
                     + Object->r.currentOrigin.v.m128_f32[2];
             float bcol[4] = { 1.0f, 0.4f, 0.22f, 0.22f };
             G_DebugBox(bmin, bmax, bcol, g_drawEntBBoxes.integer, 0, 0);
+            float averageDimension =
+                (fabsf(bmax[0] - bmin[0])
+                 + fabsf(bmax[1] - bmin[1])
+                 + fabsf(bmax[2] - bmin[2]))
+                * 0.33333334f;
+            labelPos[2] -= 20.0f;
+            sprintf(buf, "Ave Dimension: %3f", averageDimension);
+            CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+            if (Object->mDObj != nullptr
+                && Object->mDObj->mPhysData.mValue != nullptr)
+            {
+                PhysData* physData =
+                    (PhysData*)Object->mDObj->mPhysData.mValue;
+                labelPos[2] -= 20.0f;
+                sprintf(buf, "Mass: %3f", physData->mMass);
+                CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+                labelPos[2] -= 20.0f;
+                sprintf(buf, "Friction: %3f", physData->mFric);
+                CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+                labelPos[2] -= 20.0f;
+                sprintf(buf, "Bounce: %3f", physData->mBounce);
+                CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+            }
         }
     }
 }
