@@ -1385,7 +1385,8 @@ enum EDbMatchType : int {
     kDbMatchTypeInvalid = -1,
 };
 
-struct DbField {
+class DbField {
+public:
     unsigned char m_column_type;  // +0x00
     unsigned char m_match_type;   // +0x01
     uint16_t      mId;            // +0x02
@@ -1411,7 +1412,8 @@ public:
 };
 static_assert(sizeof(DbRow) == 0xC, "DbRow size mismatch");
 
-struct DbColumn {
+class DbColumn {
+public:
     uint16_t mId;                // +0x00
     uint16_t mNumElements;       // +0x02
     unsigned int mElementSize;   // +0x04
@@ -1444,7 +1446,8 @@ struct DbColumnType : DbColumn {
 static_assert(sizeof(DbColumnType<float>) == sizeof(DbColumn),
               "DbColumnType<float> size mismatch");
 
-struct DbSchema {
+class DbSchema {
+public:
     uint16_t        mNumColumnTypes;  // +0x00
     unsigned char   _pad[0x4 - 0x2];
     const unsigned char* mColumnTypes;  // +0x04
