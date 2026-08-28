@@ -3715,6 +3715,24 @@ void IGOHintWidget::Update(float time_inc)
         sprintf(new_text, v30, LMGKey);
         goto label_81;
     }
+    if (v18 == 7)
+    {
+        if (gpBrocAPI->mBrocExports.mCallbackShowFlagHint == nullptr)
+        {
+            dont_draw = true;
+            return;
+        }
+        if (gpBrocAPI->mBrocExports.mCallbackShowFlagHint() != 0)
+        {
+            current_icon = 6;
+            const char* LMGKey = activate_key;
+            const char* v30 = STBManager::sInst->GetSTBString(
+                "MPCTF_PRESS_USE_TO_PICKUP_FLAG");
+            sprintf(new_text, v30, LMGKey);
+            goto label_81;
+        }
+        goto label_34;
+    }
     if (dword_F63F6C[v8] == -1)
     {
         if (v18 == 13)
