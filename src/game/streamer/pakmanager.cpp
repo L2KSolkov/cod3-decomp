@@ -1788,6 +1788,7 @@ reserved_dlist<PakFile>::const_iterator::operator++()
     return *this;
 }
 
+// ea: 0x004AE480
 template <>
 const PakFile* reserved_dlist<PakFile>::node_to_object(
     const reserved_dlist<PakFile>::dlist_node* dlist_node)

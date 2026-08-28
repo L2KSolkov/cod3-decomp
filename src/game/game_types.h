@@ -274,6 +274,8 @@ extern void ValidatePakId(TPakId pakId);  // core.o
 
 template <typename T>
 // ea: 0x005EACA0
+// ea: 0x004AE4C0
+// ea: 0x004AE4F0
 T* IVPointer<T>::Deref() const
 {
     ValidatePakId((TPakId)mPakId);

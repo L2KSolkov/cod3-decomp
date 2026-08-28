@@ -1573,3 +1573,43 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004AE340	?GetKey@?$SizedHandle@$0M@$0BE@@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017757	Release GetKey returns mVal shifted right by 12.
 0x004AE350	?GetWord@?$BitSet@$0FEA@@@QBEIH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3690	BitSet GetWord indexes the packed word array at the requested word index.
 0x004AE350	?GetWord@?$BitSet@$0FEA@@@QBEIH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017763	Release BitSet GetWord returns the indexed unsigned word from mBits.
+0x004AE360	?GetNumWords@?$BitSet@$0FEA@@@SAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3696	BitSet GetNumWords computes the number of 32-bit words required for 1344 bits.
+0x004AE360	?GetNumWords@?$BitSet@$0FEA@@@SAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017768	Release BitSet GetNumWords returns the constant 42.
+0x004AE370	??0DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3791	Entity handle-database element construction clears the object pointer and initializes the key to 1.
+0x004AE370	??0DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017774	Release Entity DbElement construction stores null mObject and key 1.
+0x004AE390	?GetObject@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3794	Entity DbElement GetObject returns mObject directly.
+0x004AE390	?GetObject@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017783	Release Entity DbElement GetObject returns mObject.
+0x004AE3A0	?SetObject@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXPAVEntity@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3796	Entity DbElement SetObject stores the supplied object pointer.
+0x004AE3A0	?SetObject@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXPAVEntity@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017790	Release Entity DbElement SetObject assigns mObject.
+0x004AE3B0	?GetKey@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3798	Entity DbElement GetKey returns mKey.
+0x004AE3B0	?GetKey@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017798	Release Entity DbElement GetKey returns mKey.
+0x004AE3C0	?Release@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3800	Entity DbElement Release increments mKey and clears mObject.
+0x004AE3C0	?Release@DbElement@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017805	Release Entity DbElement Release increments the key and stores null mObject.
+0x004AE3D0	??0DbElement@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3792	DObj handle-database element construction clears the object pointer and initializes the key to 1.
+0x004AE3D0	??0DbElement@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017813	Release DObj DbElement construction stores null mObject and key 1.
+0x004AE3F0	?capacity@?$ae_fixed_string@$0EA@E@@SAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_fixed_string.h:69	The 64-byte unsigned-char fixed string capacity returns the usable 63-byte capacity.
+0x004AE3F0	?capacity@?$ae_fixed_string@$0EA@E@@SAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017822	Release fixed-string capacity returns 63.
+0x004AE400	??0?$ae_fixed_string@$0BAA@G@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_fixed_string.h:31	The 256-element wide fixed-string constructor clears length and the first buffer element.
+0x004AE400	??0?$ae_fixed_string@$0BAA@G@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017828	Release wide fixed-string construction stores zero length and a zero first character.
+0x004AE420	?size@?$cdl_array@E@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3051	The unsigned-char CDL array size accessor returns m_count.
+0x004AE420	?size@?$cdl_array@E@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017837	Release unsigned-char CDL array size returns m_count.
+0x004AE430	?size@?$cdl_array@UcdlPlane@@@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3052	The cdlPlane CDL array size accessor returns m_count.
+0x004AE430	?size@?$cdl_array@UcdlPlane@@@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017843	Release cdlPlane CDL array size returns m_count.
+0x004AE440	?size@?$cdl_array@Ucdl_brush_t@@@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3053	The cdl_brush_t CDL array size accessor returns m_count.
+0x004AE440	?size@?$cdl_array@Ucdl_brush_t@@@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017849	Release cdl_brush_t CDL array size returns m_count.
+0x004AE450	?size@?$cdl_array@Ucdl_vinfo_t@@@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3054	The cdl_vinfo_t CDL array size accessor returns m_count.
+0x004AE450	?size@?$cdl_array@Ucdl_vinfo_t@@@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017855	Release cdl_vinfo_t CDL array size returns m_count.
+0x004AE460	?size@?$cdl_array@Uvi4@@@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3055	The vi4 CDL array size accessor returns m_count.
+0x004AE460	?size@?$cdl_array@Uvi4@@@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017861	Release vi4 CDL array size returns m_count.
+0x004AE470	?size@?$cdl_array@Ucdl_patch_t@@@@QBEIXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3056	The cdl_patch_t CDL array size accessor returns m_count.
+0x004AE470	?size@?$cdl_array@Ucdl_patch_t@@@@QBEIXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017867	Release cdl_patch_t CDL array size returns m_count.
+0x004AE480	?node_to_object@?$reserved_dlist@VPakFile@@@@SAPBVPakFile@@PBUdlist_node@1@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/streamer/pakmanager.cpp:1791	The const PakFile dlist conversion returns the node address as its containing object.
+0x004AE480	?node_to_object@?$reserved_dlist@VPakFile@@@@SAPBVPakFile@@PBUdlist_node@1@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017873	Release PakFile node_to_object returns the const node pointer.
+0x004AE4B0	?reset_buffer@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@AAEXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:3217	The bounded proxy physics reset_buffer clears m_alloc_count.
+0x004AE4B0	?reset_buffer@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@AAEXXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017879	Release bounded proxy reset_buffer stores zero in m_alloc_count.
+0x004AE4C0	?Deref@?$IVPointer@VXModel@@@@ABEPAVXModel@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:277	The XModel IVPointer dereference validates the pak id and returns mValue.
+0x004AE4C0	?Deref@?$IVPointer@VXModel@@@@ABEPAVXModel@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017886	Release XModel Deref calls ValidatePakId and returns mValue.
+0x004AE4E0	?capacity@?$ae_fixed_string@$0CA@E@@SAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/core/ae_fixed_string.h:69	The 32-byte unsigned-char fixed string capacity returns the usable 31-byte capacity.
+0x004AE4E0	?capacity@?$ae_fixed_string@$0CA@E@@SAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017893	Release fixed-string capacity returns 31.
+0x004AE4F0	?Deref@?$IVPointer@VPhysData@@@@ABEPAVPhysData@@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/game_types.h:278	The PhysData IVPointer dereference validates the pak id and returns mValue.
+0x004AE4F0	?Deref@?$IVPointer@VPhysData@@@@ABEPAVPhysData@@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1017899	Release PhysData Deref calls ValidatePakId and returns mValue.

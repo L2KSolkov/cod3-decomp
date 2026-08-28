@@ -3048,6 +3048,12 @@ public:
     ~cdl_array() { done(); }
 
     // ea: 0x004AC780
+    // ea: 0x004AE420
+    // ea: 0x004AE430
+    // ea: 0x004AE440
+    // ea: 0x004AE450
+    // ea: 0x004AE460
+    // ea: 0x004AE470
     unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
     const T& operator[](unsigned int index) const; // ?A@?$cdl_array@...@@QBEABU...@@I@Z
     T& operator[](unsigned int index);
@@ -3208,6 +3214,7 @@ void phys_static_array<T, CAPACITY>::call_destructors()
 {
 }
 template <typename T, int CAPACITY>
+// ea: 0x004AE4B0
 void phys_static_array<T, CAPACITY>::reset_buffer()
 {
     m_alloc_count = 0;
@@ -3686,6 +3693,7 @@ public:
             ((unsigned int*)r.mBits)[i] = ~((const unsigned int*)mBits)[i];
         return r;
     }
+    // ea: 0x004AE360
     static int GetNumWords() { return (N + 31) / 32; }
     // ea: 0x004AE350
     unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
@@ -3780,10 +3788,16 @@ public:
     struct DbElement {
         T*  mObject;  // +0x00
         int mKey;     // +0x04
+        // ea: 0x004AE370
+        // ea: 0x004AE3D0
         DbElement() : mObject(nullptr), mKey(1) {}
+        // ea: 0x004AE390
         T* GetObject() const { return mObject; }
+        // ea: 0x004AE3A0
         void SetObject(T* obj) { mObject = obj; }
+        // ea: 0x004AE3B0
         int GetKey() const { return mKey; }
+        // ea: 0x004AE3C0
         void Release() { ++mKey; mObject = nullptr; }
     };
     BitSet<1344> mFreeIndices;       // +0x00 (168 bytes)

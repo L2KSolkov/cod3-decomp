@@ -28,6 +28,7 @@ public:
     unsigned char   mLength;                               // +sizeof(mBuff)
 
     // ea: 0x004AD300
+    // ea: 0x004AE400
     ae_fixed_string() : mLength(0) {
         mBuff[0] = 0;
     }
@@ -65,6 +66,8 @@ public:
     // ea: 0x004AC730
     int length() const { return mLength; }
     // ea: 0x004AD330
+    // ea: 0x004AE3F0
+    // ea: 0x004AE4E0
     static int capacity() {
         return (CAPACITY - 1) / sizeof(CHAR) * sizeof(CHAR);
     }
