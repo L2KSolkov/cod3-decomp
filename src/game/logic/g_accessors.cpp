@@ -3687,6 +3687,7 @@ public:
         return r;
     }
     static int GetNumWords() { return (N + 31) / 32; }
+    // ea: 0x004AE350
     unsigned int GetWord(int idx) const { return ((unsigned int*)mBits)[idx]; }
 
     class iterator {
@@ -3734,6 +3735,7 @@ class SizedHandle {
 public:
     unsigned int mVal;  // +0x00
     SizedHandle() : mVal(0) {}
+    // ea: 0x004AE210
     SizedHandle(unsigned int index, int key)
     {
         mVal = 0;
@@ -3761,11 +3763,14 @@ public:
         }
         mVal = index | (key << INDEX_BITS);
     }
+    // ea: 0x004AE310
     SizedHandle(Handle h) { mVal = h.mVal; }
+    // ea: 0x004AE330
     unsigned int GetIndex() const
     {
         return mVal & ((1u << INDEX_BITS) - 1);
     }
+    // ea: 0x004AE340
     unsigned int GetKey() const { return mVal >> INDEX_BITS; }
 };
 

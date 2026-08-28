@@ -134,6 +134,7 @@ public:
     // ea: 0x005EA540
     // ea: 0x005EA980
     // ea: 0x004AC690
+    // ea: 0x004AE100
     T& pop_back() {
         if (m_size != 0)
             --m_size;
