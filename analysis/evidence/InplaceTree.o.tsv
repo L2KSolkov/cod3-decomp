@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007E1800	?GetNullBuffer@@YAPADH@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA disasm/decompile 0x7E1800	Release size guard, one-time seven dword zeroing, and static buffer return reviewed.
+0x007E1800	?GetNullBuffer@@YAPADH@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA disasm 0x7E1800 + src/filesystem/inplace.cpp	Source matches release store order including the post-flag final dword.

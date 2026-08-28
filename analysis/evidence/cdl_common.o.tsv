@@ -1,0 +1,33 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0081D260	??Kmath@@YA?AVMat43@0@ABV10@0@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D260	Release inverse-affine matrix composition reviewed against source SSE operations.
+0x0081D260	??Kmath@@YA?AVMat43@0@ABV10@0@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D260 + src/core/cdl_common.cpp	Matrix rows and translation use matching shuffle/multiply/add order.
+0x0081D420	?get_min@cdlConvex@@QBE?BVPosition3@math@@XZ	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D420	Release subtracts m_dims from m_sphere.
+0x0081D420	?get_min@cdlConvex@@QBE?BVPosition3@math@@XZ	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D420 + src/core/cdl_types.h	Inline source matches release operation and return ABI.
+0x0081D450	?get_max@cdlConvex@@QBE?BVPosition3@math@@XZ	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D450	Release adds m_dims to m_sphere.
+0x0081D450	?get_max@cdlConvex@@QBE?BVPosition3@math@@XZ	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D450 + src/core/cdl_types.h	Inline source matches release operation and return ABI.
+0x0081D480	?get_dims@cdlConvex@@QBEABVDir3@math@@XZ	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D480	Release returns the m_dims member address.
+0x0081D480	?get_dims@cdlConvex@@QBEABVDir3@math@@XZ	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D480 + src/core/cdl_types.h	Inline source returns m_dims by const reference.
+0x0081D490	?get_center_local@cdlConvex@@QBEABVPosition3@math@@XZ	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D490	Release returns the m_sphere member address.
+0x0081D490	?get_center_local@cdlConvex@@QBEABVPosition3@math@@XZ	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D490 + src/core/cdl_types.h	Inline source returns m_sphere by const reference.
+0x0081D4A0	?get_radius@cdlConvex@@QBEMXZ	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA disasm/decompile 0x81D4A0	Release loads lane 3 with shufps and returns it through the float ABI.
+0x0081D4A0	?get_radius@cdlConvex@@QBEMXZ	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA disasm 0x81D4A0 + src/core/cdl_types.h	Inline source reads m_sphere lane 3; mangled M return type is preserved as float.
+0x0081D4E0	?intersect@@YAMABVPosition3@math@@ABVDir3@2@01@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile/disasm 0x81D4E0	Release unit-direction assert, parallel sentinel, and plane projection reviewed.
+0x0081D4E0	?intersect@@YAMABVPosition3@math@@ABVDir3@2@01@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D4E0 + src/core/cdl_common.cpp	Source matches release arithmetic and exact assert expression/descriptor.
+0x0081D5E0	?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVPosition3@3@@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D5E0	Release transformed-AABB point bounds test reviewed.
+0x0081D5E0	?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVPosition3@3@@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D5E0 + src/core/cdl_common.cpp	Source matches release shuffle, inverse translation, and strict comparisons.
+0x0081D6F0	?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVcdlSphere@@@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D6F0	Release transformed-AABB sphere test reviewed.
+0x0081D6F0	?intersect@@YA_NABVcdlAABB@@ABVMat43@math@@ABVcdlSphere@@@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D6F0 + src/core/cdl_common.cpp	Source matches release radius-square broad/narrow tests and distance threshold.
+0x0081D8C0	?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D8C0	Release clamps point to AABB and sums squared delta.
+0x0081D8C0	?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D8C0 + src/core/cdl_common.cpp	Source matches min/max clamp and DOT3 order.
+0x0081D930	?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@ABVMat43@2@@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D930	Release inverse-transforms the point and delegates to AABB dist2.
+0x0081D930	?dist2@@YAMABVPosition3@math@@ABVcdlAABB@@ABVMat43@2@@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81D930 + src/core/cdl_common.cpp	Source matches release rotation/translation SSE sequence.
+0x0081DA20	?is_inside@@YA_NABVDir3@math@@000@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81DA20	Release dominant-axis selection and sign tests reviewed.
+0x0081DA20	?is_inside@@YA_NABVDir3@math@@000@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81DA20 + src/core/cdl_common.cpp	Source matches axis selection, sign comparisons, and zero case.
+0x0081DB50	?calc_closest@@YA?AVPosition3@math@@ABV12@000@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81DB50	Release Voronoi-region scalar and cross-product tests reviewed.
+0x0081DB50	?calc_closest@@YA?AVPosition3@math@@ABV12@000@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81DB50 + src/core/cdl_common.cpp	Source includes all three release cross-product wedge tests and matching edge interpolation.
+0x0081DF30	?dist2@@YAMABVPosition3@math@@000@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81DF30	Release evaluates the three edge sweep distances and clamps the minimum.
+0x0081DF30	?dist2@@YAMABVPosition3@math@@000@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81DF30 + src/core/cdl_common.cpp	Source matches edge order, divisions, and 0.000099999997 floor.
+0x0081E130	?intersect@@YA_NABVcdlConvex@@ABVMat43@math@@01M@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81E130	Release sphere rejection, relative transform, cinfo setup, and GJK call reviewed.
+0x0081E130	?intersect@@YA_NABVcdlConvex@@ABVMat43@math@@01M@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81E130 + src/core/cdl_common.cpp	Source matches release transform/shuffle sequence and gjk arguments.
+0x0081E4D0	?get_center@cdlConvex@@QBE?BVPosition3@math@@ABVMat43@3@@Z	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81E4D0	Release transforms m_sphere center by Mat43.
+0x0081E4D0	?get_center@cdlConvex@@QBE?BVPosition3@math@@ABVMat43@3@@Z	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81E4D0 + src/core/cdl_types.h	Inline source matches release row/translation arithmetic and return ABI.

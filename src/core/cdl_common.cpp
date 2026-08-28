@@ -76,6 +76,7 @@ cdl_profcounter cdl_profcounter_temp1;            // ?cdl_profcounter_temp1@@3Uc
 
 // External assert
 extern bool _tlAssert(const char* file, int line, const char* cond, const char* msg);
+extern const char defaultFileName[];
 
 extern int gjk(
     const cdlConvex& a, const math::Mat43& a2b,
@@ -232,7 +233,9 @@ float intersect(
     __m128 n2 = _mm_mul_ps(rd.v, rd.v);
     float len2 = DOT3(n2);
     if (fabsf(len2 - 1.0f) >= 0.0001f) {
-        _tlAssert("source/cdl_common.cpp", 9, "", "");
+        _tlAssert("source/cdl_common.cpp", 9,
+                  "fabsf( AbsSquared(rd) - 1.0f ) < 0.0001f",
+                  defaultFileName);
         __debugbreak();
     }
 
@@ -515,33 +518,51 @@ math::Position3 calc_closest(const math::Position3& v0,
         result.v = v2.v;
         return result;
     }
+    // The release tests the Voronoi regions with cross products as well as
+    // the edge projection scalars above.  These terms reject points that are
+    // outside an edge's wedge even when its scalar projection is in range.
+    const __m128 edge02 = _mm_sub_ps(v0.v, v2.v);
+    const __m128 edge10 = _mm_sub_ps(v1.v, v0.v);
+    const __m128 edge21 = _mm_sub_ps(v2.v, v1.v);
+    const __m128 point0 = _mm_sub_ps(p.v, v0.v);
+    const __m128 point1 = _mm_sub_ps(p.v, v1.v);
+    const float edge02_edge10 = DOT3(_mm_mul_ps(edge02, edge10));
+
     math::Position3 result;
-    if (v37 < 0.0f || v36 < v37)
+    const __m128 edge0_test = _mm_mul_ps(
+        point0,
+        _mm_sub_ps(_mm_mul_ps(edge02, _mm_set1_ps(v36)),
+                   _mm_mul_ps(edge10, _mm_set1_ps(edge02_edge10))));
+    if (DOT3(edge0_test) < 0.0f || v37 < 0.0f || v36 < v37)
     {
-        if (x02 < 0.0f || v34 < x02)
+        const float edge10_edge21 = DOT3(_mm_mul_ps(edge10, edge21));
+        const __m128 edge1_test = _mm_mul_ps(
+            point1,
+            _mm_sub_ps(_mm_mul_ps(edge10, _mm_set1_ps(v34)),
+                       _mm_mul_ps(edge21, _mm_set1_ps(edge10_edge21))));
+        if (DOT3(edge1_test) < 0.0f || x02 < 0.0f || v34 < x02)
         {
-            if (v31 < 0.0f || v32 < v31)
+            const __m128 edge2_test = _mm_mul_ps(
+                point0,
+                _mm_add_ps(_mm_mul_ps(_mm_xor_ps(Float4_SignMask, edge10),
+                                      _mm_set1_ps(v32)),
+                           _mm_mul_ps(edge02,
+                                      _mm_set1_ps(edge02_edge10))));
+            if (DOT3(edge2_test) < 0.0f || v31 < 0.0f || v32 < v31)
             {
                 result.v = p.v;
                 return result;
             }
-            float t = v31 / v32;
+            const float t = v31 / v32;
             result.v = _mm_add_ps(
-                v2.v, _mm_mul_ps(_mm_sub_ps(v0.v, v2.v),
-                                 _mm_shuffle_ps(_mm_set_ss(t), _mm_set_ss(t), 0)));
+                v2.v, _mm_mul_ps(edge02, _mm_set1_ps(t)));
             return result;
         }
-        float t = x02 / v34;
-        result.v = _mm_add_ps(
-            v1.v,
-            _mm_mul_ps(_mm_sub_ps(v2.v, v1.v),
-                       _mm_shuffle_ps(_mm_set_ss(t), _mm_set_ss(t), 0)));
+        const float t = x02 / v34;
+        result.v = _mm_add_ps(v1.v, _mm_mul_ps(edge21, _mm_set1_ps(t)));
         return result;
     }
-    float t = v37 / v36;
-    result.v = _mm_add_ps(
-        v0.v,
-        _mm_mul_ps(_mm_sub_ps(v1.v, v0.v),
-                   _mm_shuffle_ps(_mm_set_ss(t), _mm_set_ss(t), 0)));
+    const float t = v37 / v36;
+    result.v = _mm_add_ps(v0.v, _mm_mul_ps(edge10, _mm_set1_ps(t)));
     return result;
 }

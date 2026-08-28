@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0081E550	?cdl_init@@YAXXZ	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA disasm 0x81E550	Single release RETN; source is empty.
+0x0081E550	?cdl_init@@YAXXZ	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81E550 + src/core/cdl_base.cpp	Empty source body matches release.
+0x0081E560	?cdl_profile_reset@@YAXXZ	V3	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81E560	Release writes value fields of 11 timers and 4 counters only.
+0x0081E560	?cdl_profile_reset@@YAXXZ	V4	PASS	ida-cdl-leaf-20260827	2026-08-27	IDA decompile 0x81E560 + src/core/cdl_base.cpp	Source clears the same value fields and preserves timer stamps; void ABI follows mangled symbol.

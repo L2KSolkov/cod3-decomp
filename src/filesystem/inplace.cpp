@@ -138,8 +138,16 @@ char* GetNullBuffer(int size) {
             __debugbreak();
     }
     if (!isInit_0) {
-        memset(sNullBuffer, 0, sizeof(sNullBuffer));
+        // Match the release's seven dword stores and initialization order.
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 0) = 0;
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 4) = 0;
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 8) = 0;
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 12) = 0;
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 16) = 0;
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 20) = 0;
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 24) = 0;
         isInit_0 = 1;
+        *reinterpret_cast<uint32_t*>(sNullBuffer + 28) = 0;
     }
     return sNullBuffer;
 }

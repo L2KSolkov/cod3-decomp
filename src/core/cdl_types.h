@@ -56,22 +56,28 @@ struct cdlConvex {
     math::Dir3        m_dims;         // +0x20 (half extents)
 
     // cdl_common.o COMDAT helpers recovered from IDA.
+    // ea: 0x81D420
     math::Position3 get_min() const {
         math::Position3 result;
         result.v = _mm_sub_ps(m_sphere.v, m_dims.v);
         return result;
     }
 
+    // ea: 0x81D450
     math::Position3 get_max() const {
         math::Position3 result;
         result.v = _mm_add_ps(m_sphere.v, m_dims.v);
         return result;
     }
 
+    // ea: 0x81D480
     const math::Dir3& get_dims() const { return m_dims; }
+    // ea: 0x81D490
     const math::Vector4& get_center_local() const { return m_sphere; }
+    // ea: 0x81D4A0
     float get_radius() const { return m_sphere.v.m128_f32[3]; }
 
+    // ea: 0x81E4D0
     math::Position3 get_center(const math::Mat43& mat) const {
         math::Position3 result;
         result.v = _mm_add_ps(
