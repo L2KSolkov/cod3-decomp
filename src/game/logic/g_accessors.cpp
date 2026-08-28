@@ -3912,6 +3912,8 @@ public:
 };
 
 template <typename T, int CAPACITY, typename H>
+// ea: 0x004B2480
+// ea: 0x004B26F0
 HandleDb<T, CAPACITY, H>::HandleDb()
 {
     mFreeIndices.Clear();
@@ -3925,11 +3927,13 @@ HandleDb<T, CAPACITY, H>::HandleDb()
         mFreeIndices.Add(i);
 }
 template <typename T, int CAPACITY, typename H>
+// ea: 0x004B24F0
 BitSet<1344> HandleDb<T, CAPACITY, H>::GetAllocatedIndices() const
 {
     return ~mFreeIndices;
 }
 template <typename T, int CAPACITY, typename H>
+// ea: 0x004B2510
 void HandleDb<T, CAPACITY, H>::ReleaseHandle(Handle h)
 {
     if (h.mVal != 0)
@@ -4488,6 +4492,7 @@ int clientPersistent_t::GetTotalScore()
 
 // DbLinkedHandle<EntityHandleDb,Entity> deref (g.o 0x4B2670 / 0x4B26B0)
 template <>
+// ea: 0x004B2670
 Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator*() const
 {
     unsigned int mVal = mHandle.mVal;
@@ -4497,6 +4502,7 @@ Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator*() const
     return nullptr;
 }
 template <>
+// ea: 0x004B26B0
 Entity* DbLinkedHandle<EntityHandleDb, Entity>::operator->() const
 {
     unsigned int mVal = mHandle.mVal;
