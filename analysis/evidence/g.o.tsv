@@ -2047,3 +2047,31 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B5C70	?FS_GetDataForFile@@YAPAUfileData_s@@PBD00@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023301	Release FS_GetDataForFile uses the same name construction, bounds assertions, hash buckets, comparisons, and null fallback.
 0x004B5E80	?FS_ClearDataForFiles@@YAXPAX0@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:413	FS_ClearDataForFiles walks memory search paths and file lists, frees data in the requested range, and nulls ownership fields.
 0x004B5E80	?FS_ClearDataForFiles@@YAXPAX0@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023394	Release FS_ClearDataForFiles uses the same pack/list traversal, range test, free callback, and pointer clearing.
+0x004B5FC0	?FS_Flush@@YAXH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/files.cpp:492	FS_Flush flushes the FILE stream associated with the handle.
+0x004B5FC0	?FS_Flush@@YAXH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023492	Release FS_Flush calls fflush on the handle's file object.
+0x004B5FE0	?Q_rand@@YA?BHPAH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:177	Q_rand advances the integer seed with the release linear-congruential recurrence and returns it.
+0x004B5FE0	?Q_rand@@YA?BHPAH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023498	Release Q_rand uses 69069 * seed + 1 and writes back the result.
+0x004B6070	?Q_log2@@YA?BHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:203	Q_log2 counts right shifts of val>>1 until zero.
+0x004B6070	?Q_log2@@YA?BHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023532	Release Q_log2 has the same shift-count loop and result.
+0x004B60D0	?ClampChar@@YA?BCH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:222	ClampChar saturates an integer to the signed 8-bit range.
+0x004B60D0	?ClampChar@@YA?BCH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023556	Release ClampChar uses the same -128 and 127 bounds.
+0x004B60F0	?ClampShort@@YA?BFH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:233	ClampShort saturates an integer to the signed 16-bit range.
+0x004B60F0	?ClampShort@@YA?BFH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023569	Release ClampShort uses the same -32768 and 32767 bounds.
+0x004B6110	?DirToByte@@YA?BEQBM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:244	DirToByte scans all 162 byte directions and returns the greatest dot-product index, or zero for null input.
+0x004B6110	?DirToByte@@YA?BEQBM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023582	Release DirToByte performs the same null guard, 162-entry scan, and max-dot selection.
+0x004B61E0	?_VectorSubtract@@YAXQBM0QAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:296	_VectorSubtract computes all three component differences.
+0x004B61E0	?_VectorSubtract@@YAXQBM0QAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023637	Release _VectorSubtract writes the same three differences.
+0x004B6220	?_VectorAdd@@YAXQBM0QAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:305	_VectorAdd computes all three component sums.
+0x004B6220	?_VectorAdd@@YAXQBM0QAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023645	Release _VectorAdd writes the same three sums.
+0x004B6260	?_VectorCopy@@YAXQBMQAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:314	_VectorCopy copies all three float components.
+0x004B6260	?_VectorCopy@@YAXQBMQAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023653	Release _VectorCopy writes the same three source components.
+0x004B6280	?_VectorScale@@YAXQBMMQAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:322	_VectorScale multiplies all three components by the scalar.
+0x004B6280	?_VectorScale@@YAXQBMMQAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023661	Release _VectorScale writes the same three products.
+0x004B62C0	?_VectorMA@@YAXQBMM0QAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:330	_VectorMA computes veca plus scale times vecb for all three components.
+0x004B62C0	?_VectorMA@@YAXQBMM0QAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023669	Release _VectorMA uses the same component-wise multiply-add sequence.
+0x004B6310	?VectorCompareEpsilon@@YA?BHQBM0@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:339	VectorCompareEpsilon accepts when each of three squared component deltas is at most 0.000025.
+0x004B6310	?VectorCompareEpsilon@@YA?BHQBM0@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023677	Release VectorCompareEpsilon uses the same threshold and three-component loop.
+0x004B64E0	?CrossProduct@@YAXQBM0QAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:406	CrossProduct writes the standard three-dimensional cross product.
+0x004B64E0	?CrossProduct@@YAXQBM0QAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023760	Release CrossProduct uses the same three cross-product equations.
+0x004B6540	?CrossProductUp@@YAXQBMQAM@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/core/q_math.cpp:414	CrossProductUp computes the horizontal cross with the up axis.
+0x004B6540	?CrossProductUp@@YAXQBMQAM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1023768	Release CrossProductUp writes y, negative x, and zero z.
