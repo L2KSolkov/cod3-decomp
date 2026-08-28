@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0089DAF0	??0bdCommonAddr@@QAE@XZ	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdAddressMap.cpp:42-47	Source default constructor initializes the bdReferencable base, port, title ID, and loopback flag; no user fields are omitted.
+0x0089DAF0	??0bdCommonAddr@@QAE@XZ	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1668180-1668191	Release constructor initializes the reference count/vtable and the same fields as source.

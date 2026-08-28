@@ -65,7 +65,7 @@ bdBitOperations.obj	4	4	0	0	0	0	0
 bdByteBuffer.obj	5	5	0	0	0	0	0
 bdBytePacker.obj	11	11	0	0	0	0	0
 bdChunk.obj	9	2	2	4	1	0	0
-bdCommonAddr-xbox.obj	28	25	2	1	0	0	0
+bdCommonAddr-xbox.obj	28	25	2	0	0	1	0
 bdConnection.obj	35	23	5	7	0	0	0
 bdConnectionListener.obj	5	0	1	0	4	0	0
 bdConnectionStatistics.obj	16	0	7	9	0	0	0
