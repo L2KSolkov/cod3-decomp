@@ -551,6 +551,8 @@ public:
 };
 
 template <typename T>
+// ea: 0x005EE830
+// ea: 0x005EE8D0
 reserved_dlist<T>::reserved_dlist()
 {
     dlist_node* p_m_end = reinterpret_cast<dlist_node*>(&m_end);
@@ -567,6 +569,9 @@ bool reserved_dlist<T>::empty() const
 }
 
 template <typename T>
+// ea: 0x005EE850
+// ea: 0x005EE8A0
+// ea: 0x005EE8F0
 void reserved_dlist<T>::push_back(T* obj)
 {
     obj->m_dlist_node.mNext = reinterpret_cast<AeDListNode*>(&m_end);
@@ -578,6 +583,7 @@ void reserved_dlist<T>::push_back(T* obj)
 }
 
 template <typename T>
+// ea: 0x005EE880
 typename reserved_dlist<T>::const_iterator reserved_dlist<T>::end() const
 {
     return const_iterator(
@@ -585,6 +591,7 @@ typename reserved_dlist<T>::const_iterator reserved_dlist<T>::end() const
 }
 
 template <typename T>
+// ea: 0x005EE920
 T* reserved_dlist<T>::pop_back()
 {
     dlist_node* result = m_tail;
@@ -598,6 +605,9 @@ T* reserved_dlist<T>::pop_back()
 }
 
 template <typename T>
+// ea: 0x005EEC00
+// ea: 0x005EEC60
+// ea: 0x005EECB0
 typename reserved_dlist<T>::iterator reserved_dlist<T>::find(T* object)
 {
     dlist_node* m_head_node = m_head;
@@ -775,6 +785,9 @@ bool reserved_dlist<T>::const_iterator::operator!=(
 }
 
 template <typename T>
+// ea: 0x005EF770
+// ea: 0x005EF860
+// ea: 0x005EF900
 void reserved_dlist<T>::erase(T* object)
 {
     iterator found = find(object);
@@ -794,6 +807,7 @@ void reserved_dlist<T>::erase(T* object)
 }
 
 template <typename T>
+// ea: 0x005EF810
 typename reserved_dlist<T>::const_iterator reserved_dlist<T>::begin() const
 {
     const dlist_node* head = m_head;
