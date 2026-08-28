@@ -836,3 +836,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004C2720	?AnglesToAxis@@YAXQBMQAY02M@Z	V4	PASS	ida-manual-axis-overloads-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1030989-1031000	Release AngleVectors call and axis component negations match source.
 0x004C2770	?AnglesToAxis@@YAXABVPosition3@math@@QAY02M@Z	V3	PASS	ida-manual-axis-overloads-20260828	2026-08-28	src/game/core/q_math.cpp:2355-2364	Source forwards Position3 angle storage to AngleVectors and writes the same axis basis layout.
 0x004C2770	?AnglesToAxis@@YAXABVPosition3@math@@QAY02M@Z	V4	PASS	ida-manual-axis-overloads-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1031002-1031013	Release Position3 AngleVectors forwarding and axis writes match source.
+0x004C3730	?Com_Quit_f@@YAXXZ	V3	PASS	ida-manual-common-shutdown-20260828	2026-08-28	src/game/core/common.cpp:1922-1932	Source conditionally shuts down skeletons/client/server/filesystem and terminates through tlFatal.
+0x004C3730	?Com_Quit_f@@YAXXZ	V4	PASS	ida-manual-common-shutdown-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1031579-1031590	Release shutdown sequence and unconditional tlFatal call match source.
