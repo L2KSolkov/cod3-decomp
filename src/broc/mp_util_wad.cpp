@@ -5128,6 +5128,68 @@ Broc::bbool IsEEDefined_script_flaktype(Broc::entity ent) {
     return result;
 }
 
+// Global animation-wad string field entry points.
+// ea: 0x0098DDF0
+Broc::string& GetEE_script_objective(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_objective(ent);
+}
+// ea: 0x0098DE40
+Broc::bbool IsEEDefined_script_objective(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_objective(&result, ent);
+    return result;
+}
+// ea: 0x0098E240
+Broc::string& GetEE_script_squadname(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_squadname(ent);
+}
+// ea: 0x0098E290
+Broc::bbool IsEEDefined_script_squadname(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_squadname(&result, ent);
+    return result;
+}
+// ea: 0x0098E390
+Broc::string& GetEE_weaponinfo(Broc::entity ent) {
+    return *mp_util_wad::GetEE_weaponinfo(ent);
+}
+// ea: 0x0098E3E0
+Broc::bbool IsEEDefined_weaponinfo(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_weaponinfo(&result, ent);
+    return result;
+}
+// ea: 0x0098E5E0
+Broc::string& GetEE_script_turretweaponpak(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_turretweaponpak(ent);
+}
+// ea: 0x0098E630
+Broc::bbool IsEEDefined_script_turretweaponpak(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_turretweaponpak(&result, ent);
+    return result;
+}
+// ea: 0x0098E930
+Broc::string& GetEE_script_hidden(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_hidden(ent);
+}
+// ea: 0x0098E980
+Broc::bbool IsEEDefined_script_hidden(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_hidden(&result, ent);
+    return result;
+}
+// ea: 0x0098EB80
+Broc::string& GetEE_script_effect_id(Broc::entity ent) {
+    return *mp_util_wad::GetEE_script_effect_id(ent);
+}
+// ea: 0x0098EBD0
+Broc::bbool IsEEDefined_script_effect_id(Broc::entity ent) {
+    Broc::bbool result;
+    mp_util_wad::IsEEDefined_script_effect_id(&result, ent);
+    return result;
+}
+
 // ============================================================================
 // _mp_airplanes - airplane flyby script (72-byte mp_plane).
 // ============================================================================
