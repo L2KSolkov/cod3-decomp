@@ -2796,6 +2796,7 @@ static void afmv_macro_block_add_dc(unsigned char* dest, int stride, const short
     }
 }
 
+// ea: 0x00832260
 void MacroBlockIdct(short* mb) {
     __m64* block = reinterpret_cast<__m64*>(mb);
     const __m64 roundRow = afmv_idct_table(round_inv_row, 0);
@@ -2894,12 +2895,14 @@ void MacroBlockIdct(short* mb) {
     }
 }
 
+// ea: 0x00832A10
 void MacroBlockIdctCopy(short* mb, unsigned char* dest, int stride) {
     MacroBlockIdct(mb);
     afmv_macro_block_copy(dest, stride, reinterpret_cast<const __m64*>(mb));
     std::memset(mb, 0, sizeof(__m64) * 16);
 }
 
+// ea: 0x00832A90
 void MacroBlockIdctAdd(int last, short* mb, unsigned char* dest, int stride) {
     if (last != 129 || (static_cast<unsigned char>(mb[0]) & 0x70) == 0x40) {
         MacroBlockIdct(mb);
@@ -2965,6 +2968,7 @@ static unsigned afmv_byte(__m64 value, unsigned index) {
     return static_cast<unsigned>((afmv_to_bits(value) >> (index * 8)) & 0xFFu);
 }
 
+// ea: 0x00833130
 void afmvYUV2RGB16(unsigned char** src_yuv, unsigned char* dest_rgb, int width) {
     unsigned char* y = src_yuv[0];
     unsigned char* u = src_yuv[1];
@@ -3007,6 +3011,7 @@ void afmvYUV2RGB16(unsigned char** src_yuv, unsigned char* dest_rgb, int width) 
     }
 }
 
+// ea: 0x00833270
 void afmvYUV2RGB32(unsigned char** src_yuv, unsigned char* dest_rgb, int width) {
     unsigned char* y = src_yuv[0];
     unsigned char* u = src_yuv[1];

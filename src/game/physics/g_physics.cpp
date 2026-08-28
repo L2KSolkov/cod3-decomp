@@ -522,6 +522,7 @@ public:
     unsigned int mHash;  // +0x00
     HashString();  // ??0HashString@@QAE@XZ
     HashString(Broc::string& str);  // ??0HashString@@QAE@AAVstring@Broc@@@Z
+    static unsigned int CalcHash(const char* str);
 };
 
 // hash_const_t (g_local.h view; local copy - only physics fields used)
@@ -10229,6 +10230,15 @@ void UpdateRigidBody(float delta_t)
 // ea: 0x70CFE0
 void PhysInit()
 {
+    // These tag hashes are initialized by the release image's CRT startup
+    // functions before any rigid-body vehicle can be created.  Keep the same
+    // initialization order here so vehicle setup never queries tag 0xFFFFFFFF.
+    g_tag_left_tread_hash = HashString::CalcHash("tag_tread_left");
+    g_tag_right_tread_hash = HashString::CalcHash("tag_tread_right");
+    g_tag_left_gear_hash = HashString::CalcHash("tag_gear_left");
+    g_tag_right_gear_hash = HashString::CalcHash("tag_gear_right");
+    g_tag_steeringwheel_hash = HashString::CalcHash("tag_steeringwheel");
+
     phys_mem_info pmi;
     pmi.m_num_user_rigid_body = 10;
     pmi.m_num_rbc_custom_orientation = 10;

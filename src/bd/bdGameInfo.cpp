@@ -17,6 +17,8 @@ void* allocate(unsigned int size);
 void deallocate(void* p);
 }
 
+extern const char defaultFileName[];
+
 // ============================================================================
 // bdGameInfo::getTitleID â€” ea: 0x8AE8D0
 // ============================================================================
@@ -195,12 +197,15 @@ bool bdGameInfo::deserialize(const bdReference<bdCommonAddr>& hostAddr, bdBitBuf
 // bdGameInfoFactoryImpl::create â€” ea: 0x8AEF60
 // ============================================================================
 bdGameInfo* bdGameInfoFactoryImpl::create() const {
-    if (this->m_creator == NULL) {
-        bdMessageProxy proxy(".\\bdDiscovery\\bdGameInfoFactory.cpp",
-                             "class bdGameInfo *__thiscall bdGameInfoFactoryImpl::create(void) const",
-                             0x13u, "dw/err");
-        proxy.log("", "bdGameInfoFactoryImpl::create, must set a game info class with BD_REGISTER_GAME_INFO_CLASS before calling create.");
-    }
+    do {
+        if (this->m_creator == NULL) {
+            bdMessageProxy proxy(".\\bdDiscovery\\bdGameInfoFactory.cpp",
+                                 "class bdGameInfo *__thiscall bdGameInfoFactoryImpl::create(void) const",
+                                 0x13u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdGameInfoFactoryImpl::create, must set a game info class with BD_REGISTER_GAME_INFO_CLASS before calling create.");
+        }
+    } while (g_assertFalse);
     return this->m_creator->create();
 }
 

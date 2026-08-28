@@ -371,8 +371,9 @@ void DObjFree(DObj* obj, int bClearTree)
         {
             ++gDSkelFreeList->mFree;
             --gDSkelFreeList->mUsed;
-            skel->animPartBits[0] = gDSkelFreeList->mpFree->animPartBits[0];
+            DSkel* oldHead = gDSkelFreeList->mpFree;
             gDSkelFreeList->mpFree = skel;
+            *(void**)skel = oldHead;
         }
     }
     else if (numBones <= 4u)
@@ -382,8 +383,9 @@ void DObjFree(DObj* obj, int bClearTree)
         {
             --gDSkel4FreeList->mUsed;
             ++gDSkel4FreeList->mFree;
-            skel->animPartBits[0] = gDSkel4FreeList->mpFree->animPartBits[0];
+            DSkel4* oldHead = gDSkel4FreeList->mpFree;
             gDSkel4FreeList->mpFree = skel;
+            *(void**)skel = oldHead;
         }
     }
     else if (obj->skel != nullptr)
@@ -391,8 +393,9 @@ void DObjFree(DObj* obj, int bClearTree)
         DSkelMax* skel = (DSkelMax*)obj->skel;
         ++gDSkelMaxFreeList->mFree;
         --gDSkelMaxFreeList->mUsed;
-        skel->animPartBits[0] = gDSkelMaxFreeList->mpFree->animPartBits[0];
+        DSkelMax* oldHead = gDSkelMaxFreeList->mpFree;
         gDSkelMaxFreeList->mpFree = skel;
+        *(void**)skel = oldHead;
     }
 
     int i = 0;
@@ -432,6 +435,13 @@ void DObjFree(DObj* obj, int bClearTree)
             __debugbreak();
         obj->duplicateParts = 0;
     }
+}
+
+// C-style bridge used by the client translation units; forward it to the
+// typed release implementation so skeletons are returned to their free list.
+void DObjFree(void* obj, int bClearTree)
+{
+    DObjFree(static_cast<DObj*>(obj), bClearTree);
 }
 
 // ============================================================================

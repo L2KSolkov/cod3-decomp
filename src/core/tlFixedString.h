@@ -56,11 +56,13 @@ public:
         *this = s;
     }
 
+    // ea: 0x4B5420
     tlFixedString& operator=(const tlFixedString& rhs) {
         memcpy(this, &rhs, 32);
         return *this;
     }
 
+    // ea: 0x4EAB30
     bool operator==(const tlFixedString& rhs) const {
         const uint32_t* a = (const uint32_t*)this;
         const uint32_t* b = (const uint32_t*)&rhs;
@@ -71,14 +73,19 @@ public:
         return true;
     }
 
+    // ea: 0x4EAB70
     bool operator!=(const tlFixedString& rhs) const {
         return !(*this == rhs);
     }
 
+    // ea: 0x4B5470
     char* c_str() { return str; }
+    // ea: 0x4EABB0
     const char* c_str() const { return str; }
 
+    // ea: 0x4A53E0
     uint32_t* value();  // ?value@tlFixedString@@QAEPAIXZ (g.o 0x4A53E0)
+    // ea: 0x4B53E0
     const uint32_t* value() const { return (const uint32_t*)this; }
 
     unsigned int GetHash() const { return hash; }

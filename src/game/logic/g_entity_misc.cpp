@@ -176,7 +176,7 @@ void Entity::CreateDObj(DObjModel* dobjModels, unsigned short numModels,
 // ============================================================================
 // Entity::FreeDObj - ea: 0x611DB0
 // ============================================================================
-extern void DObjFree(void* obj, int bClearTree);  // ?DObjFree (render.o)
+extern void DObjFree(DObj* obj, int bClearTree);  // ?DObjFree (render.o)
 extern void unregister_dobj(DbLinkedHandle<EntityHandleDb, Entity> handle);  // ?unregister_dobj (g.o)
 
 void Entity::FreeDObj(bool deleteDObjs)
@@ -3295,7 +3295,6 @@ void DObjDisplayAnim3D(int a, DObj* obj, float* const b, int c)
     (void)a; (void)obj; (void)b; (void)c;
 }
 void DObjDumpInfo(DObj* obj) { (void)obj; }
-void DObjFree(void* obj, int a) { (void)obj; (void)a; }
 void DObjGetBounds(const DObj* obj, math::Position3& a, math::Position3& b)
 {
     (void)obj; (void)a; (void)b;

@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007C4BA0	?InitCDDebugVertexDefBuilder@@YAXXZ	V3	PASS	ida-manual-cddebug-20260827	2026-08-27	IDA:0x007C4BA0;src/render/cdDebugVertexDef.cpp:77	Release and source are both located; the initializer writes the debug vertex size and declaration pointer.
+0x007C4BA0	?InitCDDebugVertexDefBuilder@@YAXXZ	V4	PASS	ida-manual-cddebug-20260827	2026-08-27	IDA:0x007C4BA0-0x007C4BAA;src/render/cdDebugVertexDef.cpp:77-80	Release/source comparison matches VertexSize=12 and the elem declaration pointer assignment.

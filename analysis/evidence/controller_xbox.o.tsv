@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007E1A80	?GetUIXRender@LiveWrapper@@QAE_NXZ	V3	PASS	ida-manual-livewrapper-20260827	2026-08-27	IDA:0x007E1A80;src/game/platform_xbox/XboxLive.cpp:12	Release and source are both located; GetUIXRender reads the LiveWrapper renderingEnabled state.
+0x007E1A80	?GetUIXRender@LiveWrapper@@QAE_NXZ	V4	PASS	ida-manual-livewrapper-20260827	2026-08-27	IDA:0x007E1A80-0x007E1A86;src/game/platform_xbox/XboxLive.cpp:12-15	Release/source comparison matches the direct bool member return and this-pointer ABI.

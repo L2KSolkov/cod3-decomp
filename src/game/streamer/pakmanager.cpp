@@ -1441,17 +1441,41 @@ struct PakInfoNode {
         unsigned int mSize;          // +0x2C
         const PakInfoNode** mList;   // +0x30
     } prereqs;                       // +0x2C (InplaceVector)
-    uint8_t     _pad34[0xB4 - 0x34];
-    TPakId      pakId;          // +0xB4
-    unsigned int refCount;      // +0xB8
-    float       distance;       // +0xBC
-    float       userDistance;   // +0xC0
-    unsigned int mapColor;      // +0xC4
-    float       computedDistance;  // +0xC8
-    unsigned int visited;       // +0xCC
-    BitSet<99>* prereqPakIds;   // +0xD0
-    uint8_t     _padD4[0xE0 - 0xD4];
+    unsigned int voices;        // +0x34
+    InplaceString audioAmbientSetting; // +0x38
+    unsigned int audioAmbientMax;     // +0x3C
+    unsigned int audioAmbientMin;     // +0x40
+    InplaceString audioBackgroundTrack; // +0x44
+    InplaceString audioReverbSetting;   // +0x48
+    float       cullFog[6];             // +0x4C
+    float       fog[2];                 // +0x64
+    float       zfar;                   // +0x6C
+    bool        bGlowRaysOn;            // +0x70
+    uint8_t     _pad71[3];              // +0x71
+    float       glowParamsXbox[4];      // +0x74
+    float       glowParamsPs2[4];       // +0x84
+    float       glowParams[4];          // +0x94
+    float       ngLightingParams[3];    // +0xA4
+    float       ngSpeedtreeParams;      // +0xB0
+    TPakId      pakId;                  // +0xB4
+    unsigned int refCount;              // +0xB8
+    float       distance;               // +0xBC
+    float       userDistance;           // +0xC0
+    unsigned int mapColor;              // +0xC4
+    float       computedDistance;       // +0xC8
+    unsigned int visited;               // +0xCC
+    BitSet<99>* prereqPakIds;           // +0xD0
+    struct {
+        unsigned int mSize;             // +0xD4
+        InplaceString* mList;            // +0xD8
+    } checkPointNames;
+    unsigned int reserved1;             // +0xDC
 };
+
+static_assert(offsetof(PakInfoNode, pakId) == 0xB4,
+              "PakInfoNode::pakId offset mismatch");
+static_assert(sizeof(PakInfoNode) == 0xE0,
+              "PakInfoNode size mismatch");
 
 // InplaceVector<T> (ae/inplace/InplaceVector.h; full definition in
 // game/game_types.h) - minimal view

@@ -429,6 +429,25 @@ def symbol_variants(name: str) -> set[str]:
     # confirm these are the same x86 call contracts; accept the current
     # compiler's equivalent decorations without weakening body gates.
     equivalent = {
+        # The release map records these CG static methods with the non-static
+        # YAX decoration, while the current MSVC emits the equivalent static
+        # SAX decoration. IDA confirms identical cdecl call contracts.
+        "?Begin@CG_MotionBlur@@YAXMMM@Z":
+            "?Begin@CG_MotionBlur@@SAXMMM@Z",
+        "?End@CG_MotionBlur@@YAXXZ":
+            "?End@CG_MotionBlur@@SAXXZ",
+        "?Callback@CG_MotionBlur@@YAXPAX@Z":
+            "?Callback@CG_MotionBlur@@SAXPAX@Z",
+        "?AddPostCallback@CG_MotionBlur@@YAXXZ":
+            "?AddPostCallback@CG_MotionBlur@@SAXXZ",
+        "?blurCallBack@CG_SceneBlur@@YAXPAX@Z":
+            "?blurCallBack@CG_SceneBlur@@SAXPAX@Z",
+        "?Set@CG_SceneBlur@@YAXHM@Z":
+            "?Set@CG_SceneBlur@@SAXHM@Z",
+        "?End@CG_SceneBlur@@YAXXZ":
+            "?End@CG_SceneBlur@@SAXXZ",
+        "?AddPostCallback@CG_SceneBlur@@YAXXZ":
+            "?AddPostCallback@CG_SceneBlur@@SAXXZ",
         "?DObjAllocateSubModelPose@?A0x7516322e@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z":
             "?DObjAllocateSubModelPose@?A0x49388f53@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z",
         "?CG_SaveEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":

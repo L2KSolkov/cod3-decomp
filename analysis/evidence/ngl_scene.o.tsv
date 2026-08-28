@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0083AC40	?UI@@YA?AVMat44@math@@PAUnglScene@@@Z	V3	PASS	ida-manual-ngl-ui-20260827	2026-08-27	IDA:0x0083AC40;src/ngl/ngl_scene.cpp:279	Release and source are both located; UI selects dimensions from RenderTarget/ZTarget or the 640x480 fallback and returns a UI matrix.
+0x0083AC40	?UI@@YA?AVMat44@math@@PAUnglScene@@@Z	V4	PASS	ida-manual-ngl-ui-20260827	2026-08-27	IDA:0x0083AC59-0x0083AD9E;src/ngl/ngl_scene.cpp:279-301	Manual comparison confirms the null-target branches, 0x2000 flag branch, half-dimension scaling, and exact matrix lanes: x=1/v3, y=1/v4, z=(0,0,1,0), w=(-1,-1,0,1).

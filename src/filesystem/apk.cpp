@@ -10,15 +10,16 @@
 #include <cstdint>
 #include <cstdlib>
 
+// tl_align - ea: 0x00834E20
 template <typename T>
-T* tl_align(T* p, unsigned int a)
+T tl_align(T p, unsigned int a)
 {
     const uintptr_t value = reinterpret_cast<uintptr_t>(p);
-    return reinterpret_cast<T*>((value + a - 1u) & ~(uintptr_t)(a - 1u));
+    return reinterpret_cast<T>((value + a - 1u) & ~(uintptr_t)(a - 1u));
 }
 
-template unsigned char* tl_align<unsigned char>(unsigned char* p,
-                                                 unsigned int a);
+template unsigned char* tl_align<unsigned char*>(unsigned char* p,
+                                                  unsigned int a);
 
 namespace apk {
 

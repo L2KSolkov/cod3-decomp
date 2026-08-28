@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008AEF60	?create@bdGameInfoFactoryImpl@@QBEPAVbdGameInfo@@XZ	V3	PASS	ida-manual-bd-gameinfo-20260827	2026-08-27	IDA:0x008AEF60;src/bd/bdGameInfo.cpp:197	Release and source are both located; create diagnoses a null creator through bdMessageProxy and then invokes the creator factory.
+0x008AEF60	?create@bdGameInfoFactoryImpl@@QBEPAVbdGameInfo@@XZ	V4	PASS	ida-manual-bd-gameinfo-20260827	2026-08-27	IDA:0x008AEF69-0x008AEFA8;src/bd/bdGameInfo.cpp:197-210	Manual comparison confirms the exact factory source file/signature text, line 0x13, dw/err category, defaultFileName log target, g_assertFalse retry loop, and creator->create dispatch.
