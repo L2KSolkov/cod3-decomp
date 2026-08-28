@@ -212,6 +212,7 @@ public:
 };
 static_assert(sizeof(BspCell) == 0x50, "BspCell size mismatch");
 
+// ea: 0x005E9A70
 bool BspCell::IsLoaded() const
 {
     return mMeshFile != nullptr;

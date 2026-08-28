@@ -76,6 +76,7 @@ public:
     void set_transparent(unsigned char transparent);
 };
 
+// ea: 0x005E9A80
 void trRefEntity::set_transparent(unsigned char transparent)
 {
     if (transparent != 0)
