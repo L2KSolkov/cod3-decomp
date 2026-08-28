@@ -6598,12 +6598,16 @@ template <typename T>
 class WaitTilOutputInst1Local : public WaitTilOutputLocal {
 public:
     T data;  // +0x0C
+    // ea: 0x005EFBC0
     WaitTilOutputInst1Local(const T& d) : data(d)
     {
         dListNodeFiller1 = nullptr;
         dListNodeFiller2 = nullptr;
     }
+    // ea: 0x005EFCA0
     virtual int GetSize() { return 1; }
+    // ea: 0x005EFCB0
+    // ea: 0x005EFCE0
     virtual ~WaitTilOutputInst1Local() {}
 };
 
@@ -6612,12 +6616,16 @@ class WaitTilOutputInst2Local : public WaitTilOutputLocal {
 public:
     T1 data1;  // +0x0C
     T2 data2;  // +0x10
+    // ea: 0x005EFCF0
     WaitTilOutputInst2Local(const T1& d1, const T2& d2) : data1(d1), data2(d2)
     {
         dListNodeFiller1 = nullptr;
         dListNodeFiller2 = nullptr;
     }
+    // ea: 0x005EFDE0
     virtual int GetSize() { return 2; }
+    // ea: 0x005EFDF0
+    // ea: 0x005EFE20
     virtual ~WaitTilOutputInst2Local() {}
 };
 

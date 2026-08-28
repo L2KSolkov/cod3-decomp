@@ -380,6 +380,10 @@ def base_name(decorated: str) -> str:
 def candidate_name_matches(decorated: str, candidate: str) -> bool:
     """Match a release decoration to the readable source definition name."""
     base = base_name(decorated)
+    # IDA keeps a template constructor/destructor's leading `?$` marker in
+    # the map name; source candidates are readable class names.  Normalize
+    # that decoration before the substring checks below.
+    candidate_base = base[2:] if base.startswith("?$") else base
     # 32-bit C linkage adds one leading underscore to the map/public symbol
     # (for example `_AeHash`), while the source definition is spelled
     # `AeHash`.  Treat that ABI decoration as non-semantic for source lookup.
@@ -388,7 +392,7 @@ def candidate_name_matches(decorated: str, candidate: str) -> bool:
     # MSVC uses ??B for all conversion operators.  The release map does not
     # retain the conversion target, so accept the source's explicit
     # const-char-pointer conversion spelling alongside the bool normalization.
-    return (base in candidate or candidate.endswith(base) or
+    return (base in candidate or candidate_base in candidate or candidate.endswith(base) or
             (base == "operator bool" and
              ("::operator const char*" in candidate or
               "::operator char*" in candidate)))
