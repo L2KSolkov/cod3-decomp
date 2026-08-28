@@ -3548,8 +3548,32 @@ class SizedHandle {
 public:
     unsigned int mVal;  // +0x00
     SizedHandle() : mVal(0) {}
+    // ea: 0x005EA9B0
     SizedHandle(int index, int key)
     {
+        mVal = 0;
+        if (index < 0 || index >= (1 << INDEX_BITS))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
+            AeAssert::gCurrentLine = 49;
+            AeAssert::gCurrentExpr =
+                "index >= 0 && index <= ((1 << _IndexBits) - 1)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle index requires too many bits"))
+                __debugbreak();
+        }
+        if (key < 0 || key >= (1 << KEY_BITS))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Handle.h";
+            AeAssert::gCurrentLine = 50;
+            AeAssert::gCurrentExpr =
+                "key >= 0 && key <= ((1 << _KeyBits) - 1)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("handle key requires too many bits"))
+                __debugbreak();
+        }
         mVal = (unsigned int)index | ((unsigned int)key << INDEX_BITS);
     }
     SizedHandle(Handle h) { mVal = h.mVal; }
