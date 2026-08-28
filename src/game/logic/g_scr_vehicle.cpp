@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <string.h>
 
+const char byte_CD8430[] =
+    "\x15Vehicle path node at( %f, %f, %f ) has negative speed\n";
+
 extern void DObjGetBounds(const DObj* obj, math::Position3& mins,
                           math::Position3& maxs);
 
@@ -2830,18 +2833,17 @@ label_12:
     for (int16_t v11 = 0; v11 < s_numNodes; ++v11)
     {
         vehicle_node_t* v13 = s_nodes[v11];
-        float a1 = VP_CalcNodeSpeed(v11);
-        v13->speed = a1;
-        a1 = VP_CalcNodeLookAhead(v11);
-        v13->lookAhead = a1;
-        if (a1 < 0.0f)
-            Com_Error(ERR_DROP, "%s", v13->origin);
+        float speed = VP_CalcNodeSpeed(v11);
+        v13->speed = speed;
+        v13->lookAhead = VP_CalcNodeLookAhead(v11);
+        if (speed < 0.0f)
+            Com_Error(ERR_DROP, byte_CD8430, v13->origin[0],
+                     v13->origin[1], v13->origin[2]);
         if ((v13->nextIdx & 0x30000000) != 0)
             VP_CalcNodeAngles(v11, v13->angles);
         v13->angles[0] = AngleNormalize180(v13->angles[0]);
         v13->angles[1] = AngleNormalize180(v13->angles[1]);
         v13->angles[2] = AngleNormalize180(v13->angles[2]);
-        a1 = 0.0f;
         if (v13->speed <= 0.0f || v13->lookAhead <= 0.0f)
             v13->nextIdx |= 0x3FFF;
         if ((v13->nextIdx & 0x2000) != 0)
