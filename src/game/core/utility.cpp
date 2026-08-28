@@ -221,7 +221,8 @@ int idStr::length() const
 // ea: 0x004C0880
 void idStr::EnsureDataWritable()
 {
-    ASSERT("m_data", "c:\\cod\\code\\game\\util_str.cpp", 390);
+    if (this->m_data == nullptr)
+        ASSERT("m_data", "c:\\cod\\code\\game\\util_str.cpp", 390);
     strdata* m_data = this->m_data;
     if (this->m_data->refcount != 0)
     {
@@ -280,6 +281,7 @@ void idStr::EnsureAlloced(int amount, bool keepold)
         }
         else
         {
+        if (amount == 0)
             ASSERT("amount", "c:\\cod\\code\\game\\util_str.cpp", 425);
         }
         if (amount % 20 != 0)
