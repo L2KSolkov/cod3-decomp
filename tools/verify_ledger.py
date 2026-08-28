@@ -497,6 +497,16 @@ def symbol_variants(name: str) -> set[str]:
         # canonical C++ copy-constructor and member-operator decorations.
         "??0vector@Broc@@QAE@QAM@Z":
             "??0vector@Broc@@QAE@ABU01@@Z",
+        # The current MSVC emits unsigned-int parameter/return decorations
+        # (`I`) for these SizedHandle helpers, while the release map uses the
+        # older equivalent `H` spelling.  The source and release bodies match
+        # exactly, so accept the compiler's ABI-equivalent symbols.
+        "??0?$SizedHandle@$0M@$0BE@@@QAE@HH@Z":
+            "??0?$SizedHandle@$0M@$0BE@@@QAE@IH@Z",
+        "?GetIndex@?$SizedHandle@$0M@$0BE@@@QBEHXZ":
+            "?GetIndex@?$SizedHandle@$0M@$0BE@@@QBEIXZ",
+        "?GetKey@?$SizedHandle@$0M@$0BE@@@QBEHXZ":
+            "?GetKey@?$SizedHandle@$0M@$0BE@@@QBEIXZ",
         "??_0vector@Broc@@QAEAAU01@M@Z":
             "??_0vector@Broc@@QAEAAU01@M@Z",
         # The release map records these CG static methods with the non-static
