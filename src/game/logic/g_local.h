@@ -615,6 +615,8 @@ struct level_locals_t {
     int      delayClearAnimTreeCount;              // +0x2484
     XAnimTree* delayClearAnimTree[128];            // +0x2488 (0x200 bytes)
 
+    // ea: 0x004A9F50
+    ~level_locals_t() {}
     void Clear();       // ?Clear@level_locals_t@@QAEXXZ (g.o 0x4AFD40)
 };
 static_assert(sizeof(level_locals_t) == 0x2688, "level_locals_t size mismatch");

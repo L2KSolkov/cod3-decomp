@@ -1301,11 +1301,15 @@ public:
                        ramp_up_duration(0.0f), steady_duration(0.0f),
                        ramp_down_duration(0.0f), rumble_notes(),
                        m_flags(0) {}
+        // ea: 0x004A9010
+        ~RumbleData() {}
     };
     static_assert(sizeof(RumbleData) == 0x20, "RumbleData size mismatch");
     RumbleData mRumbleDataArray[2];  // +0x00
 
     RumbleEffect() {}
+    // ea: 0x004A9E20
+    ~RumbleEffect() {}
     bool GetLooping(ERumbleMotorID rumbleID) const;
     bool GetEnabled(ERumbleMotorID rumbleID) const;  // ?GetEnabled@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z (core.o 0x4DE110)
     float GetDelay(ERumbleMotorID rumbleID) const;              // ?GetDelay@RumbleEffect@@QBEMW4ERumbleMotorID@@@Z (core.o 0x4DE090)
