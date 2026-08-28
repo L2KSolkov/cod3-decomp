@@ -144,6 +144,9 @@ extern int dword_F641A4[4 * 1580];  // cg.o @ 0xF641A4
 extern int dword_F6A290[4 * 802];   // ?dword_F6A290@@3PAHA @ 0xF6A290
 extern int gDelayRenderForNFrames;  // render.o @ 0xD638E8
 extern void* mem_heap_malloc(unsigned int size);  // core.o
+extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+                                 const char* file, const char* func,
+                                 int line);
 MultiplayerMgr* MultiplayerMgr::sInst = nullptr;
 
 // ea: 0x004DEA20
@@ -166,7 +169,8 @@ void MultiplayerMgr::CreateInst()
             && AeAssert::Assert("singleton already created!"))
             __debugbreak();
     }
-    void* memory = mem_heap_malloc(0x50u);
+    void* memory = mem_heap_malloc_ctx(
+        8, 0x50u, "mp", "./mp\\MultiplayerMgr.h", 78);
     if (memory != nullptr)
         sInst = new (memory) MultiplayerMgr();
     else
