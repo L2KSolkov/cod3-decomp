@@ -567,3 +567,15 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0094D2A0	?Code_SetTeamGame@Broc@@YAX_N@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1814654	Release team-game API forwarding matches source.
 0x0094D2D0	?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6476-6483	Source forwards objective index, state, label, position, height, and client index to the objective API.
 0x0094D2D0	?ObjectiveAdd@@YAXHABVstring@Broc@@0Uvector@2@MH@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1814660	Release objective-add API forwarding and fixed display arguments match source.
+0x00949AE0	??D@YA?AUbint@@U0@0@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6771-6774	Source multiplies two bint values and returns the product.
+0x00949AE0	??D@YA?AUbint@@U0@0@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1812725	Release bint-bint multiplication matches source.
+0x00949B20	??D@YA?AUbint@@HU0@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6765-6768	Source multiplies an integer and bint value and returns the product.
+0x00949B20	??D@YA?AUbint@@HU0@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1812737	Release integer-bint multiplication matches source.
+0x0094B8B0	?notify@Broc@@YAXABVentity@1@PBD@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6180-6183	Source hashes the event label and forwards the entity notification.
+0x0094B8B0	?notify@Broc@@YAXABVentity@1@PBD@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813774	Release string-label hashing and entity notification match source.
+0x0094B900	?AddArtilleryObjective@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:11489-11511	Source creates the artillery objective and schedules its removal thread.
+0x0094B900	?AddArtilleryObjective@_mp_common@@YAXVentity@Broc@@Uvector@3@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813788	Release objective creation parameters and removal-thread scheduling match source.
+0x0094BBD0	?PutAllPlayersIntoIntermission@_mp_common@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:10927-10945	Source iterates players and moves active players into intermission state.
+0x0094BBD0	?PutAllPlayersIntoIntermission@_mp_common@@YAXXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813871	Release player iteration and intermission transition match source.
+0x0094BF80	?SelectFirstAvailableWeapon@_mp_common@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:11513-11534	Source selects the first available weapon in priority order and switches to it.
+0x0094BF80	?SelectFirstAvailableWeapon@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1814010	Release weapon-priority checks and switch dispatch match source.
