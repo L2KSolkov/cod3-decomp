@@ -218,6 +218,7 @@ public:
     T*           mValue;   // +0x00 — actual pointer data
     unsigned int mPakId;   // +0x04 — pak id (TPakId)
 
+    // ea: 0x005EA340
     IVPointer() : mValue(nullptr), mPakId(PAK_ID_INVALID) {}  // ??0?$IVPointer@VPhysData@@@@QAE@XZ (g.o 0x4ACE80)
     void clear() { mValue = nullptr; mPakId = PAK_ID_INVALID; }  // ?clear@?$IVPointer@VXModel@@@@QAEXXZ (g.o 0x4ACE20)
 
