@@ -22,8 +22,6 @@ void EntityNotifySet::AddNotify(const HashString& h,
 {
     void* v4 = PoolAllocator_Allocate(EntityNotify_sAllocator, 0x14u, false);
     EntityNotify* n = (EntityNotify*)v4;
-    if (v4 == nullptr)
-        return;
     n->mStr = h.mHash;
     n->mOwner.mHandle.mVal = owner.mHandle.mVal;
     n->mParam = nullptr;
