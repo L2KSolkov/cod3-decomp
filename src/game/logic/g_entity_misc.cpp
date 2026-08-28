@@ -4150,7 +4150,10 @@ void G_BulletFireSpread(Entity* a, Entity* b, weaponParms* wp, int c, float d,
                        static_cast<const weaponParms*>(wp), c, d, e, f, g);
 }
 void AssetBankSet_dtor(void* self) { (void)self; }
-void SceneManager_ResetAllStaticModels() {}
+void SceneManager_ResetAllStaticModels()
+{
+    SceneManager::sInst->ResetAllStaticModels();
+}
 void ae_sized_array_push_back_handler(struct TaskSysImpl2* self,
                                       struct TaskHandlerImpl* const* elem)
 {
