@@ -357,6 +357,8 @@ public:
 
     Mat43(const Mat43::Packed& _p);                    // ??0Mat43@math@@QAE@ABUPacked@01@@Z (g.o 0x4A7200)
     Mat43(const Mat33& _m, const Position3& _p);       // ??0Mat43@math@@QAE@ABVMat33@1@ABVPosition3@1@@Z (g.o 0x4A7360)
+    // ea: 0x004A7400
+    Mat43(const Mat43& _m) : x(_m.x), y(_m.y), z(_m.z), w(_m.w) {} // ??0Mat43@math@@QAE@ABV01@@Z (g.o 0x4A7400)
 };
 static_assert(sizeof(Mat43) == 0x40, "Mat43 size mismatch");
 static_assert(sizeof(Mat43::Packed) == 0x30, "Mat43::Packed size mismatch");

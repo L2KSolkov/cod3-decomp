@@ -945,6 +945,7 @@ const math::Position3& math::Position3::operator=(const math::Dir3& _v)
     v = _v.v;
     return *this;
 }
+// ea: 0x004A5ED0
 // ea: 0x004A5F00
 math::Position3::Position3(const math::Position3::Packed& _p)
 {
@@ -987,6 +988,7 @@ math::Position3::Packed::operator=(const math::Position3& _v)
 math::Position3::Packed::Packed()
 {
 }
+// ea: 0x004A5F40
 // ea: 0x004A5F60
 math::Vector4::Vector4(const math::Dir3& _v)
 {
@@ -2190,12 +2192,14 @@ public:
     CollisionDesc(const math::Position3& c, const math::Position3& n,
                   ECollisionMaterial m);
 };
+// ea: 0x004A54B0
 SimpleCollisionDesc::SimpleCollisionDesc(const math::Position3& c,
                                          const math::Position3& n)
 {
     coord.v = c.v;
     normal.v = n.v;
 }
+// ea: 0x004A5510
 CollisionDesc::CollisionDesc(const math::Position3& c,
                              const math::Position3& n,
                              ECollisionMaterial m)

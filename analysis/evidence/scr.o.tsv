@@ -2880,3 +2880,13 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004A5380	?get_locked_port@controller@@QAEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012849	Release get_locked_port returns locked_port.
 0x004A53B0	?tlGetTick@@YA_KXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:2157	tlGetTick returns the x86 timestamp counter.
 0x004A53B0	?tlGetTick@@YA_KXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012867	Release tlGetTick returns __rdtsc().
+0x004A54B0	??0SimpleCollisionDesc@@QAE@ABVPosition3@math@@0@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:2195	Constructor copies coord and normal from the two Position3 arguments.
+0x004A54B0	??0SimpleCollisionDesc@@QAE@ABVPosition3@math@@0@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012925	Release constructor copies c->v to coord and n->v to normal.
+0x004A5510	??0CollisionDesc@@QAE@ABVPosition3@math@@0W4ECollisionMaterial@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:2202	Constructor copies coord, normal, and material into the collision descriptor.
+0x004A5510	??0CollisionDesc@@QAE@ABVPosition3@math@@0W4ECollisionMaterial@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1012936	Release constructor copies c->v, n->v, and material.
+0x004A5ED0	??0Position3@math@@QAE@ABUPacked@01@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:948	Packed Position3 constructor expands packed x/y/z and clears w.
+0x004A5ED0	??0Position3@math@@QAE@ABUPacked@01@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013293	Release constructor expands packed x/y/z and sets w to zero.
+0x004A5F40	??0Vector4@math@@QAE@ABVDir3@1@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:991	Dir3 Vector4 constructor performs the release-equivalent lane shuffle.
+0x004A5F40	??0Vector4@math@@QAE@ABVDir3@1@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013305	Release constructor shuffles the Dir3 lanes into Vector4.
+0x004A7400	??0Mat43@math@@QAE@ABV01@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/core/math_types.h:360	Inline copy constructor copies all four Mat43 members.
+0x004A7400	??0Mat43@math@@QAE@ABV01@@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1013956	Release copy constructor copies the complete Mat43 object.
