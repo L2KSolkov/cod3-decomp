@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007BADB0	?CallFunctor@@YAXPAVAeThreadFunctor@@@Z	V3	PASS	callfunctor-manual-20260827	2026-08-27	IDA:0x007BADB0;src/game/CallFunctor.cpp:13	Source contains the real virtual-dispatch body and is not an accidental empty or cast-only stub.
+0x007BADB0	?CallFunctor@@YAXPAVAeThreadFunctor@@@Z	V4	PASS	callfunctor-manual-20260827	2026-08-27	IDA disasm:0x007BADB0;release C dump:0x007BADB0;src/game/CallFunctor.cpp:13	Release loads f into ecx, reads the vtable, and tail-jumps through slot +0x8; the source virtual CallFunction call emits the same this-pointer dispatch and ABI.

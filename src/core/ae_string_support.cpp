@@ -31,8 +31,9 @@ namespace AeAssert {
 // ============================================================================
 int ae_stricmpn(const char* s1, const char* s2, int n) {
     while (n-- > 0) {
-        int c1 = (unsigned char)*s1++;
-        int c2 = (unsigned char)*s2++;
+        // Release uses movsx byte loads; preserve signed-char promotion.
+        int c1 = *s1++;
+        int c2 = *s2++;
 
         if (c1 != c2) {
             if (c1 >= 'A' && c1 <= 'Z') c1 += 32;
