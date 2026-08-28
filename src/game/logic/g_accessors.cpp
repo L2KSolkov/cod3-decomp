@@ -3281,6 +3281,12 @@ T* cFreeList<T>::Alloc()
 }
 
 template <typename T>
+// ea: 0x004AD3D0
+// ea: 0x004AD560
+// ea: 0x004AD6D0
+// ea: 0x004AD840
+// ea: 0x004AD9B0
+// ea: 0x004ADB20
 void cFreeList<T>::Init(int num)
 {
     if (mpFree != nullptr)
@@ -3302,6 +3308,12 @@ void cFreeList<T>::Init(int num)
     }
 }
 template <typename T>
+// ea: 0x004AD490
+// ea: 0x004AD620
+// ea: 0x004AD790
+// ea: 0x004AD900
+// ea: 0x004ADA70
+// ea: 0x004ADBE0
 void cFreeList<T>::Shutdown()
 {
     if (mUsed != 0)
