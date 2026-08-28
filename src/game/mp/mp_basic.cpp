@@ -957,7 +957,10 @@ bool IsACorpse(const Entity* player)
 // ============================================================================
 // cThreadSleep (mp.o 0x7305B0) - release no-ops (disasm: retn)
 // ============================================================================
+// ea: 0x007305B0 (release no-op)
 void cThreadSleep::sleepSeconds(unsigned long) {}
+
+// ea: 0x007305C0 (release no-op)
 void cThreadSleep::sleepMilliseconds(unsigned long) {}
 
 // ============================================================================
