@@ -5507,6 +5507,16 @@ void AeThread::DestroyBrocInsts()
                         && AeAssert::Assert("out of bounds"))
                         __debugbreak();
                 }
+                if (v2 > 0xE)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 154;
+                    AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
                 ae_pair<void*, unsigned int>& elt =
                     mBrocCreated->list.m_elements[v2];
                 // Recreate the release ABI: elt.second is the saved vtable
@@ -5559,11 +5569,8 @@ AeThread::~AeThread()
     mStateControllers.m_tail = headField;
     mStateControllers.m_size = 0;
 
-    if (mFunctor != nullptr)
-    {
-        mFunctor->~AeThreadFunctor();
-        gCommonPoolAllocator->Release(mFunctor);
-    }
+    mFunctor->~AeThreadFunctor();
+    gCommonPoolAllocator->Release(mFunctor);
     if (mHandle.mVal != 0)
     {
         AeThreadManagerLayout* L = (AeThreadManagerLayout*)&AeThreadManager::sInst;
@@ -6110,14 +6117,13 @@ AeThreadEntityNotifyState::AeThreadEntityNotifyState(
                                                     sInst.mThreadExecuting)
                                           : nullptr;
     mEndOnNode = v11;
-    if (v11 != nullptr)
-    {
-        v11->m_dlist_node.mPrev = mNotifySet->mEndOnList.m_tail;
-        ((AeDListNode*)mNotifySet->mEndOnList.m_tail)->mNext =
-            &v11->m_dlist_node;
-        mNotifySet->mEndOnList.m_tail = &v11->m_dlist_node;
-        ++mNotifySet->mEndOnList.m_size;
-    }
+    v11->m_dlist_node.mNext =
+        reinterpret_cast<AeDListNode*>(&mNotifySet->mEndOnList.m_end);
+    AeDListNode* m_tail = mNotifySet->mEndOnList.m_tail;
+    v11->m_dlist_node.mPrev = m_tail;
+    m_tail->mNext = &v11->m_dlist_node;
+    mNotifySet->mEndOnList.m_tail = &v11->m_dlist_node;
+    ++mNotifySet->mEndOnList.m_size;
 }
 
 // ea: 0x00600D70 (release scalar-deleting alias)
