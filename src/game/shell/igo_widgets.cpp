@@ -3813,14 +3813,14 @@ label_81:
 // ============================================================================
 
 const float IGOJeepMapWidget::mapTopRight[3][2] = {
-    {32767.0f, -16264.0f},
-    {25952.0f, -28320.0f},
-    {23632.0f, -20288.0f},
+    {32767.0f, -16233.0f},
+    {25887.0f, -28354.0f},
+    {23656.0f, -20248.0f},
 };
 const float IGOJeepMapWidget::mapWideHeight[3][2] = {
-    {49072.0f, 49072.0f},
-    {49072.0f, 49072.0f},
-    {49072.0f, 49072.0f},
+    {49000.0f, 49000.0f},
+    {49000.0f, 49000.0f},
+    {49000.0f, 49000.0f},
 };
 const char* IGOJeepMapWidget::mLevelMapName[2] = {
     "SP_nightDrop_DriveMap",
@@ -3863,11 +3863,11 @@ void IGOJeepMapWidget::SetLevelMap(int levelIndex, TPakId pakId)
             mapTopRight[levelIndex][0] - mapWideHeight[levelIndex][0];
         mapSizeX[1] = mapTopRight[levelIndex][0];
         mapSizeX[2] = mapWideHeight[levelIndex][0];
-        static const float sDF38C8[6] = {
-            -16264.0f, 25952.0f, -28320.0f, 23632.0f, -20288.0f, 49072.0f,
+        static const float sDF38C8[5] = {
+            -16233.0f, 25887.0f, -28354.0f, 23656.0f, -20248.0f,
         };
-        static const float sDF38E0[6] = {
-            49072.0f, 49072.0f, 49072.0f, 49072.0f, 49072.0f, 0.0f,
+        static const float sDF38E0[5] = {
+            49000.0f, 49000.0f, 49000.0f, 49000.0f, 49000.0f,
         };
         mapSizeY[0] = sDF38C8[2 * levelIndex];
         mapSizeY[1] =
