@@ -161,6 +161,7 @@ public:
     static WheelMark Marks[16];              // ?Marks@WheelMarkMgr@@2PAVWheelMark@@A @ 0xF74490
     static void Init();                      // ?Init@WheelMarkMgr@@SAXXZ
     static void Exit();                      // ?Exit@WheelMarkMgr@@SAXXZ
+    static void Reset();                     // ?Reset@WheelMarkMgr@@SAXXZ
     static WheelMark* Find(Entity* owner, wheel_e wheel);  // ?Find@WheelMarkMgr@@SAPAVWheelMark@@PAVEntity@@W4wheel_e@@@Z
     static void Render();                    // ?Render@WheelMarkMgr@@SAXXZ
 };
@@ -271,7 +272,7 @@ enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                  const Broc::vector& pos,
                                  const Broc::vector& facing, bool queue,
-                                 TPakId pakid, bool important);
+                                 TPakId pakid, const bool important);
 
 // DynamicDecalSet::Decal (IDA type; size 0x60)
 class DynamicDecalSet {
@@ -1359,3 +1360,7 @@ void WheelMarkMgr::Exit()
     mem_heap_free(WheelMarkMgr::Material);
     WheelMarkMgr::Material = nullptr;
 }
+
+void WheelMarkMgr_Init() { WheelMarkMgr::Init(); }
+void WheelMarkMgr_Exit() { WheelMarkMgr::Exit(); }
+void WheelMarkMgr_Reset() { WheelMarkMgr::Reset(); }

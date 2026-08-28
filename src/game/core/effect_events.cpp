@@ -1272,7 +1272,7 @@ Handle PostEffectEventLanding(const Entity* ent,
 Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                  const Broc::vector& pos,
                                  const Broc::vector& facing, bool queue,
-                                 TPakId pakid, bool important)
+                                 TPakId pakid, const bool important)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayScriptCall != 0)

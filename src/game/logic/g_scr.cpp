@@ -4953,7 +4953,7 @@ extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const Broc::vector& pos,
                                         const Broc::vector& facing,
                                         bool queue, TPakId pakid,
-                                        bool important);  // 8-arg overload
+                                        const bool important);  // 8-arg overload
 extern Handle PostEffectEventScriptCall_Dir(const Entity* ent,
                                             const char* scriptId,
                                             const float* dir,

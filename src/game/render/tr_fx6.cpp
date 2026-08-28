@@ -38,7 +38,7 @@ Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                  const Broc::vector& pos,
                                  const Broc::vector& facing,
                                  bool queue, TPakId pakid,
-                                 bool important);  // ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z
+                                 const bool important);  // ?PostEffectEventScriptCall@@YA?AVHandle@@PBVEntity@@PBDABUvector@Broc@@2_NW4TPakId@@_N@Z
 
 // ============================================================================
 // FX_UpdateRainDrops - ea: 0x006C7C70
