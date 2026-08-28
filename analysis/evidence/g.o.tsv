@@ -1903,6 +1903,10 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004B2290	??1proximity_data_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.map:1508	Release map identifies the inline proximity_data_t destructor thunk; no release C body is emitted.
 0x004B21A0	??0PlayerState@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4280	Constructor clears the release-specified entity handles, queued sound handle, viewmodel pointer/id, trace handles/hash, targeting handles, and flags.
 0x004B21A0	??0PlayerState@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020401	Release constructor writes the same handle zeroes, invalid viewmodel pak id, trace hash zero, and mFlags zero.
+0x004B2340	??0scr_data_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4215	Constructor initializes the embedded animation bundle, debris animation record, and all sixteen corpse handles.
+0x004B2340	??0scr_data_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020484	Release constructor initializes anim, debris.debug, and the sixteen actor corpse handles.
+0x004B23C0	??1scr_data_t@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4224	Destructor releases the debris animation string and the embedded animation bundle in reverse lifetime order.
+0x004B23C0	??1scr_data_t@@QAE@XZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020501	Release destructor destroys debris.debug followed by the anim bundle.
 0x004B22A0	??AConfigString@@QBEPBDPBD@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4490	operator[] finds the requested key and returns its stored string or null.
 0x004B22A0	??AConfigString@@QBEPBDPBD@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1020445	Release operator[] uses the same InplaceTree lookup and null fallback.
 0x004B2430	??0vehicle_backup_s@@QAE@XZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_accessors.cpp:4506	Constructor initializes both embedded vehicle nodes with placement construction.

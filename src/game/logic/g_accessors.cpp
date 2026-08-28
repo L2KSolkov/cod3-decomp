@@ -4208,10 +4208,24 @@ scr_data_t::__unnamed::~__unnamed()
 }
 static scr_data_t::__unnamed s_force_scr_unnamed_emit;
 
-// scr_data_t dtor (g.o 0x4B23C0)
+// scr_data_t ctor/dtor (g.o 0x4B2340 / 0x4B23C0)
+// The IDA layout places anim at +0x08 (0x5B8 bytes), debris at +0x5C0,
+// and actorCorpseInfo at +0x60C; the public struct keeps the unknown middle
+// region as a pad while retaining these verified offsets.
+// ea: 0x004B2340
+scr_data_t::scr_data_t()
+{
+    new (_pad8) __unnamed();
+    new (_pad8 + 0x5B8) scr_animscript_t();
+    for (int i = 0; i < 16; ++i)
+        actorCorpseInfo[i].mEntity.mHandle.mVal = 0;
+}
+
+// ea: 0x004B23C0
 scr_data_t::~scr_data_t()
 {
-    // binary: destroys debris.debug string + anim __unnamed
+    ((scr_animscript_t*)(_pad8 + 0x5B8))->~scr_animscript_t();
+    ((__unnamed*)_pad8)->~__unnamed();
 }
 
 // level_locals_t::Clear (g.o 0x4AFD40)

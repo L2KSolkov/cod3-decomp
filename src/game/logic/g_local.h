@@ -1582,6 +1582,7 @@ struct scr_data_t {
     uint8_t      _pad7CC[0x7D4 - 0x7CC];
     AnimTree*    generic_human_tree;      // +0x7D4
 
+    scr_data_t();  // ??0scr_data_t@@QAE@XZ (g.o 0x4B2340)
     ~scr_data_t();  // ??1scr_data_t@@QAE@XZ (g.o 0x4B23C0)
 };
 static_assert(offsetof(scr_data_t, actorCorpseInfo) == 0x60C,
