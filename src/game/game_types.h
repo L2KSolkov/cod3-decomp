@@ -218,6 +218,7 @@ public:
     }
     // ea: 0x005EA7A0 (const InplaceTreeElement<InplaceString,InplaceString>)
     // ea: 0x004ACAA0
+    // ea: 0x004AD350
     const T& operator[](unsigned int i) const
     {
         unsigned int index = i;
@@ -238,6 +239,7 @@ public:
     // ea: 0x004ACA10
     // ea: 0x004ACE60
     // ea: 0x004ACE70
+    // ea: 0x004AD340
     unsigned int size() const { return mSize; }
 };
 static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");
