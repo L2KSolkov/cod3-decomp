@@ -2543,7 +2543,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0046A250	?render_sphere@@YAXABVPosition3@math@@MABVColor@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x0046A250	Release render guard, field copies, and debug-sphere append match source.
 0x0046A290	?render_aabb@@YAXABVPosition3@math@@0ABVColor@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_main.cpp:2032-2050	Source conditionally records min/max bounds and color as a debug AABB when render mode is enabled.
 0x0046A290	?render_aabb@@YAXABVPosition3@math@@0ABVColor@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x0046A290	Release render guard, bound/color copies, and debug-AABB append match source.
-0x0046C9E0	?VEH_InvalidateCaches@@YAXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr_vehicle.cpp:3220-3245	Source walks active vehicles, resolves handles, resets proximity bounds to max/min sentinels, and recomputes the high vector.
+0x0046C9E0	?VEH_InvalidateCaches@@YAXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr_vehicle.cpp:5309-5338	Source walks active vehicles, resolves handles, resets proximity bounds to max/min sentinels, and recomputes the high vector.
 0x0046C9E0	?VEH_InvalidateCaches@@YAXXZ	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x0046C9E0	Release vehicle loop, handle checks, proximity sentinel values, and high-vector recomputation match source.
 0x0046CB00	?Svcmd_VehicleList_f@@YAXXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_scr_vehicle.cpp:9018-9032	Source counts valid vehicle handles across MaxVehicles and prints the release count.
 0x0046CB00	?Svcmd_VehicleList_f@@YAXXZ	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x0046CB00	Release vehicle iteration, handle validation, count, and output match source.
