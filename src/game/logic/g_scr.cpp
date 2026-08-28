@@ -26092,6 +26092,7 @@ T entity_get_actor_field(unsigned int handle)
 // ea: 0x005ECCB0
 // ea: 0x005ECF10
 // ea: 0x005ED0D0
+// ea: 0x005ED290
 template <typename T, int OFF, int IDX>
 void pnode_set_field(int handle, T val)
 {
@@ -26147,6 +26148,7 @@ void pnode_set_field(int handle, T val)
 // ea: 0x005ECDD0
 // ea: 0x005ED020
 // ea: 0x005ED1E0
+// ea: 0x005ED3D0
 template <typename T, int OFF, int IDX>
 T pnode_get_field(int handle)
 {
