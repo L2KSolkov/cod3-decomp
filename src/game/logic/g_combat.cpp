@@ -1066,6 +1066,8 @@ int CanDamage(Entity* targ, const float* origin, Entity* inflictor)
     float dest[5][3];
     float halfHeight;
     float v11;
+    float centerX;
+    float centerY;
     if (inflictor == nullptr || inflictor->tagInfo == nullptr
         || inflictor->tagInfo->parent != targ)
     {
@@ -1084,6 +1086,8 @@ int CanDamage(Entity* targ, const float* origin, Entity* inflictor)
             float v6 = dest[4][2] + targ->r.currentOrigin.v.m128_f32[2];
             float v7 = (targ->r.currentOrigin.v.m128_f32[0] + dest[4][0]) * 0.5f;
             float v26 = (targ->r.currentOrigin.v.m128_f32[1] + dest[4][1]) * 0.5f;
+            centerX = v7;
+            centerY = v26;
             float v8 = v6 * 0.5f;
             float v9 = (traceEnd[3] * v30) + v8;
             halfHeight = v8;
@@ -1106,6 +1110,8 @@ int CanDamage(Entity* targ, const float* origin, Entity* inflictor)
             float v12 = (targ->r.absmax.v.m128_f32[2] + targ->r.absmin.v.m128_f32[2]) * 0.5f;
             float v13 = (targ->r.absmax.v.m128_f32[1] + targ->r.absmin.v.m128_f32[1]) * 0.5f;
             float v25 = (targ->r.absmax.v.m128_f32[0] + targ->r.absmin.v.m128_f32[0]) * 0.5f;
+            centerX = v25;
+            centerY = v13;
             halfHeight = v12;
             dest[0][2] = v12;
             v11 = v13 + 15.0f;
@@ -1131,12 +1137,21 @@ int CanDamage(Entity* targ, const float* origin, Entity* inflictor)
         math::Position3 zeroMaxs;
         zeroMins.v = _mm_setzero_ps();
         zeroMaxs.v = _mm_setzero_ps();
-        for (int i = 0; i < 5; ++i)
+        for (int i = -1; i < 4; ++i)
         {
             math::Position3 start;
-            start.v.m128_f32[0] = dest[i][0];
-            start.v.m128_f32[1] = dest[i][1];
-            start.v.m128_f32[2] = dest[i][2];
+            if (i < 0)
+            {
+                start.v.m128_f32[0] = centerX;
+                start.v.m128_f32[1] = centerY;
+                start.v.m128_f32[2] = halfHeight;
+            }
+            else
+            {
+                start.v.m128_f32[0] = dest[i][0];
+                start.v.m128_f32[1] = dest[i][1];
+                start.v.m128_f32[2] = dest[i][2];
+            }
             math::Position3 end;
             end.v.m128_f32[0] = origin[0];
             end.v.m128_f32[1] = origin[1];
