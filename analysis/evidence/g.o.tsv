@@ -2201,3 +2201,13 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004541D0	?G_AddPredictableEvent@@YAXPAVEntity@@HH@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x004541D0	Release IDA matches the client-null guard and BG_AddPredictableEventToPlayerstate call.
 0x00454200	?G_AddEvent@@YAXPAVEntity@@HH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_main.cpp:2805-2859	Source preserves event/eventParm/eType assertions, client versus non-client ring-buffer writes, and eventTime update.
 0x00454200	?G_AddEvent@@YAXPAVEntity@@HH@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x00454200	Release IDA matches all assertion metadata, ring-buffer indices, writes, and level.time assignment; unsigned comparisons are ABI-equivalent to the source ints.
+0x00453310	?Damage_Falloff@@YAMMMMHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_combat.cpp:700-720	Source implements inner/outer-radius interpolation, minimum-damage fallback, negative clamp, and original-damage return semantics.
+0x00453310	?Damage_Falloff@@YAMMMMHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x00453310	Release IDA matches the radius branches, constants, interpolation formula, negative clamp, and returns.
+0x004533B0	?Bullet_ShouldGoThroughFriend@@YA_NPBVEntity@@0@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_combat.cpp:722-727	Source is an intentional compatibility predicate returning false without omitted side effects.
+0x004533B0	?Bullet_ShouldGoThroughFriend@@YA_NPBVEntity@@0@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x004533B0	Release IDA is the same constant-false body.
+0x004533C0	?Weapon_ItemHealth_Fire@@YAXPAVEntity@@HPAUweaponParms@@@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_weapon.cpp:142-154	Source computes projectile toss direction from weapon speed/vertical lift and normalizes it; ignored parameters are intentionally unused.
+0x004533C0	?Weapon_ItemHealth_Fire@@YAXPAVEntity@@HPAUweaponParms@@@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x004533C0	Release IDA matches all speed/forward components, vertical lift, local vector, and VectorNormalize call.
+0x004536F0	?ADS_IS_ACTIVE@@YAHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_weapon.cpp:185-189	Source returns the inverse of View::IsSplitScreen.
+0x004536F0	?ADS_IS_ACTIVE@@YAHXZ	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x004536F0	Release IDA matches the direct View::IsSplitScreen inversion.
+0x00454AF0	?UseLiveGrenade@@YAXPAVEntity@@00@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/game/logic/g_weapon.cpp:191-195	Source is an intentional empty compatibility hook with no omitted behavior.
+0x00454AF0	?UseLiveGrenade@@YAXPAVEntity@@00@Z	V4	PASS	ida-manual-20260828	2026-08-28	IDA:0x00454AF0	Release IDA is an empty body.
