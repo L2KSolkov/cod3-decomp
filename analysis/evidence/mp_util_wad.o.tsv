@@ -551,6 +551,10 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00945D30	?LocalPlayerRespawn@_mp_common@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810644	Release menu/class selection, fade timing, and respawn request flow match source.
 0x00945FE0	?Code_RequestRespawn@Broc@@YAXI@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5635-5638	Source forwards the player ID to the runtime respawn-request API.
 0x00945FE0	?Code_RequestRespawn@Broc@@YAXI@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810754	Release respawn-request API forwarding matches source.
+0x0098CAC0	?GetEE_script_explodertype@@YAAAVstring@Broc@@Ventity@2@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:388-393	Source resolves the extended-entity script_explodertype string field.
+0x0098CAC0	?GetEE_script_explodertype@@YAAAVstring@Broc@@Ventity@2@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1849101	Release script_explodertype extended-field lookup matches source.
+0x0098CC10	?GetEE_script_friendname@@YAAAVstring@Broc@@Ventity@2@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:420-425	Source resolves the extended-entity script_friendname string field.
+0x0098CC10	?GetEE_script_friendname@@YAAAVstring@Broc@@Ventity@2@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1849149	Release script_friendname extended-field lookup matches source.
 0x00946010	?TakeAllWeapons@Broc@@YAXABVentity@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5529-5533	Source forwards the entity handle to the runtime take-all-weapons API.
 0x00946010	?TakeAllWeapons@Broc@@YAXABVentity@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1810760	Release take-all-weapons API forwarding matches source.
 0x00947450	?MusicStop@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:30-33	Source stops music through the runtime API with zero fade time.

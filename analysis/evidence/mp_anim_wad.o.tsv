@@ -195,3 +195,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0098FEC0	?GetEE_script_seekgoal@@YAAAUbint@@Ventity@Broc@@@Z	V4	PASS	direct-script-abi-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1851234	Release getter reads the same extended-entity int field.
 0x0098FF10	?IsEEDefined_script_seekgoal@@YA?AUbbool@@Ventity@Broc@@@Z	V3	PASS	direct-script-abi-20260828	2026-08-28	src/broc/mp_anim_wad.cpp:1565	Canonical wrapper preserves the checked defined-value logic.
 0x0098FF10	?IsEEDefined_script_seekgoal@@YA?AUbbool@@Ventity@Broc@@@Z	V4	PASS	direct-script-abi-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1851245	Release implementation computes the same defined result.
+0x00995040	?GetEE_spawnflags@@YAFVpathnode@Broc@@@Z	V3	PASS	ida-manual-anim-20260828	2026-08-28	src/broc/mp_anim_wad.cpp:3137-3140	Source forwards the pathnode spawnflags field accessor.
+0x00995040	?GetEE_spawnflags@@YAFVpathnode@Broc@@@Z	V4	PASS	ida-manual-anim-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1854671	Release pathnode spawnflags access matches source.
