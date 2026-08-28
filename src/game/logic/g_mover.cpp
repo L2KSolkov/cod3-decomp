@@ -1411,6 +1411,16 @@ void SetMoverState(Entity* ent, moverState_t moverState, int time)
         ent->s.apos.trDelta[0] = ent->rotate.v.m128_f32[0] * v26;
         ent->s.apos.trDelta[1] = ent->rotate.v.m128_f32[1] * v26;
         ent->s.apos.trDelta[2] = ent->rotate.v.m128_f32[2] * v26;
+        if (IS_NAN(ent->s.pos.trDelta[0]) || IS_NAN(ent->s.pos.trDelta[1])
+            || IS_NAN(ent->s.pos.trDelta[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_mover.cpp";
+            AeAssert::gCurrentLine = 764;
+            AeAssert::gCurrentExpr = "!IS_NAN((ent->s.pos.trDelta)[0]) && !IS_NAN((ent->s.pos.trDelta)[1]) && !IS_NAN((ent->s.pos.trDelta)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
         ent->s.apos.trType = TR_LINEAR_STOP;
         break;
     }
@@ -1430,6 +1440,16 @@ void SetMoverState(Entity* ent, moverState_t moverState, int time)
         ent->s.apos.trDelta[0] = ent->s.apos.trBase[0] * (0.0f - v28);
         ent->s.apos.trDelta[1] = ent->s.apos.trBase[1] * (0.0f - v28);
         ent->s.apos.trDelta[2] = ent->s.apos.trBase[2] * (0.0f - v28);
+        if (IS_NAN(ent->s.pos.trDelta[0]) || IS_NAN(ent->s.pos.trDelta[1])
+            || IS_NAN(ent->s.pos.trDelta[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_mover.cpp";
+            AeAssert::gCurrentLine = 778;
+            AeAssert::gCurrentExpr = "!IS_NAN((ent->s.pos.trDelta)[0]) && !IS_NAN((ent->s.pos.trDelta)[1]) && !IS_NAN((ent->s.pos.trDelta)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
         ent->s.apos.trType = TR_LINEAR_STOP;
         ent->active = 0;
         break;
