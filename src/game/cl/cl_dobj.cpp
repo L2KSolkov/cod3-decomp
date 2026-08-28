@@ -122,7 +122,7 @@ extern refexport_t re;
 // ============================================================================
 
 // ea: 0x528960
-void CL_DObjCalcAnim()
+void CL_DObjCalcAnim(DObj* /*obj*/, int* const /*partBits*/)
 {
 }
 
@@ -165,7 +165,7 @@ int CL_DObjCreateSkelForBones(DObj* obj, int* const)
 }
 
 // ea: 0x528AF0
-void CL_DObjCalcSkel(DObj* obj, int* partBits)
+void CL_DObjCalcSkel(DObj* obj, int* const partBits)
 {
     if (obj == nullptr)
     {
@@ -180,27 +180,27 @@ void CL_DObjCalcSkel(DObj* obj, int* partBits)
 }
 
 // ea: 0x528F80
-int CL_SaveViewModelAnimTrees()
+void CL_SaveViewModelAnimTrees()
 {
-    return VM_Call(cgvm, 13);
+    VM_Call(cgvm, 13);
 }
 
 // ea: 0x528FA0
-int CL_LoadViewModelAnimTrees()
+void CL_LoadViewModelAnimTrees()
 {
-    return VM_Call(cgvm, 14);
+    VM_Call(cgvm, 14);
 }
 
 // ea: 0x528FC0
-int CL_SaveWeaponInfo()
+void CL_SaveWeaponInfo()
 {
-    return VM_Call(cgvm, 15);
+    VM_Call(cgvm, 15);
 }
 
 // ea: 0x528FE0
-int CL_LoadWeaponInfo()
+void CL_LoadWeaponInfo()
 {
-    return VM_Call(cgvm, 16);
+    VM_Call(cgvm, 16);
 }
 
 // ea: 0x528BA0
@@ -293,11 +293,11 @@ int CL_CgameSystemCalls(int* args)
 }
 
 // ea: 0x528E20
-struct vm_s* CL_GameCommand()
+int CL_GameCommand()
 {
     if (cgvm != nullptr)
-        return (struct vm_s*)VM_Call(cgvm, 2);
-    return cgvm;
+        return VM_Call(cgvm, 2);
+    return 0;
 }
 
 // ea: 0x528E40

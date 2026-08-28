@@ -3442,7 +3442,7 @@ void Cmd_AddServerCommand(const char* cmd_name,
 // Cmd_ExecuteString / Cbuf_SV_Execute - ea: 0x61F640 / 0x61F3B0
 // ============================================================================
 extern int Cvar_Command();                // core.o
-extern vm_s* CL_GameCommand();            // cl.o
+extern int CL_GameCommand();              // cl.o
 extern int SV_GameCommand();              // sv.o
 extern void CL_ForwardCommandToServer(const char* string);  // cl.o
 extern cvar_t* com_cl_running;            // core.o

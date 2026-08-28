@@ -169,9 +169,8 @@ void CL_ShutdownCGame()
 }
 
 // ea: 0x528900
-char CL_DObjInvalidateSkels()
+void CL_DObjInvalidateSkels()
 {
-    char result = (char)bCL_AllowedAllocSkel;
     if (bCL_AllowedAllocSkel == 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -184,7 +183,6 @@ char CL_DObjInvalidateSkels()
     }
     if (++com_skelTimeStamp == 0)
         com_skelTimeStamp = 1;
-    return result;
 }
 
 // ea: 0x52CBB0

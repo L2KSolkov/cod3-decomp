@@ -1557,7 +1557,7 @@ extern float unk_F63BF4[4 * 6320];
 extern float unk_F63C24[4 * 6320];
 extern int dword_F63554[4 * 1580];
 extern void j_nullsub_89(void* obj, float dtime);
-extern char CL_DObjInvalidateSkels();
+extern void CL_DObjInvalidateSkels();
 extern vmCvar_t cg_addentities;
 extern void* TestFPS_sInst;
 extern void CG_CalcEntityLerpPositions(Entity* cent);

@@ -165,14 +165,14 @@ extern cvar_t* cl_viewYawCompensate;
 void Con_ToggleConsole_f();
 void Con_Dump_f();
 void Con_RunConsole();
-int Con_PageUp();
-int Con_PageDown();
-int Con_Top();
+void Con_PageUp();
+void Con_PageDown();
+void Con_Top();
 void Con_Bottom();
 void Con_ClearNotify();
 void Con_ClearMiniConsole();
 void Con_ClearSubtitles();
-int Con_CheckResize();
+void Con_CheckResize();
 void Con_UpdateNotifyLine(print_msg_type_t type, int bLineFeed,
                           int duration, int flags);
 void Con_Linefeed(print_msg_type_t type, int duration, int flags);

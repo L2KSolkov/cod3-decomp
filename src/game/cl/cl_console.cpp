@@ -420,37 +420,30 @@ void Con_RunConsole()
 }
 
 // ea: 0x529650
-int Con_PageUp()
+void Con_PageUp()
 {
-    int result = con.current;
     int v1 = con.current - (con.display - 2);
     con.display -= 2;
     if (v1 >= con.totallines)
     {
-        result = con.current - con.totallines + 1;
-        con.display = result;
+        con.display = con.current - con.totallines + 1;
     }
-    return result;
 }
 
 // ea: 0x529680
-int Con_PageDown()
+void Con_PageDown()
 {
-    int result = con.display + 2;
     con.display += 2;
     if (con.display > con.current)
         con.display = con.current;
-    return result;
 }
 
 // ea: 0x5296A0
-int Con_Top()
+void Con_Top()
 {
-    int result = con.current - con.totallines;
     con.display = con.totallines;
     if (con.current - con.totallines >= con.totallines)
-        con.display = ++result;
-    return result;
+        con.display = con.current - con.totallines + 1;
 }
 
 // ea: 0x5296C0
@@ -482,7 +475,7 @@ void Con_ClearSubtitles()
 }
 
 // ea: 0x5297A0
-int Con_CheckResize()
+void Con_CheckResize()
 {
     int result = dword_F1719C;
     if (dword_F1719C < 640)
@@ -543,9 +536,8 @@ int Con_CheckResize()
         }
         con.current = con.totallines - 1;
         con.display = con.totallines - 1;
-        return con.totallines - 1;
+        return;
     }
-    return result;
 }
 
 // ea: 0x529AB0
@@ -690,9 +682,9 @@ int Con_OneTimeInit()
     dword_F13328 = 1065353216;
     dword_F13324 = 1065353216;
     con.linewidth = -1;
-    int result = Con_CheckResize();
+    Con_CheckResize();
     con.initialized = 1;
-    return result;
+    return 0;
 }
 
 // ============================================================================

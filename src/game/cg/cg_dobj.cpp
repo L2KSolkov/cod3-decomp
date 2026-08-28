@@ -44,7 +44,7 @@ int DObjNumBones(DObj* obj)  // ?DObjNumBones@@YAHPAVDObj@@@Z
 }
 extern int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex);
 extern int CL_DObjCreateSkelForBones(DObj* obj, int* const partBits);
-extern void CL_DObjCalcSkel(DObj* obj, int* partBits);
+extern void CL_DObjCalcSkel(DObj* obj, int* const partBits);
 extern void AxisCopy(const float (*const in)[3], float (*const out)[3]);
 extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
                                        const float (*const in2)[3],
