@@ -2982,3 +2982,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005DC950	?CopyEntArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@ABV?$ae_sized_array@Ventity@Broc@@$0CAA@@@@Z	V4	PASS	ida-manual-script-state-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1200702-1200721	Release entity-array copy loop and capacity handling match source.
 0x005DC9A0	?GetSpawnerArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@@Z	V3	PASS	ida-manual-script-state-20260828	2026-08-28	src/game/logic/g_scr.cpp:24131-24148	Source gathers active spawner entities, then copies them into the output array.
 0x005DC9A0	?GetSpawnerArray@BrocSys@@YAXAAV?$dyn_array@Ventity@Broc@@@Broc@@@Z	V4	PASS	ida-manual-script-state-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1200722-1200819	Release spawner filtering and array copy match source.
+0x005E9470	?IsFinished@AeThreadState@@QBE_NXZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:447-450	Source returns the thread state's mFinished flag.
+0x005E9470	?IsFinished@AeThreadState@@QBE_NXZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202410-1202415	Release IsFinished returns the same field.
+0x005E9480	?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:453-456	Source returns the thread state's action result.
+0x005E9480	?GetResult@AeThreadState@@QBE?AW4EAction@1@XZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202416-1202462	Release GetResult returns the same action field.
+0x005E9540	?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:6043-6046	Source returns the stored notify hash string.
+0x005E9540	?GetNotify@AeThreadEntityNotifyState@@QBE?AVHashString@@XZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202463-1202490	Release GetNotify returns the same stored hash.
+0x005E95E0	??$IsDefined@I@@YA_NI@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:6049-6053	Source tests an unsigned value against the script undefined sentinel.
+0x005E95E0	??$IsDefined@I@@YA_NI@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202497-1202503	Release IsDefined<unsigned int> uses the same sentinel comparison.
+0x005E98D0	?SetHandle@AeThread@@QAEXVHandle@@@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:4066-4069	Source assigns the supplied handle to the thread.
+0x005E98D0	?SetHandle@AeThread@@QAEXVHandle@@@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202659-1202664	Release SetHandle matches source.
+0x005E98E0	?GetHandle@AeThread@@QBE?AVHandle@@XZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:4072-4075	Source returns the thread handle value.
+0x005E98E0	?GetHandle@AeThread@@QBE?AVHandle@@XZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202665-1202696	Release GetHandle matches source.
+0x005E9970	?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:4084-4087	Source returns the manager's executing-thread pointer.
+0x005E9970	?GetExecutingThread@AeThreadManager@@QAEPAVAeThread@@XZ	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202697-1202702	Release executing-thread getter matches source.
+0x005E9980	?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z	V3	PASS	ida-manual-threadstate-20260828	2026-08-28	src/game/logic/g_scr.cpp:4090-4093	Source stores the executing-thread pointer on the manager.
+0x005E9980	?SetExecutingThread@AeThreadManager@@QAEXPAVAeThread@@@Z	V4	PASS	ida-manual-threadstate-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1202703-1202708	Release executing-thread setter matches source.
