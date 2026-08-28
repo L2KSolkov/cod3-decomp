@@ -35,3 +35,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0094AC50	??4sort_struct@__unnamed@hudelem@Broc@@QAEABMABM@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813396	Release forwards mHandle and *rhs to hud_set_sort and returns rhs.
 0x0094AC90	??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5371	HUD alpha proxy forwards the assigned value through hud_set_alpha and returns the RHS reference.
 0x0094AC90	??4alpha_struct@__unnamed@hudelem@Broc@@QAEABEABE@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1813403	Release forwards mHandle and *rhs to hud_set_alpha and returns rhs.
+0x0092F100	??0bbool@@QAE@_N@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/engine/broc_types.h:1009	Global bbool(bool) stores the input flag in mVal.
+0x0092F100	??0bbool@@QAE@_N@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1797625	Release constructor stores rhs in mVal and returns this.
+0x00935060	??4bint@@QAEHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6608	bint assignment stores the integer and returns the stored value.
+0x00935060	??4bint@@QAEHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1801271	Release assignment stores rhs and returns it.
+0x00938DA0	??Ebint@@QAEHXZ	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6634	bint prefix increment preserves AssertDefined, returns the old value, and increments mVal.
+0x00938DA0	??Ebint@@QAEHXZ	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1803065	Release prefix increment has the same AssertDefined and post-increment behavior.
+0x0093AC50	??Ybint@@QAEHH@Z	V3	PASS	ida-manual-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6621	bint += preserves AssertDefined, adds rhs to mVal, and returns the result.
+0x0093AC50	??Ybint@@QAEHH@Z	V4	PASS	ida-manual-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1804101	Release += has the same AssertDefined, addition, and return behavior.

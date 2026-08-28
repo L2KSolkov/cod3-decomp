@@ -1005,6 +1005,7 @@ struct bbool {
     bool mVal;
     static bool sUndefined;
     bbool() : mVal(sUndefined) {}
+    // ea: 0x0092F100
     explicit bbool(bool v) : mVal(v) {}
     bool operator==(bool rhs) const;
     bool IsDefined() const { return mVal != sUndefined; }

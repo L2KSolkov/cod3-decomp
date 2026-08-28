@@ -6604,6 +6604,7 @@ bint::bint(const bfloat& rhs) : mVal((int)rhs.mVal) {}
 bint::bint(float rhs) : mVal((int)rhs) {}
 
 // bint::operator=(int) - IDA/C3 declaration
+// ea: 0x00935060
 int bint::operator=(int rhs) {
     mVal = rhs;
     return mVal;
@@ -6616,6 +6617,7 @@ unsigned int bint::operator=(unsigned int rhs) {
 }
 
 // bint::operator+=(int) - IDA/C3 declaration
+// ea: 0x0093AC50
 int bint::operator+=(int rhs) {
     mVal += rhs;
     return mVal;
@@ -6628,6 +6630,7 @@ bint::operator int() const {
 }
 
 // bint::operator++() - ea: 0x97D020 inline body
+// ea: 0x00938DA0
 int bint::operator++() {
     AssertDefined();
     return mVal++;
