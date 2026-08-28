@@ -5345,25 +5345,29 @@ unsigned int hash_value(HashStr* key)
 
 namespace Broc {
 
-// HUD property proxy operators - ea: 0x94ABD0 / 0x94AC10 / 0x94AC50 / 0x94AC90.
+// HUD property proxy operators.
+// ea: 0x0094ABD0
 const int& Broc::hudelem::__unnamed::x_struct::operator=(const int& rhs)
 {
     Broc::gBrocAPI.hud_set_x(mHandle, rhs);
     return rhs;
 }
 
+// ea: 0x0094AC10
 const int& Broc::hudelem::__unnamed::y_struct::operator=(const int& rhs)
 {
     Broc::gBrocAPI.hud_set_y(mHandle, rhs);
     return rhs;
 }
 
+// ea: 0x0094AC50
 const float& Broc::hudelem::__unnamed::sort_struct::operator=(const float& rhs)
 {
     Broc::gBrocAPI.hud_set_sort(mHandle, rhs);
     return rhs;
 }
 
+// ea: 0x0094AC90
 const unsigned char& Broc::hudelem::__unnamed::alpha_struct::operator=(
     const unsigned char& rhs)
 {
