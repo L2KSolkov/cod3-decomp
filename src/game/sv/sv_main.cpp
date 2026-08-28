@@ -43,7 +43,7 @@ extern void  CL_ShutdownAll(void);
 extern void  CL_StartLoading(void);
 extern void  CL_FlushDebugData(int fromServer);
 extern void  CL_InitCGame(void);
-extern int   CL_FirstSnapshot(void);
+extern void  CL_FirstSnapshot(void);
 extern void  CL_ConnectResponse(netadr_t from);
 extern void  SV_DirectConnect(netadr_t from);
 extern void  SV_ClientEnterWorld(client_s* client, int restart, int savegame);

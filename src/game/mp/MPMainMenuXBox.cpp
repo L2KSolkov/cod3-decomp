@@ -195,7 +195,7 @@ public:
     static void LoadProfileData();
 };
 
-extern void Controller_LockPort(unsigned int port);
+extern void Controller_LockPort(int port);
 
 // ============================================================================
 // JoinGameMenu

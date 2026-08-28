@@ -101,7 +101,7 @@ void   CL_ConnectResponse(netadr_t from);
 void   CL_ParseGamestate(Broc::string* configstrings);
 void   CL_FlushDebugData(int fromServer);
 void   CL_InitCGame(void);
-int    CL_FirstSnapshot(void);
+void   CL_FirstSnapshot(void);
 void   CL_ParseGamestate_cmd(void);
 
 // Other helpers

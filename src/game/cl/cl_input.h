@@ -239,10 +239,10 @@ extern int dword_106000;  // EF_* flags mask used by stance checks
 // ============================================================================
 // Functions (cl.o cl_input.cpp)
 // ============================================================================
-void IN_KeyDown(kbutton_t* b, int key, unsigned int time);
-void IN_KeyUp(kbutton_t* b, unsigned int key, int time);
+void IN_KeyDown(kbutton_t* b, int key, int time);
+void IN_KeyUp(kbutton_t* b, int key, int time);
 float CL_KeyState(kbutton_t* key);
-int CL_InitButtons();
+void CL_InitButtons();
 void CL_BackUpKeys();
 void CL_RecallKeys();
 void IN_MLookDown();

@@ -147,7 +147,7 @@ void CL_GetGlconfigUI(glconfig_t* config)
 }
 
 // ea: 0x528670
-void CL_SaveWrite(const void* buffer, unsigned int len)
+void CL_SaveWrite(const void* buffer, int len)
 {
     AeAssert::gCurrentAuthor = AeAssert::COD3;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cl_cgame.cpp";
@@ -194,7 +194,7 @@ int CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot)
 }
 
 // ea: 0x528E70
-int CL_FirstSnapshot()
+void CL_FirstSnapshot()
 {
     if (com_cl_running->integer == 0)
     {
@@ -215,7 +215,6 @@ int CL_FirstSnapshot()
     cls.state = 2;  // CA_ACTIVE
     cl[0].serverTime = com_time;
     cl[0].oldServerTime = com_time;
-    return com_time;
 }
 
 // ea: 0x528F60

@@ -81,18 +81,16 @@ int RecalibrateInput(int val)
 // Controller_UnlockPort - unlock the locked controller port
 // ea: 0x4EBEA0 (game2.o)
 // ============================================================================
-controller* Controller_UnlockPort()
+void Controller_UnlockPort()
 {
-    controller* result = controller::inst();
-    result->unlock_port();
-    return result;
+    controller::inst()->unlock_port();
 }
 
 // ============================================================================
 // Controller_LockPort - lock input to one controller port
 // ea: 0x4EBE60 (game2.o)
 // ============================================================================
-void Controller_LockPort(unsigned int port)
+void Controller_LockPort(int port)
 {
     controller* v1 = controller::inst();
     v1->set_locked_port(static_cast<int>(port));
@@ -174,7 +172,7 @@ int cl_aADS[2];
 // ============================================================================
 
 // ea: 0x52A5D0
-void IN_KeyDown(kbutton_t* b, int key, unsigned int time)
+void IN_KeyDown(kbutton_t* b, int key, int time)
 {
     if (key != b->down[0])
     {
@@ -205,7 +203,7 @@ void IN_KeyDown(kbutton_t* b, int key, unsigned int time)
 }
 
 // ea: 0x52A630
-void IN_KeyUp(kbutton_t* b, unsigned int key, int time)
+void IN_KeyUp(kbutton_t* b, int key, int time)
 {
     if (key == (unsigned int)-1)
     {
@@ -298,14 +296,13 @@ float CL_KeyState(kbutton_t* key)
 // ============================================================================
 
 // ea: 0x52A590
-int CL_InitButtons()
+void CL_InitButtons()
 {
     memset(kbss, 0, sizeof(kbss));
     memset(kb, 0, sizeof(kb));
     cl_stance_ss[0] = 0;
     cl_altFireButtonDown_ss[0] = 0;
     cl_grenadeButtonDown_ss[0] = 0;
-    return 0;
 }
 
 // ea: 0x52A820

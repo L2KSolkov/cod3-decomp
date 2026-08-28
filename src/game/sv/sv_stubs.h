@@ -1854,7 +1854,7 @@ extern void   SV_CheckLoadLevel(int savegame);
 extern void   SV_SendClientMessages(void);
 extern void   CL_ParseGamestate(Broc::string* configstrings);
 extern void   CL_ConnectResponse(netadr_t from);
-extern int    CL_FirstSnapshot(void);
+extern void   CL_FirstSnapshot(void);
 extern void   PathNodeMgr_InitPaths(void);
 extern int    BG_GetNumWeapons(void);
 extern void   CG_RegisterWeapon(int weaponNum);
