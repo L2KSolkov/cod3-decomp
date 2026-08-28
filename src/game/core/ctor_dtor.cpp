@@ -321,12 +321,15 @@ class WaitTilOutputInst1 : public WaitTilOutput {
 public:
     T data;  // +0x0C
 
+    // ea: 0x004B1CD0
     WaitTilOutputInst1(const T& d) : WaitTilOutput(), data(d)
     {
         dListNodeFiller1 = nullptr;
         dListNodeFiller2 = nullptr;
     }
+    // ea: 0x004B1DE0
     virtual int GetSize() { return 1; }           // ?GetSize@...@@UAEHXZ
+    // ea: 0x004B1D40
     virtual void AssignData(WaitTilOutput* sv)    // ?AssignData@...@@UAEXPAVWaitTilOutput@@@Z
     {
         if (sv->GetSize() > GetSize())
@@ -340,6 +343,7 @@ public:
 };
 
 template <typename T>
+// ea: 0x004B1F90
 WaitTilOutputInst1<T>::~WaitTilOutputInst1()
 {
 }
@@ -350,13 +354,16 @@ public:
     T1 data1;  // +0x0C
     T2 data2;  // +0x10
 
+    // ea: 0x004B1DF0
     WaitTilOutputInst2(const T1& d1, const T2& d2)
         : WaitTilOutput(), data1(d1), data2(d2)
     {
         dListNodeFiller1 = nullptr;
         dListNodeFiller2 = nullptr;
     }
+    // ea: 0x004B1F50
     virtual int GetSize() { return 2; }           // ?GetSize@...@@UAEHXZ
+    // ea: 0x004B1E70
     virtual void AssignData(WaitTilOutput* sv)    // ?AssignData@...@@UAEXPAVWaitTilOutput@@@Z
     {
         if (sv->GetSize() > GetSize())
@@ -378,6 +385,7 @@ public:
 };
 
 template <typename T1, typename T2>
+// ea: 0x004B2020
 WaitTilOutputInst2<T1, T2>::~WaitTilOutputInst2()
 {
 }
