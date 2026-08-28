@@ -189,10 +189,12 @@ class EffectEventSys;
 template <typename T>
 struct Bitmask {
     T mVal;  // +0x00
+    // ea: 0x004ACC20
     Bitmask() : mVal(0) {}
     explicit Bitmask(T v) : mVal(v) {}
 
     // ?Add@?$Bitmask@G@@QAEXH@Z (core.o 0x004DF570)
+    // ea: 0x004ACC30
     void Add(int b)
     {
         if (b < 0 || b >= static_cast<int>(sizeof(T) * 8))
@@ -210,6 +212,7 @@ struct Bitmask {
     }
 
     // ?Rmv@?$Bitmask@G@@QAEXH@Z (core.o 0x004DF600)
+    // ea: 0x004ACCC0
     void Rmv(int b)
     {
         if (b < 0 || b >= static_cast<int>(sizeof(T) * 8))
@@ -227,6 +230,7 @@ struct Bitmask {
     }
 
     // ?Test@?$Bitmask@G@@QBE_NH@Z (core.o 0x004DF690)
+    // ea: 0x004ACD50
     bool Test(int b) const
     {
         if (b < 0 || b >= static_cast<int>(sizeof(T) * 8))
@@ -253,8 +257,10 @@ struct Bitmask {
     }
 
     // ?IsEmpty@?$Bitmask@I@@QBE_NXZ (g.o 0x4ACDE0)
+    // ea: 0x004ACDE0
     bool IsEmpty() const { return mVal == 0; }
     // ?Clear@?$Bitmask@G@@QAEXXZ (core.o 0x004DF750)
+    // ea: 0x004ACDF0
     void Clear() { mVal = 0; }
 };
 
