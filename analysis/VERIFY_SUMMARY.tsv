@@ -179,12 +179,12 @@ cl.o	341	15	0	255	0	71	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
 controller_xbox.o	16	15	0	0	0	1	0
-core.o	1437	606	26	315	1	489	0
+core.o	1437	606	26	314	1	490	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	38	0	122	1	1309	0
-game.o	1158	461	11	672	3	11	0
+game.o	1158	461	11	671	3	12	0
 game2.o	1040	414	91	488	8	39	0
 game_xbox.o	365	151	93	110	0	11	0
 inffast.o	1	1	0	0	0	0	0
@@ -253,7 +253,7 @@ ngl_scenedump.o	7	0	0	7	0	0	0
 ngl_texture.o	11	3	0	8	0	0	0
 ngl_xb_internal.o	2	1	0	0	0	1	0
 ngl_xb_palette.o	13	4	0	9	0	0	0
-ngl_xb_tex_load.o	2	0	0	2	0	0	0
+ngl_xb_tex_load.o	2	0	0	1	0	1	0
 nslAram.o	9	9	0	0	0	0	0
 nslCompat.o	21	5	0	1	0	15	0
 nslDriverXBOXDSOUND.o	56	43	0	13	0	0	0
@@ -279,7 +279,7 @@ phys_constraint_solver_multithreaded.o	184	140	36	8	0	0	0
 phys_contact_manifold.o	26	8	12	6	0	0	0
 phys_gjk.o	37	32	3	2	0	0	0
 phys_util.o	11	3	8	0	0	0	0
-physics.o	747	474	25	244	0	4	0
+physics.o	747	474	25	242	0	6	0
 physics_system.o	313	277	30	5	0	1	0
 physics_system_internal.o	154	114	30	10	0	0	0
 rb_ragdoll_model.o	92	58	19	15	0	0	0
