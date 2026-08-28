@@ -2475,11 +2475,12 @@ void UIListBox::ResizeDataRows(int rowCount)
 // ea: 0x576F70
 void UIListBox::MoveUpTo(int newSelectedLine)
 {
+    int requestedLine = newSelectedLine;
     if (newSelectedLine > mLastRowContainingData)
         newSelectedLine = mLastRowContainingData;
     if (newSelectedLine < 0)
         newSelectedLine = 0;
-    int v4 = newSelectedLine - mItemRowsCount / 2 - 1;
+    int v4 = requestedLine - mItemRowsCount / 2 - 1;
     if (mItemRowsCount + v4 - 1 > mLastRowContainingData)
         v4 = mLastRowContainingData - mItemRowsCount + 1;
     if (v4 < 0)
@@ -2493,11 +2494,12 @@ void UIListBox::MoveUpTo(int newSelectedLine)
 // ea: 0x576FE0
 void UIListBox::MoveDownTo(int newSelectedLine)
 {
+    int requestedLine = newSelectedLine;
     if (newSelectedLine > mLastRowContainingData)
         newSelectedLine = mLastRowContainingData;
     if (newSelectedLine < 0)
         newSelectedLine = 0;
-    int v4 = newSelectedLine - mItemRowsCount / 2;
+    int v4 = requestedLine - mItemRowsCount / 2;
     if (mItemRowsCount + v4 - 1 > mLastRowContainingData)
         v4 = mLastRowContainingData - mItemRowsCount + 1;
     if (v4 < 0)
