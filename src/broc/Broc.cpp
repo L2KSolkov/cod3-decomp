@@ -1131,22 +1131,22 @@ string operator+(const string& lhs, const char* rhs) {
 // HashStr functions
 // ============================================================================
 
+// ea: 0x00928710
 HashStr string_hash(const char* str) {
-    unsigned int hash = 5381;
-    if (str) {
-        while (*str)
-            hash = ((hash << 5) + hash) + (unsigned char)*str++;
-    }
     HashStr result;
-    result.mVal = hash;
+    // The release value-returning overload delegates to the engine's hash
+    // callback, just like the out-parameter overload below.  Keeping a
+    // private DJB2 variant here produces different keys for script fields
+    // (for example, "script_sound"), so ExtendedEntity silently drops them.
+    result.mVal = gBrocAPI.mStringHash(str);
     return result;
 }
 
+// ea: 0x00928780
 HashStr string_hash(const string& str) {
     return string_hash(str.c_str());
 }
 
-// ea: 0x00928710. IDA hashes through the runtime callback into the result.
 HashStr* string_hash(HashStr* result, const char* str)
 {
     result->mVal = gBrocAPI.mStringHash(str);
