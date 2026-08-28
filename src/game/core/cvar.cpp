@@ -363,13 +363,10 @@ cvar_t* Cvar_Set2(const char* var_name, const char* value, int force)
     const char* resetString = value;
     va("      cvar set %s %s\n", var_name, value);
     char* mutableValue = (char*)value;
-    if (mutableValue != nullptr)
+    for (unsigned int i = 0; i < strlen(mutableValue); ++i)
     {
-        for (unsigned int i = 0; i < strlen(mutableValue); ++i)
-        {
-            if (mutableValue[i] == 92)
-                mutableValue[i] = 47;
-        }
+        if (mutableValue[i] == 92)
+            mutableValue[i] = 47;
     }
     if (var_name == nullptr || strchr(var_name, 92) != nullptr
         || strchr(var_name, 34) != nullptr || strchr(var_name, 59) != nullptr)
