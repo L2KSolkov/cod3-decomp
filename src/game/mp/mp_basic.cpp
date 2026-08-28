@@ -15508,7 +15508,7 @@ void kuju::kvoicemanager::cVoiceManager::dispatchVoiceData()
     if (mTime == 0)
         mRealLastNetworkDispatchTime.mTime =
             MultiplayerMgr::sInst->mUpdateTime.mTime;
-    unsigned int mEncodeDstOffset = mEncodeDstOffset;
+    unsigned int mEncodeDstOffset = this->mEncodeDstOffset;
     unsigned int mNetworkDispatchOffset = this->mNetworkDispatchOffset;
     if (mEncodeDstOffset < mNetworkDispatchOffset)
         mEncodeDstOffset = 2500;
