@@ -207,7 +207,7 @@ nal_generic.o	68	22	25	21	0	0	0
 nal_generic_component.o	36	31	0	5	0	0	0
 nal_ik.o	2	2	0	0	0	0	0
 nal_init.o	899	651	228	17	3	0	0
-nal_initlist.o	1	1	0	0	0	0	0
+nal_initlist.o	1	0	0	0	0	1	0
 nal_math.o	1	1	0	0	0	0	0
 nal_sceneanim.o	10	4	1	5	0	0	0
 nal_skeleton.o	10	0	7	3	0	0	0

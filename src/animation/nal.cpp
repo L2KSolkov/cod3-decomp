@@ -5099,6 +5099,7 @@ nalSceneAnimInstance* nalStreamAnimQueueInstance(
 // ============================================================================
 // nalInitList
 // ============================================================================
+// ea: 0x00870E40
 void nalInitListInit()
 {
     for (nalInitList* entry = nalInitList::head; entry != nullptr; entry = entry->next)
