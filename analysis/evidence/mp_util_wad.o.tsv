@@ -447,3 +447,33 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00961340	?GiveAmmoWeapon@_mp_loadout@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-loadout-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1825936	Release team-specific ammo selection, dispenser parameters, and thread creation match source.
 0x00961150	?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-loadout-20260828	2026-08-28	src/broc/mp_util_wad.cpp:12656-12659	Source intentionally defines the loadout PlayerKill hook as an empty function.
 0x00961150	?PlayerKill@_mp_loadout@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-loadout-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1825853	Release PlayerKill is a nullsub, matching source.
+0x0092F150	?IsDefined@Broc@@YA_NABUvector@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/engine/broc_types.h:1062-1063	Source vector IsDefined overload forwards to the vector validity test.
+0x0092F150	?IsDefined@Broc@@YA_NABUvector@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1797638	Release vector IsDefined forwarding matches source.
+0x0092F170	?IsDefined@entity@Broc@@QBE_NXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/engine/broc_types.h:1061-1063	Source entity IsDefined method uses the runtime entity-existence check.
+0x0092F170	?IsDefined@entity@Broc@@QBE_NXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1797644	Release entity-existence check matches source.
+0x0092F6F0	?IsDefined@Broc@@YA_NABVstring@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/engine/broc_types.h:1063-1064	Source string IsDefined overload forwards to the string validity test.
+0x0092F6F0	?IsDefined@Broc@@YA_NABVstring@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1797874	Release string IsDefined forwarding matches source.
+0x00934830	??HBroc@@YA?AVstring@0@ABV10@M@	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6437-6443	Source copies a string and appends a floating-point value.
+0x00934830	??HBroc@@YA?AVstring@0@ABV10@M@	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1801054	Release string-plus-float construction and append match source.
+0x00935870	?endon@Broc@@YAXVentity@1@UHashStr@@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:1671-1674	Source terminates an entity thread on the supplied event hash.
+0x00935870	?endon@Broc@@YAXVentity@1@UHashStr@@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1801539	Release hash conversion and thread-termination API call match source.
+0x009360D0	?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5994-5996	Source forwards entity, label hash, and function hash to the event-handler API.
+0x009360D0	?AddEventHandler@Broc@@YAXABVentity@1@UHashStr@@1@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1801774	Release event-handler API forwarding matches source.
+0x00937A20	??DBroc@@YA?AUvector@0@ABU10@M@	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:6846-6848	Source scales each vector component and returns the result.
+0x00937A20	??DBroc@@YA?AUvector@0@ABU10@M@	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1802448	Release vector-scalar multiplication matches source.
+0x0093BE30	?IsPlayer@Broc@@YAHABVentity@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5741-5743	Source forwards the entity handle to the runtime player predicate.
+0x0093BE30	?IsPlayer@Broc@@YAHABVentity@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1804689	Release player predicate forwarding matches source.
+0x0093BE60	?IsVehicle@Broc@@YAHABVentity@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5753-5755	Source forwards the entity handle to the runtime vehicle predicate.
+0x0093BE60	?IsVehicle@Broc@@YAHABVentity@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1804698	Release vehicle predicate forwarding matches source.
+0x0093BE90	?Code_GetWeaponName@Broc@@YAXHAAVstring@1@@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/mp_util_wad.cpp:5758-5760	Source forwards the weapon index and output string to the runtime API.
+0x0093BE90	?Code_GetWeaponName@Broc@@YAXHAAVstring@1@@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1804707	Release weapon-name API forwarding matches source.
+0x0093CA40	?Code_ClearPlayerStats@Broc@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:178-181	Source forwards player-stat clearing to the runtime API.
+0x0093CA40	?Code_ClearPlayerStats@Broc@@YAXXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805069	Release player-stat clearing API call matches source.
+0x0093CA60	?Code_ClearTeamScores@Broc@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:184-187	Source forwards team-score clearing to the runtime API.
+0x0093CA60	?Code_ClearTeamScores@Broc@@YAXXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805075	Release team-score clearing API call matches source.
+0x0093CA80	?Code_DisplayScoreBoard@Broc@@YAX_NH@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:190-193	Source forwards scoreboard visibility and duration to the runtime API.
+0x0093CA80	?Code_DisplayScoreBoard@Broc@@YAX_NH@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805081	Release scoreboard API forwarding matches source.
+0x0093CAB0	?Code_SetShowScore@Broc@@YAX_N@Z	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:196-199	Source forwards scoreboard-show state to the runtime API.
+0x0093CAB0	?Code_SetShowScore@Broc@@YAX_N@Z	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805087	Release scoreboard-show API forwarding matches source.
+0x0093CAE0	?Code_SetupLevelSpecificVariables@Broc@@YAXXZ	V3	PASS	ida-manual-common-20260828	2026-08-28	src/broc/Broc.cpp:202-205	Source forwards level-specific setup to the runtime API.
+0x0093CAE0	?Code_SetupLevelSpecificVariables@Broc@@YAXXZ	V4	PASS	ida-manual-common-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1805093	Release level-specific setup API forwarding matches source.
