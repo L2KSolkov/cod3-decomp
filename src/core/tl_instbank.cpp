@@ -15,9 +15,7 @@ extern void  tlMemFree(void* ptr);
 // tlInstanceBank::tlInstanceBank
 // ea: 0x833B90
 // ============================================================================
-tlInstanceBank::tlInstanceBank() : NIL(nullptr), Head(nullptr) {
-    Init();
-}
+tlInstanceBank::tlInstanceBank() : NIL(nullptr), Head(nullptr) {}
 
 // ============================================================================
 // tlInstanceBank::Init
@@ -52,13 +50,14 @@ tlInstanceBank::~tlInstanceBank() {
 // ea: 0x833F50
 // ============================================================================
 void tlInstanceBank::Destroy() {
-    Instance* cur = Head;
-    while (cur != NIL) {
-        Instance* next = *(Instance**)((char*)cur + 4 * Level + 40);
-        tlMemFree(cur);
-        cur = next;
+    if (Head != nullptr) {
+        while (Head->Forward[0] != NIL)
+            Delete(Head->Forward[0]->Key);
     }
-    tlMemFree(NIL);
+    if (NIL != nullptr)
+        tlMemFree(NIL);
+    if (Head != nullptr)
+        tlMemFree(Head);
     NIL = nullptr;
     Head = nullptr;
 }
@@ -68,7 +67,7 @@ void tlInstanceBank::Destroy() {
 // ea: 0x833BA0
 // ============================================================================
 tlInstanceBank::Instance* tlInstanceBank::NewNodeOfLevel(int l) {
-    return (Instance*)tlMemAlloc(4 * l + 44, 0, 0);
+    return (Instance*)tlMemAlloc(4 * l + 44, 8, 0);
 }
 
 // ============================================================================
@@ -142,7 +141,7 @@ tlInstanceBank::Instance* tlInstanceBank::Insert(const tlFixedString& key, void*
         *fwdUpd = node;
     }
 
-    return node;
+    return nullptr;
 }
 
 // ============================================================================
