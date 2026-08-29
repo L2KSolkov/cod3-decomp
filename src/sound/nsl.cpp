@@ -111,6 +111,7 @@ struct nslInitParams {
     unsigned aramBase;
     unsigned aramSize;
 };
+static_assert(sizeof(nslInitParams) == 16, "IDA nslInitParams layout");
 using nslSourceCallback = void (__cdecl *)(void*, void*, nslSourceID, unsigned, void*, int);
 struct nslSource {
     unsigned __int64 paramsUsed;
@@ -306,6 +307,7 @@ union nslWaveName {
     const char* name;
     unsigned hash;
 };
+static_assert(sizeof(nslWaveName) == 4, "IDA nslWaveName layout");
 struct nslWaveBank {
     char header[4];
     unsigned char versionMajor;
@@ -333,11 +335,12 @@ struct nslWaveBank {
             void* waveBankAram;
             nflFileID waveBankFile;
             unsigned waveBankFileOffset;
-            unsigned reserved;
+            char pad_0C[4]; // IDA unnamed trailing union word; release zeroes it.
         } backing;
     } storage;
     unsigned char streamMD5[16];
 };
+static_assert(sizeof(nslWaveBank) == 128, "IDA nslWaveBank layout");
 enum nslWaveBankSlotState {
     NSL_WAVE_BANK_SLOT_STATE_NOTUSED = 0,
     NSL_WAVE_BANK_SLOT_STATE_PENDING = 1,
@@ -352,6 +355,7 @@ struct nslWaveBankSlotProfile {
     unsigned frameStarted;
     unsigned frameLoaded;
 };
+static_assert(sizeof(nslWaveBankSlotProfile) == 24, "IDA nslWaveBankSlotProfile layout");
 struct nslWaveBankSlot {
     nslWaveBankID waveBankID;
     nslWaveBankSlotState state;
@@ -362,6 +366,7 @@ struct nslWaveBankSlot {
     nslWaveBank* waveBank;
     nslWaveBankSlotProfile profile;
 };
+static_assert(sizeof(nslWaveBankSlot) == 52, "IDA nslWaveBankSlot layout");
 struct nslGroup {
     unsigned __int64 paramsUpdate;
     float params[64];
@@ -2559,7 +2564,8 @@ int           nslWaveBankFixup(nslWaveBank* waveBank) {
     waveBank->storage.backing.waveBankAram = nullptr;
     waveBank->storage.backing.waveBankFile = static_cast<nflFileID>(0);
     waveBank->storage.backing.waveBankFileOffset = 0;
-    waveBank->storage.backing.reserved = 0;
+    std::memset(waveBank->storage.backing.pad_0C, 0,
+                sizeof(waveBank->storage.backing.pad_0C));
     std::memset(waveBank->streamMD5, 0, sizeof(waveBank->streamMD5));
 
     if ((waveBank->waveBankFlags & 2u) == 0) {
