@@ -3523,6 +3523,14 @@ bool MPGameInfo::deserialize(bdReference<bdCommonAddr> localAddr,
             ok = false;
         }
     }
+    if (!ok)
+    {
+        bdMessageProxy proxy(
+            "c:\\cod\\code\\game\\mp/MPGameInfo.cpp",
+            "bool __thiscall MPGameInfo::deserialize(const class bdReference<class bdCommonAddr>,class bdBitBuffer &)",
+            0x8Fu, "dw/err/");
+        proxy.log("MPGameInfo::deserialize()", "Deserialization failed");
+    }
     if (localAddr.m_ptr != nullptr
         && localAddr.m_ptr->m_refCount-- == 1)
         delete localAddr.m_ptr;
@@ -17646,7 +17654,7 @@ MPGameInfo::MPGameInfo(unsigned int titleID,
 bool MPGameInfo::operator==(const MPGameInfo& other) const
 {
     return m_titleId == other.m_titleId
-        && m_hostAddr.m_ptr == other.m_hostAddr.m_ptr
+        && *m_hostAddr.m_ptr == *other.m_hostAddr.m_ptr
         && m_publicOpen == other.m_publicOpen
         && m_privateOpen == other.m_privateOpen
         && m_publicFilled == other.m_publicFilled

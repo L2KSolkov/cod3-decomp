@@ -123,6 +123,21 @@ bool bdCommonAddr::deserialize(const bdReference<bdCommonAddr>& ref,
     return true;
 }
 
+// bdCommonAddr comparison operators - ea: 0x89DB50 / 0x89DB70 / 0x89DB90.
+// The release compares the cached address hash, not object identity or the
+// full XNADDR payload.
+bool bdCommonAddr::operator==(const bdCommonAddr& other) const {
+    return m_hash == other.m_hash;
+}
+
+bool bdCommonAddr::operator!=(const bdCommonAddr& other) const {
+    return m_hash != other.m_hash;
+}
+
+bool bdCommonAddr::operator<(const bdCommonAddr& other) const {
+    return m_hash < other.m_hash;
+}
+
 // ============================================================================
 // bdAddressMapImpl::bdAddressMapImpl - ea: 0x8B7440
 // ============================================================================

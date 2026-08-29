@@ -65,7 +65,7 @@ bdBitOperations.obj	4	0	0	4	0	0	0
 bdByteBuffer.obj	5	5	0	0	0	0	0
 bdBytePacker.obj	11	11	0	0	0	0	0
 bdChunk.obj	9	8	1	0	0	0	0
-bdCommonAddr-xbox.obj	28	25	2	0	0	1	0
+bdCommonAddr-xbox.obj	28	24	2	0	0	2	0
 bdConnection.obj	35	33	2	0	0	0	0
 bdConnectionListener.obj	5	0	1	0	0	4	0
 bdConnectionStatistics.obj	16	16	0	0	0	0	0
@@ -194,7 +194,7 @@ jobqueue.o	26	6	0	15	0	5	0
 jobqueue_legacy.o	11	8	0	1	0	2	0
 mem_lib.o	47	31	2	14	0	0	0
 mem_lib_platform.o	11	11	0	0	0	0	0
-mp.o	1142	375	12	376	0	379	0
+mp.o	1142	375	12	370	0	385	0
 mp_actors.o	436	64	0	145	0	227	0
 mp_anim_wad.o	430	194	144	0	0	92	0
 mp_level_wad.o	1062	1040	3	14	0	5	0

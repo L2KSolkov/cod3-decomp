@@ -629,6 +629,9 @@ public:
                  uint16_t port);
     void serialize(uint8_t* buffer) const;
     bool deserialize(const bdReference<bdCommonAddr>& ref, const uint8_t* buffer);
+    bool operator==(const bdCommonAddr& other) const;
+    bool operator!=(const bdCommonAddr& other) const;
+    bool operator<(const bdCommonAddr& other) const;
 
     unsigned int getTitleId() const { return m_titleId; }
     uint16_t getPort() const { return m_port; }
