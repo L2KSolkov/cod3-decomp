@@ -41,7 +41,7 @@ public:
 };
 
 // ============================================================================
-// R_PlaneForSurface - ea: 0x006C1BC0
+// R_PlaneForSurface
 // ============================================================================
 enum surfaceType_t {
     SF_BAD = 0x0,
@@ -58,6 +58,7 @@ struct cplane_s {
 const int PlaneFromPoints(float* const plane, const float* const a,
                           const float* const b, const float* const c);
 
+// ea: 0x006C1BC0
 void R_PlaneForSurface(surfaceType_t* surfType, cplane_s* plane)
 {
     if (surfType == nullptr)
@@ -110,7 +111,7 @@ void R_PlaneForSurface(surfaceType_t* surfType, cplane_s* plane)
 }
 
 // ============================================================================
-// RemoveLight / Cmd_PFXReport_f - ea: 0x006C86D0 / 0x006C8680
+// RemoveLight / Cmd_PFXReport_f
 // ============================================================================
 template <typename T>
 class ae_vector {
@@ -193,6 +194,7 @@ PoolAllocator* LightEffect::sAllocator;
 
 ae_vector<LightEffect*> gLightEffectList;  // ?gLightEffectList@@3V?$ae_vector@PAVLightEffect@@@@A @ 0xF74CC8
 
+// ea: 0x006C86D0
 void RemoveLight(LightEffect* light)
 {
     LightEffect** mElements = gLightEffectList.mElements;
@@ -250,6 +252,7 @@ extern ParticleEffect* FX_ElectEffectToKill(apsEffectTemplate* tmpl);  // tr_fx2
 ae_vector<ParticleEffect*> gParticleEffectList;  // ?gParticleEffectList@@3V?$ae_vector@PAVParticleEffect@@@@A @ 0xF75174
 void tlPrintf(const char* fmt, ...);  // core.o
 
+// ea: 0x006C8680
 void Cmd_PFXReport_f()
 {
     for (ParticleEffect** i = gParticleEffectList.mElements;

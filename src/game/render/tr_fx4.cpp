@@ -44,7 +44,7 @@ extern ae_vector<ParticleEffect*> gSortedParticleEffectList;  // tr_fx2.cpp
 extern void FX_SortParticleEffectList(unsigned int indexLeft, int indexRight);
 
 // ============================================================================
-// FX_SortParticleEffectList - ea: 0x006C7690 (introsort, quicksort partition)
+// FX_SortParticleEffectList (introsort, quicksort partition)
 // ============================================================================
 static unsigned int SortKey(ParticleEffect* pe)
 {
@@ -53,6 +53,7 @@ static unsigned int SortKey(ParticleEffect* pe)
     return 0xFFFFFFFFu;
 }
 
+// ea: 0x006C7690
 void FX_SortParticleEffectList(int indexLeft, int indexRight)
 {
     int v2 = (int)indexLeft;

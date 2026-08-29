@@ -435,7 +435,6 @@ bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
 
 // ============================================================================
 // nalMatrix4x4_to_Axis4 - copy the first three components of each row
-// ea: 0x4F5ED0
 // ============================================================================
 class nalMatrix4x4 {
 public:
@@ -686,6 +685,7 @@ static bool AnimIK_ApplyTwoBoneIK(
     return true;
 }
 
+// ea: 0x4F5ED0
 void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 {
     const float* rows = &mat->x[0];
@@ -2602,7 +2602,6 @@ bool Entity::RemoveScriptEvent(HashString h, HashString callback)
 
 // ============================================================================
 // FnReverseOptions - flip all effect-sound toggles
-// ea: 0x4F4510
 // ============================================================================
 class SoundOptions {
 public:
@@ -2625,6 +2624,7 @@ static_assert(sizeof(SoundOptions) == 0x38, "SoundOptions size mismatch");
 
 extern SoundOptions gSoundOptions;  // ?gSoundOptions (game2.o)
 
+// ea: 0x4F4510
 int FnReverseOptions()
 {
     gSoundOptions.mFxDontPlayFootSteps =

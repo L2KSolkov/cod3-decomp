@@ -322,7 +322,7 @@ public:
 };
 
 // ============================================================================
-// DynamicDecalSet::Update - ea: 0x006C3790
+// DynamicDecalSet::Update
 // ============================================================================
 namespace LightGrid {
 struct TOC;
@@ -337,6 +337,7 @@ public:
                          math::Mat44* color);  // lightgrid.cpp
 };
 
+// ea: 0x006C3790
 void DynamicDecalSet::Update(float deltaTime)
 {
     mNextFree[0] = -1;

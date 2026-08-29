@@ -190,8 +190,9 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
             # accidentally attach this address to an unrelated body.
             return None
         matches = list(re.finditer(
-            r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+(?:new|delete|[~A-Za-z_][A-Za-z0-9_]*))|"
+            r"((?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s*(?:\(\)|(?:new|delete|[~A-Za-z_][A-Za-z0-9_]*)))|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator\s+[^(){}]+)|"
+            r"(?:operator\s*\(\))|"
             r"(?:[~A-Za-z_][A-Za-z0-9_:<>~]*::operator[^\s(]+)|"
             r"(?:operator\s+[^\s(]+)|"
             r"(?:operator[^\s(]+)|"
@@ -367,6 +368,17 @@ def scan_markers() -> list[Marker]:
             match = pattern.search(line)
             if not match:
                 continue
+            comment = line.split("//", 1)[1]
+            marker_prefix = comment[:comment.find("ea:")]
+            # Header inventories often list several addresses as prose
+            # (for example ``ctor() ea: ...``).  They are not annotations for
+            # the following definition and must not steal its body.  Keep
+            # canonical/descriptive markers, and qualified function notes
+            # such as ``Broc::string::is_empty (...; ea: ...)``.
+            if (not re.search(r"(?:-\s*|—\s*)$", marker_prefix)
+                    and not re.fullmatch(r"\s*", marker_prefix)
+                    and not re.search(r"\b[A-Za-z_]\w*::[~A-Za-z_]\w*\s*\(", marker_prefix)):
+                continue
             candidate_info = function_candidate(lines, number)
             if candidate_info is None:
                 hint = marker_hint(line)
@@ -403,6 +415,7 @@ def base_name(decorated: str) -> str:
         if match:
             return match.group(1)
         for decoration, readable in (
+            ("??R", "operator()"),
             ("??2", "operator new"),
             ("??3", "operator delete"),
             ("??4", "operator="),
@@ -770,6 +783,14 @@ def symbol_variants(name: str) -> set[str]:
             "?LookupHandler@TaskSys@@QBEPAUTaskHandler@@UFourCC@@@Z",
         "?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z":
             "?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXPBUSmokeGrenadeInfo@@@Z",
+        # These game2 helpers are ABI-equivalent despite the release map's
+        # decompiler spelling: the release ignored FnReverseOptions' return,
+        # while current MSVC preserves its int return, and the matrix helper
+        # uses a reference spelling versus the current pointer spelling.
+        "?FnReverseOptions@@YAXXZ":
+            "?FnReverseOptions@@YAHXZ",
+        "?nalMatrix4x4_to_Axis4@@YAXAAVnalMatrix4x4@@QAY02M@Z":
+            "?nalMatrix4x4_to_Axis4@@YAXPAVnalMatrix4x4@@PAY02M@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:
@@ -1044,10 +1065,14 @@ def main() -> int:
     for function in in_scope:
         hits = marker_by_ea.get(function.ida_ea, [])
         hit = canonical_hit(function, hits)
-        if len(hits) > 1 and not (hit is not None and
-                                  body_class(hit.body) == "REAL_BODY" and
-                                  sum(1 for item in hits
-                                      if body_class(item.body) == "REAL_BODY") == 1):
+        has_asm_marker = any(item.path.lower().endswith(".asm") for item in hits)
+        has_cpp_marker = any(not item.path.lower().endswith(".asm") for item in hits)
+        intentional_thunk_pair = has_asm_marker and has_cpp_marker
+        if (len(hits) > 1 and not intentional_thunk_pair and
+                not (hit is not None and
+                     body_class(hit.body) == "REAL_BODY" and
+                     sum(1 for item in hits
+                         if body_class(item.body) == "REAL_BODY") == 1)):
             anomalies.append({"kind": "DUPLICATE_MARKER", "ida_ea": f"0x{function.ida_ea:08X}",
                               "name": function.name, "source": hits[0].path,
                               "detail": f"{len(hits)} source markers"})

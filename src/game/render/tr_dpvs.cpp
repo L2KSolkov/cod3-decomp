@@ -488,7 +488,7 @@ trRefEntity* refEntity_t::GetTrRefentity()
 }
 
 // ============================================================================
-// R_FilterModelIntoCells_r (trRefEntity variant) - ea: 0x006C57D0
+// R_FilterModelIntoCells_r (trRefEntity variant)
 // ============================================================================
 class BspNode {
 public:
@@ -640,6 +640,7 @@ void R_CullModels(BspCell* cell, const dpvs_plane_t* planes, int iPlaneCount)
 void R_AddModelToCell(BspCell* cell, trRefEntity* re,
                       const math::Vector4& sphere);  // tr_dpvs.cpp (0x6BF830)
 
+// ea: 0x006C57D0
 void R_FilterModelIntoCells_r(BspNode* startNode, trRefEntity* re,
                               const math::Vector4& sphere)
 {
