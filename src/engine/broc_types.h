@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <new>
 
 // IDA type: ?sNaN@@3MA.  Broc::vector's default constructor uses this
 // undefined sentinel rather than a numeric zero.
@@ -690,6 +691,22 @@ struct ExtendedEntity {
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity) == 12, "Broc::ExtendedEntity size mismatch");
 COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity::KVPair) == 8, "Broc::ExtendedEntity::KVPair size mismatch");
+
+// The release string specialization constructs the output object in place;
+// this preserves its copy-constructor registration/lifetime semantics instead
+// of routing through string::operator= as the generic typed accessor does.
+template <>
+inline const string* ExtendedEntity::GetVal<string>(void* result,
+                                                     unsigned int key) const {
+    const unsigned int* raw = InternalGet(key);
+    const string* stored = reinterpret_cast<const string*>(raw);
+    string* out = static_cast<string*>(result);
+    if (stored != nullptr)
+        new (out) string(*stored);
+    else
+        new (out) string((string::Block*)nullptr);
+    return out;
+}
 
 // ============================================================================
 // Broc::pathnode / Broc::vehiclenode — node handles (4 bytes each)
