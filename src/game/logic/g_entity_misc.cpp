@@ -3869,7 +3869,14 @@ void DynamicDecalMgr_DestroyAllDecals()
 }
 void DynamicDecalMgr_Update(void* self, float a)
 {
-    static_cast<DynamicDecalMgr*>(self)->Update(a);
+    // The frame loop still passes the legacy mirror symbol, while the
+    // singleton is owned by render.o. Resolve the canonical instance when
+    // that mirror has not been populated so startup cannot dereference null.
+    DynamicDecalMgr* instance = self != nullptr
+        ? static_cast<DynamicDecalMgr*>(self)
+        : DynamicDecalMgr::Inst();
+    if (instance != nullptr)
+        instance->Update(a);
 }
 void Entity_Notify(Entity* e, unsigned int a)
 {
@@ -4579,7 +4586,13 @@ void RumbleEffect_SetNotes(void* self, int a, void* b)
 }
 void SceneManager_UpdateEffects(void* self, float a)
 {
-    static_cast<SceneManager*>(self)->UpdateEffects(a);
+    // cl_parse still supplies the legacy mirror symbol. Use the canonical
+    // singleton when that mirror is null during the first rendered frame.
+    SceneManager* instance = self != nullptr
+        ? static_cast<SceneManager*>(self)
+        : SceneManager::Inst();
+    if (instance != nullptr)
+        instance->UpdateEffects(a);
 }
 // ea: 0x005C1AC0
 void Scr_Error(const char* error)

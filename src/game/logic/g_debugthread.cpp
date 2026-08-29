@@ -54,8 +54,8 @@ ae_sized_array<ae_pair<short, short>, 256> ParticleEffect::sArray;  // render.o 
 
 // AeThread / AeThreadManager list walk (sv_stubs.h owns AeThreadManager)
 struct AeThread {
-    void* mPrev;         // +0x00 (dlist node)
-    void* mNext;         // +0x04
+    void* mNext;         // +0x00 (dlist node)
+    void* mPrev;         // +0x04
     unsigned int mOwner; // +0x08 (DbLinkedHandle mVal)
     void* mFunctor;      // +0x0C
     unsigned int mFlags; // +0x10 (Bitmask mVal)
@@ -670,17 +670,13 @@ void DebugThread::Render()
         && selVal >> 12 == EntityHandleDb::sInst.mElements[selIdx].mKey)
         selected = EntityHandleDb::sInst.mElements[selIdx].mObject;
     char* mgr = (char*)&AeThreadManager::sInst;
-    void** list = (void**)(mgr + 4);          // mThreads
-    void* m_head = list[0];                   // head node pointer
-    void* m_next = m_head != nullptr
-        ? *(void**)((char*)m_head + 4) : nullptr;
-    void* endNode = (char*)list + 8;          // &mThreads.m_end
-    if (m_head == endNode)
-        m_next = nullptr;
+    void* m_head = *(void**)(mgr + 8);        // mThreads.m_head
+    void* endNode = (void*)(mgr + 0x0C);      // &mThreads.m_end
+    void* m_next = m_head == endNode ? nullptr : m_head;
     int numThreads = 0;
     float numForSelected = 0.0f;
     void* cur = m_next;
-    while (cur != nullptr)
+    while (cur != nullptr && cur != endNode)
     {
         AeThread* t = (AeThread*)cur;
         ++numThreads;
@@ -838,7 +834,7 @@ void DebugThread::Render()
     int line = y + 24;
     int seen = 0;
     cur = m_next;
-    while (cur != nullptr)
+    while (cur != nullptr && cur != endNode)
     {
         AeThread* t = (AeThread*)cur;
         Entity* owner = nullptr;

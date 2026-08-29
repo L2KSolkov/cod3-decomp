@@ -60,13 +60,21 @@ public:
     unsigned char modelParents[8];  // +0x60
     unsigned char matOffset[8];     // +0x68
     void* skel;                // +0x70
-    unsigned char numModels;   // +0xCE
-    Entity* mEntity;           // +0xD0
-    int mLOD;                  // +0xD8
-    int mLODOverride;          // +0xDC
-    int mLODAnim;              // +0xE0
+    void* animToModel;         // +0x74
+    unsigned int gameId;       // +0x78
+    int ignoreCollision;       // +0x7C
     IVPointer<XModelLocal> models[8];  // +0x80
     int mPakId;                // +0xC0
+    IVPointer<XModelLocal> mPhysData;  // +0xC4
+    unsigned short duplicateParts;     // +0xCC
+    unsigned char numModels;           // +0xCE
+    unsigned char numBones;            // +0xCF
+    Entity* mEntity;                   // +0xD0
+    unsigned int mHandle;              // +0xD4
+    int mLOD;                          // +0xD8
+    int mLODOverride;                  // +0xDC
+    int mLODAnim;                      // +0xE0
+    unsigned int mFlags;               // +0xE4
 
     const math::Mat43& GetMat(int boneIndex);  // ?GetMat@DObj@@QAEABVMat43@math@@H@Z (real in g_dobj.cpp)
     void SetLODOverride(int startLod);  // ?SetLODOverride@DObj@@QAEXH@Z (real in cg_weapon.cpp)
@@ -106,12 +114,19 @@ struct DObjSkelMatLocal {
     float origin[4];   // +0x30
 };
 
-// DSkel local view (mat array; full in g_dobj.cpp)
+// DSkel layout: three 16-byte part-bit arrays precede the matrix array.
+// Keeping the prefix is required because callers index mat by matOffset.
 struct DSkelLocal {
-    DObjSkelMatLocal* mat;  // +0x00
+    int animPartBits[4];       // +0x00
+    int controlPartBits[4];    // +0x10
+    int skelPartBits[4];       // +0x20
+    DObjSkelMatLocal mat[1];   // +0x30
 };
 struct DSkel {
-    DObjSkelMatLocal* mat;  // +0x00 (binary U-tag; DObjCalcSubModelAnim_Drone)
+    int animPartBits[4];       // +0x00
+    int controlPartBits[4];    // +0x10
+    int skelPartBits[4];       // +0x20
+    DObjSkelMatLocal mat[1];   // +0x30 (binary U-tag; DObjCalcSubModelAnim_Drone)
 };
 
 // Local DbLinkedHandle view (full template in game_types.h)
