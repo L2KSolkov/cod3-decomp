@@ -585,3 +585,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0051E8A0	?SV_InvertAim_f@@YAXXZ	V4	PASS	ida-manual-game2-server-20260829	2026-08-29	c3_bin/codmp_xboxr.xbe.c:1082209-1082213	Direct release/source comparison confirms the invert-aim flag store.
 0x0051E8E0	?SV_ExitGame_f@@YAXXZ	V3	PASS	ida-manual-game2-server-20260829	2026-08-29	src/game/sv/sv_ccmds.cpp:253-260	Source sets gExitGame, kills active threads, and requests map-change pumping.
 0x0051E8E0	?SV_ExitGame_f@@YAXXZ	V4	PASS	ida-manual-game2-server-20260829	2026-08-29	c3_bin/codmp_xboxr.xbe.c:1082227-1082233	Direct release/source comparison confirms exit flag, KillAllThreads call, and map-change pump request.
+0x0051E1A0	?SetInGameMenusActive@FEManager@@QAEX_NH@Z	V3	PASS	ida-manual-game2-ui-20260829	2026-08-29	src/game/sv/sv_misc.cpp:63-69	Source resolves the selected client in-game menu system and conditionally stores its active flag.
+0x0051E1A0	?SetInGameMenusActive@FEManager@@QAEX_NH@Z	V4	PASS	ida-manual-game2-ui-20260829	2026-08-29	c3_bin/codmp_xboxr.xbe.c:1081896-1081904	Direct release/source comparison confirms client-indexed mIGMS lookup, null guard, and is_active store.
