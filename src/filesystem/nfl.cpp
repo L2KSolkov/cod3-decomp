@@ -304,14 +304,14 @@ struct nfd_win32_IoWork {
 };
 #endif
 
-// ea: 0x0041E4E0
+// ea: 0x0082A4E0
 nflRequestParams::nflRequestParams()
     : fileID(NFL_FILE_ID_INVALID), streamID(NFL_STREAM_ID_DEFAULT), callback(nullptr),
       type(NFL_REQUEST_TYPE_INVALID), priority(NFL_PRIORITY_NORMAL), fileOffset(0),
       buffer(nullptr), dataSize(0), timeout(0), userData(nullptr)
 {
 }
-// ea: 0x0041E770
+// ea: 0x0082A770
 nflStreamParams::nflStreamParams() : streamPriority(NFL_PRIORITY_NORMAL)
 {
 }
@@ -2169,7 +2169,7 @@ nfdError nfd_xbox_MediaBind(nflMediaID media, const char* src, char* dst, int ds
 extern "C" {
 int tx_printLevel = 3;
 unsigned int tx_time = 0;
-// ea: 0x00420E40
+// ea: 0x0082CE40
 void txInit() {}
 // ea: 0x00420D70
 unsigned long long txTime()
