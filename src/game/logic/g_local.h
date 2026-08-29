@@ -5410,6 +5410,7 @@ public:
     TaskHandler* LookupHandler(FourCC id) const; // game2.o 0x4FF990
     Handle CreateTaskHandle(Task* t); // game2.o 0x50BA00
     void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o
+    void SendTask(Task* t);  // ?SendTask@TaskSys@@QAEXPAVTask@@@Z game2.o 0x4FFAE0
     void ReleaseTask(Task* t);  // ?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z game2.o
     Task* GetTaskForEntity(FourCC taskId,
                            DbLinkedHandle<EntityHandleDb, Entity> eh) const; // game2.o 0x50BA90

@@ -3947,13 +3947,20 @@ void TaskSys_SendTask(TaskHandlerView* handler, Task* t)
 {
     if (t != nullptr)
     {
-        DListNode* sentinel = &handler->mTaskList.m_end;
+        struct TaskHandlerTaskListView {
+            int m_size;
+            DListNode* m_head;
+            DListNode* m_end;
+            DListNode* m_tail;
+        };
+        TaskHandlerTaskListView* list = reinterpret_cast<
+            TaskHandlerTaskListView*>(&handler->mTaskList);
         DListNode* node = (DListNode*)&t->_dlist[0];
-        node->m_next = sentinel + 1;
-        DListNode* m_prev = handler->mTaskList.m_tail;
+        node->m_next = reinterpret_cast<DListNode*>(&list->m_end);
+        DListNode* m_prev = list->m_tail;
         node->m_prev = m_prev;
         m_prev->m_next = node;
-        handler->mTaskList.m_tail = node;
-        ++handler->mTaskList.m_size;
+        list->m_tail = node;
+        ++list->m_size;
     }
 }

@@ -2738,6 +2738,36 @@ void TaskSys::PostTask(Task* t)
     this->mPostQueue.m_tail = node;
     ++this->mPostQueue.m_size;
 }
+
+// ea: 0x004FFAE0
+void TaskSys::SendTask(Task* t)
+{
+    if (t == nullptr)
+        return;
+
+    TaskHandler* handler = LookupHandler(FourCC((int)t->mTaskId));
+    struct TaskListView {
+        int m_size;
+        void* m_head;
+        void* m_end;
+        void* m_tail;
+    };
+    TaskListView* list = reinterpret_cast<TaskListView*>(
+        reinterpret_cast<unsigned char*>(handler) + 0x10);
+    struct TaskDListNode {
+        TaskDListNode* m_next;
+        TaskDListNode* m_prev;
+    };
+    TaskDListNode* node = reinterpret_cast<TaskDListNode*>(t->_dlist);
+    TaskDListNode* end = reinterpret_cast<TaskDListNode*>(&list->m_end);
+    node->m_next = end;
+    TaskDListNode* tail = static_cast<TaskDListNode*>(list->m_tail);
+    node->m_prev = tail;
+    tail->m_next = node;
+    list->m_tail = node;
+    ++list->m_size;
+}
+
 void TaskSys_PostTask_glue(Task* t) { (void)t; }
 extern "C" void TaskSys_PostTask_bridge(void* t)
 {
