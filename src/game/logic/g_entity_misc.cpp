@@ -3312,10 +3312,14 @@ void AnimQueue_ExecuteMatrixQueue()
 {
     AnimQueue::ExecuteMatrixQueue();
 }
+extern void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
+                         const math::Dir3& hitd, float force,
+                         bool local_hitp, hitLocation_t hitLoc);
 void ApplyPhysics(Entity* e, const math::Position3* a, const math::Dir3* b,
                   float c, bool d, EHitLocation e2)
 {
-    (void)e; (void)a; (void)b; (void)c; (void)d; (void)e2;
+    if (a != nullptr && b != nullptr)
+        ApplyPhysics(e, *a, *b, c, d, static_cast<hitLocation_t>(e2));
 }
 void Axis_Bind_f() {}
 void Axis_Unbindall_f() {}
