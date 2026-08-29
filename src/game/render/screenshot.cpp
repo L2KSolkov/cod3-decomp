@@ -41,7 +41,7 @@ void R_TakeScreenshotJPEG(int x, int y, int width, int height, char* name)
 }
 
 // ea: 0x006C0430
-void R_ScreenshotFilename(int lastNumber, char* fileName)
+void R_ScreenshotFilename(unsigned int lastNumber, char* fileName)
 {
     if (lastNumber >= 0x2710)
         Com_sprintf(fileName, 128, "screenshots/shot9999.tga");
@@ -50,7 +50,7 @@ void R_ScreenshotFilename(int lastNumber, char* fileName)
 }
 
 // ea: 0x006C0480
-void R_ScreenshotFilenameJPEG(int lastNumber, char* fileName)
+void R_ScreenshotFilenameJPEG(unsigned int lastNumber, char* fileName)
 {
     if (lastNumber >= 0x2710)
         Com_sprintf(fileName, 128, "screenshots/shot9999.jpg");
