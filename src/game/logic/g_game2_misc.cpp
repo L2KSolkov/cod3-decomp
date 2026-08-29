@@ -993,18 +993,18 @@ void AnimIK::Initialize()
         float dx = b.pos.v.m128_f32[0] - a.pos.v.m128_f32[0];
         float dy = b.pos.v.m128_f32[1] - a.pos.v.m128_f32[1];
         float dz = b.pos.v.m128_f32[2] - a.pos.v.m128_f32[2];
-        float upper = sqrtf(dx * dx + dy * dy + dz * dz);
+        float lower = sqrtf(dx * dx + dy * dy + dz * dz);
         float dx2 = c.pos.v.m128_f32[0] - b.pos.v.m128_f32[0];
         float dy2 = c.pos.v.m128_f32[1] - b.pos.v.m128_f32[1];
         float dz2 = c.pos.v.m128_f32[2] - b.pos.v.m128_f32[2];
-        float lower = sqrtf(dx2 * dx2 + dy2 * dy2 + dz2 * dz2);
+        float upper = sqrtf(dx2 * dx2 + dy2 * dy2 + dz2 * dz2);
         ik.UpperLength = upper;
         ik.UpperIKc = 1.0f / (upper * 2.0f);
         ik.UpperIKInvc = (upper * upper - lower * lower)
             / (upper * 2.0f);
-        ik.LowerIKc = 1.0f / (upper * 2.0f);
+        ik.LowerIKc = 1.0f / (lower * 2.0f);
         ik.LowerIKInvc = (lower * lower - upper * upper)
-            / (upper * 2.0f);
+            / (lower * 2.0f);
     }
     initialized = 1;
 }
