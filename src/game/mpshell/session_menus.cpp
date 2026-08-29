@@ -16165,7 +16165,7 @@ void AARPersonalStats::OnActivate()
     else
         m_pTimerText[1]->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
     for (int i = 0; i < 7; ++i)
-        m_pClassIcon[i]->SetShown(true);
+        m_pClassIcon[i]->SetShown(false);
 }
 
 // ea: 0x007AB670
