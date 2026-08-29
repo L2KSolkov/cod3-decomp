@@ -145,15 +145,26 @@ def main() -> int:
             ida_size = ",".join(f"0x{value:X}" for value in ida_sizes)
         if ambiguous and status in {"SIZE_MISMATCH", "MISSING_ASSERT"}:
             status = "AMBIGUOUS_SOURCE_NAME"
+        note = ""
+        if name == "tlSystemCallbacks" and source["source"].endswith(
+                "src\\core\\tl_system.cpp"):
+            # IDA has a 0x20 local UDT with the first eight callbacks, while
+            # the release global copies 0x28 bytes and dispatches MemAlloc,
+            # MemRealloc, and MemFree at +0x1C..+0x24.  The source's ten-slot
+            # mirror is therefore retained and explicitly adjudicated rather
+            # than silently changed to the incomplete local type.
+            status = "ADJUDICATE"
+            note = "IDA local UDT is 0x20; release tlSetSystemCallbacks copies 0x28"
         output.append({
             **source,
             "ida_size": ida_size,
             "asserted_sizes": ",".join(f"0x{value:X}" for value in sorted(set(expected))),
             "status": status,
+            "note": note,
         })
 
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    fields = ["kind", "type", "source", "line", "ida_size", "asserted_sizes", "status"]
+    fields = ["kind", "type", "source", "line", "ida_size", "asserted_sizes", "status", "note"]
     with REPORT.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields, delimiter="\t", lineterminator="\n")
         writer.writeheader()
