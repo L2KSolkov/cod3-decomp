@@ -203,13 +203,39 @@ void MPPlayerManager::SendOthers(bdReference<bdMessage> message, bool reliable)
 {
     (void)message; (void)reliable;
 }
+// ea: 0x00730350
 unsigned int MPPlayerSet::lowestPlayerIndex() const
 {
-    return 0;
+    if (mBitPlayers == 0)
+    {
+        ASSERT("mBitPlayers", "c:\\cod\\code\\game\\mp/MPPlayerSet.cpp", 70);
+    }
+    unsigned int result = 0;
+    unsigned int bit = 1;
+    while ((bit & mBitPlayers) == 0)
+    {
+        bit <<= 1;
+        ++result;
+        if (result >= 16)
+            return result;
+    }
+    return result;
 }
+// ea: 0x007302D0
 unsigned int MPPlayerSet::highestPlayerIndex() const
 {
-    return 0;
+    if (mBitPlayers == 0)
+    {
+        ASSERT("mBitPlayers", "c:\\cod\\code\\game\\mp/MPPlayerSet.cpp", 51);
+    }
+    unsigned int test = 0x8000;
+    unsigned int result = 15;
+    while ((test & mBitPlayers) == 0)
+    {
+        test >>= 1;
+        --result;
+    }
+    return result;
 }
 // ============================================================================
 // MPLiveEngine
