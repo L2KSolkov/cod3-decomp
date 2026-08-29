@@ -174,7 +174,7 @@ cdWorldVertexLitShader.o	25	19	0	6	0	0	0
 cdl_base.o	2	0	0	0	0	2	0
 cdl_common.o	16	0	6	0	0	10	0
 cdl_gjk.o	10	0	0	0	0	10	0
-cg.o	405	6	0	142	1	256	0
+cg.o	405	6	0	141	1	257	0
 cl.o	341	9	0	260	0	72	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
@@ -183,9 +183,9 @@ core.o	1437	605	27	313	0	492	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	168	0	94	1	1207	0
-game.o	1158	458	11	674	0	15	0
-game2.o	1040	409	71	140	8	412	0
+g.o	1470	168	0	93	1	1208	0
+game.o	1158	458	11	668	0	21	0
+game2.o	1040	409	71	137	8	415	0
 game_xbox.o	365	151	93	110	0	11	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
@@ -288,12 +288,12 @@ rbc_def_custom.o	4	2	0	2	0	0	0
 rbc_def_generic.o	26	25	1	0	0	0	0
 rbc_def_ragdoll.o	38	33	4	1	0	0	0
 rbc_def_vehicle.o	46	41	4	1	0	0	0
-render.o	1038	675	2	326	0	35	0
+render.o	1038	675	2	307	0	54	0
 rigid_body.o	13	11	1	1	0	0	0
 scr.o	1540	489	0	22	0	1029	0
-shell.o	2214	836	27	952	0	399	0
+shell.o	2214	836	27	940	0	411	0
 streamer.o	730	373	84	271	0	2	0
-sv.o	148	29	2	116	0	1	0
+sv.o	148	29	2	114	0	3	0
 tl_initlist.o	1	0	0	0	0	1	0
 tl_instbank.o	9	0	0	0	0	9	0
 tl_system.o	25	0	0	0	0	25	0

@@ -1158,6 +1158,7 @@ AnimNoteHandler::NotifyInfo::NotifyInfo()
 // ea: 0x00518B60
 AnimNoteHandler::NotifyInfo::~NotifyInfo()
 {
+    name.~string();
 }
 
 // ea: 0x005188E0
