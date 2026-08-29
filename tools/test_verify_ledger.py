@@ -59,7 +59,8 @@ def main() -> int:
             source_root.write_text(
                 "COD3_STATIC_ASSERT_32BIT(sizeof(TestType) == 0x10, \"size\");\n"
                 "static_assert(\n    sizeof(TestTemplate<int>) == 8,\n"
-                "    \"size\");\n",
+                "    \"size\");\n"
+                "static_assert(sizeof(TestAlias) == sizeof(TestType), \"alias\");\n",
                 encoding="utf-8",
             )
             original_sources = ledger.source_files
@@ -73,6 +74,7 @@ def main() -> int:
                     for item in assertions] == [
                         ("sizeof", "TestType", "0x10"),
                         ("sizeof", "TestTemplate<int>", "8"),
+                        ("sizeof", "TestAlias", "sizeof(TestType)"),
                     ]
 
             # Conflicting declarations of an IDA global must remain visible

@@ -1084,10 +1084,12 @@ def type_assertions() -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     size_pattern = re.compile(
         r"(?:static_assert|COD3_STATIC_ASSERT_32BIT)\s*\(\s*sizeof\s*\(\s*"
-        r"([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+)", re.DOTALL)
+        r"([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+|"
+        r"sizeof\s*\(\s*[^()]+\s*\))", re.DOTALL)
     offset_pattern = re.compile(
         r"(?:static_assert|COD3_STATIC_ASSERT_32BIT)\s*\(\s*offsetof\s*\(\s*"
-        r"([^,]+?)\s*,\s*([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+)", re.DOTALL)
+        r"([^,]+?)\s*,\s*([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+|"
+        r"sizeof\s*\(\s*[^()]+\s*\))", re.DOTALL)
     for path in source_files():
         text = path.read_text(encoding="utf-8", errors="replace")
         source_name = str(path.relative_to(ROOT))
