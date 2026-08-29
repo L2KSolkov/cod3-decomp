@@ -5968,6 +5968,7 @@ public:
 class Camera {
 public:
     void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
+    void StartAnimating(float minTweenTime); // ?StartAnimating@Camera@@QAEXM@Z
     int IsAnimating() const;                 // 0x55FA40
     void StartTween(float tweenTime, bool anglesOnly);  // ?StartTween@Camera@@QAEXM_N@Z (cg_misc real)
 
@@ -29507,7 +29508,7 @@ int InteractState::Release(int buttonIndex)
 
 void InteractState_PostPhysicsUpdate(InteractState* self, float deltaT)
 {
-    (void)self; (void)deltaT;
+    self->PostPhysicsUpdate(deltaT);
 }
 
 // ea: 0x0053BFD0
@@ -31502,10 +31503,50 @@ InteractState* InteractState::Update(float deltaT)
     return result;
 }
 
-// ea: 0x00556EB0 (?PostPhysicsUpdate@InteractState@@UAEXM@Z; empty)
+// ea: 0x00556EB0 (?PostPhysicsUpdate@InteractState@@UAEXM@Z)
 void InteractState::PostPhysicsUpdate(float deltaT)
 {
-    (void)deltaT;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (info->lerpType != kLerpNone)
+    {
+        if ((mFlags & 0x50) == 0)
+        {
+            Entity* player = EntityManager::sInst->GetPlayer(currCl);
+            int weapon = *(int*)((char*)player->client + 0xA4);
+            InteractionController* controller = mController;
+            if ((mFlags & 1) != 0
+                || (controller->mLastStateWeaponIndex == weapon
+                    && (controller->mFlags & 4) != 0))
+            {
+                int interactWeaponIndex = controller->GetInteractWeaponIndex();
+                SetPlayerTagUtilityIndex(interactWeaponIndex);
+                if (info->lerpType == kLerpStaged
+                    || info->lerpType == kLerpStagedSnap)
+                    SetOtherTagUtilityIndex();
+                SetInitialLerpValues();
+                mFlags |= 0x10u;
+            }
+        }
+        if ((mFlags & 0x10) != 0)
+        {
+            UpdateAlignment(deltaT);
+        }
+        else if ((mController->mFlags & 4) != 0)
+        {
+            mController->mHandsAngles[0] = mController->mLastHandsAngles[0];
+            mController->mHandsAngles[1] = mController->mLastHandsAngles[1];
+            mController->mHandsAngles[2] = mController->mLastHandsAngles[2];
+            mController->mHandsOrigin[0] = mController->mLastHandsOrigin[0];
+            mController->mHandsOrigin[1] = mController->mLastHandsOrigin[1];
+            mController->mHandsOrigin[2] = mController->mLastHandsOrigin[2];
+            mController->mFlags |= 1u;
+        }
+    }
+    if (info->useCameraTag != 0
+        && (mFlags & 1) != 0
+        && (*(unsigned char*)((char*)&gCamera[currCl] + 0x140) & 1) == 0)
+        gCamera[currCl].StartAnimating(0.1f);
+    CheckForEffectEvents(deltaT, 0);
 }
 
 extern cvar_t* com_timescale;  // ?com_timescale@@3PAUcvar_t@@A (cl.o)
