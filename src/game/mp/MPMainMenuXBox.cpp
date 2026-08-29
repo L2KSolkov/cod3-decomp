@@ -516,7 +516,7 @@ void MPMainMenuXBox::OnUp(int c)
 }
 
 // ea: 0x778C10
-void MPMainMenuXBox::UpdateWidescreen(BOOL widescreen)
+void MPMainMenuXBox::UpdateWidescreen(bool widescreen)
 {
     if (mWidescreen != (widescreen != FALSE))
     {

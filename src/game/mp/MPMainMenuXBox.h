@@ -46,24 +46,31 @@ public:
     MPMainMenuXBox(FEMenuSystem* s);
     ~MPMainMenuXBox();
     static MPMainMenuXBox* Me();
+
+    // These handlers are dispatched by the menu vtable or release callbacks;
+    // preserve the release access class in their decorated symbols.
     void Draw();
+    virtual void OnTriangle(int c);
+    virtual void OnDown(int c);
+    virtual void OnUp(int c);
+    virtual void OnCross(int c);
+    virtual void OnActivate();
+    virtual void Update(float time_inc);
+    virtual void SetPanelFile(PanelFile* pf);
+
+protected:
     void OnXBoxLive(int c);
     void OnSplitScreen();
     void OnSystemLinkXBox();
     void OnXboxLiveOptions();
-    void OnOption(int c);
-    void OnTriangle(int c);
-    void OnDown(int c);
-    void OnUp(int c);
-    void UpdateWidescreen(BOOL widescreen);
+    void UpdateWidescreen(bool widescreen);
     void OnLive(int c);
     void OnSystemLink();
-    void OnCross(int c);
-    void SetPanelFile(PanelFile* pf);
     void SetOptionText();
     void SetImage();
-    void OnActivate();
-    void Update(float time_inc);
+
+public:
+    void OnOption(int c);
 };
 static_assert(sizeof(MPMainMenuXBox) == 0x160, "MPMainMenuXBox size mismatch");
 
