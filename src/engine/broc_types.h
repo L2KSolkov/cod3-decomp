@@ -559,6 +559,18 @@ struct collResult {
     Broc::vector mNormal;  // +0x14
     Broc::string mSurfaceType;  // +0x20
 };
+COD3_STATIC_ASSERT_32BIT(sizeof(collResult) == 0x24,
+                         "Broc::collResult size mismatch");
+COD3_STATIC_ASSERT_32BIT(offsetof(collResult, mFraction) == 0x00,
+                         "Broc::collResult mFraction offset mismatch");
+COD3_STATIC_ASSERT_32BIT(offsetof(collResult, mPosition) == 0x04,
+                         "Broc::collResult mPosition offset mismatch");
+COD3_STATIC_ASSERT_32BIT(offsetof(collResult, mEnt) == 0x10,
+                         "Broc::collResult mEnt offset mismatch");
+COD3_STATIC_ASSERT_32BIT(offsetof(collResult, mNormal) == 0x14,
+                         "Broc::collResult mNormal offset mismatch");
+COD3_STATIC_ASSERT_32BIT(offsetof(collResult, mSurfaceType) == 0x20,
+                         "Broc::collResult mSurfaceType offset mismatch");
 
 // ============================================================================
 // Broc utility functions
