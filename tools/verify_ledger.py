@@ -172,6 +172,11 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
     text = ""
     for index in range(start, min(len(lines), start + 32)):
         piece = lines[index].strip()
+        # Do not let a multi-entry EA inventory banner consume the first
+        # implementation after the banner.  Each annotation must resolve
+        # against the definition before the next annotation begins.
+        if index > start and re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", piece):
+            return None
         # A marker may trail the actual definition.  Keep code before the
         # marker, while treating a comment-only marker as a normal lead-in.
         if "//" in piece:
@@ -369,6 +374,20 @@ def scan_markers() -> list[Marker]:
             match = pattern.search(line)
             if not match:
                 continue
+            # A declaration-only annotation (for example ``virtual ~T();
+            # // ea: ...``) is inventory metadata, not an implementation
+            # marker.  The corresponding definition is scanned separately;
+            # retaining both creates a false duplicate-marker anomaly.
+            code_before_comment = line.split("//", 1)[0]
+            if ";" in code_before_comment and "{" not in code_before_comment:
+                continue
+            if (number + 1 < len(lines)
+                    and re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", lines[number + 1])
+                    and "{" not in code_before_comment):
+                # A descriptive alias/range line immediately followed by a
+                # canonical EA annotation is metadata for the next marker,
+                # not a second claim on that definition.
+                continue
             comment = line.split("//", 1)[1]
             marker_prefix = comment[:comment.find("ea:")]
             # Header inventories often list several addresses as prose
@@ -385,6 +404,8 @@ def scan_markers() -> list[Marker]:
                 hint = marker_hint(line)
                 if not hint:
                     for previous in reversed(lines[max(0, number - 3):number]):
+                        if not previous.strip().startswith("//"):
+                            continue
                         hint = marker_hint(previous)
                         if hint:
                             break
