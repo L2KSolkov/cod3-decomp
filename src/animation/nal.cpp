@@ -21,6 +21,7 @@
 
 class Entity;
 class SceneAnimClient;
+struct XAnimNotifyInfo;
 enum TPakId : int;
 extern void tlPrintf(const char* fmt, ...);
 
@@ -35,11 +36,15 @@ bool tlIsStackPtr(void* ptr)
 
 // tagInfo_t - entity tag-axis info (axis[4][3] @ +0x10, next @ +0x04)
 struct tagInfo_t {
-    void* mPrev;              // +0x00
-    void* next;               // +0x04 (Entity*)
-    unsigned char _pad[0x10 - 0x08];
-    float axis[4][3];         // +0x10
+    Entity* parent;            // +0x00
+    Entity* next;              // +0x04
+    struct { unsigned int mHash; } name; // +0x08 (HashString ABI view)
+    int16_t index;             // +0x0C
+    int16_t useAngles;         // +0x0E
+    float axis[4][3];          // +0x10
+    float parentInvAxis[4][3]; // +0x40
 };
+static_assert(sizeof(tagInfo_t) == 0x70, "tagInfo_t size mismatch");
 
 // IVPointer<T> local (mValue +0 / mPakId +4); `class` tag to match the
 // binary's V-mangled IVPointer<XModel>.
@@ -25674,16 +25679,19 @@ public:
     tlFixedString mName;         // +0x08
     unsigned int mFlags;         // +0x28
     struct { unsigned int mVal; } mEntity;  // +0x2C
-    void* mNotify;               // +0x30
-    struct { unsigned int mHash; } mTagInfo;  // +0x34
+    XAnimNotifyInfo* mNotify;    // +0x30
+    unsigned int mBlendNotify;   // +0x34
+    tagInfo_t mTagInfo;          // +0x38
     nalGeneric::nalGenericComponentHandle<nalPositionOrientation>
-        mTrajectoryHandle;       // +0x38
+        mTrajectoryHandle;       // +0xA8
     nalGeneric::nalGenericComponentHandle<math::Dir3>
-        mPelvisHandle;           // +0x48
-    float mBlendInTime;          // +0x58
-    void* mBlender;              // +0x5C
-    float mBlendOutTime;         // +0x60
+        mPelvisHandle;           // +0xB8
+    nalGeneric::nalGenericPoseBlender* mBlender; // +0xC8
+    float mBlendInTime;          // +0xCC
+    float mBlendOutTime;         // +0xD0
 };
+static_assert(sizeof(SceneAnimClient) == 0xD4,
+              "SceneAnimClient size mismatch");
 
 // ea: 0x00561630
 SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
@@ -25695,7 +25703,7 @@ SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
     mFlags = 0;
     mEntity.mVal = 0;
     mNotify = nullptr;
-    mTagInfo.mHash = 0;
+    mTagInfo.name.mHash = 0;
     mTrajectoryHandle.Skeleton = nullptr;
     mPelvisHandle.Skeleton = nullptr;
     mBlendInTime = blendIn;
@@ -25752,7 +25760,7 @@ SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
                 void* v12 = mem_heap_malloc(0xC);
                 if (v12 != nullptr)
                 {
-                    void* v13 =
+                    nalGenericPoseBlender* v13 =
                         new (v12) nalGenericPoseBlender(skel);
                     mBlender = v13;
                 }
