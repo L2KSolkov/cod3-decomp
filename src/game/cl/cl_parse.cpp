@@ -8,6 +8,7 @@
 #include "game/game_types.h"
 
 #include <string.h>
+#include <stdlib.h>
 #include <intrin.h>
 
 class nglFont;
@@ -109,7 +110,6 @@ extern struct cvar_t* cl_nodelta;
 extern struct cvar_t* cl_debugMove;
 extern int com_time;
 extern int Sys_Milliseconds();
-extern "C" int atoi(const char* nptr);
 extern void Cvar_SetCheatState();
 extern void nullsub_16(const char* pakSums, const char* pakNames);
 extern void nullsub_34(const char* pakSums, const char* pakNames);
