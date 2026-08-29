@@ -16008,7 +16008,7 @@ void AARGameModeVote::PanelFileUnloaded(PanelFile* pPanelFile)
             && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    Cleanup();
+    panel = nullptr;
     m_ListBox.RemoveAllItems();
 }
 
