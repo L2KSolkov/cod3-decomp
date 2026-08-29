@@ -1438,7 +1438,7 @@ public:
     static bool DialogResponseSaveSuccess();   // ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NXZ (mp.o 0x734290)
     static bool DialogResponseDeleteSuccess(); // ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NXZ (mp.o 0x7342B0)
     static bool DialogResponseDeleteConfirm(); // ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NXZ (mp.o 0x74EFD0)
-    static bool DialogResponseDelete(int index);        // ?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z (mp.o 0x75A9E0)
+    static bool DialogResponseDelete();        // ?DialogResponseDelete@MPProfileMainMenu@@SA_NXZ (mp.o 0x75A9E0)
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPProfileMainMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x733B60)
     static const char* const kProfileTextGeoms[6];  // @ 0xD196A4 (6 entries)
     static void LoadProfileData();   // ?LoadProfileData@MPProfileMainMenu@@SAXXZ (mp.o 0x733AF0)

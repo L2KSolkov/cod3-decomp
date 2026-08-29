@@ -14416,8 +14416,8 @@ void MPProfileMainMenu::DialogDisplayProfileSelected()
         "FEMENU_PROFILE_EDIT", (bool (*)(int))DialogResponseProfileEdit);
     DialogMenuSystem* v5 = g_femanager.GetDMS(currCl);
     int v6 = v5->GetActiveMenu();
-    v5->GetLayer(v6 == 0)->AddOption("FEMENU_PROFILE_DELETE",
-                                     DialogResponseDelete);
+    v5->GetLayer(v6 == 0)->AddOption(
+        "FEMENU_PROFILE_DELETE", (bool (*)(int))DialogResponseDelete);
     DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
     v8->HighlightOption(0);
     DialogMenuSystem* v9 = g_femanager.GetDMS(currCl);
@@ -14555,9 +14555,8 @@ void MPPlayer::AnimEventSpecial(int animEvent)
 }
 
 // ea: 0x0075A9E0
-bool MPProfileMainMenu::DialogResponseDelete(int index)
+bool MPProfileMainMenu::DialogResponseDelete()
 {
-    (void)index;
     DialogMenuSystem* DMS = g_femanager.GetDMS(currCl);
     DMS->BringUp("FEMENU_PROFILE_DELETE_TITLE", false, false,
                  defaultFileName, true);
