@@ -669,6 +669,24 @@ def symbol_variants(name: str) -> set[str]:
         # does not change the x86 call contract.
         "?ResetOverlapped@XBoxStorage@@CAXXZ":
             "?ResetOverlapped@XBoxStorage@@SAXXZ",
+        # ShaderCommon release map entries use decompiler-era return and
+        # pointer/reference spellings.  The current object symbols preserve
+        # the release call contracts while exposing the actual aggregate
+        # return/pointer types used by the port.
+        "?GlowRender@ShaderCommon@@YAXXZ":
+            "?GlowRender@ShaderCommon@@YAPAUnglScene@@XZ",
+        "?StartShotPerfTest@ShaderCommon@@YAPAXXZ":
+            "?StartShotPerfTest@ShaderCommon@@YAPAUShotPerfTest@1@XZ",
+        "?UpdateShotPerfTest@ShaderCommon@@YA_NPAXM@Z":
+            "?UpdateShotPerfTest@ShaderCommon@@YA_NPAUShotPerfTest@1@M@Z",
+        "?GetShotPerfResults@ShaderCommon@@YAXPAXAAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z":
+            "?GetShotPerfResults@ShaderCommon@@YAXPAUShotPerfTest@1@PAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z",
+        "?ShaderGetTexture@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z":
+            "?ShaderGetTexture@ShaderCommon@@YAPAUnglTexture@@PBVtlFixedString@@@Z",
+        "?ShaderGetTextureNoDefault@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z":
+            "?ShaderGetTextureNoDefault@ShaderCommon@@YAPAUnglTexture@@PBVtlFixedString@@@Z",
+        "?GetFarFogColor@ShaderCommon@@YA?AVVector4@math@@XZ":
+            "?GetFarFogColor@ShaderCommon@@YAPAVVector4@math@@PAV23@@Z",
         "?DObjAllocateSubModelPose@?A0x7516322e@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z":
             "?DObjAllocateSubModelPose@?A0x49388f53@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z",
         "?CG_SaveEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":

@@ -351,6 +351,7 @@ void FinishShotPerfTest(void* perfTestBuff) {
     mem_heap_free(perfTestBuff);
 }
 
+// ea: 0x7BF6B0
 ShotPerfTest* StartShotPerfTest() {
     ShotPerfTest* v0 = (ShotPerfTest*)mem_heap_malloc(0x5D0u);
     if (v0 != NULL)
@@ -358,11 +359,13 @@ ShotPerfTest* StartShotPerfTest() {
     return NULL;
 }
 
+// ea: 0x7BF820
 bool UpdateShotPerfTest(ShotPerfTest* perfTestBuff, float deltaT) {
     perfTestBuff->Update(deltaT);
     return perfTestBuff->mFinished;
 }
 
+// ea: 0x7BF840
 void GetShotPerfResults(
     ShotPerfTest* perfTestBuff,
     ae_sized_array<ae_fixed_string<512, unsigned short>, 64>* results) {
@@ -438,6 +441,7 @@ nglTexture* ShaderGetTexture(const tlFixedString* name) {
     return result;
 }
 
+// ea: 0x7BF5A0
 nglTexture* ShaderGetTextureNoDefault(const tlFixedString* name) {
     nglTexture* result;
     if (name->hash != 0)
@@ -461,10 +465,12 @@ math::Vector4* GetFarFogColor(math::Vector4* result) {
 // ============================================================================
 // Glow / HeatHaze - ea: 0x7BF630..0x7BF6A0
 // ============================================================================
+// ea: 0x7BF630
 void GlowInit() {
     SetupCDGlowShader();
 }
 
+// ea: 0x7BF640
 nglScene* GlowRender() {
     nglSortInfo SortInfo;
     SortInfo.Type = nglSortInfo::NGLSORT_TRANSLUCENT;
@@ -478,10 +484,12 @@ nglScene* GlowRender() {
     return nullptr;
 }
 
+// ea: 0x7BF690
 void HeatHazeInit() {
     SetupCDHeatHazeShader();
 }
 
+// ea: 0x7BF6A0
 void HeatHazeCallback(void* Data) {
     (void)Data;
     RenderCDHeatHazeShader();
