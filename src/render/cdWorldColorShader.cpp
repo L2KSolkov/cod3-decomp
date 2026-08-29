@@ -22,6 +22,7 @@ tlFixedString cdWorldColorShader::GetName() { return tlFixedString("cdWorldColor
 // cdWorldColorShader::Register — ea: 0x7D9E30 (empty)
 // ============================================================================
 void cdWorldColorShader::Register() {
+    nglShader::Register();
 }
 
 // ============================================================================

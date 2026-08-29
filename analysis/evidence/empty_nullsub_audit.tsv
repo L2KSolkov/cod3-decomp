@@ -289,6 +289,100 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x006C2EB0	?apsCreateDefaultPools@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x006C2EB0	Release decompilation is an empty body; source matches exactly.
 0x006C31E0	?apsDebugRender@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/render/tr_fx2.cpp:175	APS debug-render hook is intentionally empty in this release.
 0x006C31E0	?apsDebugRender@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x006C31E0	Release decompilation is an empty body; source matches exactly.
+0x006F45F0	?debug_render@biped_system@@QAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/physics/g_physics.cpp:11763	Biped debug-render hook is intentionally empty in this release.
+0x006F45F0	?debug_render@biped_system@@QAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x006F45F0	Release decompilation is an empty body; source matches exactly.
+0x0071ABE0	??0?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/game/physics/g_physics.cpp:8433	Source constructor initializes m_tree_root to null.
+0x0071ABE0	??0?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@QAE@XZ	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0071ABE0	Release stores null to m_tree_root, matching source exactly.
+0x0071F520	?Sys_InitStreamThread@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/platform_xbox/GameXbox.cpp:356	Stream-thread initialization hook is intentionally empty in this release.
+0x0071F520	?Sys_InitStreamThread@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0071F520	Release decompilation is an empty body; source matches exactly.
+0x0071F530	?Sys_ShutdownStreamThread@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/platform_xbox/GameXbox.cpp:361	Stream-thread shutdown hook is intentionally empty in this release.
+0x0071F530	?Sys_ShutdownStreamThread@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0071F530	Release decompilation is an empty body; source matches exactly.
+0x0071F6C0	?Sys_LoadingKeepAlive@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/platform_xbox/GameXbox.cpp:465	Loading keep-alive hook is intentionally empty in this release.
+0x0071F6C0	?Sys_LoadingKeepAlive@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0071F6C0	Release decompilation is an empty body; source matches exactly.
+0x00721DB0	?Init@XboxLiveOptionsMenu@@UAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/platform_xbox/XboxLiveMenus.cpp:279	Xbox Live options initialization hook is intentionally empty in this release.
+0x00721DB0	?Init@XboxLiveOptionsMenu@@UAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00721DB0	Release decompilation is an empty body; source matches exactly.
+0x00721F50	?ButtonHeldAction@XboxLiveOptionsMenu@@MAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/platform_xbox/XboxLiveMenus.cpp:378	Xbox Live button-held hook is intentionally empty in this release.
+0x00721F50	?ButtonHeldAction@XboxLiveOptionsMenu@@MAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00721F50	Release decompilation is an empty body; source matches exactly.
+0x00778AE0	?OnSplitScreen@MPMainMenuXBox@@IAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/mp/MPMainMenuXBox.cpp:439	MP main-menu split-screen hook is intentionally empty in this release.
+0x00778AE0	?OnSplitScreen@MPMainMenuXBox@@IAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00778AE0	Release decompilation is an empty body; source matches exactly.
+0x00778C50	?Init@XBoxLiveIngameOptionsCOD3@@UAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/mp/MPMainMenuXBox.cpp:750	In-game Xbox Live options initialization hook is intentionally empty.
+0x00778C50	?Init@XBoxLiveIngameOptionsCOD3@@UAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00778C50	Release decompilation is an empty body; source matches exactly.
+0x00778F20	?ButtonHeldAction@XBoxLiveIngameOptionsCOD3@@MAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/mp/MPMainMenuXBox.cpp:901	In-game Xbox Live button-held hook is intentionally empty.
+0x00778F20	?ButtonHeldAction@XBoxLiveIngameOptionsCOD3@@MAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00778F20	Release decompilation is an empty body; source matches exactly.
+0x0077E020	?Sentient_ReadGlob@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/mpactors/sentient.cpp:926	Sentient global-read hook is intentionally empty in the MP release.
+0x0077E020	?Sentient_ReadGlob@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0077E020	Release decompilation is an empty body; source matches exactly.
+0x007930D0	?SetPanelFile@FESplitScreenMenu@@UAEXPAVPanelFile@@@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/game/shell/options.cpp:210	Base split-screen panel setter intentionally ignores the panel in this release.
+0x007930D0	?SetPanelFile@FESplitScreenMenu@@UAEXPAVPanelFile@@@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007930D0	Release decompilation is an empty body; source matches exactly.
+0x007BE4F0	?PumpXenonUI@AeAssert@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/core/ae_assert.cpp:186	Xenon assert UI hook is intentionally empty on the Win32 port.
+0x007BE4F0	?PumpXenonUI@AeAssert@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007BE4F0	Release decompilation is an empty body; source matches exactly.
+0x007C9380	?ToggleCDWheelMarkShader@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/render/cdWheelMarkShader.cpp:194	Wheel-mark shader toggle is intentionally empty in the release.
+0x007C9380	?ToggleCDWheelMarkShader@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007C9380	Release decompilation is an empty body; source matches exactly.
+0x007CF470	?InitCDHeatHazeShader@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/render/cdHeatHazeShader.cpp:39	Heat-haze shader initialization is intentionally empty in the release.
+0x007CF470	?InitCDHeatHazeShader@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007CF470	Release decompilation is an empty body; source matches exactly.
+0x007D9E30	?Register@cdWorldColorShader@@UAEXXZ	V3	PASS	release-thunk-audit-20260828	2026-08-28	src/render/cdWorldColorShader.cpp:22	Source Register now delegates to the nglShader base registration routine.
+0x007D9E30	?Register@cdWorldColorShader@@UAEXXZ	V4	PASS	release-thunk-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007D9E30	Release thunk calls nglShader::Register(this); source now matches exactly.
+0x007ECD80	?Save@BlockManager@apsMemory@@QAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/aeps/apsMemory.cpp:555	BlockManager save hook is intentionally empty in this release.
+0x007ECD80	?Save@BlockManager@apsMemory@@QAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007ECD80	Release decompilation is an empty body; source matches exactly.
+0x007ECD90	?Restore@BlockManager@apsMemory@@QAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/aeps/apsMemory.cpp:559	BlockManager restore hook is intentionally empty in this release.
+0x007ECD90	?Restore@BlockManager@apsMemory@@QAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007ECD90	Release decompilation is an empty body; source matches exactly.
+0x007F3710	?SetScreenFacingNormal@apsSimpleMeshRenderer@@UAEXABVDir3@math@@@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/aeps/apsSimpleMeshRenderer.cpp:119	Simple-mesh screen-facing normal hook intentionally ignores its argument.
+0x007F3710	?SetScreenFacingNormal@apsSimpleMeshRenderer@@UAEXABVDir3@math@@@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007F3710	Release decompilation is an empty body; source matches exactly.
+0x007F3850	?SetScreenFacingNormal@apsShrimpRenderer@@UAEXABVDir3@math@@@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/aeps/apsShrimpRenderer.cpp:98	Shrimp-renderer screen-facing normal hook intentionally ignores its argument.
+0x007F3850	?SetScreenFacingNormal@apsShrimpRenderer@@UAEXABVDir3@math@@@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007F3850	Release decompilation is an empty body; source matches exactly.
+0x007FF2D0	??1apsGroup@@QAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/aeps/apsGroup.cpp:99	apsGroup owns no explicit teardown state in this release.
+0x007FF2D0	??1apsGroup@@QAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x007FF2D0	Release decompilation is an empty destructor body; source matches exactly.
+0x00821900	?nslDebugDraw@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/sound/nsl.cpp:1306	NSL debug-draw hook is intentionally empty in this release.
+0x00821900	?nslDebugDraw@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00821900	Release decompilation is an empty body; source matches exactly.
+0x00825010	?nslDriverExit@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/sound/nsl.cpp:4511	NSL driver-exit hook is intentionally empty in this release.
+0x00825010	?nslDriverExit@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00825010	Release decompilation is an empty body; source matches exactly.
+0x0082A4E0	??0nflRequestParams@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/filesystem/nfl.cpp:307	Source constructor initializes every request field to the release defaults.
+0x0082A4E0	??0nflRequestParams@@QAE@XZ	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0082A4E0	Release writes fileID, streamID, callback, type, priority, offset, buffer, sizes, timeout, and userData exactly as source.
+0x0082A770	??0nflStreamParams@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/filesystem/nfl.cpp:314	Source constructor initializes streamPriority to the release default.
+0x0082A770	??0nflStreamParams@@QAE@XZ	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0082A770	Release writes streamPriority = NFL_PRIORITY_NORMAL, matching source.
+0x0082CE40	_txInit	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/filesystem/nfl.cpp:2172	Transaction initialization hook is intentionally empty in this release.
+0x0082CE40	_txInit	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x0082CE40	Release decompilation is an empty body; source matches exactly.
+0x00834E50	?jqDestroyMutex@@YAXH@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/threading/jobqueue.cpp:86	Win32 jobqueue mutex-destroy shim is intentionally empty in this release.
+0x00834E50	?jqDestroyMutex@@YAXH@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00834E50	Release decompilation is an empty body; source matches exactly.
+0x00834E60	?jqLockMutex@@YAXH@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/threading/jobqueue.cpp:89	Win32 jobqueue mutex-lock shim is intentionally empty in this release.
+0x00834E60	?jqLockMutex@@YAXH@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00834E60	Release decompilation is an empty body; source matches exactly.
+0x00834E70	?jqUnlockMutex@@YAXH@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/threading/jobqueue.cpp:92	Win32 jobqueue mutex-unlock shim is intentionally empty in this release.
+0x00834E70	?jqUnlockMutex@@YAXH@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00834E70	Release decompilation is an empty body; source matches exactly.
+0x00834EF0	?jqLockBatchPool@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/threading/jobqueue.cpp:196	Batch-pool lock shim is intentionally empty in this release.
+0x00834EF0	?jqLockBatchPool@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00834EF0	Release decompilation is an empty body; source matches exactly.
+0x00835410	??0?$jqPtr@UjqBatch@@@@QAE@PAUjqBatch@@@Z	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/threading/jobqueue.cpp:100	Source jqPtr constructor stores the supplied batch pointer in Value.
+0x00835410	??0?$jqPtr@UjqBatch@@@@QAE@PAUjqBatch@@@Z	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00835410	Release stores the constructor argument in Value, matching source exactly.
+0x00835470	?jqValidate@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/threading/jobqueue.cpp:180	Jobqueue validation hook is intentionally empty in this release.
+0x00835470	?jqValidate@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00835470	Release decompilation is an empty body; source matches exactly.
+0x008354D0	?jqFlush@@YAXH@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/threading/jobqueue.cpp:252	Jobqueue flush hook is intentionally empty in this release.
+0x008354D0	?jqFlush@@YAXH@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x008354D0	Release decompilation is an empty body; source matches exactly.
+0x00836150	?GetDesc@nglDebugLineNode@@UAEXPAD@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_debug.cpp:454	Debug-line description hook is intentionally empty in this release.
+0x00836150	?GetDesc@nglDebugLineNode@@UAEXPAD@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00836150	Release decompilation is an empty body; source matches exactly.
+0x00840150	?nglDxInitOcclusionQuery@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_core.cpp:520	Occlusion-query initialization hook is intentionally empty in this release.
+0x00840150	?nglDxInitOcclusionQuery@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00840150	Release decompilation is an empty body; source matches exactly.
+0x008404E0	?ngliExit@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_core.cpp:658	NGL internal exit hook is intentionally empty in this release.
+0x008404E0	?ngliExit@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x008404E0	Release decompilation is an empty body; source matches exactly.
+0x00841A50	?ngliLockSceneTextures@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_texture.cpp:121	Scene-texture lock hook is intentionally empty in this release.
+0x00841A50	?ngliLockSceneTextures@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00841A50	Release decompilation is an empty body; source matches exactly.
+0x00842280	?nglProcessTexture@@YAXPAUnglTexture@@@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_texture.cpp:71	Texture-processing hook intentionally ignores the texture in this release.
+0x00842280	?nglProcessTexture@@YAXPAUnglTexture@@@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00842280	Release decompilation is an empty body; source matches exactly.
+0x00849280	?AllocFiltersTex@nglDxFilters@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_filters.cpp:141	Filter-texture allocation hook is intentionally empty in this release.
+0x00849280	?AllocFiltersTex@nglDxFilters@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00849280	Release decompilation is an empty body; source matches exactly.
+0x008492A0	?nglSetFiltersTexSizes@@YAXII@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_filters.cpp:150	Filter-texture size hook intentionally ignores both dimensions in this release.
+0x008492A0	?nglSetFiltersTexSizes@@YAXII@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x008492A0	Release decompilation is an empty body; source matches exactly.
+0x00849600	?nglPostProcessFiltersTex@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_filters.cpp:201	Filter post-processing hook is intentionally empty in this release.
+0x00849600	?nglPostProcessFiltersTex@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00849600	Release decompilation is an empty body; source matches exactly.
+0x008517F0	?gpuEnableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_gpu_debug.h:99	GPU vertex-attribute enable hook is intentionally empty in this release.
+0x008517F0	?gpuEnableVertexAttributes@@YAXKPAUgpuVertexFormat@@@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x008517F0	Release decompilation is an empty body; source matches exactly.
+0x00851E50	?ngliCalculateMatrices@@YAXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_scene.cpp:257	Internal matrix-calculation hook is intentionally empty in this release.
+0x00851E50	?ngliCalculateMatrices@@YAXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00851E50	Release decompilation is an empty body; source matches exactly.
+0x00853340	?Unlock@nglPalette@@QAEXXZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_xb_palette.cpp:123	Palette unlock hook is intentionally empty in this release.
+0x00853340	?Unlock@nglPalette@@QAEXXZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00853340	Release decompilation is an empty body; source matches exactly.
+0x00853420	?Apply@nglMorphFrame@@MBEXPAUnglMeshSection@@HMI@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_morph.cpp:44	Morph-frame apply hook is intentionally empty in this release.
+0x00853420	?Apply@nglMorphFrame@@MBEXPAUnglMeshSection@@HMI@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00853420	Release decompilation is an empty body; source matches exactly.
+0x00853430	?Apply@nglMeshMorph@@MBEXPAUnglMeshSection@@HMI@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_morph.cpp:52	Mesh-morph apply hook is intentionally empty in this release.
+0x00853430	?Apply@nglMeshMorph@@MBEXPAUnglMeshSection@@HMI@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00853430	Release decompilation is an empty body; source matches exactly.
+0x00854050	?ngliReleaseSection@@YAXPAUnglMeshSection@@@Z	V3	PASS	release-nullsub-audit-20260828	2026-08-28	src/ngl/ngl_dx_mesh.cpp:92	Internal section-release hook is intentionally empty in this release.
+0x00854050	?ngliReleaseSection@@YAXPAUnglMeshSection@@@Z	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:IDA@0x00854050	Release decompilation is an empty body; source matches exactly.
 0x0089E650	??0bdStopwatch@@QAE@ABV0@@Z	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/bd/bdStopwatch.cpp:17	Source initializer list copies m_start and m_stop; the empty body is complete.
 0x0089E650	??0bdStopwatch@@QAE@ABV0@@Z	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1668882	Release copies the complete bdStopwatch object, matching source.
 0x0089E700	??0bdStopwatch@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/bd/bdStopwatch.cpp:10	Source initializer list clears m_start and m_stop; the empty body is complete.
