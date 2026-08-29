@@ -32,9 +32,13 @@ public:
     const PakInfoNode* GetPakInfo(TPakId pakId) const;
 };  // ?sInst@PakManager@@2PAV1@A
 
-// Full view of PakInfoNode for GetPakInfo() results (core_systems.h fwd).
+// Leading view of PakInfoNode for GetPakInfo() results (core_systems.h fwd).
+// The release layout starts with EPakType at +0x00, then an InplaceString
+// longName at +0x04.  Keeping that prefix exact is required because this TU
+// receives the full streamer-owned object through an opaque pointer.
 struct PakInfoNode {
-    Broc::string longName;  // +0x00
+    EPakType pakType;       // +0x00
+    InplaceString longName; // +0x04
 };
 
 namespace AeAssert {
@@ -5193,7 +5197,7 @@ int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
     int count = -1;
     char buf[256];
         const char* longName =
-        PakManager::sInst->GetPakInfo(CurPakId())->longName.c_str();
+        PakManager::sInst->GetPakInfo(CurPakId())->longName.mStr;
     strcpy(buf, longName);
     strcat(buf, ".fx");
     ae_sized_array<const DbTable*, 16> event_tables;
