@@ -128,7 +128,7 @@ void FinishShotPerfTest(void* perfTestBuff);
 void InitShaders();
 void RegisterShaders();
 void SetupFrame(float iDelta);
-void SetupSceneCallback();
+void SetupSceneCallback(void* Data);
 nglTexture* ShaderGetTexture(const tlFixedString* name);
 nglTexture* ShaderGetTextureNoDefault(const tlFixedString* name);
 math::Vector4* GetFarFogColor(math::Vector4* result);

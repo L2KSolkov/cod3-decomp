@@ -649,6 +649,26 @@ def symbol_variants(name: str) -> set[str]:
             "?End@CG_SceneBlur@@SAXXZ",
         "?AddPostCallback@CG_SceneBlur@@YAXXZ":
             "?AddPostCallback@CG_SceneBlur@@SAXXZ",
+        # The release map decorates ShaderCommon's toggle helpers as void
+        # (`YAX`), while the release disassembly returns the toggled byte and
+        # the current compiler emits the corresponding char decoration (`YAD`).
+        # The x86 call contract and body are identical; retain the char result
+        # because callers use it when updating ShaderSwitching.
+        "?ToggleParticles@ShaderCommon@@YAXXZ":
+            "?ToggleParticles@ShaderCommon@@YADXZ",
+        "?ToggleFog@ShaderCommon@@YAXXZ":
+            "?ToggleFog@ShaderCommon@@YADXZ",
+        # IDA's global toggle helpers have the same map-vs-object return
+        # decoration mismatch without a ShaderCommon namespace qualifier.
+        "?ToggleParticles@@YAXXZ":
+            "?ToggleParticles@ShaderCommon@@YADXZ",
+        "?ToggleFog@@YAXXZ":
+            "?ToggleFog@ShaderCommon@@YADXZ",
+        # XBoxStorage::ResetOverlapped is private/static in the release map
+        # (`CAX`) and public/static in the port's header (`SAX`); access level
+        # does not change the x86 call contract.
+        "?ResetOverlapped@XBoxStorage@@CAXXZ":
+            "?ResetOverlapped@XBoxStorage@@SAXXZ",
         "?DObjAllocateSubModelPose@?A0x7516322e@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z":
             "?DObjAllocateSubModelPose@?A0x49388f53@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z",
         "?CG_SaveEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":

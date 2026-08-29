@@ -309,6 +309,7 @@ void ShotPerfTest::GenerateReport(
 // ============================================================================
 // ToggleParticles / ToggleFog - ea: 0x7BF3D0 / 0x7BF3F0
 // ============================================================================
+// ea: 0x7BF3D0
 char ToggleParticles() {
     char result = (char)((ShaderSwitching.as_u32 ^ ~ShaderSwitching.as_u32) & 1u ^
                          ShaderSwitching.as_u32);
@@ -316,6 +317,7 @@ char ToggleParticles() {
     return result;
 }
 
+// ea: 0x7BF3F0
 char ToggleFog() {
     char result = (char)((ShaderSwitching.as_u32 ^ (2 * ~(ShaderSwitching.as_u32 >> 1))) & 2u ^
                          ShaderSwitching.as_u32);
@@ -326,14 +328,17 @@ char ToggleFog() {
 // ============================================================================
 // Debug render mode / texture mip level - ea: 0x7BF410..0x7BF430
 // ============================================================================
+// ea: 0x7BF410
 void SetDebugRenderMode(EDebugRenderMode iMode) {
     sDebugRenderMode = (int)iMode;
 }
 
+// ea: 0x7BF420
 EDebugRenderMode GetDebugRenderMode() {
     return (EDebugRenderMode)sDebugRenderMode;
 }
 
+// ea: 0x7BF430
 void SetTextureSizeMipLevel(int Level) {
     gTextureSizeMipLevel = Level;
 }
@@ -341,6 +346,7 @@ void SetTextureSizeMipLevel(int Level) {
 // ============================================================================
 // Perf test helpers - ea: 0x7BF440 / 0x7BF6B0 / 0x7BF820 / 0x7BF840
 // ============================================================================
+// ea: 0x7BF440
 void FinishShotPerfTest(void* perfTestBuff) {
     mem_heap_free(perfTestBuff);
 }
@@ -366,6 +372,7 @@ void GetShotPerfResults(
 // ============================================================================
 // InitShaders / RegisterShaders / SetupFrame / SetupSceneCallback
 // ============================================================================
+// ea: 0x7BF450
 void InitShaders() {
     InitCDSkyShader();
     InitCDBackgroundShader();
@@ -403,15 +410,19 @@ void InitShaders() {
     InitCDDebugShader();
 }
 
+// ea: 0x7BF500
 void RegisterShaders() {
 }
 
+// ea: 0x7BF510
 void SetupFrame(float iDelta) {
     gTime = gTime + iDelta;
     nglSetAnimTime(gTime);
 }
 
-void SetupSceneCallback() {
+// ea: 0x7BF540
+void SetupSceneCallback(void* Data) {
+    (void)Data;
 }
 
 // ============================================================================

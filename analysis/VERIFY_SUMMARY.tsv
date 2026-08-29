@@ -8,8 +8,8 @@ InplaceTree.o	1	0	0	0	0	1	0
 MemoryUnit.o	35	0	12	20	0	3	0
 PoolAllocator.o	64	40	3	10	0	11	0
 PtrFixupTable.o	2	0	0	0	0	2	0
-ShaderCommon.o	33	28	3	2	0	0	0
-XboxMemoryUnit.o	46	0	18	25	0	3	0
+ShaderCommon.o	33	20	2	2	0	9	0
+XboxMemoryUnit.o	46	0	17	14	0	15	0
 adler32.o	2	2	0	0	0	0	0
 ae_controller.o	2	0	0	0	0	2	0
 ae_fixed_string.o	9	0	0	0	0	9	0
