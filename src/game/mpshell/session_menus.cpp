@@ -13250,8 +13250,7 @@ void SessionDetailsMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = v30;
-    if (v30 != nullptr)
-        v30->SetNumLines(1);
+    helpbar1->SetNumLines(1);
     helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
 }
 
