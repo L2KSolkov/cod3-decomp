@@ -39,6 +39,14 @@ namespace cdWheelMarkShaderPixel {
     unsigned long* Shader = nullptr;
 }
 
+// ea: 0x007C9B30
+void cdWheelMarkShaderVertex::RegisterVShader()
+{
+    nglDxRegisterVShader(cdWheelMarkShaderVertex::VS,
+                         reinterpret_cast<const unsigned int*>(cdWheelMarkShaderVertex::VShaderTable[0]));
+    cdWheelMarkShaderVertex::Shader = cdWheelMarkShaderVertex::VS[0];
+}
+
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
 extern unsigned int dword_4033C;

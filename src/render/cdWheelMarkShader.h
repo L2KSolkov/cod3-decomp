@@ -65,6 +65,7 @@ namespace cdWheelMarkShaderVertex {
     extern unsigned long* VS;                // ?VS@cdWheelMarkShaderVertex@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdWheelMarkShaderVertex@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdWheelMarkShaderVertex@@3KA
+    void RegisterVShader();                  // @0x007C9B30
 }
 namespace cdWheelMarkShaderPixel {
     extern unsigned long** PS;               // ?PS@cdWheelMarkShaderPixel@@3PAPAKA
