@@ -591,10 +591,10 @@ void STBManager::DecodeBank(const char* name, unsigned char* data, int size,
     TPakId v5 = pak_id;
     int sectionIndex = 0;
     PakFile* pakFile = nullptr;
-    if (pak_id > 0x62)
-        pakFile = nullptr;
-    else
+    if (pak_id >= 0 && pak_id < 0x63)
         pakFile = PakManager::sInst->mSlots[pak_id];
+    if (pakFile == nullptr)
+        return;
 
     PakHeader* header = pakFile->mHeader;
     unsigned int fileIndex = 0;

@@ -1675,8 +1675,10 @@ void UpdateLights(float timeDeltaMS)
     {
         LightEffect* v3 = *mElements;
         TPakId mPakId = (TPakId)v3->mPakId;
-        if (mPakId != PAK_ID_INVALID
-            && PakManager::sInst->mSlots[mPakId] != nullptr
+        PakFile* pak = nullptr;
+        if (static_cast<int>(mPakId) >= 0 && mPakId < 0x63)
+            pak = PakManager::sInst->mSlots[mPakId];
+        if (pak != nullptr
             && !v3->mKill
             && (v3->mMSecLifetime == -1000.0f || v3->mMSecLifetime >= 0.0f)
             && v3->mActive)

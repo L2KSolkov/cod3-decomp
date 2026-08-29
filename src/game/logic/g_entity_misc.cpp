@@ -7347,6 +7347,8 @@ void AudioBankMgr::LoadWbk(const tlFixedString& name, bool async)
                 PakFileView* pak = nullptr;
                 if (wbk->pakFile >= 0 && wbk->pakFile < 0x63)
                     pak = ((PakManagerView*)PakManager::sInst)->mSlots[wbk->pakFile];
+                if (pak == nullptr)
+                    return;
                 const char* path = (const char*)pak + 0x0C;
                 ELanguage v11 = gLanguage;
                 if (wbk->fileID[kLanguageUnlocalized] != (nflFileID)-1)
