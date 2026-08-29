@@ -74,6 +74,7 @@ union ShaderSwitching_t {
     };
     unsigned int as_u32;  // +0x00
 };
+static_assert(sizeof(ShaderSwitching_t) == 4, "IDA ShaderSwitching_t size mismatch");
 extern ShaderSwitching_t ShaderSwitching;
 
 // Perf info + globals (@0x10DDB14.., @0xE3BA10).
@@ -88,6 +89,7 @@ struct ShaderSwitchPair {
     const char* first;
     void (*second)();
 };
+static_assert(sizeof(ShaderSwitchPair) == 8, "IDA ShaderSwitchPair size mismatch");
 extern ShaderSwitchPair gShaderSwitches[36];  // @0xE3BA18
 
 // ShotPerfTest - shader perf sampling (@0x10DDB50, 0x5D0 bytes).
@@ -100,12 +102,14 @@ struct ShotPerfTest {
         float nodes;        // +0x10
         float polys;        // +0x14
         float verts;        // +0x18
-        unsigned __int64 tex;  // +0x1C
+        char pad_1C[4];     // IDA gap at +0x1C before tex.
+        unsigned __int64 tex;  // +0x20
 
         ShaderInfo();
         void Finalize();
         void Update(float deltaT);
     };
+    static_assert(sizeof(ShaderInfo) == 0x28, "IDA ShaderInfo size mismatch");
 
     int      mCurShader;   // +0x00
     bool     mFinished;    // +0x04
@@ -117,6 +121,7 @@ struct ShotPerfTest {
     void Update(float deltaT);
     void GenerateReport(ae_sized_array<ae_fixed_string<512, unsigned short>, 64>* report);
 };
+static_assert(sizeof(ShotPerfTest) == 0x5D0, "IDA ShotPerfTest size mismatch");
 
 // Toggle helpers.
 char ToggleParticles();
