@@ -3606,9 +3606,59 @@ void DObjGetBounds(const DObj* obj, math::Position3& a, math::Position3& b)
     ValidatePakId((TPakId)model.mPakId);
     b.v.m128_f32[2] = model.mValue->maxs.v.m128_f32[2];
 }
-void DObjGetHierarchyBits(DObj* obj, int a, int* b)
+// ea: 0x006BDC60
+void DObjGetHierarchyBits(DObj* obj, int a, int* const b)
 {
-    (void)obj; (void)a; (void)b;
+    if (obj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 504;
+        AeAssert::gCurrentExpr = "obj";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (a < 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 506;
+        AeAssert::gCurrentExpr = "boneIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (a >= obj->numBones)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 507;
+        AeAssert::gCurrentExpr = "boneIndex < obj->numBones";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    b[0] = 0;
+    b[1] = 0;
+    b[2] = 0;
+    b[3] = 0;
+    if (obj->numModels == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 513;
+        AeAssert::gCurrentExpr = "numModels > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (obj->duplicateParts == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 518;
+        AeAssert::gCurrentExpr = "obj->duplicateParts";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    BrocSys::ConvertHashToString((int)obj->duplicateParts);
 }
 void DObjUpdateChildren(DObj* obj, int a) { (void)obj; (void)a; }
 void DObjUpdateLod(Entity* e) { (void)e; }

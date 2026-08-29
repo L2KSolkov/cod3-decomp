@@ -266,7 +266,7 @@ extern void  DObjCreateSkel(DObj* obj, char* buf);
 extern bool  DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
 int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z
 extern void  DObjInitServerTime(DObj* d, float dtime);
-extern void  DObjGetHierarchyBits(DObj* obj, int boneIndex, int* partBits);
+extern void  DObjGetHierarchyBits(DObj* obj, int boneIndex, int* const partBits);
 extern void  DObjCalcAnim(DObj* obj, int iPhase);
 extern void  j_nullsub_82(DObj* obj, int* partBits);
 extern int   DObjNumBones(DObj* obj);

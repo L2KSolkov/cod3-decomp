@@ -17,7 +17,7 @@ extern float unk_F64080[4 * 6320];
 extern void j_nullsub_89(DObj* obj, float dtime);
 extern void j_nullsub_30(DObj* obj, int* partBits);
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
-extern void DObjGetHierarchyBits(DObj* obj, int boneIndex, int* partBits);
+extern void DObjGetHierarchyBits(DObj* obj, int boneIndex, int* const partBits);
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
 
 // ea: 0x006BDF90 (render.o)
