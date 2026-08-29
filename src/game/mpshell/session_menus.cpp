@@ -8275,34 +8275,52 @@ void GameSettingsEdit::OnUp(int c)
 void GameSettingsView::OnUp(int c)
 {
     (void)c;
-    Up();
-    if (mScrollBarUpFader.mQuad != nullptr)
+    PanelQuad* mQuad = mScrollBarUpFader.mQuad;
+    int highlighted = this->highlighted;
+    if (mQuad != nullptr)
     {
         mScrollBarUpFader.mAlpha = 1.0f;
         mScrollBarUpFader.mFading = true;
         mScrollBarUpFader.mAlphaTo = 0.5f;
         mScrollBarUpFader.mTime = 0.5f;
         mScrollBarUpFader.mAlphaDelta = fabs(0.5f);
-        mScrollBarUpFader.mQuad->SetAlpha(1.0f);
+        mQuad->SetAlpha(1.0f);
     }
-    UpdateScrollBar();
+    else
+    {
+        mScrollBarUpFader.mFading = false;
+    }
+    if (enableNavigationSound)
+        PlayNavigationSound();
+    if (--this->highlighted < 0)
+        this->highlighted = 0;
+    UpdateSplitScreenOptions(highlighted);
 }
 
 // ea: 0x0079B7F0
 void GameSettingsView::OnDown(int c)
 {
     (void)c;
-    Down();
-    if (mScrollBarDownFader.mQuad != nullptr)
+    PanelQuad* mQuad = mScrollBarDownFader.mQuad;
+    int highlighted = this->highlighted;
+    if (mQuad != nullptr)
     {
         mScrollBarDownFader.mAlpha = 1.0f;
         mScrollBarDownFader.mFading = true;
         mScrollBarDownFader.mAlphaTo = 0.5f;
         mScrollBarDownFader.mTime = 0.5f;
         mScrollBarDownFader.mAlphaDelta = fabs(0.5f);
-        mScrollBarDownFader.mQuad->SetAlpha(1.0f);
+        mQuad->SetAlpha(1.0f);
     }
-    UpdateScrollBar();
+    else
+    {
+        mScrollBarDownFader.mFading = false;
+    }
+    if (enableNavigationSound)
+        PlayNavigationSound();
+    if (++this->highlighted > 4)
+        this->highlighted = 4;
+    UpdateSplitScreenOptions(highlighted);
 }
 
 // ea: 0x007AF8A0
