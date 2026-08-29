@@ -3425,8 +3425,18 @@ void DCGBank_load_inplace(void* bank, char* data, int* size)
         DCGSet_load_inplace(elements + i * 112, data, size);
     DCGAlignInplace(size, 4);
 }
-void CGBankManager_UnloadAll(void* self) { (void)self; }
-void CGBankManager_UnloadAll() {}
+void CGBankManager_UnloadAll(void* self)
+{
+    CGBankManager* manager = self != nullptr
+        ? static_cast<CGBankManager*>(self)
+        : static_cast<CGBankManager*>(CGBankManager::sInst);
+    if (manager != nullptr)
+        manager->UnloadAll();
+}
+void CGBankManager_UnloadAll()
+{
+    CGBankManager_UnloadAll(CGBankManager::sInst);
+}
 void Client_ClaimNode(Entity* e) { (void)e; }
 void ClientImpacts(Entity* e, struct pmove_t* pm) { (void)e; (void)pm; }
 void Com_CleanupSkeletons() {}
