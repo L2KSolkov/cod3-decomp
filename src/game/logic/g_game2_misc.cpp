@@ -432,7 +432,13 @@ bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
     float v8 = (v6 * v6) - v7;
     if (v8 < 0.0f)
         return false;
-    float inv = 1597463007.0f - ((float)((int)v8) * 0.5f);
+    // Release reinterprets the discriminant bits and applies the integer
+    // inverse-square-root seed (not a floating-point subtraction).
+    int discriminantBits = 0;
+    memcpy(&discriminantBits, &v8, sizeof(discriminantBits));
+    int inverseBits = 1597463007 - (discriminantBits >> 1);
+    float inv = 0.0f;
+    memcpy(&inv, &inverseBits, sizeof(inv));
     float t = ((0.0f - v6) - ((1.5f - (((v8 * 0.5f) * inv) * inv)) * inv))
         / (v5 * 2.0f);
     return t > 0.0f && segLen > t;
