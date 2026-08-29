@@ -555,6 +555,15 @@ enum TPakId { kPakTypeNone = -1 };
 #define PAK_ID_INVALID ((TPakId)-1)
 #define PAK_ID_MIN ((TPakId)0)
 #define PAK_ID_MAX ((TPakId)99)
+
+// Pak ids can come from serialized FLI metadata as well as runtime
+// allocation.  Validate the unsigned enum before indexing the 99-slot table;
+// converted PC FLI files may contain a non-integral sentinel in this field.
+static inline bool IsValidPakId(TPakId id)
+{
+    return static_cast<unsigned int>(id) <
+           static_cast<unsigned int>(PAK_ID_MAX);
+}
 class PakFile;
 
 // Minimal view of the IDA-typed client static state.  PostProcess only reads
@@ -1921,7 +1930,8 @@ public:
 
     static PakManager* sInst;          // ?sInst@PakManager@@2PAV1@A (sv_globals.cpp)
     static PakManager* Inst();         // ?Inst@PakManager@@SAPAV1@XZ
-    PakFile* GetPakFile(TPakId id);    // ?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z
+    PakFile* GetPakFile(TPakId id);         // ?GetPakFile@PakManager@@QAEPAVPakFile@@W4TPakId@@@Z
+    PakFile* GetPakFile(TPakId id) const;
     void ToggleEnabled();              // ?ToggleEnabled@PakManager@@QAEXXZ
     const reserved_dlist<PakFile>& GetActivePaks() const;  // ?GetActivePaks@PakManager@@QBEABV?$reserved_dlist@VPakFile@@@@XZ
     static unsigned int sComputeDistanceKey;  // ?sComputeDistanceKey@PakManager@@0IA
@@ -3688,7 +3698,8 @@ TPakId PakManager::GetCurrentPakId()
 // ea: 0x6657A0
 bool PakManager::IsLoaded(TPakId id) const
 {
-    return id != PAK_ID_INVALID && mSlots[id] != NULL && mSlots[id]->mState == 0;
+    PakFile* slot = IsValidPakId(id) ? mSlots[id] : nullptr;
+    return slot != nullptr && slot->mState == 0;
 }
 
 // ea: 0x665830
@@ -4225,12 +4236,9 @@ void SceneManager::AddBank(TPakId pakId, SceneBank* bank)
     mBankArray.m_elements[pakId] = bank;
     if (bank->mSceneHeap != nullptr)
     {
-        if (pakId > 0x62)
-            ((PakFile*)nullptr)->AddHeap(bank->mSceneHeap,
-                                         bank->mSceneHeapSize);
-        else
-            PakManager::sInst->mSlots[pakId]->AddHeap(bank->mSceneHeap,
-                                                      bank->mSceneHeapSize);
+        PakFile* pak = PakManager::sInst->GetPakFile(pakId);
+        if (pak != nullptr)
+            pak->AddHeap(bank->mSceneHeap, bank->mSceneHeapSize);
     }
 }
 
@@ -5300,9 +5308,9 @@ void SceneManager::ProcessInstanceGroup(TPakId pakId, void* groupPtr)
                 node->instance.Finalize(flags);
                 unsigned int v59 = 4 * insts->mSize;
                 void* v62;
-                if (pakId != PAK_ID_INVALID)
+                if (IsValidPakId(pakId))
                 {
-                    PakFile* slot = PakManager::sInst->mSlots[pakId];
+                    PakFile* slot = PakManager::sInst->GetPakFile(pakId);
                     if (slot == nullptr)
                     {
                         AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -5734,8 +5742,8 @@ void SceneManager::ProcessEntity(TPakId pakId, int entIdx)
         v32->mDestructible.mValue = mValue;
         v32->mDestructible.mPakId = d.mPakId;
         *(int*)((char*)v32 + 0x2B8) = 1;  // takedamage
-        if (d.mPakId != PAK_ID_INVALID
-            && PakManager::sInst->mSlots[d.mPakId] == nullptr)
+        if (IsValidPakId(static_cast<TPakId>(d.mPakId))
+            && PakManager::sInst->GetPakFile(static_cast<TPakId>(d.mPakId)) == nullptr)
         {
             AeAssert::gCurrentAuthor = AeAssert::ARO;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
@@ -6321,9 +6329,9 @@ void DecodeHeap(const char* name, unsigned char* data, unsigned int size,
 PakHeapContext::PakHeapContext(TPakId id, bool once)
 {
     mPakId = id;
-    if (id != PAK_ID_INVALID)
+    if (IsValidPakId(id))
     {
-        if (PakManager::sInst->mSlots[id] == nullptr)
+        if (PakManager::sInst->GetPakFile(id) == nullptr)
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
@@ -7031,9 +7039,7 @@ void SceneManager::DebugRenderEnts()
         TPakId entityPak = (TPakId)entity->mPakId;
         if (entityPak == PAK_ID_INVALID)
             entityPak = PakManager::sInst->mLevelPakId;
-        PakFile* slot = (entityPak <= 0x62)
-                            ? PakManager::sInst->mSlots[entityPak]
-                            : nullptr;
+        PakFile* slot = PakManager::sInst->GetPakFile(entityPak);
 
         int v16;
         if (slot != nullptr && slot->IsInPakHeap(entity))
@@ -7172,9 +7178,9 @@ void SceneManager::DebugRenderEnts()
                 TPakId v33 = (TPakId)entity->mPakId;
                 if (v33 == PAK_ID_INVALID)
                     v33 = PakManager::sInst->mLevelPakId;
-                if (v33 <= 0x62)
+                if (IsValidPakId(v33))
                 {
-                    PakFile* v34 = PakManager::sInst->mSlots[v33];
+                    PakFile* v34 = PakManager::sInst->GetPakFile(v33);
                     if (v34 != nullptr)
                     {
                         label += Broc::string("pak: ")
@@ -7396,8 +7402,7 @@ void PakManager::RegisterPakLoaded(PakInfoNode* pak)
         {
             PakInfoNode* v6 = (PakInfoNode*)pak->prereqs.mList[v2];
             TPakId pakId = v6->pakId;
-            if (pakId == PAK_ID_INVALID || mSlots[pakId] == nullptr
-                || mSlots[pakId]->mState != PakFile::LOADED)
+            if (!IsLoaded(pakId))
             {
                 AeAssert::gCurrentAuthor = AeAssert::ARO;
                 AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
@@ -7425,8 +7430,7 @@ void PakManager::RegisterPakUnloaded(PakInfoNode* pak)
         {
             PakInfoNode* v5 = (PakInfoNode*)pak->prereqs.mList[v3];
             TPakId pakId = v5->pakId;
-            if (pakId == PAK_ID_INVALID || mSlots[pakId] == nullptr
-                || mSlots[pakId]->mState != PakFile::LOADED)
+            if (!IsLoaded(pakId))
             {
                 AeAssert::gCurrentAuthor = AeAssert::ARO;
                 AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
@@ -7447,9 +7451,10 @@ void PakManager::RegisterPakUnloaded(PakInfoNode* pak)
 void* PakManager::MemAlign(TPakId id, unsigned int align,
                            unsigned int size)
 {
-    if (id == PAK_ID_INVALID)
+    if (!IsValidPakId(id))
         return mem_heap_malloc((int)align, size);
-    if (sInst->mSlots[id] == nullptr)
+    PakFile* pak = GetPakFile(id);
+    if (pak == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
@@ -7458,9 +7463,9 @@ void* PakManager::MemAlign(TPakId id, unsigned int align,
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("bad pak id for MemAlign"))
             __debugbreak();
+        return mem_heap_malloc((int)align, size);
     }
-    PakFile* v5 = id > 0x62 ? nullptr : mSlots[id];
-    void* result = v5->MemAlloc(align, size, true);
+    void* result = pak->MemAlloc(align, size, true);
     if (result == nullptr)
         return mem_heap_malloc((int)align, size);
     return result;
@@ -7470,9 +7475,10 @@ void* PakManager::MemAlign(TPakId id, unsigned int align,
 void PakManager::MemFree(TPakId id, void* ptr, bool bUseActorHeap)
 {
     (void)bUseActorHeap;
-    if (id != PAK_ID_INVALID)
+    if (IsValidPakId(id))
     {
-        if (sInst->mSlots[id] == nullptr)
+        PakFile* pak = GetPakFile(id);
+        if (pak == nullptr)
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
@@ -7481,11 +7487,12 @@ void PakManager::MemFree(TPakId id, void* ptr, bool bUseActorHeap)
             if (!AeAssert::IsIgnored()
                 && AeAssert::Assert("bad pak id for free"))
                 __debugbreak();
+            goto FREE_FALLBACK;
         }
-        PakFile* v5 = id > 0x62 ? nullptr : mSlots[id];
-        if (v5->MemFree(ptr, true))
+        if (pak->MemFree(ptr, true))
             return;
     }
+FREE_FALLBACK:
     mem_heap* v6 = gActorHeap->GetHeapPointer();
     if (v6 != nullptr && ptr >= v6->start && ptr < v6->end)
         mem_heap_free(v6, ptr);
@@ -7850,7 +7857,12 @@ TPakId PakManager::FindPakId(const char* pak_name) const
 // ea: 0x004B45F0
 PakFile* PakManager::GetPakFile(TPakId id)
 {
-    if (id < 0 || id > 0x62)
+    return static_cast<const PakManager*>(this)->GetPakFile(id);
+}
+
+PakFile* PakManager::GetPakFile(TPakId id) const
+{
+    if (!IsValidPakId(id))
         return nullptr;
     return mSlots[id];
 }
@@ -7858,7 +7870,7 @@ PakFile* PakManager::GetPakFile(TPakId id)
 // ea: 0x6666B0
 const PakInfoNode* PakManager::GetPakInfo(TPakId pakId) const
 {
-    if (mPakInfoBank == nullptr || pakId == PAK_ID_INVALID)
+    if (mPakInfoBank == nullptr || !IsValidPakId(pakId))
         return nullptr;
     const PakInfoNode* result = mPakInfoPtrs[pakId];
     if (result != nullptr)
@@ -8437,8 +8449,8 @@ TPakId PakManager::SyncLoadPak(EPakType pak_type, const char* path,
 TPakId PakManager::SyncLoadPak(const PakInfoNode* cpak)
 {
     TPakId result = cpak->pakId;
-    if (result == PAK_ID_INVALID || mSlots[result] == nullptr
-        || mSlots[result]->mState != PakFile::LOADED)
+    PakFile* slot = GetPakFile(result);
+    if (slot == nullptr || slot->mState != PakFile::LOADED)
     {
         const_cast<PakInfoNode*>(cpak)->userDistance = 0.0f;
         ++sComputeDistanceKey;
@@ -8492,11 +8504,13 @@ void PakManager::UnloadAll()
 // ea: 0x67B340
 void PakManager::SyncUnloadPak(TPakId id)
 {
+    if (!IsValidPakId(id))
+        return;
     AsyncUnloadPak(id);
     do
         Update(false);
     while (mState == STATE_UNLOADING);
-    if (mSlots[id] == nullptr)
+    if (GetPakFile(id) == nullptr)
     {
         reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
         reserved_dlist<PakFile>::dlist_node* v4 =
@@ -8524,20 +8538,13 @@ void PakManager::SyncUnloadPak(TPakId id)
 // ea: 0x670370
 void PakManager::AsyncUnloadPak(TPakId id)
 {
+    if (!IsValidPakId(id))
+        return;
     mCurrentPakId = id;
     mState = STATE_UNLOADING;
-    PakFile* v3 = mSlots[id];
-    if (id == PAK_ID_INVALID)
-    {
-        AeAssert::gCurrentAuthor = AeAssert::COD3;
-        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
-        AeAssert::gCurrentLine = 1309;
-        AeAssert::gCurrentExpr = "id != PAK_ID_INVALID";
-        if (!AeAssert::IsIgnored()
-            && AeAssert::Assert("Make sure the level you are loading has "
-                                "been built by AssetManager\n"))
-            __debugbreak();
-    }
+    PakFile* v3 = GetPakFile(id);
+    if (v3 == nullptr)
+        return;
     if (v3->mPakType != kPakTypeCount)
     {
         if (v3->mPakInfo == nullptr)
@@ -9648,13 +9655,13 @@ void PakManager::UpdateLoading()
             v2 = false;
     }
     TPakId mCurrentPakId = this->mCurrentPakId;
-    PakFile* v7 = mSlots[mCurrentPakId];
-    if ((mCurrentPakId != PAK_ID_INVALID && v7 != nullptr
-         && v7->mState == PakFile::LOADED)
-        || (v7->mState == PakFile::UNLOADING
-            && v7->mLoadingState
-                   != (PakFile::ELoadingState)PakFile::UNLOADING_SERIALIZED)
-        || (v2 && v7->mLoadingState == PakFile::LOADING_DATA))
+    PakFile* v7 = GetPakFile(mCurrentPakId);
+    if (v7 != nullptr
+        && ((v7->mState == PakFile::LOADED)
+            || (v7->mState == PakFile::UNLOADING
+                && v7->mLoadingState
+                       != (PakFile::ELoadingState)PakFile::UNLOADING_SERIALIZED)
+            || (v2 && v7->mLoadingState == PakFile::LOADING_DATA)))
     {
         if (mCurrentPakInfo != nullptr)
         {
@@ -9690,10 +9697,9 @@ void PakManager::UpdateLoading()
 void PakManager::UpdateUnloading()
 {
     TPakId mCurrentPakId = this->mCurrentPakId;
-    if (mCurrentPakId == PAK_ID_INVALID || mSlots[mCurrentPakId] == nullptr
-        || mSlots[mCurrentPakId]->mState == PakFile::UNLOADED)
+    PakFile* v4 = GetPakFile(mCurrentPakId);
+    if (v4 != nullptr && v4->mState == PakFile::UNLOADED)
     {
-        PakFile* v4 = mSlots[mCurrentPakId];
         if (!v4->mBankAlloc.IsEmpty())
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -9775,7 +9781,8 @@ void PakManager::UpdateUnloading()
         default:
             break;
         }
-        mSlots[this->mCurrentPakId] = nullptr;
+        if (IsValidPakId(this->mCurrentPakId))
+            mSlots[this->mCurrentPakId] = nullptr;
         mPakInfoPtrs[this->mCurrentPakId] = nullptr;
         mCurrentPakId = PAK_ID_INVALID;
         mState = (state_e)2;  // STATE_NORMAL
@@ -9796,7 +9803,7 @@ void PakManager::UpdateNormal()
     float hp_dist = hp != nullptr ? GetDistance(hp) : 3.4028235e38f;
     if (v4 != nullptr)
     {
-        PakFile* v5 = mSlots[v4->pakId];
+        PakFile* v5 = GetPakFile(v4->pakId);
         if (v5 != nullptr
             && v5->mLoadingState == (PakFile::ELoadingState)8)
             lp_dist = 3.4028235e38f;
@@ -10392,9 +10399,10 @@ LABEL_20:
 
 void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
 {
-    if (id != PAK_ID_INVALID)
+    if (IsValidPakId(id))
     {
-        if (sInst->mSlots[id] == nullptr)
+        PakFile* pak = GetPakFile(id);
+        if (pak == nullptr)
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
@@ -10404,10 +10412,12 @@ void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
                 && AeAssert::Assert("bad pak id for MemAlloc"))
                 __debugbreak();
         }
-        PakFile* v5 = id > 0x62 ? nullptr : mSlots[id];
-        void* result = v5->MemAlloc(0x10u, size, true);
-        if (result != nullptr)
-            return result;
+        else
+        {
+            void* result = pak->MemAlloc(0x10u, size, true);
+            if (result != nullptr)
+                return result;
+        }
     }
     if (!bUseActorHeap)
         return mem_heap_malloc(16, size);
@@ -10602,9 +10612,9 @@ PakInfoNode* PakManager::GetUnloadedPrereq(const PakInfoNode* pak) const
     {
         PakInfoNode* result = (PakInfoNode*)pak->prereqs.mList[v3];
         TPakId pakId = result->pakId;
-        if (pakId == PAK_ID_INVALID)
+        PakFile* v7 = GetPakFile(pakId);
+        if (!IsValidPakId(pakId))
             break;
-        PakFile* v7 = mSlots[pakId];
         if (v7 == nullptr || v7->mState == PakFile::UNLOADED)
             break;
         if (++v3 >= pak->prereqs.mSize)
@@ -10622,7 +10632,7 @@ PakInfoNode* PakManager::GetBestUnloadedPak()
     {
         PakInfoNode* v6 = (PakInfoNode*)mPakInfoBank->mPtrs.mList[v4];
         TPakId pakId = v6->pakId;
-        PakFile* v8 = pakId != PAK_ID_INVALID ? mSlots[pakId] : nullptr;
+        PakFile* v8 = GetPakFile(pakId);
         bool unloaded = pakId == PAK_ID_INVALID || v8 == nullptr
                         || v8->mState == PakFile::UNLOADED;
         if (unloaded && 3.4028235e38f != GetDistance(v6)
@@ -10643,7 +10653,7 @@ PakInfoNode* PakManager::GetBestUnloadedPak()
         {
             PakInfoNode* v14 = (PakInfoNode*)level->mPtrs.mList[i];
             TPakId v15 = v14->pakId;
-            PakFile* v16 = v15 != PAK_ID_INVALID ? mSlots[v15] : nullptr;
+            PakFile* v16 = GetPakFile(v15);
             bool unloaded2 = v15 == PAK_ID_INVALID || v16 == nullptr
                              || v16->mState == PakFile::UNLOADED;
             if (unloaded2 && 3.4028235e38f != GetDistance(v14)
@@ -10662,9 +10672,9 @@ PakInfoNode* PakManager::GetBestUnloadedPak()
     if (v3 == nullptr)
         return nullptr;
     TPakId v18 = v3->pakId;
-    if (v18 != PAK_ID_INVALID)
+    if (IsValidPakId(v18))
     {
-        PakFile* v19 = mSlots[v18];
+        PakFile* v19 = GetPakFile(v18);
         if (v19 != nullptr && v19->mState == PakFile::LOADED)
             return v3;
     }
@@ -10729,7 +10739,7 @@ float PrintBankUsage(char* res_buf, float total_banks,
 // ea: 0x671900
 const char* PakManager::GetPakName(TPakId id) const
 {
-    PakFile* v2 = mSlots[id];
+    PakFile* v2 = GetPakFile(id);
     if (v2 != nullptr)
     {
         if (v2->mPakType == kPakTypeCount)
@@ -10985,7 +10995,8 @@ TPakId CurPakId()
 // ea: 0x6653A0
 void ValidatePakId(TPakId pakId)
 {
-    if (pakId != PAK_ID_INVALID && PakManager::sInst->mSlots[pakId] == NULL)
+    if (IsValidPakId(pakId)
+        && PakManager::sInst->GetPakFile(pakId) == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
@@ -11316,7 +11327,7 @@ TPakId PakManager::GetAnimPakId() const { return mAnimPakId; }
 // ea: 0x663600
 bool PakManager::IsValid(TPakId id) const
 {
-    return id != PAK_ID_INVALID && mSlots[id] != nullptr;
+    return GetPakFile(id) != nullptr;
 }
 
 // ea: 0x663630
@@ -11696,10 +11707,8 @@ void StreamZoneManager::RenderZoneGraph(const ZoneBoundaryBank* zbs)
 
                     TPakId pakId = z->mPakInfo->pakId;
                     Color cellCol;
-                    if (pakId == PAK_ID_INVALID
-                        || PakManager::sInst->mSlots[pakId] == nullptr
-                        || PakManager::sInst->mSlots[pakId]->mState
-                               != PakFile::LOADED)
+                    PakFile* pak = PakManager::sInst->GetPakFile(pakId);
+                    if (pak == nullptr || pak->mState != PakFile::LOADED)
                     {
                         if (PakManager::sInst->mCurrentPakId == pakId
                             && PakManager::sInst->mState
@@ -12430,8 +12439,8 @@ NumBanks PakManager::GetNumBanks(const PakInfoNode* pdt) const
 // ea: 0x6657D0
 bool PakManager::IsUnloaded(TPakId id) const
 {
-    return id == PAK_ID_INVALID || mSlots[id] == nullptr
-           || mSlots[id]->mState == PakFile::UNLOADED;
+    PakFile* pak = GetPakFile(id);
+    return pak == nullptr || pak->mState == PakFile::UNLOADED;
 }
 
 // ea: 0x665800
