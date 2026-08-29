@@ -32,4 +32,6 @@ private:
     static unsigned int mbEnabled;                         // ?mbEnabled@apsDebug@@0IA
 };
 
+static_assert(sizeof(apsDebug) == 0x1, "apsDebug size mismatch");
+
 #endif // COD3_AEPS_APSDEBUG_H

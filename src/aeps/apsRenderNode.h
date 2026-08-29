@@ -31,6 +31,8 @@ struct apsSphere {
     const float& Radius() const;               // ea: 0x8025F0
 };
 
+static_assert(sizeof(apsSphere) == 0x10, "apsSphere size mismatch");
+
 // ============================================================================
 // apsLight::LightInfo — per-node lighting info (48 bytes, verified against IDA)
 // ============================================================================

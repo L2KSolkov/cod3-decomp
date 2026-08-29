@@ -87,4 +87,6 @@ public:
     unsigned int GetRequiredParticleFields() const { return mFields; }  // ?GetRequiredParticleFields@apsRenderer@@QBEIXZ (inline COMDAT)
 };
 
+static_assert(sizeof(apsRenderer) == 0x10, "apsRenderer size mismatch");
+
 #endif // COD3_AEPS_APSRENDERER_H

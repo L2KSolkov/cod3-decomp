@@ -24,6 +24,7 @@ struct UpdateLOD {
     float m_dist;
     float m_delay;
 };
+static_assert(sizeof(UpdateLOD) == 0x8, "UpdateLOD size mismatch");
 
 UpdateLOD g_updateLOD[] = {
     { 961.53851f,    0.016666668f },   //  1/60 s

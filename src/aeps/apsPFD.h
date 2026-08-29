@@ -79,6 +79,8 @@ static unsigned char GetFieldByteSize(apsEPFDField iField);
     }
 };
 
+static_assert(sizeof(apsPFD) == 0x28, "apsPFD size mismatch");
+
 // apsEffectTemplate.o / apsSuppliedActions.o inline COMDATs:
 inline unsigned int apsGetFields(apsEPFDField iVal1) { return 1 << iVal1; }        // ?apsGetFields@@YAIW4apsEPFDField@@@Z
 inline unsigned int apsGetFields(apsEPFDField iVal1, apsEPFDField iVal2) { return (1 << iVal2) | (1 << iVal1); }  // ?apsGetFields@@YAIW4apsEPFDField@@0@Z
