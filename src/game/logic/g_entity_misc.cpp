@@ -3404,7 +3404,14 @@ void CurveManager_PostEvent(void* self, unsigned int a, unsigned int b, float c)
 {
     (void)self; (void)a; (void)b; (void)c;
 }
-void CurveManager_Update(void* self, float a) { (void)self; (void)a; }
+class CurveManager {
+public:
+    void Update(float tickDelta);
+};
+void CurveManager_Update(void* self, float a)
+{
+    static_cast<CurveManager*>(self)->Update(a);
+}
 void D3DDevice_SetIndices(void* a, int b) { (void)a; (void)b; }
 void D3DDevice_SetPixelShaderProgram(void* a) { (void)a; }
 void D3DDevice_SetVertexShader(unsigned int a) { (void)a; }
@@ -3559,7 +3566,10 @@ void DObjGetHierarchyBits(DObj* obj, int a, int* b)
 void DObjUpdateChildren(DObj* obj, int a) { (void)obj; (void)a; }
 void DObjUpdateLod(Entity* e) { (void)e; }
 void DynamicDecalMgr_DestroyAllDecals() {}
-void DynamicDecalMgr_Update(void* self, float a) { (void)self; (void)a; }
+void DynamicDecalMgr_Update(void* self, float a)
+{
+    static_cast<DynamicDecalMgr*>(self)->Update(a);
+}
 void Entity_Notify(Entity* e, unsigned int a) { (void)e; (void)a; }
 void Entity_Notify(void* e, unsigned int a) { (void)e; (void)a; }
 void EntityHandleDb_Compact(void* self) { (void)self; }
@@ -4153,7 +4163,10 @@ void RumbleEffect_SetNotes(void* self, int a, void* b)
 {
     (void)self; (void)a; (void)b;
 }
-void SceneManager_UpdateEffects(void* self, float a) { (void)self; (void)a; }
+void SceneManager_UpdateEffects(void* self, float a)
+{
+    static_cast<SceneManager*>(self)->UpdateEffects(a);
+}
 // ea: 0x005C1AC0
 void Scr_Error(const char* error)
 {
