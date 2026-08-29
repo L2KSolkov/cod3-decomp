@@ -166,6 +166,7 @@ struct nflStreamParams {
     nflPriority streamPriority;
     nflStreamParams();
 };
+static_assert(sizeof(nflStreamParams) == 0x4, "nflStreamParams size mismatch");
 struct nflSimulateError {
     int errorCode;
     unsigned count;
@@ -179,9 +180,11 @@ struct nflMediaAlignments {
     unsigned transferSizeAlignment;
 };
 struct nfdFileInfo { unsigned location; unsigned size; };
+static_assert(sizeof(nfdFileInfo) == 0x8, "nfdFileInfo size mismatch");
 
 struct nfdDriver;
 struct nfdMediaInfo { nfdMediaState mediaState; };
+static_assert(sizeof(nfdMediaInfo) == 0x4, "nfdMediaInfo size mismatch");
 struct nfdMedia {
     unsigned registry;
     nfdError (*fnBind)(nflMediaID, const char*, char*, int);
@@ -242,6 +245,7 @@ struct nfsRequestCB {
     void* callbackData;
     int shouldDie;
 };
+static_assert(sizeof(nfsRequestCB) == 0x14, "nfsRequestCB size mismatch");
 struct nfdIoCommand {
     unsigned fileSize;
     unsigned fileOffset;
@@ -302,6 +306,8 @@ struct nfd_win32_IoWork {
     OVERLAPPED overlapped;
     nfdDriver* driver;
 };
+static_assert(sizeof(nfd_win32_IoWork) == 0x18,
+              "nfd_win32_IoWork size mismatch");
 #endif
 
 // ea: 0x0082A4E0

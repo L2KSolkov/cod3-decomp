@@ -38,6 +38,7 @@ struct malloc_chunk {
     malloc_chunk* fd;       // forward link
     malloc_chunk* bk;       // backward link
 };
+static_assert(sizeof(malloc_chunk) == 0x10, "malloc_chunk size mismatch");
 
 struct malloc_state {
     unsigned int   max_fast;
