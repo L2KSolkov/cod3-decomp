@@ -1763,6 +1763,8 @@ static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
 class Camera {
 public:
     Camera();  // real in cg_misc.cpp (avoids implicit COMDAT vs real def)
+    void StartAnimating(float minTweenTime);
+    void StopAnimating(float minTweenTime);
     uint8_t _pad0[0x2C];                 // +0x00 (GlobalEffectNode)
     bool    mDeathRumble;                // +0x2C
     uint8_t _pad0b[0x30 - 0x2D];
