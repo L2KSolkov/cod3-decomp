@@ -16172,9 +16172,14 @@ void AARPersonalStats::OnActivate()
 void AARMapVote::OnCross(int c)
 {
     (void)c;
-    // map vote confirm; g_NumBaseMaps + vote params verified against IDA
-    if (m_iSelectedMap >= 0 && m_iSelectedMap < g_NumBaseMaps)
-        m_ePanelToSwitchTo = 1;
+    math::Position3 pos;
+    math::Dir3 dir;
+    pos.v = _mm_setzero_ps();
+    dir.v = _mm_setzero_ps();
+    SoundDevice::sInst->PlaySound(
+        "UI_Highlight", DbLinkedHandle<EntityHandleDb, Entity>(), true, false,
+        pos, dir, -1.0f, -1.0f, -1.0f, -1.0f);
+    SelectMap(m_currentRow);
 }
 
 // ea: 0x007AE450
