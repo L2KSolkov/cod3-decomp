@@ -70,6 +70,7 @@ namespace cdOceanRender {
     extern unsigned long* VS;                // ?VS@cdOceanRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdOceanRender@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdOceanRender@@3KA
+    void RegisterVShader();                  // @0x007D91B0
 }
 namespace cdOceanPixel {
     extern unsigned long* PS[2][2][2];                 // ?PS@cdOceanPixel@@3PAY111PAKA

@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdWaterShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -34,6 +36,13 @@ namespace cdWaterRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007D9C30
+void cdWaterRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdWaterRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdWaterRender::VShaderTable[0]));
 }
 namespace cdWaterPixel {
     static const unsigned int PShaderMicrocode[60] = {

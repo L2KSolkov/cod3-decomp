@@ -15,6 +15,8 @@
 // ============================================================================
 #include "cdOceanShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -78,6 +80,14 @@ namespace cdOceanRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007D91B0
+void cdOceanRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdOceanRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdOceanRender::VShaderTable[0]));
+    cdOceanRender::Shader = cdOceanRender::VS[0];
 }
 namespace cdOceanPixel {
     static const unsigned int PShader0[60] = {

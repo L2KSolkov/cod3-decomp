@@ -53,6 +53,7 @@ static_assert(sizeof(cdWaterShader) == 0x10, "cdWaterShader size mismatch");
 namespace cdWaterRender {
     extern unsigned long* VS;                // ?VS@cdWaterRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdWaterRender@@3PAPBIA
+    void RegisterVShader();                  // @0x007D9C30
 }
 namespace cdWaterPixel {
     extern unsigned long** PS;               // ?PS@cdWaterPixel@@3PAPAKA

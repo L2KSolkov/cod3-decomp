@@ -15,6 +15,8 @@
 // ============================================================================
 #include "cdRiverShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -78,6 +80,14 @@ namespace cdRiverRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007D6AE0
+void cdRiverRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdRiverRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdRiverRender::VShaderTable[0]));
+    cdRiverRender::Shader = cdRiverRender::VS[0];
 }
 namespace cdRiverPixel {
     static const unsigned int PShader0[60] = {

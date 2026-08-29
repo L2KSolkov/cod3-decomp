@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdWorldPointLitShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -136,6 +138,36 @@ namespace cdWorldPointLitProjectedRender {
     };
     unsigned long VS[2] = {};
     unsigned int const* VShaderTable[2] = { VShader0, VShader1 };
+}
+
+// ea: 0x007DCD10
+void cdWorldPointLitRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldPointLitRender::VS[index]),
+                             cdWorldPointLitRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007DCD30
+void cdWorldPointLitRender::RegisterVShader()
+{
+    cdWorldPointLitRender::RegisterShader();
+}
+
+// ea: 0x007DCD60
+void cdWorldPointLitProjectedRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldPointLitProjectedRender::VS[index]),
+                             cdWorldPointLitProjectedRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007DCD80
+void cdWorldPointLitProjectedRender::RegisterVShader()
+{
+    cdWorldPointLitProjectedRender::RegisterShader();
 }
 namespace cdWorldPointLitPixel {
     static const unsigned int PShader0[60] = {

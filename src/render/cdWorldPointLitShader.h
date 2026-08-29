@@ -49,10 +49,14 @@ static_assert(sizeof(cdWorldPointLitShader) == 0x10, "cdWorldPointLitShader size
 namespace cdWorldPointLitRender {
     extern unsigned long VS[2];                    // ?VS@cdWorldPointLitRender@@3PAKA
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdWorldPointLitRender@@3PAPBIA
+    void RegisterShader();                          // @0x007DCD10
+    void RegisterVShader();                         // @0x007DCD30
 }
 namespace cdWorldPointLitProjectedRender {
     extern unsigned long VS[2];                    // ?VS@cdWorldPointLitProjectedRender@@3PAKA
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdWorldPointLitProjectedRender@@3PAPBIA
+    void RegisterShader();                          // @0x007DCD60
+    void RegisterVShader();                         // @0x007DCD80
 }
 namespace cdWorldPointLitPixel {
     extern unsigned long* PS[2][2];                // ?PS@cdWorldPointLitPixel@@3PAY01PAKA

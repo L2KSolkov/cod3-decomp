@@ -57,6 +57,7 @@ namespace cdRiverRender {
     extern unsigned long* VS;                // ?VS@cdRiverRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdRiverRender@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdRiverRender@@3KA
+    void RegisterVShader();                  // @0x007D6AE0
 }
 namespace cdRiverPixel {
     extern unsigned long* PS[2][2][2];               // ?PS@cdRiverPixel@@3PAY111PAKA
