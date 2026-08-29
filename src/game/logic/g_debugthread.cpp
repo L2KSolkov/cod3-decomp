@@ -926,6 +926,16 @@ void DebugThread::Update()
 extern void* Task_vftable;  // ??_7Task@@6B@
 
 // ea: 0x4F9940
+Task::Task(DbLinkedHandle<EntityHandleDb, Entity> handle, FourCC idTask)
+{
+    memset(_dlist, 0, 8);
+    mTaskId = idTask.mVal;
+    mEntityHandle = handle;
+    mTaskHandle.mVal = 0;
+    mFlags = 1;
+}
+
+// game.o constructor
 Task::Task(DbLinkedHandle<EntityHandleDb, Entity> handle, unsigned int idTask)
 {
     memset(_dlist, 0, 8);
@@ -1084,9 +1094,10 @@ void HealthRegenTask::Update(Entity* e, float deltaT)
             mHealthDelta = (mRechargeRate * deltaT) + mHealthDelta;
         if (mHealthDelta > 1.0f)
         {
-            int v8 = (int)mHealthDelta;
-            mHealthDelta = mHealthDelta - (float)(int)mHealthDelta;
-            int integer = (int)mHealthDelta + e->health;
+            float healthDelta = mHealthDelta;
+            int v8 = (int)healthDelta;
+            mHealthDelta = healthDelta - (float)v8;
+            int integer = v8 + e->health;
             if (integer >= g_player_maxhealth.integer)
                 integer = g_player_maxhealth.integer;
             e->health = integer;

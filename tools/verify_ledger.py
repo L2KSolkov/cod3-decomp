@@ -762,6 +762,10 @@ def symbol_variants(name: str) -> set[str]:
             "?GetTaskForEntity@TaskSys@@QBEPAVTask@@UFourCC@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z",
         "?GetId@Task@@QBE?AVFourCC@@XZ":
             "?GetId@Task@@QBE?AUFourCC@@XZ",
+        "??0Task@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@VFourCC@@@Z":
+            "??0Task@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@UFourCC@@@Z",
+        "?GetTaskId@HealthRegenTask@@SA?AVFourCC@@XZ":
+            "?GetTaskId@HealthRegenTask@@SA?AUFourCC@@XZ",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:

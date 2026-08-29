@@ -5371,6 +5371,7 @@ public:
     DbLinkedHandle<EntityHandleDb, Entity> GetEntityHandle() const;  // game2.o 0x004EAA10
     Handle GetTaskHandle() const;  // game2.o 0x004EAA30
 
+    Task(DbLinkedHandle<EntityHandleDb, Entity> h, FourCC idTask);  // game2.o 0x4F9940
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o 0x4F9970
     virtual ~Task();  // ??1Task@@UAE@XZ (game2.o)
