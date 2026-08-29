@@ -3205,11 +3205,11 @@ void AARMapVote::VoteOnMap(int indexNewMap, int indexOldMap)
     }
     char value[32] = {};
     if (indexOldMap >= 0 && indexOldMap < mapLimit) {
-        sprintf_s(value, "%i", --m_pMapVoteVals[indexOldMap]);
+        sprintf(value, "%i", --m_pMapVoteVals[indexOldMap]);
         m_ListBox.SetText(indexOldMap, 1, value);
     }
     if (indexNewMap >= 0 && indexNewMap < mapLimit) {
-        sprintf_s(value, "%i", ++m_pMapVoteVals[indexNewMap]);
+        sprintf(value, "%i", ++m_pMapVoteVals[indexNewMap]);
         m_ListBox.SetText(indexNewMap, 1, value);
     }
 }
