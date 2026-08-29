@@ -40,6 +40,13 @@ namespace cdScratchShaderPixel {
     unsigned int const** PShaderTable = nullptr;
 }
 
+// ea: 0x007C5DB0
+void cdScratchShaderVertex::RegisterVShader()
+{
+    nglDxRegisterVShader(cdScratchShaderVertex::VS,
+                         reinterpret_cast<const unsigned int*>(cdScratchShaderVertex::VShaderTable[0]));
+}
+
 // ============================================================================
 // cdScratchMaterial::cdScratchMaterial — bind texture + blend + shader.
 // ea: 0x7C5660

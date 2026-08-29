@@ -54,6 +54,7 @@ static_assert(sizeof(cdScratchShader) == 0x10, "cdScratchShader size mismatch");
 namespace cdScratchShaderVertex {
     extern unsigned long* VS;                // ?VS@cdScratchShaderVertex@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdScratchShaderVertex@@3PAPBIA
+    void RegisterVShader();                  // @0x007C5DB0
 }
 namespace cdScratchShaderPixel {
     extern unsigned long** PS;               // ?PS@cdScratchShaderPixel@@3PAPAKA
