@@ -1083,23 +1083,26 @@ def type_assertions() -> list[dict[str, str]]:
     """Collect compile-time size/offset assertions for the Track-B report."""
     rows: list[dict[str, str]] = []
     size_pattern = re.compile(
-        r"static_assert\s*\(\s*sizeof\s*\(\s*([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+)")
+        r"(?:static_assert|COD3_STATIC_ASSERT_32BIT)\s*\(\s*sizeof\s*\(\s*"
+        r"([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+)", re.DOTALL)
     offset_pattern = re.compile(
-        r"static_assert\s*\(\s*offsetof\s*\(\s*([^,]+?)\s*,\s*([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+)")
+        r"(?:static_assert|COD3_STATIC_ASSERT_32BIT)\s*\(\s*offsetof\s*\(\s*"
+        r"([^,]+?)\s*,\s*([^()]+?)\s*\)\s*==\s*(0x[0-9A-Fa-f]+|\d+)", re.DOTALL)
     for path in source_files():
-        for number, line in enumerate(path.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-            match = size_pattern.search(line)
-            if match:
-                rows.append({"check": "sizeof", "type": match.group(1).strip(),
-                             "field": "", "expected": match.group(2),
-                             "source": str(path.relative_to(ROOT)), "line": str(number),
-                             "status": "COMPILE_ASSERT_PRESENT"})
-            match = offset_pattern.search(line)
-            if match:
-                rows.append({"check": "offsetof", "type": match.group(1).strip(),
-                             "field": match.group(2).strip(), "expected": match.group(3),
-                             "source": str(path.relative_to(ROOT)), "line": str(number),
-                             "status": "COMPILE_ASSERT_PRESENT"})
+        text = path.read_text(encoding="utf-8", errors="replace")
+        source_name = str(path.relative_to(ROOT))
+        for match in size_pattern.finditer(text):
+            rows.append({"check": "sizeof", "type": " ".join(match.group(1).split()),
+                         "field": "", "expected": match.group(2),
+                         "source": source_name,
+                         "line": str(text.count("\n", 0, match.start()) + 1),
+                         "status": "COMPILE_ASSERT_PRESENT"})
+        for match in offset_pattern.finditer(text):
+            rows.append({"check": "offsetof", "type": " ".join(match.group(1).split()),
+                         "field": " ".join(match.group(2).split()), "expected": match.group(3),
+                         "source": source_name,
+                         "line": str(text.count("\n", 0, match.start()) + 1),
+                         "status": "COMPILE_ASSERT_PRESENT"})
     return rows
 
 

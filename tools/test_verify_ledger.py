@@ -52,6 +52,29 @@ def main() -> int:
             assert states["V3"] == "FAIL" and level == "V2"
             assert ledger.body_class("{ ; }") == "EMPTY_BODY"
 
+            # Track-B assertions may use the 32-bit compatibility macro and
+            # may span lines; both forms must be indexed with their source
+            # line instead of silently disappearing from VERIFY_TYPES.tsv.
+            source_root = ledger.ROOT / "tools" / "_type_assertion_test.h"
+            source_root.write_text(
+                "COD3_STATIC_ASSERT_32BIT(sizeof(TestType) == 0x10, \"size\");\n"
+                "static_assert(\n    sizeof(TestTemplate<int>) == 8,\n"
+                "    \"size\");\n",
+                encoding="utf-8",
+            )
+            original_sources = ledger.source_files
+            ledger.source_files = lambda: [source_root]
+            try:
+                assertions = ledger.type_assertions()
+            finally:
+                ledger.source_files = original_sources
+                source_root.unlink()
+            assert [(item["check"], item["type"], item["expected"])
+                    for item in assertions] == [
+                        ("sizeof", "TestType", "0x10"),
+                        ("sizeof", "TestTemplate<int>", "8"),
+                    ]
+
             # Explicit V4 release evidence is sufficient to clear an empty
             # body from the unreviewed-stub anomaly class.
             assert evidence[("0X0040C000", "fn", "V4")]["result"] == "PASS"
