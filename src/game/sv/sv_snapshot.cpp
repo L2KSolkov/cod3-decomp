@@ -22,6 +22,8 @@ static void SV_AddEntitiesVisibleFromPoint(int leafnum, DbLinkedHandle<EntityHan
 extern int   com_frameNumber;
 
 int dword_F641E0[4 * 1580];  // sv.o BSS @ 0xF641E0
+static_assert(sizeof(dword_F641E0) == 25280,
+              "dword_F641E0 per-client snapshot table extent mismatch");
 
 // collision / math
 extern void  AddLeanToPosition(float* const vPosition, float fViewYaw,

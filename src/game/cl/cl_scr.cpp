@@ -100,6 +100,8 @@ vm_s* cgvm = NULL;
 
 // Xbox per-client controller port table (BSS @ 0xF6A28C; unnamed in binary)
 int dword_F6A28C[4 * 802];
+static_assert(sizeof(dword_F6A28C) == 12832,
+              "dword_F6A28C controller-port table extent mismatch");
 
 extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 
