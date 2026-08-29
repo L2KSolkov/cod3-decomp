@@ -58,6 +58,11 @@ enum ai_state_e : int32_t {
     AIS_COUNT = 19,
 };
 
+// IDA exposes the transition enum as a 4-byte enum but provides no enumerator
+// names in the local type database; keep it opaque while preserving its type
+// and width in ai_transition_cmd_t below.
+enum ai_state_transition_t : int32_t;
+
 // ============================================================================
 // ai_substate_e — AI sub-state
 // ============================================================================
@@ -160,8 +165,11 @@ static_assert(sizeof(ai_orient_t) == 0x14, "ai_orient_t size mismatch");
 // ai_transition_cmd_t — state transition command (8 bytes)
 // ============================================================================
 struct ai_transition_cmd_t {
-    uint8_t data[8];  // placeholder — exact layout TBD during porting
+    ai_state_transition_t eTransition; // +0x00
+    ai_state_e            eState;       // +0x04
 };
+static_assert(sizeof(ai_transition_cmd_t) == 0x08,
+              "ai_transition_cmd_t size mismatch");
 
 // ============================================================================
 // scr_anim_s — script animation handle (4 bytes)
@@ -212,7 +220,6 @@ struct actor_prone_info_t {
     float fTorsoHeight;        // +0x0C
     float fTorsoPitch;         // +0x10
     float fWaistPitch;         // +0x14
-    // placeholder — exact layout TBD
 };
 static_assert(sizeof(actor_prone_info_t) == 0x18, "actor_prone_info_t size mismatch");
 
@@ -220,7 +227,20 @@ static_assert(sizeof(actor_prone_info_t) == 0x18, "actor_prone_info_t size misma
 // ActorLookAt — look-at state (60 bytes)
 // ============================================================================
 struct ActorLookAt {
-    uint8_t data[60];  // placeholder — exact layout TBD
+    bool  mDoLookAt;       // +0x00
+    uint8_t _pad01[3];     // +0x01 (IDA alignment)
+    float mLookAtPos[3];   // +0x04
+    float mSpineK;         // +0x10
+    float mYawCur;         // +0x14
+    float mYawMin;         // +0x18
+    float mYawMax;         // +0x1C
+    float mYawDelta;       // +0x20
+    float mYawTurnSpeed;   // +0x24
+    float mPitchCur;       // +0x28
+    float mPitchMin;       // +0x2C
+    float mPitchMax;       // +0x30
+    float mPitchDelta;     // +0x34
+    float mPitchTurnSpeed; // +0x38
 };
 static_assert(sizeof(ActorLookAt) == 0x3C, "ActorLookAt size mismatch");
 
@@ -265,7 +285,8 @@ static_assert(sizeof(path_t) == 0x410, "path_t size mismatch");
 // path_trim_t — path trim info (8 bytes)
 // ============================================================================
 struct path_trim_t {
-    uint8_t data[8];  // placeholder
+    int iIndex; // +0x00
+    int iDelta; // +0x04
 };
 static_assert(sizeof(path_trim_t) == 8, "path_trim_t size mismatch");
 
