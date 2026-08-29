@@ -1431,13 +1431,13 @@ public:
     virtual ~MPProfileMainMenu();  // ??1MPProfileMainMenu@@UAE@XZ (mp.o 0x7339D0)
     static MPProfileMainMenu* Me();  // ?Me@MPProfileMainMenu@@SAPAV1@XZ
     SaveGameData** GetSaveSlots();
-    static bool DialogResponseDeleteCancel(int index);  // ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z
-    static bool DialogResponseProfileEdit(int index);   // ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z
-    static bool DialogResponseNoMemCard(int index);     // ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z
-    static bool DialogResponseProfileLoadOk(int index); // ?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NH@Z (mp.o 0x734250)
-    static bool DialogResponseSaveSuccess(int index);   // ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x734290)
-    static bool DialogResponseDeleteSuccess(int index); // ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z (mp.o 0x7342B0)
-    static bool DialogResponseDeleteConfirm(int index); // ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z (mp.o 0x74EFD0)
+    static bool DialogResponseDeleteCancel();  // ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NXZ
+    static bool DialogResponseProfileEdit();   // ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NXZ
+    static bool DialogResponseNoMemCard();     // ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NXZ
+    static bool DialogResponseProfileLoadOk(); // ?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NXZ (mp.o 0x734250)
+    static bool DialogResponseSaveSuccess();   // ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NXZ (mp.o 0x734290)
+    static bool DialogResponseDeleteSuccess(); // ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NXZ (mp.o 0x7342B0)
+    static bool DialogResponseDeleteConfirm(); // ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NXZ (mp.o 0x74EFD0)
     static bool DialogResponseDelete(int index);        // ?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z (mp.o 0x75A9E0)
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPProfileMainMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x733B60)
     static const char* const kProfileTextGeoms[6];  // @ 0xD196A4 (6 entries)

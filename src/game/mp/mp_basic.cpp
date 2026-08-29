@@ -7912,20 +7912,20 @@ bool MPProfileEditMenu::DialogResponseOk()
     return true;
 }
 
-bool MPProfileMainMenu::DialogResponseDeleteCancel(int)
+bool MPProfileMainMenu::DialogResponseDeleteCancel()
 {
     return true;
 }
 
 // ea: 0x00734270
-bool MPProfileMainMenu::DialogResponseProfileEdit(int)
+bool MPProfileMainMenu::DialogResponseProfileEdit()
 {
     g_femanager.fems->gap1C(g_femanager.fems, 29);
     return true;
 }
 
 // ea: 0x007342D0
-bool MPProfileMainMenu::DialogResponseNoMemCard(int)
+bool MPProfileMainMenu::DialogResponseNoMemCard()
 {
     g_femanager.fems->gap1C(g_femanager.fems, 8);
     return true;
@@ -11839,9 +11839,8 @@ void MultiplayerMgr::ExitLevel()
 }
 
 // ea: 0x0074EFD0 (profile dialog: confirm delete -> deleting screen)
-bool MPProfileMainMenu::DialogResponseDeleteConfirm(int index)
+bool MPProfileMainMenu::DialogResponseDeleteConfirm()
 {
-    (void)index;
     ((MPProfileMainMenu*)g_femanager.fems->menus[27])
         ->DialogDisplayDeleting();
     return false;
@@ -14413,8 +14412,8 @@ void MPProfileMainMenu::DialogDisplayProfileSelected()
                  true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
     int v3 = v2->GetActiveMenu();
-    v2->GetLayer(v3 == 0)->AddOption("FEMENU_PROFILE_EDIT",
-                                     DialogResponseProfileEdit);
+    v2->GetLayer(v3 == 0)->AddOption(
+        "FEMENU_PROFILE_EDIT", (bool (*)(int))DialogResponseProfileEdit);
     DialogMenuSystem* v5 = g_femanager.GetDMS(currCl);
     int v6 = v5->GetActiveMenu();
     v5->GetLayer(v6 == 0)->AddOption("FEMENU_PROFILE_DELETE",
@@ -14564,12 +14563,14 @@ bool MPProfileMainMenu::DialogResponseDelete(int index)
                  defaultFileName, true);
     DialogMenuSystem* v1 = g_femanager.GetDMS(currCl);
     int v2 = v1->GetActiveMenu();
-    v1->GetLayer(v2 == 0)->AddOption("FEMENU_PROFILE_DELETE_CANCEL",
-                                     DialogResponseDeleteCancel);
+    v1->GetLayer(v2 == 0)->AddOption(
+        "FEMENU_PROFILE_DELETE_CANCEL",
+        (bool (*)(int))DialogResponseDeleteCancel);
     DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
     int v5 = v4->GetActiveMenu();
-    v4->GetLayer(v5 == 0)->AddOption("FEMENU_PROFILE_DELETE_CONFIRM",
-                                     DialogResponseDeleteConfirm);
+    v4->GetLayer(v5 == 0)->AddOption(
+        "FEMENU_PROFILE_DELETE_CONFIRM",
+        (bool (*)(int))DialogResponseDeleteConfirm);
     DialogMenuSystem* v7 = g_femanager.GetDMS(currCl);
     v7->HighlightOption(0);
     DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
@@ -17784,7 +17785,8 @@ void MPProfileMainMenu::DialogDisplayProfileLoadSuccess(int index)
                                         defaultFileName, true);
     DialogMenuSystem* v1 = g_femanager.GetDMS(currCl);
     DialogMenu* Layer = v1->GetLayer(v1->GetActiveMenu() == 0);
-    Layer->AddOption("MEM_DIALOG_OK", DialogResponseProfileLoadOk);
+    Layer->AddOption("MEM_DIALOG_OK",
+                     (bool (*)(int))DialogResponseProfileLoadOk);
     DialogMenuSystem* v4 = g_femanager.GetDMS(currCl);
     v4->GetLayer(v4->GetActiveMenu() == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
     g_femanager.GetDMS(currCl)->HighlightOption(0);
@@ -17800,7 +17802,8 @@ void MPProfileMainMenu::DialogDisplaySaveSuccess()
                                         defaultFileName, true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
     DialogMenu* Layer = v2->GetLayer(v2->GetActiveMenu() == 0);
-    Layer->AddOption("MEM_DIALOG_OK", DialogResponseSaveSuccess);
+    Layer->AddOption("MEM_DIALOG_OK",
+                     (bool (*)(int))DialogResponseSaveSuccess);
     g_femanager.GetDMS(currCl)->HighlightOption(0);
     DialogMenuSystem* v6 = g_femanager.GetDMS(currCl);
     v6->GetLayer(v6->GetActiveMenu() == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
@@ -17816,7 +17819,8 @@ void MPProfileMainMenu::DialogDisplayDeleteSuccess()
                                         false, defaultFileName, true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
     DialogMenu* Layer = v2->GetLayer(v2->GetActiveMenu() == 0);
-    Layer->AddOption("MEM_DIALOG_OK", DialogResponseDeleteSuccess);
+    Layer->AddOption("MEM_DIALOG_OK",
+                     (bool (*)(int))DialogResponseDeleteSuccess);
     g_femanager.GetDMS(currCl)->HighlightOption(0);
     DialogMenuSystem* v6 = g_femanager.GetDMS(currCl);
     v6->GetLayer(v6->GetActiveMenu() == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
@@ -17832,7 +17836,7 @@ void MPProfileMainMenu::DialogDisplayNoMemDevice()
                                         defaultFileName, true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
     DialogMenu* Layer = v2->GetLayer(v2->GetActiveMenu() == 0);
-    Layer->AddOption("MEM_DIALOG_OK", DialogResponseNoMemCard);
+    Layer->AddOption("MEM_DIALOG_OK", (bool (*)(int))DialogResponseNoMemCard);
     g_femanager.GetDMS(currCl)->HighlightOption(0);
     DialogMenuSystem* v6 = g_femanager.GetDMS(currCl);
     v6->GetLayer(v6->GetActiveMenu() == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
@@ -17848,7 +17852,7 @@ void MPProfileMainMenu::DialogDisplayDataCorrupt()
                                         false, defaultFileName, true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
     DialogMenu* Layer = v2->GetLayer(v2->GetActiveMenu() == 0);
-    Layer->AddOption("MEM_DIALOG_OK", DialogResponseNoMemCard);
+    Layer->AddOption("MEM_DIALOG_OK", (bool (*)(int))DialogResponseNoMemCard);
     g_femanager.GetDMS(currCl)->HighlightOption(0);
     DialogMenuSystem* v6 = g_femanager.GetDMS(currCl);
     v6->GetLayer(v6->GetActiveMenu() == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
@@ -17864,7 +17868,7 @@ void MPProfileMainMenu::DialogDisplayNoFreeSpace()
                                         false, false, defaultFileName, true);
     DialogMenuSystem* v2 = g_femanager.GetDMS(currCl);
     DialogMenu* Layer = v2->GetLayer(v2->GetActiveMenu() == 0);
-    Layer->AddOption("MEM_DIALOG_OK", DialogResponseNoMemCard);
+    Layer->AddOption("MEM_DIALOG_OK", (bool (*)(int))DialogResponseNoMemCard);
     g_femanager.GetDMS(currCl)->HighlightOption(0);
     DialogMenuSystem* v6 = g_femanager.GetDMS(currCl);
     v6->GetLayer(v6->GetActiveMenu() == 0)->triangleResponse = (void (*)(int))j_nullsub_96;
@@ -17874,24 +17878,29 @@ void MPProfileMainMenu::DialogDisplayNoFreeSpace()
 }
 
 // ea: 0x00734250
-bool MPProfileMainMenu::DialogResponseProfileLoadOk(int index)
+bool MPProfileMainMenu::DialogResponseProfileLoadOk()
 {
-    (void)index;
+    g_femanager.fems->gap1C(g_femanager.fems, 8);
+    ProfileManager::Me()->Reset();
     return true;
 }
 
 // ea: 0x00734290
-bool MPProfileMainMenu::DialogResponseSaveSuccess(int index)
+bool MPProfileMainMenu::DialogResponseSaveSuccess()
 {
-    (void)index;
-    return true;
+    SaveGameData** slots =
+        (SaveGameData**) ((char*)g_femanager.fems->menus[27] + 104);
+    ProfileManager::Me()->EnumProfiles(slots);
+    return false;
 }
 
 // ea: 0x007342B0
-bool MPProfileMainMenu::DialogResponseDeleteSuccess(int index)
+bool MPProfileMainMenu::DialogResponseDeleteSuccess()
 {
-    (void)index;
-    return true;
+    SaveGameData** slots =
+        (SaveGameData**) ((char*)g_femanager.fems->menus[27] + 104);
+    ProfileManager::Me()->EnumProfiles(slots);
+    return false;
 }
 
 // ============================================================================
