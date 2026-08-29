@@ -7796,6 +7796,9 @@ public:
         const void*& animComponentData) const = 0;
 };
 
+static_assert(sizeof(nalComponentBase) == 0x4,
+              "nalComponentBase layout mismatch");
+
 // ea: 0x0055E830
 void nalComponentBase::BlendIntra(int count, void* dst, const void* srcA,
                                   const void* srcB, float blend) const
@@ -8000,6 +8003,21 @@ public:
     int GetPoseAlignment() const { return 16; }
     static unsigned char TypeID;
 };
+
+static_assert(sizeof(nalComponentU8Base) == 0x4,
+              "nalComponentU8Base layout mismatch");
+static_assert(sizeof(nalComponentFloat1Base) == 0x4,
+              "nalComponentFloat1Base layout mismatch");
+static_assert(sizeof(nalComponentFloat3Base) == 0x4,
+              "nalComponentFloat3Base layout mismatch");
+static_assert(sizeof(nalComponentFloat4Base) == 0x4,
+              "nalComponentFloat4Base layout mismatch");
+static_assert(sizeof(nalComponentQuatBase) == 0x4,
+              "nalComponentQuatBase layout mismatch");
+static_assert(sizeof(nalComponentPOBase) == 0x4,
+              "nalComponentPOBase layout mismatch");
+static_assert(sizeof(nalComponentIKSpinBase) == 0x4,
+              "nalComponentIKSpinBase layout mismatch");
 
 unsigned char nalComponentU8Base::TypeID = 0;
 unsigned char nalComponentFloat1Base::TypeID = 0;
@@ -8559,6 +8577,8 @@ public:
     void set_vtbl_ptr(nalVirtual_vtbl* vtbl_ptr);
     void* get_vtbl_ptr() const;
 };
+
+static_assert(sizeof(nalVirtual) == 0x4, "nalVirtual layout mismatch");
 
 // ea: 0x00518230
 nalVirtual::nalVirtual()
