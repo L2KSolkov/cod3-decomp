@@ -96,7 +96,7 @@ bdLogSubscriber.obj	5	5	0	0	0	0	0
 bdLoopbackConnection.obj	37	29	5	2	0	1	0
 bdMallocMemory.obj	6	6	0	0	0	0	0
 bdMemory.obj	23	23	0	0	0	0	0
-bdMessage.obj	25	23	1	1	0	0	0
+bdMessage.obj	25	23	1	0	0	1	0
 bdMutex.obj	4	4	0	0	0	0	0
 bdNet-xbox.obj	49	35	5	9	0	0	0
 bdPacket.obj	32	30	0	2	0	0	0
@@ -110,7 +110,7 @@ bdQoSProbeListener.obj	4	2	0	0	0	2	0
 bdRandom.obj	7	7	0	0	0	0	0
 bdReceivedMessage.obj	4	0	1	3	0	0	0
 bdReferencable.obj	1	0	0	0	0	1	0
-bdReliableReceiveWindow.obj	19	13	1	5	0	0	0
+bdReliableReceiveWindow.obj	19	13	1	4	0	1	0
 bdReliableSendWindow.obj	24	14	3	6	0	1	0
 bdSAckChunk.obj	26	24	0	2	0	0	0
 bdSecurityKey-xbox.obj	6	0	0	5	0	1	0
@@ -126,12 +126,12 @@ bdShutdownChunk.obj	8	8	0	0	0	0	0
 bdShutdownCompleteChunk.obj	8	8	0	0	0	0	0
 bdSocket.obj	12	2	3	7	0	0	0
 bdSocketRouter-xbox.obj	25	15	3	6	0	1	0
-bdStopwatch.obj	7	0	1	6	0	0	0
+bdStopwatch.obj	7	0	1	5	0	1	0
 bdString.obj	30	25	1	4	0	0	0
 bdTrulyRandom.obj	3	1	1	0	0	1	0
 bdUnicastConnection.obj	152	141	6	5	0	0	0
 bdUnreliableReceiveWindow.obj	7	2	1	3	0	1	0
-bdUnreliableSendWindow.obj	32	27	1	3	0	1	0
+bdUnreliableSendWindow.obj	32	27	1	2	0	2	0
 cdAirplaneMetalShader.o	21	17	0	4	0	0	0
 cdBackgroundShader.o	24	18	0	6	0	0	0
 cdCharShader.o	24	20	0	4	0	0	0
