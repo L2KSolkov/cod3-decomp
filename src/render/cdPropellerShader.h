@@ -31,6 +31,10 @@ static_assert(sizeof(cdPropellerShaderMat) == 0x1C, "cdPropellerShaderMat size m
 // ============================================================================
 struct cdPropellerShaderNode : nglShaderNode {
     cdPropellerShaderMat* mMaterial;  // +0x14
+
+    cdPropellerShaderNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
+                          cdPropellerShaderMat* iMaterial); // @0x7D1390
+    virtual ~cdPropellerShaderNode(); // @0x7D13F0
 };
 static_assert(sizeof(cdPropellerShaderNode) == 0x18, "cdPropellerShaderNode size mismatch");
 
@@ -42,6 +46,7 @@ public:
     virtual tlFixedString GetName(); // @0x7D12E0
     virtual void Register();  // @0x7D0E50
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D0E90
+    virtual ~cdPropellerShader(); // @0x7D1430
 };
 static_assert(sizeof(cdPropellerShader) == 0x10, "cdPropellerShader size mismatch");
 
@@ -51,21 +56,27 @@ static_assert(sizeof(cdPropellerShader) == 0x10, "cdPropellerShader size mismatc
 namespace cdPropellerRender {
     extern unsigned long* VS;                // ?VS@cdPropellerRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdPropellerRender@@3PAPBIA
+    void RegisterVShader();                   // @0x7D1300
+    unsigned long GetVShader();               // @0x7D1320
 }
 namespace cdPropellerPixel {
     extern unsigned long** PS;               // ?PS@cdPropellerPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdPropellerPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x7D1330
+    unsigned long* GetPShader();              // @0x7D1350
 }
 namespace cdPropellerFullbrightPixel {
     extern unsigned long** PS;               // ?PS@cdPropellerFullbrightPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdPropellerFullbrightPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x7D1360
+    unsigned long* GetPShader();              // @0x7D1380
 }
 
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern cdPropellerShader* gCDPropellerShader;  // @0x10DE540
 

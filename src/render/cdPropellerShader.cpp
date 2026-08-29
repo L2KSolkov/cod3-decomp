@@ -92,6 +92,39 @@ void ToggleCDPropellerShader() {
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
 }
 
+// ea: 0x7D1300
+void cdPropellerRender::RegisterVShader() {
+    nglDxRegisterVShader(cdPropellerRender::VS,
+                         cdPropellerRender::VShaderTable[0]);
+}
+
+// ea: 0x7D1320
+unsigned long cdPropellerRender::GetVShader() {
+    return cdPropellerRender::VS[0];
+}
+
+// ea: 0x7D1330
+void cdPropellerPixel::RegisterPShader() {
+    nglDxRegisterPShader(cdPropellerPixel::PS,
+                         cdPropellerPixel::PShaderTable[0]);
+}
+
+// ea: 0x7D1350
+unsigned long* cdPropellerPixel::GetPShader() {
+    return cdPropellerPixel::PS[0];
+}
+
+// ea: 0x7D1360
+void cdPropellerFullbrightPixel::RegisterPShader() {
+    nglDxRegisterPShader(cdPropellerFullbrightPixel::PS,
+                         cdPropellerFullbrightPixel::PShaderTable[0]);
+}
+
+// ea: 0x7D1380
+unsigned long* cdPropellerFullbrightPixel::GetPShader() {
+    return cdPropellerFullbrightPixel::PS[0];
+}
+
 tlFixedString cdPropellerShader::GetName() { return tlFixedString("cdPropeller"); }
 
 // ============================================================================
@@ -100,10 +133,25 @@ tlFixedString cdPropellerShader::GetName() { return tlFixedString("cdPropeller")
 // ============================================================================
 void cdPropellerShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdPropellerRender::VS, cdPropellerRender::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdPropellerPixel::PS, cdPropellerPixel::PShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdPropellerFullbrightPixel::PS, cdPropellerFullbrightPixel::PShaderTable, 0);
+    cdPropellerRender::RegisterVShader();
+    cdPropellerPixel::RegisterPShader();
+    cdPropellerFullbrightPixel::RegisterPShader();
 }
+
+// ea: 0x7D1390
+cdPropellerShaderNode::cdPropellerShaderNode(nglMeshNode* iMeshNode,
+                                             nglMeshSection* iSection,
+                                             cdPropellerShaderMat* iMaterial) {
+    MeshNode = iMeshNode;
+    Section = iSection;
+    mMaterial = iMaterial;
+}
+
+// ea: 0x7D13F0
+cdPropellerShaderNode::~cdPropellerShaderNode() = default;
+
+// ea: 0x7D1430
+cdPropellerShader::~cdPropellerShader() = default;
 
 // ============================================================================
 // cdPropellerShader::AddNode — add a propeller node to the transparent list.

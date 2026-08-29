@@ -142,7 +142,7 @@ cdDecalShader.o	22	17	0	5	0	0	0
 cdDynamicDecalShader.o	37	32	0	5	0	0	0
 cdDynamicDecalVertexDef.o	2	0	1	0	0	1	0
 cdFlagShader.o	42	37	0	5	0	0	0
-cdGlassShader.o	25	9	3	0	0	13	0
+cdGlassShader.o	25	9	0	0	0	16	0
 cdGlowShader.o	50	41	6	3	0	0	0
 cdGunShader.o	24	20	0	4	0	0	0
 cdGunSightShader.o	22	16	0	6	0	0	0
@@ -151,7 +151,7 @@ cdHeatHazeShader.o	20	18	0	1	0	1	0
 cdOceanGlobals.o	19	5	0	14	0	0	0
 cdOceanShader.o	23	13	1	9	0	0	0
 cdPrelitShader.o	25	21	0	4	0	0	0
-cdPropellerShader.o	22	17	0	5	0	0	0
+cdPropellerShader.o	22	10	1	4	0	7	0
 cdRiverShader.o	37	27	1	8	0	1	0
 cdScratchShader.o	46	35	0	10	0	1	0
 cdScratchVertexDef.o	2	0	0	0	0	2	0
