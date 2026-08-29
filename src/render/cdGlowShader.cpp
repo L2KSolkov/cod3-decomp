@@ -53,6 +53,22 @@ namespace cdGlowApply {
     unsigned long* Shader = nullptr;
 }
 
+// ea: 0x007C2A80
+void cdGlowRender4::RegisterVShader()
+{
+    nglDxRegisterVShader(cdGlowRender4::VS,
+                         reinterpret_cast<const unsigned int*>(cdGlowRender4::VShaderTable[0]));
+    cdGlowRender4::Shader = cdGlowRender4::VS[0];
+}
+
+// ea: 0x007C2AD0
+void cdGlowRender1::RegisterVShader()
+{
+    nglDxRegisterVShader(cdGlowRender1::VS,
+                         reinterpret_cast<const unsigned int*>(cdGlowRender1::VShaderTable[0]));
+    cdGlowRender1::Shader = cdGlowRender1::VS[0];
+}
+
 // ============================================================================
 // Globals
 // ============================================================================
