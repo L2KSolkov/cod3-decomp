@@ -4736,6 +4736,8 @@ struct TaskHandler {
     TaskHandler(FourCC task_id, uint32_t flags);
 
     FourCC GetId() const;             // game.o 0x4A5340
+    void QuickDeactivation(DbLinkedHandle<EntityHandleDb, Entity> h); // game2.o 0x4FFB80
+    void DeactivateAll();             // game2.o 0x504B80
     Task* GetTaskForEntity(DbLinkedHandle<EntityHandleDb, Entity> h) const; // game2.o 0x504BC0
 };
 static_assert(sizeof(TaskHandler) == 0x30, "TaskHandler size mismatch");

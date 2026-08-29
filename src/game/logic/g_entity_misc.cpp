@@ -2889,6 +2889,72 @@ SplinePathData* SplineGroup::GetPath()
     return &mPaths.mList[chosen];
 }
 
+struct TaskDListNodeView {
+    void* mNext;
+    void* mPrev;
+};
+struct TaskDListView {
+    int mSize;
+    TaskDListNodeView* mHead;
+    TaskDListNodeView* mEnd;
+    TaskDListNodeView* mTail;
+};
+static_assert(sizeof(TaskDListView) == 0x10,
+              "Task dlist layout mismatch");
+extern void* mem_heap_malloc_sz(unsigned int size);
+
+// ea: 0x004FFB80
+void TaskHandler::QuickDeactivation(
+    DbLinkedHandle<EntityHandleDb, Entity> h)
+{
+    unsigned char* record = static_cast<unsigned char*>(
+        mem_heap_malloc_sz(0xC));
+    if (record != nullptr)
+    {
+        TaskDListNodeView* node = reinterpret_cast<TaskDListNodeView*>(record);
+        node->mNext = nullptr;
+        node->mPrev = nullptr;
+        *reinterpret_cast<DbLinkedHandle<EntityHandleDb, Entity>*>(record + 8) = h;
+    }
+
+    TaskDListView* list = reinterpret_cast<TaskDListView*>(
+        reinterpret_cast<unsigned char*>(this) + 0x20);
+    TaskDListNodeView* tail = list->mTail;
+    TaskDListNodeView* node = reinterpret_cast<TaskDListNodeView*>(record);
+    node->mNext = list->mEnd;
+    node->mPrev = tail;
+    tail->mNext = node;
+    list->mTail = node;
+    ++list->mSize;
+}
+
+// ea: 0x00504B80
+void TaskHandler::DeactivateAll()
+{
+    mFlags |= 8u;
+    TaskDListView* list = reinterpret_cast<TaskDListView*>(
+        reinterpret_cast<unsigned char*>(this) + 0x10);
+    TaskDListNodeView* head = list->mHead;
+    TaskDListNodeView* next = head != nullptr ?
+        static_cast<TaskDListNodeView*>(head->mNext) : nullptr;
+    if (head != list->mEnd && next != nullptr)
+    {
+        do
+        {
+            *reinterpret_cast<unsigned int*>(
+                reinterpret_cast<unsigned char*>(head) + 0x14) |= 4u;
+            head = next;
+            next = static_cast<TaskDListNodeView*>(head->mNext);
+        }
+        while (next != nullptr);
+    }
+}
+
+static void (TaskHandler::*const gTaskHandlerQuickDeactivationAnchor)(
+    DbLinkedHandle<EntityHandleDb, Entity>) = &TaskHandler::QuickDeactivation;
+static void (TaskHandler::*const gTaskHandlerDeactivateAllAnchor)() =
+    &TaskHandler::DeactivateAll;
+
 // ea: 0x00504BC0
 Task* TaskHandler::GetTaskForEntity(
     DbLinkedHandle<EntityHandleDb, Entity> h) const
