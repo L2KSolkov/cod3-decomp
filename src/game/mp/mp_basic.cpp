@@ -7863,14 +7863,6 @@ void MPPeer::shutdownVoiceSubsystem()
 // ============================================================================
 // MP options menus (mp.o) - virtual overrides
 // ============================================================================
-void MPOptionsScreenMenu::Select(int)
-{
-}
-
-void MPOptionsScreenMenu::OnCross(int)
-{
-}
-
 // ea: 0x007305D0 (menu slot 21)
 MPOptionsScreenMenu* MPOptionsScreenMenu::Me()
 {

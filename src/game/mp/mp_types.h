@@ -1240,8 +1240,6 @@ public:
     virtual ~MPOptionsScreenMenu();        // ??1MPOptionsScreenMenu@@UAE@XZ (mp.o 0x730630)
     virtual void SetPanelFile(PanelFile* pf);  // ?SetPanelFile@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x730690)
     static MPOptionsScreenMenu* Me();  // ?Me@MPOptionsScreenMenu@@SAPAV1@XZ
-    virtual void Select(int entry_num);  // ?Select@MPOptionsScreenMenu@@UAEXH@Z
-    virtual void OnCross(int c);         // ?OnCross@MPOptionsScreenMenu@@UAEXH@Z
     virtual void Update(float time_inc); // ?Update@MPOptionsScreenMenu@@UAEXM@Z
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPOptionsScreenMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x7309B0)
     virtual void UpdateWidescreen(bool widescreen);  // ?UpdateWidescreen@MPOptionsScreenMenu@@UAEX_N@Z (mp.o 0x730D30)
