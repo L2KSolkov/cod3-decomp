@@ -34,6 +34,7 @@ struct cdPropellerShaderNode : nglShaderNode {
 
     cdPropellerShaderNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
                           cdPropellerShaderMat* iMaterial); // @0x7D1390
+    void Render() override;           // @0x7D0F10
     virtual ~cdPropellerShaderNode(); // @0x7D13F0
 };
 static_assert(sizeof(cdPropellerShaderNode) == 0x18, "cdPropellerShaderNode size mismatch");
@@ -51,10 +52,14 @@ public:
 };
 static_assert(sizeof(cdPropellerShader) == 0x10, "cdPropellerShader size mismatch");
 
-// IDA names this empty render context constructor at 0x7D1440.
 struct PropellerContext {
-    PropellerContext(); // @0x7D1440
+    math::Mat44 mLToS;           // +0x00
+    math::Mat44 mLightMatrices[2]; // +0x40
+    math::Vector4 mRotation;     // +0xC0
+
+    PropellerContext();          // @0x7D1440
 };
+static_assert(sizeof(PropellerContext) == 0xD0, "PropellerContext size mismatch");
 
 // ============================================================================
 // Shader data externs (defined in render_xboxr:cdPropellerShaderVertex.o)
