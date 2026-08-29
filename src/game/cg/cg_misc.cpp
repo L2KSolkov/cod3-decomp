@@ -838,6 +838,7 @@ public:
     int ShockedClient;       // +0x24
     int mClientIndex;        // +0x28
 };
+static_assert(sizeof(GlobalEffect) == 0x2C, "GlobalEffect size mismatch");
 
 // ea: 0x006BC160
 GlobalEffect::GlobalEffect(int client)

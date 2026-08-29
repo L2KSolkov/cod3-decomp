@@ -27,6 +27,7 @@ struct itemInfo_t {
     unsigned char _pad[3];
     nglTexture* icon;
 };
+static_assert(sizeof(itemInfo_t) == 0x8, "itemInfo_t size mismatch");
 
 // IDA cgMedia_t/cgsGlobal_t layouts used by CG_RegisterGraphics and the HUD
 // overlays.  The shellshock block is opaque here, but its release size is

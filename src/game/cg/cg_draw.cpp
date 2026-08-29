@@ -163,6 +163,7 @@ struct cg_hudelem_t {
     float charWidth;
     float color[4];
 };
+static_assert(sizeof(cg_hudelem_t) == 0x40, "cg_hudelem_t size mismatch");
 
 struct hudelem_s {
     int type;

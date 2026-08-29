@@ -303,6 +303,8 @@ struct consoleCommand_t {
     const char* cmd;
     void (*function)();
 };
+static_assert(sizeof(consoleCommand_t) == 0x8,
+              "consoleCommand_t size mismatch");
 
 extern void CG_Printf(const char* msg, ...);
 extern float dword_F63C70[4 * 1580];
