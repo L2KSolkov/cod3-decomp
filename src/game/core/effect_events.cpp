@@ -485,12 +485,14 @@ const float* DbRow_GetFieldValuePtrFloat(const DbRow* row, int id)
         ? row->GetFieldValuePtr<float>((uint16_t)id)
         : nullptr;
 }
-// ?DialogueManager_GetDialogue@@YAPBDPAXI@Z artifact (real member in
-// DialogueManager::GetDialogue, core.o 0x4C55B0; InplaceTree not ported yet)
+// ?DialogueManager_GetDialogue@@YAPBDPAXI@Z artifact.  The owning
+// DialogueManager member is ported in dialogue.cpp; this bridge preserves the
+// opaque-pointer ABI used by the effect-event translation unit.
 const char* DialogueManager_GetDialogue(void* mgr, unsigned int hash)
 {
-    (void)mgr; (void)hash;
-    return nullptr;
+    if (mgr == nullptr)
+        return nullptr;
+    return static_cast<DialogueManager*>(mgr)->GetDialogue(hash);
 }
 extern "C" void* GdbFileManager_GetInstance();
 extern void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId,
