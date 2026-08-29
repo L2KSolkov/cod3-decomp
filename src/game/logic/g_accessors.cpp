@@ -369,13 +369,13 @@ unsigned __int64 AeThreadManager::GetTimeStartExec()
     return AeThreadManager::sTimeStart;
 }
 
-// core.o 0x4B5610
+// ea: 0x004B5610
 void Entity::SetNotifySet(EntityNotifySet* n)
 {
     mNotifySet = n;
 }
 
-// core.o 0x4B5630
+// ea: 0x004B5630
 const math::Position3& Entity::GetPosition()
 {
     return r.currentOrigin;
@@ -2122,7 +2122,7 @@ DObj* Entity::GetDObj()
     return mDObj;
 }
 
-// core.o 0x4B5640
+// ea: 0x004B5640
 const DObj* Entity::GetDObj() const
 {
     return mDObj;
