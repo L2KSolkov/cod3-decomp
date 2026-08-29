@@ -121,3 +121,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004FF910	?RemoveDrone@@YAHPAVEntity@@I@Z	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x004FF910	Release RemoveDrone control flow and ~0xC flag mask match restored source.
 0x005048C0	?UpdateDroneAEMap@@YAHPAVEntity@@I@Z	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:3598-3615	Direct IDA comparison confirms removal path, master/slave selection, and animation-index conditions.
 0x005048C0	?UpdateDroneAEMap@@YAHPAVEntity@@I@Z	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x005048C0	Release UpdateDroneAEMap matches source.
+0x004EA9C0	?GetBoundCmdName@KeyInfoEntry@@QBEPADXZ	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2028-2032	Direct IDA comparison confirms the accessor returns mBoundCmdName unchanged.
+0x004EA9C0	?GetBoundCmdName@KeyInfoEntry@@QBEPADXZ	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x004EA9C0	Release accessor matches source.
+0x004F6650	?stat_GetLevelName@@YAPADXZ	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:1643-1648	Direct IDA comparison confirms notSet fallback and gMissionData return.
+0x004F6650	?stat_GetLevelName@@YAPADXZ	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x004F6650	Release stat_GetLevelName matches source.
+0x004F9700	?GetUnusedEntry@SplineMgr@@AAEPAUSplineEntry@1@XZ	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2876-2891	Direct IDA comparison confirms first unused entry scan, overflow error, and null return.
+0x004F9700	?GetUnusedEntry@SplineMgr@@AAEPAUSplineEntry@1@XZ	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x004F9700	Release GetUnusedEntry matches source.
+0x004F97C0	?UnloadBank@SplineMgr@@EAEXW4TPakId@@@Z	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2893-2907	Direct IDA comparison confirms bank scan and pak/file reset.
+0x004F97C0	?UnloadBank@SplineMgr@@EAEXW4TPakId@@@Z	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x004F97C0	Release UnloadBank matches source.
+0x004FEAA0	?SetKeyBinding@ButtonEntry@@QAEXE@Z	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2090-2097	Direct IDA comparison confirms key index/cache reset and conditional rebinding.
+0x004FEAA0	?SetKeyBinding@ButtonEntry@@QAEXE@Z	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x004FEAA0	Release SetKeyBinding matches source.
+0x005186C0	??0SplineEntry@SplineMgr@@QAE@XZ	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2737-2741	Direct IDA comparison confirms invalid pak id and null file initialization.
+0x005186C0	??0SplineEntry@SplineMgr@@QAE@XZ	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x005186C0	Release SplineEntry constructor matches source.
+0x005186E0	?Unload@SplineEntry@SplineMgr@@QAEXXZ	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2744-2748	Direct IDA comparison confirms pak/file reset.
+0x005186E0	?Unload@SplineEntry@SplineMgr@@QAEXXZ	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x005186E0	Release SplineEntry::Unload matches source.
+0x00518700	?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2751-2755	Direct IDA comparison confirms invalid-pak comparison.
+0x00518700	?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x00518700	Release SplineEntry::IsUsed matches source.
+0x004FFBD0	?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z	V3	PASS	ida-manual-game2-misc-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:3862-3880	Direct IDA comparison confirms null-effect warning and vector append path.
+0x004FFBD0	?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z	V4	PASS	ida-manual-game2-misc-20260828	2026-08-28	IDA:0x004FFBD0	Release AddSmokeGrenade matches source.
