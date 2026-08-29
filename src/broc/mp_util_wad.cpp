@@ -19796,15 +19796,78 @@ void PlayCapturedSounds(Broc::entity self, Broc::bint team,
 
 // CallbackAreaCaptured - ea: 0x976150
 void CallbackAreaCaptured(int index, int team) {
-    if (index >= 0 &&
-        index < Broc::size(mp_util_wad::pLevel->warAreas)) {
-        mp_util_wad::pLevel->warIndex = index;
-        Broc::bint now;
-        Broc::GetTime(&now);
-        mp_util_wad::pLevel->noCapTime =
-            (int)now + (Broc::GetCvarInt("mp_debug") != 0 ? 1000 : 10000);
-        mp_util_wad::pLevel->blinker = 1;
-        (void)team;
+    Broc::entity area =
+        mp_util_wad::pLevel->warAreas[(unsigned int)index];
+    if (!Broc::IsDefined(area))
+        return;
+
+    Broc::bint originalWarIndex(mp_util_wad::pLevel->warIndex);
+    Broc::bint now;
+    Broc::GetTime(&now);
+    mp_util_wad::pLevel->noCapTime =
+        (int)now + (Broc::GetCvarInt("mp_debug") != 0 ? 1000 : 10000);
+
+    if (team == 0) {
+        area->capStatus = -1.0f;
+        Broc::entity& trigger = area->flagEnd.GetRef();
+        trigger->capStatus = -1.0f;
+        trigger->capTeam = -1;
+        Broc::entity& flag = trigger->flag.GetRef();
+        Broc::SetModel(&flag, &mp_util_wad::pLevel->AxisFlagModel,
+                       INVALID_PAK_INFO);
+        Broc::iprintln("MPWAR_AXIS_CAPTURED_AREA");
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin, area);
+        GiveTeamMembersPoints(origin, Broc::bfloat(256),
+                              Broc::string("axis"));
+        ObjectiveRing(index, -1);
+        Broc::string state("i_flag_axis_c");
+        ObjectiveState(index, &state, "1", -1);
+        state.~string();
+        mp_util_wad::pLevel->warIndex =
+            (int)mp_util_wad::pLevel->warIndex - 1;
+    }
+
+    if (team == 1) {
+        area->capStatus = 1.0f;
+        Broc::entity& trigger = area->flagEnd.GetRef();
+        trigger->capStatus = 1.0f;
+        trigger->capTeam = 1;
+        Broc::entity& flag = trigger->flag.GetRef();
+        Broc::SetModel(&flag, &mp_util_wad::pLevel->AlliesFlagModel,
+                       INVALID_PAK_INFO);
+        Broc::iprintln("MPWAR_ALLIES_CAPTURED_AREA");
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin, area);
+        GiveTeamMembersPoints(origin, Broc::bfloat(256),
+                              Broc::string("allies"));
+        ObjectiveRing(index, -1);
+        Broc::string state("i_flag_allied_c");
+        ObjectiveState(index, &state, "1", -1);
+        state.~string();
+        mp_util_wad::pLevel->warIndex =
+            (int)mp_util_wad::pLevel->warIndex + 1;
+    }
+
+    if (team == 2) {
+        Broc::string state("i_objective_c");
+        ObjectiveState(index, &state, "1", -1);
+        state.~string();
+        Broc::string modelName("p_mp_dom_flag_hanging_nt");
+        Broc::entity& trigger = area->flagEnd.GetRef();
+        Broc::entity& flag = trigger->flag.GetRef();
+        Broc::SetModel(&flag, &modelName, INVALID_PAK_INFO);
+        trigger->capTeam = 0;
+        Broc::notify(area, "lost_flag");
+    } else {
+        Broc::entity level = mp_util_wad::pLevel != nullptr
+                                 ? mp_util_wad::pLevel->_base.entity
+                                 : Broc::entity();
+        void* sound = PlayCapturedSounds__functor(
+            level, Broc::bint(team), originalWarIndex);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "PlayCapturedSounds", sound);
+        UpdateAllowedCap();
     }
 }
 
