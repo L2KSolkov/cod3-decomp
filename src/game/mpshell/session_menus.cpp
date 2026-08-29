@@ -15922,6 +15922,20 @@ void MultilineOverlayMenu::Select(int entry_num)
         }
         Accept();
     }
+    else if (entry_num == 3)
+    {
+        OnTriangle(0);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\mp/ui/MultilineOverlayMenu.cpp";
+        AeAssert::gCurrentLine = 87;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
 }
 
 // ============================================================================
