@@ -3586,9 +3586,25 @@ void DObjDisplayAnim3D(int a, DObj* obj, float* const b, int c)
     (void)a; (void)obj; (void)b; (void)c;
 }
 void DObjDumpInfo(DObj* obj) { (void)obj; }
+// ea: 0x006CC870
 void DObjGetBounds(const DObj* obj, math::Position3& a, math::Position3& b)
 {
-    (void)obj; (void)a; (void)b;
+    IVPointer<XModel> model = obj->models[0];
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue == nullptr)
+        return;
+    ValidatePakId((TPakId)model.mPakId);
+    a.v.m128_f32[0] = model.mValue->mins.v.m128_f32[0];
+    ValidatePakId((TPakId)model.mPakId);
+    a.v.m128_f32[1] = model.mValue->mins.v.m128_f32[1];
+    ValidatePakId((TPakId)model.mPakId);
+    a.v.m128_f32[2] = model.mValue->mins.v.m128_f32[2];
+    ValidatePakId((TPakId)model.mPakId);
+    b.v.m128_f32[0] = model.mValue->maxs.v.m128_f32[0];
+    ValidatePakId((TPakId)model.mPakId);
+    b.v.m128_f32[1] = model.mValue->maxs.v.m128_f32[1];
+    ValidatePakId((TPakId)model.mPakId);
+    b.v.m128_f32[2] = model.mValue->maxs.v.m128_f32[2];
 }
 void DObjGetHierarchyBits(DObj* obj, int a, int* b)
 {

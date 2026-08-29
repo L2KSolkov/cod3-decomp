@@ -2531,7 +2531,8 @@ public:
 
 class XModel {
 public:
-    uint8_t      _pad0[0x20];  // +0x00
+    math::Position3 mins;     // +0x00
+    math::Position3 maxs;     // +0x10
     XModelParts* parts;        // +0x20
     XModelLod*   lod[5];       // +0x24
     InplaceVector<struct XModelCollSurf const*> collSurfs;  // +0x38
