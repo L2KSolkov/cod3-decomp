@@ -5406,6 +5406,8 @@ public:
     static TaskSys* Inst(); // ?Inst@TaskSys@@SAPAV1@XZ (g.o 0x4A7550)
     void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o
     void ReleaseTask(Task* t);  // ?ReleaseTask@TaskSys@@QAEXPAVTask@@@Z game2.o
+    Task* GetTaskForEntity(FourCC taskId,
+                           DbLinkedHandle<EntityHandleDb, Entity> eh) const; // game2.o 0x50BA90
 };
 static_assert(sizeof(TaskSys) == 0x19C, "TaskSys size mismatch");
 

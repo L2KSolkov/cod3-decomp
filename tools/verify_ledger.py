@@ -740,6 +740,11 @@ def symbol_variants(name: str) -> set[str]:
             "?IsEEDefined_script_friendname@@YA?AUbbool@Broc@@Ventity@2@@Z",
         "??A?$InplaceVector@VBspCell@@@@QAEAAVBspCell@@I@Z":
             "??A?$InplaceVector@UBspCell@@@@QAEAAUBspCell@@I@Z",
+        # FourCC is a layout-identical one-word value type. The release map
+        # records it as a class while the shared header declares it as a
+        # struct; accept only this verified TaskSys call-contract spelling.
+        "?GetTaskForEntity@TaskSys@@QBEPAVTask@@VFourCC@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":
+            "?GetTaskForEntity@TaskSys@@QBEPAVTask@@UFourCC@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:

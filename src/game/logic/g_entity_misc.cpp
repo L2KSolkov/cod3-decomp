@@ -2923,6 +2923,19 @@ Task* TaskHandler::GetTaskForEntity(
     return nullptr;
 }
 
+// ea: 0x0050BA90
+Task* TaskSys::GetTaskForEntity(
+    FourCC taskId, DbLinkedHandle<EntityHandleDb, Entity> eh) const
+{
+    for (int i = 0; i < mTaskHandlersSize; ++i)
+    {
+        TaskHandler* handler = reinterpret_cast<TaskHandler*>(mTaskHandlers[i]);
+        if (handler != nullptr && handler->mTaskId.mVal == taskId.mVal)
+            return handler->GetTaskForEntity(eh);
+    }
+    return nullptr;
+}
+
 struct TaskHandlerImpl;
 Task* HandleDb_GetTask(void* self, Handle h)
 {
