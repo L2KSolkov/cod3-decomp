@@ -725,6 +725,11 @@ inline Vector4 SinCos(const Vector4& radians)
 } // namespace math
 
 namespace AeAssert {
+enum ECoderId : int;
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 }
@@ -745,6 +750,10 @@ inline void AnglesToForward(const float* const angles,
 {
     if (forward == nullptr)
     {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\com_math.h";
+        AeAssert::gCurrentLine = 348;
+        AeAssert::gCurrentExpr = "forward";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
@@ -773,6 +782,10 @@ inline void AnglesToUp(const float* const angles, float* const up)
 {
     if (up == nullptr)
     {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\com_math.h";
+        AeAssert::gCurrentLine = 385;
+        AeAssert::gCurrentExpr = "up";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
