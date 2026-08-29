@@ -197,17 +197,9 @@ class biped_phys_info;
 struct phys_gjk_geom_list;
 class phys_gjk_geom_cod_base;
 struct trajectory_t;
-class PhysData {
-public:
-    uint8_t mName[4];   // +0x00 (InplaceString)
-    float   mMass;      // +0x04
-    float   mBounce;    // +0x08
-    float   mFric;      // +0x0C
-    void*   mConstraints;  // +0x10 (InplaceVector<PhysConstraint>)
-};
 
 // InplaceVector<T> (ae/inplace/InplaceVector.h view; 8 bytes). Layout
-// verified from AddPiece disasm (mSize read from +0x00, elements from +0x04).
+// verified from the release type and the AddPiece disassembly.
 template <typename T>
 struct InplaceVector {
     unsigned int mSize;  // +0x00
@@ -223,6 +215,17 @@ struct PhysConstraint {
     float mOrigin[3];  // +0x10
     float mAngles[3];  // +0x1C
 };
+
+// PhysData (PhysData.h view; release layout is 0x18 bytes).
+class PhysData {
+public:
+    uint8_t mName[4];   // +0x00 (InplaceString)
+    float   mMass;      // +0x04
+    float   mBounce;    // +0x08
+    float   mFric;      // +0x0C
+    InplaceVector<PhysConstraint> mConstraints; // +0x10
+};
+static_assert(sizeof(PhysData) == 0x18, "PhysData size mismatch");
 
 // IVPointer<T> (game_types.h view; class tag V matches the binary manglings)
 template <typename T>
@@ -4942,12 +4945,14 @@ public:
         struct { int brush_sides_m_count; void* brush_sides_m_elements; };
     };
     cdl_array_view brush_verts; // +0x24
-    dcg_position_view min;      // +0x2C
-    dcg_position_view max;      // +0x3C
-    dcg_position_view center;   // +0x4C
-    float radius;               // +0x5C
-    float radius2;              // +0x60
-    int id;                     // +0x64
+    uint32_t _2C;               // +0x2C (alignment before Position3)
+    dcg_position_view min;      // +0x30
+    dcg_position_view max;      // +0x40
+    dcg_position_view center;   // +0x50
+    float radius;               // +0x60
+    float radius2;              // +0x64
+    int id;                     // +0x68
+    uint32_t _6C;               // +0x6C
 
     // get_type - ea: 0x718570 (physics.o inline COMDAT); 1 = brush, 0 = box
     int get_type(unsigned int index) const
@@ -4964,7 +4969,7 @@ public:
         return index >= nboxes;
     }
 };
-static_assert(sizeof(DCGSet) == 0x68, "DCGSet size mismatch");
+static_assert(sizeof(DCGSet) == 0x70, "DCGSet size mismatch");
 #pragma pack(pop)
 
 // cdl_brush_t (cdl_mem.h view; objects[] element - center +0x08, half

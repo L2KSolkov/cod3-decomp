@@ -5497,15 +5497,28 @@ struct Destructible {
 };
 static_assert(sizeof(Destructible) == 0xC4, "Destructible size mismatch");
 
+// PhysConstraint (PhysData.h / physics.o local type).  The release object
+// stores the two packed Position3 values inline, for a total size of 0x28.
+struct PhysConstraint {
+    float mMinAngle;
+    float mMaxAngle;
+    float mDist;
+    float mDamp;
+    math::Position3::Packed mOrigin;
+    math::Position3::Packed mAngles;
+};
+static_assert(sizeof(PhysConstraint) == 0x28,
+              "PhysConstraint size mismatch");
+
 class PhysData {
 public:
     InplaceString mName;          // +0x00
     float         mMass;          // +0x04
     float         mBounce;        // +0x08
     float         mFric;          // +0x0C
-    void*         mConstraints;   // +0x10 (InplaceVector<PhysConstraint>)
+    InplaceVector<PhysConstraint> mConstraints; // +0x10
 };
-static_assert(sizeof(PhysData) == 0x14, "PhysData size mismatch");
+static_assert(sizeof(PhysData) == 0x18, "PhysData size mismatch");
 class DestructibleBankManager {
 public:
     static DestructibleBankManager* sInst;
