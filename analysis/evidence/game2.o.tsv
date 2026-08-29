@@ -257,3 +257,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004F6D80	?GetBoundCmdRelease@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ	V4	PASS	ida-manual-game2-button-20260828	2026-08-28	IDA:0x004F6D80	Release ButtonEntry::GetBoundCmdRelease matches source.
 0x004F6F70	?GetFilename@TestFPS@@AAEXPAD@Z	V3	PASS	ida-manual-game2-button-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2662-2672	Direct C3 comparison confirms stats directory construction and C<cell-index>.csv filename formatting.
 0x004F6F70	?GetFilename@TestFPS@@AAEXPAD@Z	V4	PASS	ida-manual-game2-button-20260828	2026-08-28	IDA:0x004F6F70	Release TestFPS::GetFilename matches source.
+0x004F9860	??0ScriptEventHandler@@QAE@XZ	V3	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2535-2545	Direct C3 comparison confirms dlist-node, seven event slots, and next-link initialization.
+0x004F9860	??0ScriptEventHandler@@QAE@XZ	V4	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	IDA:0x004F9860	Release ScriptEventHandler constructor matches source.
+0x004F98D0	?AddEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z	V3	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2547-2580	Direct C3 comparison confirms first-free-slot insertion, chained-handler allocation, and allocation-failure return.
+0x004F98D0	?AddEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z	V4	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	IDA:0x004F98D0	Release ScriptEventHandler::AddEvent(HashString,HashString) matches source.
+0x00518740	??0ScriptEvent@ScriptEventHandler@@QAE@XZ	V3	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:318-323	Direct C3 comparison confirms ScriptEvent notify and callback hashes initialize to zero.
+0x00518740	??0ScriptEvent@ScriptEventHandler@@QAE@XZ	V4	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	IDA:0x00518740	Release ScriptEvent constructor helper matches source.
