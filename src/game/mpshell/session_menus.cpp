@@ -13387,8 +13387,7 @@ void PlayOnlineMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = v22;
-    if (v22 != nullptr)
-        v22->SetNumLines(1);
+    helpbar1->SetNumLines(1);
     helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
     static const char* const szPreviewImages[4] = {
         "mm_preview_image_01", "mm_preview_image_02",
