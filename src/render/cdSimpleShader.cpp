@@ -177,16 +177,16 @@ void ToggleCDSimpleShader() {
 
 }
 
-// ============================================================================
-// cdSimpleShader::AddNode — add a simple shader node to the opaque list.
-// ea: 0x7D64C0
-// ============================================================================
 static void* cdSimpleShaderNodeVtable()
 {
     static cdSimpleShaderNode Probe{};
     return *reinterpret_cast<void**>(&Probe);
 }
 
+// ============================================================================
+// cdSimpleShader::AddNode — add a simple shader node to the opaque list.
+// ea: 0x7D64C0
+// ============================================================================
 void cdSimpleShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
                              nglMaterial* iMat) {
     if ((ShaderCommon::ShaderSwitching.__s0[1] & 4) == 0) {
