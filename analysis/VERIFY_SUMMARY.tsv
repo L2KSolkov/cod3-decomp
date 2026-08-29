@@ -5,11 +5,11 @@ Broc.o	161	97	24	38	0	2	0
 CallFunctor.o	1	0	0	0	0	1	0
 InplaceFileBuilder.o	1	0	0	0	0	1	0
 InplaceTree.o	1	0	0	0	0	1	0
-MemoryUnit.o	35	0	12	22	0	1	0
+MemoryUnit.o	35	0	12	20	0	3	0
 PoolAllocator.o	64	51	3	10	0	0	0
 PtrFixupTable.o	2	0	0	0	0	2	0
 ShaderCommon.o	33	28	3	2	0	0	0
-XboxMemoryUnit.o	46	0	18	27	0	1	0
+XboxMemoryUnit.o	46	0	18	26	0	2	0
 adler32.o	2	2	0	0	0	0	0
 ae_controller.o	2	0	0	0	0	2	0
 ae_fixed_string.o	9	0	0	0	0	9	0
@@ -76,7 +76,7 @@ bdCookieEchoChunk.obj	14	12	1	1	0	0	0
 bdCore.obj	12	12	0	0	0	0	0
 bdDataChunk.obj	20	8	4	8	0	0	0
 bdDiscoveryClient.obj	35	27	1	7	0	0	0
-bdDiscoveryListener.obj	7	2	0	3	0	2	0
+bdDiscoveryListener.obj	7	2	0	1	0	4	0
 bdDiscoveryServer.obj	9	0	2	7	0	0	0
 bdDispatchInterceptor.obj	4	2	0	0	0	2	0
 bdDispatcher.obj	17	13	1	3	0	0	0
@@ -101,7 +101,7 @@ bdMutex.obj	4	4	0	0	0	0	0
 bdNet-xbox.obj	49	35	5	9	0	0	0
 bdPacket.obj	32	30	0	2	0	0	0
 bdPlatformMutex-xbox.obj	4	4	0	0	0	0	0
-bdPlatformSocket-win32.obj	8	0	4	4	0	0	0
+bdPlatformSocket-win32.obj	8	0	4	3	0	1	0
 bdPlatformSocket.obj	5	0	0	4	0	1	0
 bdPlatformTiming-xbox.obj	5	5	0	0	0	0	0
 bdPlatformTrulyRandom-xbox.obj	1	1	0	0	0	0	0
@@ -119,7 +119,7 @@ bdSession.obj	169	128	11	30	0	0	0
 bdSessionHandler.obj	5	2	0	0	0	3	0
 bdSessionInfo.obj	3	0	3	0	0	0	0
 bdSessionInterceptor.obj	4	2	0	0	0	2	0
-bdSessionListener.obj	12	2	0	6	0	4	0
+bdSessionListener.obj	12	2	0	1	0	9	0
 bdShortTimer.obj	4	0	0	4	0	0	0
 bdShutdownAckChunk.obj	8	8	0	0	0	0	0
 bdShutdownChunk.obj	8	8	0	0	0	0	0
@@ -275,7 +275,7 @@ nvl_afmv.o	32	32	0	0	0	0	0
 nvl_base.o	23	23	0	0	0	0	0
 nvl_xbox.o	11	11	0	0	0	0	0
 phys_collision.o	24	15	6	2	0	1	0
-phys_constraint_solver_multithreaded.o	184	137	37	8	0	2	0
+phys_constraint_solver_multithreaded.o	184	137	37	7	0	3	0
 phys_contact_manifold.o	26	18	7	1	0	0	0
 phys_gjk.o	37	37	0	0	0	0	0
 phys_util.o	11	11	0	0	0	0	0
