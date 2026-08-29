@@ -10705,16 +10705,16 @@ void GameSettingsView::UpdateOption(int option, FEText* text)
             MPUIInterface::GetMapString(mCurrentServerParams->mMapID));
         return;
     case 2:
-        _snprintf(szText, sizeof(szText), "%d",
-                  MPUIInterface::GetTimeLimit(
-                      mCurrentServerParams->mTimeLimit));
+        sprintf(szText, "%d",
+                MPUIInterface::GetTimeLimit(
+                    mCurrentServerParams->mTimeLimit));
         text->SetText(szText);
         return;
     case 3:
-        _snprintf(szText, sizeof(szText), "%d",
-                  MPUIInterface::GetScoreLimit(
-                      mCurrentServerParams->mScoreLimit,
-                      (eGameType)mCurrentServerParams->mGameType));
+        sprintf(szText, "%d",
+                MPUIInterface::GetScoreLimit(
+                    mCurrentServerParams->mScoreLimit,
+                    (eGameType)mCurrentServerParams->mGameType));
         text->SetText(szText);
         return;
     case 4:
