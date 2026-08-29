@@ -173,6 +173,7 @@ struct cg_t {
     cg_t();
     unsigned char data[0x18B0];
 };
+static_assert(sizeof(cg_t) == 0x18B0, "cg_t size mismatch");
 
 // ea: 0x006BC1F0
 cg_t::cg_t()
