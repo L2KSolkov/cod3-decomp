@@ -3448,7 +3448,15 @@ void DialogMenuSystem_BringUp(void* self, const char* a, bool b, bool c,
 {
     (void)self; (void)a; (void)b; (void)c; (void)d; (void)e;
 }
-void DialogMenuSystem_CloseDialog(void* self) { (void)self; }
+class DialogMenuSystem {
+public:
+    void CloseDialog();
+};
+void DialogMenuSystem_CloseDialog(void* self)
+{
+    if (self != nullptr)
+        static_cast<DialogMenuSystem*>(self)->CloseDialog();
+}
 void DObjCalcAnim(DObj* obj, int a) { (void)obj; (void)a; }
 void DObjCalcAnim(void* obj, int a) { (void)obj; (void)a; }
 void DObjCreate(DObjModel* models, int numModels, void* tree, void* out,
