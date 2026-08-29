@@ -59,7 +59,13 @@ def release_functions() -> dict[int, tuple[str, str]]:
     signature = ""
     signature_line = -1
     ea_pattern = re.compile(r"^//----- \(00([0-9A-Fa-f]{6,8})\)")
-    name_pattern = re.compile(r"([~A-Za-z_]\w*(?:::[~A-Za-z_]\w*)*)\s*\(")
+    # Release signatures include explicit template arguments (for example
+    # ``TaskFunctor1<XAnimUpdateTask,float>::TaskFunctor1<...>``).  The
+    # previous token pattern stopped at ``TaskFunctor1`` and then fell back
+    # to the return type ``void``.  Keep angle-bracket contents opaque while
+    # still stopping at the opening parenthesis of the call signature.
+    component = r"[~A-Za-z_]\w*(?:<[^()\n{}]*>)?"
+    name_pattern = re.compile(fr"({component}(?::{component})*)\s*\(")
     for number, raw in enumerate(lines):
         match = ea_pattern.match(raw)
         if match:
@@ -92,7 +98,26 @@ def release_functions() -> dict[int, tuple[str, str]]:
         # otherwise appear after the actual C++ function name and make a
         # constructor look like a function named `void`.
         qualified = [match.group(1) for match in names if "::" in match.group(1)]
-        name = qualified[0] if qualified else names[-1].group(1)
+        name = max(qualified, key=len) if qualified else names[-1].group(1)
+        # A template return type can itself contain ``::``.  In that case
+        # the permissive template token may include the calling convention
+        # before the actual qualified function token; retain only the final
+        # whitespace-delimited symbol.
+        if "__" in name or " *" in name:
+            name = name.split()[-1].lstrip("*&")
+        # IDA emits the calling convention between the return type and the
+        # qualified symbol.  Extracting the token after it handles ordinary
+        # constructors (``Color::Color``) and templated constructors without
+        # relying on the return type's spelling.
+        calling = re.search(r"__(?:thiscall|cdecl|stdcall)\s+(.+?)\s*\(", signature)
+        if calling:
+            # Template arguments may contain spaces (``unsigned int``), so
+            # splitting this substring on whitespace truncates the symbol.
+            # The first opening parenthesis already terminates the complete
+            # function token; only pointer/reference decoration is removed.
+            candidate = calling.group(1).strip().lstrip("*&")
+            if candidate:
+                name = candidate
         body = matching_body(lines, signature_line)
         functions.setdefault(ea, (name, body))
         ea = None
