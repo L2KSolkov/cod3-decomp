@@ -3222,7 +3222,7 @@ void FN_Multiplayer_MapRestart()
 // FN_Multiplayer_Rank1 - reset persistent stats to rank 0
 // ea: 0x4F46E0
 // ============================================================================
-Entity* FN_Multiplayer_Rank1()
+void FN_Multiplayer_Rank1()
 {
     clientPersistent_t* p_pers =
         &EntityManager::sInst->GetPlayer(currCl)->client->pers;
@@ -3231,13 +3231,12 @@ Entity* FN_Multiplayer_Rank1()
     p_pers->mBaseScore = 0;
     Entity* result = EntityManager::sInst->GetPlayer(currCl);
     result->client->pers.rank = 0;
-    return result;
 }
 
 // ============================================================================
 // FN_Multiplayer_Rank2 - ea: 0x4F4740
 // ============================================================================
-Entity* FN_Multiplayer_Rank2()
+void FN_Multiplayer_Rank2()
 {
     clientPersistent_t* p_pers =
         &EntityManager::sInst->GetPlayer(currCl)->client->pers;
@@ -3247,18 +3246,16 @@ Entity* FN_Multiplayer_Rank2()
     EntityManager::sInst->GetPlayer(currCl)->client->pers.mStats[0][3] = 15;
     Entity* result = EntityManager::sInst->GetPlayer(currCl);
     result->client->pers.rank = 1;
-    return result;
 }
 
 // ============================================================================
 // FN_Multiplayer_Rank3 - ea: 0x4F47C0
 // ============================================================================
-Client* FN_Multiplayer_Rank3()
+void FN_Multiplayer_Rank3()
 {
     EntityManager::sInst->GetPlayer(currCl)->client->pers.mStats[0][3] = 40;
     Client* result = EntityManager::sInst->GetPlayer(currCl)->client;
     result->pers.rank = 2;
-    return result;
 }
 
 // ============================================================================

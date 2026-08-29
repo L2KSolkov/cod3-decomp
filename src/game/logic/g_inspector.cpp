@@ -825,9 +825,9 @@ extern void FN_PainShellshockTestFunction();
 extern void FN_DeathShellshockTestFunction();
 extern void FN_CurgenMotionBlur();
 extern void FN_Multiplayer_MapRestart();  // game2.o
-extern Entity* FN_Multiplayer_Rank1();
-extern Entity* FN_Multiplayer_Rank2();
-extern Client* FN_Multiplayer_Rank3();
+extern void FN_Multiplayer_Rank1();
+extern void FN_Multiplayer_Rank2();
+extern void FN_Multiplayer_Rank3();
 extern Entity* FN_DebugThread_Select_Player();  // game2.o
 extern EntityManager* FN_DebugThread_Select_Level();
 extern void FN_DebugThread_Select_Nearest();    // game2.o
