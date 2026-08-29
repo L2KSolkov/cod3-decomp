@@ -24780,7 +24780,7 @@ void DObjInitServerTime(DObj* d, float dtime)
     }
 }
 
-// ea: 0x0054BF0  (XAnimUpdateServerTime)
+// ea: 0x00554BF0
 void XAnimUpdateServerTime(Entity* e, float deltaT)
 {
     if ((e->flags & 0x10000) == 0 || (e->mFlags & 0x10) != 0)

@@ -95,7 +95,7 @@ unsigned int apsMath::FloatAsInt(float f) {
     return result;
 }
 
-// ea: 0x00809320
+// ea: 0x00809310
 void apsStore3(const math::Dir3* v, float* out) {
     out[0] = v->v.m128_f32[0];
     out[1] = v->v.m128_f32[1];
@@ -1867,7 +1867,7 @@ void apsPointAttractorAction::Act(unsigned char* iBegin, unsigned char* iEnd,
 
 apsLineAttractorAction::apsLineAttractorAction()
     : apsAction(9, 0, eAsync, 0x4001u) {}
-// ea: 0x0080EBDC
+// ea: 0x0080EBD0
 void apsLineAttractorAction::Act(unsigned char* iBegin, unsigned char* iEnd,
                                  apsGroup* ioGroup, apsEffect*, float,
                                  float iTimeDelta) {

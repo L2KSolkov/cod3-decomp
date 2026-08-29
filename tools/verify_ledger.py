@@ -1056,6 +1056,22 @@ def main() -> int:
     # they must not become orphan-function evidence.
     linked_vas = {row.va for row in functions}
     markers = scan_markers()
+    map_idas = {row.ida_ea for row in functions}
+    map_by_ea = {row.ida_ea: row for row in functions}
+    map_linked_vas = {row.va for row in functions}
+    # Some legacy source files copied the raw segment-2 offset from the map
+    # (`0002:0041xxxx`) instead of the IDA EA. Normalize only an address that
+    # becomes an exact map EA after applying a known segment base.
+    for marker in markers:
+        if marker.address in map_idas or marker.address in map_linked_vas:
+            continue
+        for base in SEGMENT_BASES.values():
+            normalized = marker.address + base
+            target = map_by_ea.get(normalized)
+            if (target is not None and marker.candidate and
+                    candidate_name_matches(target.name, marker.candidate)):
+                marker.address = normalized
+                break
     marker_by_ea: defaultdict[int, list[Marker]] = defaultdict(list)
     for marker in markers:
         marker_by_ea[marker.address].append(marker)
