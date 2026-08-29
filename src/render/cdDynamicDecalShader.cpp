@@ -23,7 +23,6 @@ namespace cdDynamicDecalRender {
     unsigned int const* VShaderTable[2] = {};
 }
 
-// ea: 0x007CD2C0
 void cdDynamicDecalRender::RegisterShader()
 {
     for (int index = 0; index != 2; ++index) {

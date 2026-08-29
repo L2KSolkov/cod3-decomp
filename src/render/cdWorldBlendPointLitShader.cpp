@@ -140,7 +140,6 @@ namespace cdWorldBlendPointLitProjectedRender {
     unsigned int const* VShaderTable[2] = { VShader0, VShader1 };
 }
 
-// ea: 0x007DB570
 void cdWorldBlendPointLitRender::RegisterShader()
 {
     for (int index = 0; index != 2; ++index) {
@@ -155,7 +154,6 @@ void cdWorldBlendPointLitRender::RegisterVShader()
     cdWorldBlendPointLitRender::RegisterShader();
 }
 
-// ea: 0x007DB5C0
 void cdWorldBlendPointLitProjectedRender::RegisterShader()
 {
     for (int index = 0; index != 2; ++index) {

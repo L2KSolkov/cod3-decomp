@@ -140,7 +140,6 @@ namespace cdWorldPointLitProjectedRender {
     unsigned int const* VShaderTable[2] = { VShader0, VShader1 };
 }
 
-// ea: 0x007DCD10
 void cdWorldPointLitRender::RegisterShader()
 {
     for (int index = 0; index != 2; ++index) {
@@ -155,7 +154,6 @@ void cdWorldPointLitRender::RegisterVShader()
     cdWorldPointLitRender::RegisterShader();
 }
 
-// ea: 0x007DCD60
 void cdWorldPointLitProjectedRender::RegisterShader()
 {
     for (int index = 0; index != 2; ++index) {
