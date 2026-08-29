@@ -198,7 +198,7 @@ mp.o	1142	375	12	355	0	400	0
 mp_actors.o	436	64	0	145	0	227	0
 mp_anim_wad.o	430	194	144	0	0	92	0
 mp_level_wad.o	1062	1040	3	14	0	5	0
-mp_shell.o	835	173	0	381	0	281	0
+mp_shell.o	835	173	0	372	0	290	0
 mp_util_wad.o	1283	620	269	0	0	394	0
 mp_xbox.o	77	20	0	5	0	52	0
 nal_anim.o	29	20	5	4	0	0	0
