@@ -13305,8 +13305,7 @@ void MultilineOverlayMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     mTextEntry = v7;
-    if (v7 != nullptr)
-        v7->SetNumLines(8);
+    v7->SetNumLines(8);
     AddEntry(1, mTextEntry, false);
     FEText* ok = panel->GetTextPointer("ok");
     AddEntry(2, ok, false);
@@ -13330,8 +13329,7 @@ void MultilineOverlayMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = v19;
-    if (v19 != nullptr)
-        v19->SetNumLines(1);
+    v19->SetNumLines(1);
     mTextScale = entries[1]->GetScaleX();
 }
 
