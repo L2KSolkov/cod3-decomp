@@ -57,6 +57,7 @@ public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
     static void CreateInst();  // ?CreateInst@InteractionController@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@InteractionController@@SAXXZ (core.o)
+    void ChangeWeaponToPending();  // anim.o 0x53C190
 };
 
 class PadAliasMgr {
@@ -418,7 +419,7 @@ extern void MemoryUnitManager_Service();
 extern void SyncFrameBuffers();
 void InteractionController_ChangeWeaponToPending(void* inst)
 {
-    (void)inst;
+    static_cast<InteractionController*>(inst)->ChangeWeaponToPending();
 }
 extern void StatMon_Warning(int type, int duration, const char* pszShaderName);
 extern void SetAnimCheck(int bAnimCheck);
