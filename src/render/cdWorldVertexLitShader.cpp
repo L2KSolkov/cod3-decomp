@@ -246,12 +246,12 @@ void ToggleCDWorldVertexLitShader() {
     ShaderCommon::ShaderSwitching.__s0[0] = byte;
 }
 
+tlFixedString cdWorldVertexLitShader::GetName() { return tlFixedString("cdWorldVertexLit"); }
+
 // ============================================================================
 // cdWorldVertexLitShader::Register — register the shaders.
 // ea: 0x7DE870
 // ============================================================================
-tlFixedString cdWorldVertexLitShader::GetName() { return tlFixedString("cdWorldVertexLit"); }
-
 void cdWorldVertexLitShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdWorldVertexLitRender::VS, cdWorldVertexLitRender::VShaderTable, 0);

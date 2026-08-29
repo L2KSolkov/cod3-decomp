@@ -287,12 +287,12 @@ void ToggleCDWorldBlendShader() {
     ShaderCommon::ShaderSwitching.__s0[0] = byte;
 }
 
+tlFixedString cdWorldBlendShader::GetName() { return tlFixedString("cdWorldBlend"); }
+
 // ============================================================================
 // cdWorldBlendShader::Register — register the world-blend shaders.
 // ea: 0x7DD310
 // ============================================================================
-tlFixedString cdWorldBlendShader::GetName() { return tlFixedString("cdWorldBlend"); }
-
 void cdWorldBlendShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

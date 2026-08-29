@@ -277,12 +277,12 @@ void ToggleCDWorldBlendPointLitShader() {
     ShaderCommon::ShaderSwitching.__s0[0] = byte;
 }
 
+tlFixedString cdWorldBlendPointLitShader::GetName() { return tlFixedString("cdWorldBlendPointLit"); }
+
 // ============================================================================
 // cdWorldBlendPointLitShader::Register — register the shaders.
 // ea: 0x7DA2D0
 // ============================================================================
-tlFixedString cdWorldBlendPointLitShader::GetName() { return tlFixedString("cdWorldBlendPointLit"); }
-
 void cdWorldBlendPointLitShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

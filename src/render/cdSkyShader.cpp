@@ -111,12 +111,12 @@ void ToggleCDSkyShader() {
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
 }
 
+tlFixedString cdSkyShader::GetName() { return tlFixedString("cdSky"); }
+
 // ============================================================================
 // cdSkyShader::Register — register the sky vertex/pixel shaders.
 // ea: 0x7E0F10
 // ============================================================================
-tlFixedString cdSkyShader::GetName() { return tlFixedString("cdSky"); }
-
 void cdSkyShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdSkyShaderRender::VS, cdSkyShaderRender::VShaderTable, 0);

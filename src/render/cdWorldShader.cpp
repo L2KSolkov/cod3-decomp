@@ -462,12 +462,12 @@ void ToggleCDWorldShader() {
 
 }
 
+tlFixedString cdWorldShader::GetName() { return tlFixedString("cdWorld"); }
+
 // ============================================================================
 // cdWorldShader::Register — register all world vertex/pixel shaders.
 // ea: 0x7DF140
 // ============================================================================
-tlFixedString cdWorldShader::GetName() { return tlFixedString("cdWorld"); }
-
 void cdWorldShader::Register() {
     nglShader::Register();
     cdWorldRender_RegisterShader();

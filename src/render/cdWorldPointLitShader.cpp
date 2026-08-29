@@ -277,12 +277,12 @@ void ToggleCDWorldPointLitShader() {
     ShaderCommon::ShaderSwitching.__s0[0] = byte;
 }
 
+tlFixedString cdWorldPointLitShader::GetName() { return tlFixedString("cdWorldPointLit"); }
+
 // ============================================================================
 // cdWorldPointLitShader::Register — register the point-lit shaders.
 // ea: 0x7DBB70
 // ============================================================================
-tlFixedString cdWorldPointLitShader::GetName() { return tlFixedString("cdWorldPointLit"); }
-
 void cdWorldPointLitShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

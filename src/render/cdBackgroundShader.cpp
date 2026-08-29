@@ -252,12 +252,12 @@ void ToggleCDBackgroundShader() {
 
 }
 
+tlFixedString cdBackgroundShader::GetName() { return tlFixedString("cdBackground"); }
+
 // ============================================================================
 // cdBackgroundShader::Register — register the background shaders.
 // ea: 0x7E0620
 // ============================================================================
-tlFixedString cdBackgroundShader::GetName() { return tlFixedString("cdBackground"); }
-
 void cdBackgroundShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdBackgroundRender::VS, cdBackgroundRender::VShaderTable, 0);
