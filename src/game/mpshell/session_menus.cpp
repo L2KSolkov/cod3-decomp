@@ -4830,8 +4830,8 @@ void PlayLanMenu::SetPreviewImage()
 void PlayLanMenu::SetOptionText()
 {
     m_pText[1]->SetText(
-        szPlayLanMenuOptionTextReferences[mListBox.mTopLine]
-                                         [mListBox.mSelectedLine]);
+        szPlayLanMenuOptionTextReferences[mListBox.mTopLine
+                                          + mListBox.mSelectedLine]);
 }
 
 // ea: 0x0079D0E0
@@ -8754,8 +8754,8 @@ void PlayLanMenu::OnActivate()
     SetLiveOnXBox();
     FEMenu::OnActivate();
     m_pText[1]->SetText(
-        szPlayLanMenuOptionTextReferences[mListBox.mTopLine]
-                                         [mListBox.mSelectedLine]);
+        szPlayLanMenuOptionTextReferences[mListBox.mTopLine
+                                          + mListBox.mSelectedLine]);
     SetPreviewImage();
     SetOptionText();
     SetDescriptionText();
