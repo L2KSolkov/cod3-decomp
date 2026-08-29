@@ -14624,8 +14624,11 @@ void MPPlayerManager::DispatchBufferedMessages()
                 ++conn_ptr->m_refCount;
             bdReceivedMessage recv_message(msgRef, connRef);
             unsigned char Type = msg_ptr->getType();
-            void* fn = *(void**)((char*)this + 0x55C8 + 8 * Type);
-            int thisDelta = *(int*)((char*)this + 0x55C8 + 8 * Type + 4);
+            int callbackIndex = (int)Type - 29;
+            void* fn = *(void**)((char*)this + 0x55C8
+                                 + 8 * callbackIndex);
+            int thisDelta = *(int*)((char*)this + 0x55C8
+                                    + 8 * callbackIndex + 4);
             typedef void (__thiscall* CbFn)(void*, bdReceivedMessage*);
             ((CbFn)fn)((char*)this + thisDelta, &recv_message);
             if (msg_ptr != nullptr && msg_ptr->m_refCount-- == 1)
