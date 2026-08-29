@@ -27277,9 +27277,12 @@ void MPPlayerManager::ClientConnect(MPPlayer* const player,
     bdReference<bdConnection> result =
         player->GetConnection();
     bdReference<bdCommonAddr> addr = result.m_ptr->getAddress();
-    bool fromLoopback = addr.m_ptr != nullptr
-                            ? addr.m_ptr->isLoopback()
-                            : false;
+    bool fromLoopback = addr.m_ptr->isLoopback();
+    if (addr.m_ptr != nullptr)
+    {
+        if (addr.m_ptr->m_refCount-- == 1)
+            delete addr.m_ptr;
+    }
     if (result.m_ptr != nullptr)
     {
         if (result.m_ptr->m_refCount-- == 1)
