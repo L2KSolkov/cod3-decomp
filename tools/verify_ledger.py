@@ -768,6 +768,8 @@ def symbol_variants(name: str) -> set[str]:
             "?GetTaskId@HealthRegenTask@@SA?AUFourCC@@XZ",
         "?LookupHandler@TaskSys@@QBEPAVTaskHandler@@VFourCC@@@Z":
             "?LookupHandler@TaskSys@@QBEPAUTaskHandler@@UFourCC@@@Z",
+        "?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z":
+            "?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXPBUSmokeGrenadeInfo@@@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:
