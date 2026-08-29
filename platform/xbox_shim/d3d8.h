@@ -557,6 +557,9 @@ void         __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int* pFu
 void         __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* pVAF,
                                                           unsigned int Address);
 void         __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* pPSDef);
+void         __stdcall D3DDevice_SetPixelShaderConstant(unsigned int Register,
+                                                         const void* pConstantData,
+                                                         unsigned int VectorCount);
 void         __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_FogColor(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int Value);

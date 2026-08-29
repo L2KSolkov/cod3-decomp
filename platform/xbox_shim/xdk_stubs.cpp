@@ -1688,6 +1688,17 @@ void __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
     if (gD3D9Device != NULL && VectorCount != 0)
         gD3D9Device->SetVertexShaderConstantF(Register, (const float*)Data, VectorCount);
 }
+void __stdcall D3DDevice_SetPixelShaderConstant(unsigned int Register,
+                                                const void* Data,
+                                                unsigned int VectorCount) {
+    if (Data == NULL || Register >= 224 || VectorCount == 0)
+        return;
+    if (VectorCount > 224u - Register)
+        VectorCount = 224u - Register;
+    if (gD3D9Device != NULL)
+        gD3D9Device->SetPixelShaderConstantF(Register, (const float*)Data,
+                                             VectorCount);
+}
 void __cdecl compress2(void) {}
 unsigned int __stdcall D3DBaseTexture_GetLevelCount(D3DBaseTexture* Texture) {
     nullD3DInfo* Info = nullD3DTextureInfo(Texture);

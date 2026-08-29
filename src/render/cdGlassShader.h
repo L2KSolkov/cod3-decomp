@@ -73,6 +73,8 @@ namespace cdGlassSolidColorPixel {
 extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern nglTexture* gProjShadowTex;  // ?gProjShadowTex@@3PAUnglTexture@@A (render.o)
+extern void gpuSetPixelConstant(unsigned int idx, math::Vector4* data,
+                                unsigned int nelements); // @0x7D0680
 
 extern cdGlassShader* gCDGlassShader;  // @0x10DE538
 

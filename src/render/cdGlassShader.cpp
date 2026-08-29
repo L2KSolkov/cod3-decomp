@@ -60,6 +60,21 @@ void cdGlassSolidColorPixel::RegisterPShader() {
     nglDxRegisterPShader(PS, PShaderTable[0]);
 }
 
+// ea: 0x7D0600
+const math::Mat44& math::Mat44::operator=(const math::Mat43& matrix) {
+    x.v = _mm_shuffle_ps(matrix.x.v, _mm_shuffle_ps(_mm_setzero_ps(), matrix.x.v, 160), 52);
+    y.v = _mm_shuffle_ps(matrix.y.v, _mm_shuffle_ps(_mm_setzero_ps(), matrix.y.v, 160), 52);
+    z.v = _mm_shuffle_ps(matrix.z.v, _mm_shuffle_ps(_mm_setzero_ps(), matrix.z.v, 160), 52);
+    w.v = _mm_shuffle_ps(matrix.w.v, _mm_shuffle_ps(_mm_set_ss(1.0f), matrix.w.v, 160), 52);
+    return *this;
+}
+
+// ea: 0x7D0680
+void gpuSetPixelConstant(unsigned int idx, math::Vector4* data,
+                         unsigned int nelements) {
+    D3DDevice_SetPixelShaderConstant(idx, data, nelements);
+}
+
 // ============================================================================
 // InitCDGlassShader — allocate the shader and link into the init list.
 // ea: 0x7CFF90

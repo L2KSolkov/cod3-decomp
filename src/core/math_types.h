@@ -449,6 +449,7 @@ public:
     Vector4& operator[](unsigned int i); // ??AMat44@math@@QAEAAVVector4@1@I@Z (game2.o 0x004EB4A0)
     const Vector4& operator[](unsigned int i) const; // ??AMat44@math@@QBEABVVector4@1@I@Z (game2.o 0x004EB4C0)
     const Mat44& operator=(const Mat44& _m);  // ??4Mat44@math@@QAEABV01@ABV01@@Z (core.o 0x4DBD50)
+    const Mat44& operator=(const Mat43& _m);  // ??4Mat44@math@@QAEABV01@ABVMat43@1@@Z (cdGlassShader.o 0x7D0600)
     const Mat44& operator*=(const Mat44& _m); // ??XMat44@math@@QAEABV01@ABV01@@Z (game2.o 0x004EBC30)
 };
 static_assert(sizeof(Mat44) == 0x40, "Mat44 size mismatch");
