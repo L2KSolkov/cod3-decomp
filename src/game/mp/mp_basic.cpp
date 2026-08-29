@@ -8623,7 +8623,7 @@ bool MultiplayerMgr::IsVoteOngoing()
 {
     MPPeer* mPeer = this->mPeer;
     bool result = false;
-    if (mPeer != nullptr)
+    if (mPeer != nullptr && mPeer != (MPPeer*)-29920)
     {
         MPPlayerManager* pm = (MPPlayerManager*)((char*)mPeer + 0x74E0);
         if (pm != nullptr)
@@ -13460,6 +13460,17 @@ int MultiplayerMgr::GetLocalPlayerId(int localPlayer) const
     int result = (int)mPeer;
     if (mPeer != nullptr)
     {
+        if (mPeer == (MPPeer*)-29920)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+            AeAssert::gCurrentLine = 923;
+            AeAssert::gCurrentExpr = "mPeer->GetPlayerManager()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Peer has not been created yet"))
+                __debugbreak();
+        }
         unsigned char v4 = *(unsigned char*)((char*)mPeer + 0x74E0 + 0x4111
                                              + localPlayer);
         MPPlayer* v5 = nullptr;
