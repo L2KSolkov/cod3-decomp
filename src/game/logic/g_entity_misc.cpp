@@ -3600,8 +3600,16 @@ void DynamicDecalMgr_Update(void* self, float a)
 }
 void Entity_Notify(Entity* e, unsigned int a) { (void)e; (void)a; }
 void Entity_Notify(void* e, unsigned int a) { (void)e; (void)a; }
-void EntityHandleDb_Compact(void* self) { (void)self; }
-void EntityHandleDb_Init(void* self) { (void)self; }
+void EntityHandleDb_Compact(void* self)
+{
+    if (self != nullptr)
+        static_cast<EntityHandleDb*>(self)->Compact();
+}
+void EntityHandleDb_Init(void* self)
+{
+    if (self != nullptr)
+        static_cast<EntityHandleDb*>(self)->Init();
+}
 void EntityHandleDb_Release(void* self, Entity* e)
 {
     if (self != nullptr && e != nullptr)
@@ -4353,9 +4361,16 @@ void SoundDevice_UnpauseAllSounds(void* self)
     if (self != nullptr)
         static_cast<SoundDevice*>(self)->UnpauseAllSounds();
 }
+struct SoundMediaMgr;
+extern void SoundMediaMgr_PlayLandingSound_Impl(SoundMediaMgr* self,
+                                                 Entity* entity,
+                                                 int surfaceType,
+                                                 bool damage);
 void SoundMediaMgr_PlayLandingSound(void* self, Entity* e, int a, bool b)
 {
-    (void)self; (void)e; (void)a; (void)b;
+    if (self != nullptr)
+        SoundMediaMgr_PlayLandingSound_Impl(
+            static_cast<SoundMediaMgr*>(self), e, a, b);
 }
 void StatusBar_Init(void* self)
 {
@@ -5369,6 +5384,14 @@ void SoundMediaMgr::PlayLandingSound(Entity* entity,
     memset(&v5.coord.v.m128_f32[3], 0, 20);
     v5.material = surfaceType;
     PostEffectEventLanding(entity, v5);
+}
+
+void SoundMediaMgr_PlayLandingSound_Impl(SoundMediaMgr* self,
+                                         Entity* entity,
+                                         int surfaceType,
+                                         bool damage)
+{
+    self->PlayLandingSound(entity, surfaceType, damage);
 }
 
 extern float nslGetWaveParam(nslWaveID wave, int b, float c);  // nsl_xboxr
