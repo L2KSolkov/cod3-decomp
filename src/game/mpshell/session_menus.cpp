@@ -4225,9 +4225,10 @@ void AARPauseMenu::Quit(int client)
         || (MPUIInterface::IsOnlineGame()
             && MultiplayerMgr::sInst->IsLocalClientHost(client)))
     {
-        extern void (*gpBrocAPI_mCallbackQuitGame)();
-        if (gpBrocAPI_mCallbackQuitGame != nullptr)
-            gpBrocAPI_mCallbackQuitGame();
+        void (*mCallbackQuitGame)() =
+            GetBrocAPI()->mBrocExports.mCallbackQuitGame;
+        if (mCallbackQuitGame != nullptr)
+            mCallbackQuitGame();
         menu = g_femanager.mAARS->menus[9];
         ((AARPauseMenu*)menu)->m_iLastSelection = -1;
         menu->system->ReturnToPreviousMenu(-1);
