@@ -1990,12 +1990,12 @@ struct KeyInfoEntry {
     int mState;              // +0x00 (bitfields mDown/mRepeats)
     char* mBoundCmdName;     // +0x04
 
-    char* GetBoundCmdName(); // game2.o 0x004EA9C0
+    char* GetBoundCmdName() const; // game2.o 0x004EA9C0
 };
 static_assert(sizeof(KeyInfoEntry) == 8, "KeyInfoEntry size mismatch");
 
 // ea: 0x004EA9C0
-char* KeyInfoEntry::GetBoundCmdName()
+char* KeyInfoEntry::GetBoundCmdName() const
 {
     return mBoundCmdName;
 }

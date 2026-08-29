@@ -745,6 +745,8 @@ def symbol_variants(name: str) -> set[str]:
         # struct; accept only this verified TaskSys call-contract spelling.
         "?GetTaskForEntity@TaskSys@@QBEPAVTask@@VFourCC@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":
             "?GetTaskForEntity@TaskSys@@QBEPAVTask@@UFourCC@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z",
+        "?GetId@Task@@QBE?AVFourCC@@XZ":
+            "?GetId@Task@@QBE?AUFourCC@@XZ",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:

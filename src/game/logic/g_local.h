@@ -5367,9 +5367,9 @@ public:
     bool IsActive() const;  // ?IsActive@Task@@QBE_NXZ (g.o 0x4AF150)
     void* get_dlist_node();  // ?get_dlist_node@Task@@QAEPAXXZ (game2.o 0x004EA9D0)
     static int get_dlist_node_offset();  // game2.o 0x004EA9E0
-    FourCC GetId();  // ?GetId@Task@@QBE?AVFourCC@@XZ (game2.o 0x004EA9F0)
-    DbLinkedHandle<EntityHandleDb, Entity> GetEntityHandle();  // game2.o 0x004EAA10
-    Handle GetTaskHandle();  // game2.o 0x004EAA30
+    FourCC GetId() const;  // ?GetId@Task@@QBE?AVFourCC@@XZ (game2.o 0x004EA9F0)
+    DbLinkedHandle<EntityHandleDb, Entity> GetEntityHandle() const;  // game2.o 0x004EAA10
+    Handle GetTaskHandle() const;  // game2.o 0x004EAA30
 
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o 0x4F9970

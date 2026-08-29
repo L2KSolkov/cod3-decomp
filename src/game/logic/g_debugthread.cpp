@@ -958,7 +958,7 @@ int Task::get_dlist_node_offset()
 }
 
 // ea: 0x004EA9F0
-FourCC Task::GetId()
+FourCC Task::GetId() const
 {
     FourCC result;
     result.mVal = mTaskId;
@@ -966,13 +966,13 @@ FourCC Task::GetId()
 }
 
 // ea: 0x004EAA10
-DbLinkedHandle<EntityHandleDb, Entity> Task::GetEntityHandle()
+DbLinkedHandle<EntityHandleDb, Entity> Task::GetEntityHandle() const
 {
     return mEntityHandle;
 }
 
 // ea: 0x004EAA30
-Handle Task::GetTaskHandle()
+Handle Task::GetTaskHandle() const
 {
     return mTaskHandle;
 }
