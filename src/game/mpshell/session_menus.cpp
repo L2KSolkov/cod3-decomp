@@ -8460,14 +8460,12 @@ void OverlayMenu::OnDown(int c)
 
 // ea: 0x0078FCB0
 MultilineOverlayMenu::MultilineOverlayMenu(FEMenuSystem* s)
-    : OverlayMenuBase(s, 4)
+    : OverlayMenuBase(s, 4),
+      mText((Broc::string::Block*)0)
 {
     mVersion = 0;
     panel = nullptr;
-    mText = Broc::string(Broc::UNDEFINED);
     mTextEntry = nullptr;
-    mTextScale = 0.0f;
-    mCountdown = 0.0f;
 }
 
 // ea: 0x00792660
