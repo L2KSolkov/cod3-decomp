@@ -268,9 +268,6 @@ void Cmd_PFXReport_f()
     }
 }
 
-// ============================================================================
-// IsOkToSpawnNewEffect - ea: 0x006C84F0
-// ============================================================================
 class ae_heap {
 public:
     void** __vftable;
@@ -284,6 +281,10 @@ struct mem_heap {
 extern void* gApsHeap;      // ?gApsHeap@@3PAVae_heap@@A (common.cpp)
 
 bool IsOkToSpawnNewEffect(apsEffectTemplate* Tmpl, int juice);
+
+// ============================================================================
+// IsOkToSpawnNewEffect - ea: 0x006C84F0
+// ============================================================================
 bool IsOkToSpawnNewEffect(apsEffectTemplate* Tmpl, int juice)
 {
     if (juice == 0)
@@ -413,9 +414,6 @@ void FX_UpdateFX(bool firstClient)
 }
 
 
-// ============================================================================
-// ProcessEffectsCollisions - ea: 0x006DA3F0
-// ============================================================================
 struct ParticleRaycastData {
     apsBounds mBounds;                 // +0x00
     proximity_data_t mProximityData;  // +0x20
@@ -426,6 +424,9 @@ extern void TracePoint(const proximity_data_t& proximity, trace_t* trace,
                        const math::Position3& start,
                        const math::Position3& end, int contentmask);
 
+// ============================================================================
+// ProcessEffectsCollisions - ea: 0x006DA3F0
+// ============================================================================
 void ProcessEffectsCollisions()  // ?ProcessEffectsCollisions@@YAXXZ @ 0x6DA3F0
 {
     ParticleEffect** it = gParticleEffectList.mElements;

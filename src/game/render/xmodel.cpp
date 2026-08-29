@@ -109,13 +109,13 @@ int XModelGetLodForDist(IVPointer<XModel> model, float dist)
     return v2;
 }
 
-// ============================================================================
-// XModelGetBasePose - ea: 0x006CAD70
-// ============================================================================
 static const math::Dir3 Float4_XAxis_BasePose = { _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f) };
 static const math::Dir3 Float4_YAxis_BasePose = { _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f) };
 static const math::Dir3 Float4_ZAxis_BasePose = { _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f) };
 
+// ============================================================================
+// XModelGetBasePose - ea: 0x006CAD70
+// ============================================================================
 void XModelGetBasePose(IVPointer<XModel> model, math::Mat43* mat)
 {
     ValidatePakId((TPakId)model.mPakId);
@@ -201,14 +201,14 @@ void XModelGetBasePose(IVPointer<XModel> model, math::Mat43* mat)
     }
 }
 
-// ============================================================================
-// XModelUpdateChildren - ea: 0x006CB0A0
-// ============================================================================
 static void CopyMatrix(DObjSkelMat* dst, const DObjSkelMat* src)
 {
     memcpy(dst, src, sizeof(DObjSkelMat));
 }
 
+// ============================================================================
+// XModelUpdateChildren - ea: 0x006CB0A0
+// ============================================================================
 void XModelUpdateChildren(IVPointer<XModel> model, DObjSkelMat* mat,
                           int boneIndex)
 {
@@ -307,9 +307,6 @@ void XModelUpdateChildren(IVPointer<XModel> model, DObjSkelMat* mat,
     }
 }
 
-// ============================================================================
-// XModelPartsManager::PostProcess - ea: 0x006CBE10
-// ============================================================================
 class XModelPartsBankView {
 public:
     uint8_t _pad[0x10];
@@ -319,6 +316,9 @@ public:
 nglMesh* cdGetMesh(TPakId pakId, const tlFixedString& name);  // streamer.o
 nalBaseSkeleton* cdGetSkeleton(TPakId pakId, const tlFixedString& name);  // streamer.o
 
+// ============================================================================
+// XModelPartsManager::PostProcess - ea: 0x006CBE10
+// ============================================================================
 void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
 {
     XModelPartsBankView* bank = (XModelPartsBankView*)xmpBank;
@@ -445,9 +445,6 @@ void XModelPartsManager::PostProcess(XModelPartsBank* xmpBank, TPakId pak_id)
     }
 }
 
-// ============================================================================
-// XModelGetStaticBounds - ea: 0x006CBBA0
-// ============================================================================
 struct XModelCollTri;
 
 struct XModelCollTri {
@@ -631,6 +628,9 @@ int XModelTraceLine(IVPointer<XModel> model, trace_t* results,
     return hitBone;
 }
 
+// ============================================================================
+// XModelGetStaticBounds - ea: 0x006CBBA0
+// ============================================================================
 int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
                           math::Position3& mins, math::Position3& maxs,
                           const math::Mat43* bones, int nbones)

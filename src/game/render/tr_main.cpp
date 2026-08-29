@@ -826,9 +826,6 @@ void R_AddXModelSurfaces(trRefEntity* ent)
     }
 }
 
-// ============================================================================
-// R_AddEntitySurfaces - ea: 0x006D7030
-// ============================================================================
 // BspTree.mCells = InplaceVector<BspCell> at +0x18 (mSize +0x18, mList +0x1C)
 struct trModelCellRef_t {
     math::Vector4 sphere;      // +0x00
@@ -919,6 +916,9 @@ public:
                              const Color& color);  // g_entity_misc.cpp
 };
 
+// ============================================================================
+// R_AddEntitySurfaces - ea: 0x006D7030
+// ============================================================================
 void R_AddEntitySurfaces()
 {
     if (r_drawentities->integer == 0)
@@ -1050,9 +1050,6 @@ void R_AddEntitySurfaces()
     g_huge_models.m_alloc_count = 0;
 }
 
-// ============================================================================
-// RE_EndFrame - ea: 0x006D1DB0
-// ============================================================================
 class TimerRenderBars {
 public:
     void Render();                  // ?Render@TimerRenderBars@@QAEXXZ
@@ -1074,6 +1071,9 @@ extern void nglPresent();           // ngl.o
 extern void R_ToggleSmpFrame();     // render.o
 extern void UpdateShotProf(float mTickDelta);  // g.o
 
+// ============================================================================
+// RE_EndFrame - ea: 0x006D1DB0
+// ============================================================================
 void RE_EndFrame(int* frontEndMsec, int* backEndMsec)
 {
     (void)frontEndMsec;

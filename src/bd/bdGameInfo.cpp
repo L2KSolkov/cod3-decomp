@@ -239,10 +239,6 @@ bdGameInfoFactoryImpl::~bdGameInfoFactoryImpl() {
         delete this->m_creator;
 }
 
-// ============================================================================
-// bdSingleton<bdGameInfoFactoryImpl>::getInstance - ea: 0x778210
-// Exact singleton allocation/registry path from the IDA C dump.
-// ============================================================================
 static void destroyGameInfoFactorySingleton() {
     bdGameInfoFactoryImpl* instance =
         bdSingleton<bdGameInfoFactoryImpl>::m_instance;
@@ -257,6 +253,10 @@ template <>
 bdGameInfoFactoryImpl* bdSingleton<bdGameInfoFactoryImpl>::m_instance = NULL;
 
 template <>
+// ============================================================================
+// bdSingleton<bdGameInfoFactoryImpl>::getInstance - ea: 0x778210
+// Exact singleton allocation/registry path from the IDA C dump.
+// ============================================================================
 bdGameInfoFactoryImpl* bdSingleton<bdGameInfoFactoryImpl>::getInstance() {
     bdGameInfoFactoryImpl* result =
         bdSingleton<bdGameInfoFactoryImpl>::m_instance;

@@ -19,11 +19,8 @@ extern const __m128 Float4_ZAxis_214;
 
 // ============================================================================
 // Matrix helpers (inline COMDATs, render.o / rbc_def_ragdoll.o).
-//   SetIdentity - ea: 0x6EB220
-//   make_rotate(Mat43&, Dir3 const&, float, float) - ea: 0x6EB2F0
-//   make_rotate(Mat43*, Dir3 const&, float) - ea: 0x6EB560
-//   make_rotate(Mat43*, Dir3 const&, Dir3 const&) - ea: 0x88A4B0
 // ============================================================================
+// SetIdentity - ea: 0x6EB220
 inline void SetIdentity(math::Mat43& m) {
     m.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
     m.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
@@ -31,6 +28,7 @@ inline void SetIdentity(math::Mat43& m) {
     m.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
+// make_rotate(Mat43&, Dir3 const&, float, float) - ea: 0x6EB2F0
 inline void make_rotate(math::Mat43& m, const math::Dir3& u, float ca, float sa) {
     const float ux = u.v.m128_f32[0];
     const float uy = u.v.m128_f32[1];
@@ -48,6 +46,7 @@ inline void make_rotate(math::Mat43& m, const math::Dir3& u, float ca, float sa)
                         (uz * uz) * omc + ca, 0.0f);
 }
 
+// make_rotate(Mat43*, Dir3 const&, float) - ea: 0x6EB560
 inline void make_rotate(math::Mat43* mat, const math::Dir3& v, float theta_factor) {
     const __m128 vv = v.v;
     const __m128 vv2 = _mm_mul_ps(vv, vv);

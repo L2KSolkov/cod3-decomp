@@ -174,6 +174,7 @@ PUBLIC ?FreeEntity@?A0x26f4efd5@@YAXPAVEntity@@@Z
 ?FreeEntity@?A0x26f4efd5@@YAXPAVEntity@@@Z ENDP
 
 EXTERN _cod3_mp_PlayPartialAnimationRate : PROC
+; ea: 0x0072D070
 PUBLIC ?PlayPartialAnimationRate@?A0x26f4efd5@@YAXPAVDObj@@PAUMP_ANIM_INDEX@@IMM_N@Z
 ?PlayPartialAnimationRate@?A0x26f4efd5@@YAXPAVDObj@@PAUMP_ANIM_INDEX@@IMM_N@Z PROC
     jmp _cod3_mp_PlayPartialAnimationRate

@@ -428,8 +428,17 @@ void reserved_dlist_CurveEffectListElem_delete_all(void* self)
     list->m_size = 0;
 }
 
+template <typename T>
+struct DelFunctor;
+
+template <>
+struct DelFunctor<Curve>
+{
+    void operator()(Curve* ptr);
+};
+
 // ea: 0x00662AD0
-static void DelFunctor_Curve(Curve* ptr)
+void DelFunctor<Curve>::operator()(Curve* ptr)
 {
     if (ptr != nullptr)
     {
@@ -451,7 +460,7 @@ static void safe_for_each_Curve(CurveNode* node, CurveNode* next,
             next = next->m_next;
         }
         if (current != nullptr)
-            DelFunctor_Curve(reinterpret_cast<Curve*>(current));
+            DelFunctor<Curve>()(reinterpret_cast<Curve*>(current));
     }
 }
 

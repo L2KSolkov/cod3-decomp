@@ -13888,7 +13888,6 @@ void path_constraint_destroy(class rigid_body_constraint_custom_path* vpc)
     phys_sys::destroy(vpc->m_urb);
 }
 
-// ea: 0x6FBD50 (inline; phys_array_base.inc index asserts retained)
 struct rb_collision_sphere {
     math::Position3 m_center_loc;  // +0x00
     float           m_radius;      // +0x10
@@ -13991,6 +13990,7 @@ void biped_system::setup_initial_gjk_cache(
     }
 }
 
+// ea: 0x6FBD50 (inline; phys_array_base.inc index asserts retained)
 void rigid_body_sphere_list::calc_bounding_sphere()
 {
     if (m_alloc_count <= 0

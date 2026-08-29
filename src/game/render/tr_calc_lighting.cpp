@@ -181,9 +181,6 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
     return ctx;
 }
 
-// ============================================================================
-// AddTextureMatrix - ea: 0x006CE850
-// ============================================================================
 class scr_vehicle_t {
 public:
     uint8_t _pad[0x51C];
@@ -202,6 +199,9 @@ static unsigned int g_tag_left_gear_hash;
 static unsigned int g_tag_right_gear_hash;
 static int g_tagInit;
 
+// ============================================================================
+// AddTextureMatrix - ea: 0x006CE850
+// ============================================================================
 bool AddTextureMatrix(Entity* ent, unsigned int boneNameHash,
                       nglShaderParamSet& shaderParams)
 {

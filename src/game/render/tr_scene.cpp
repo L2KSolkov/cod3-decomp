@@ -194,9 +194,6 @@ void RE_AddViewModelToScene(refEntity_t* ent)
     ++backEndData->viewmodels.m_size;
 }
 
-// ============================================================================
-// RE_AddPolyToScene - ea: 0x006D29C0
-// ============================================================================
 struct polyVert_t {
     float xyz[3];
     float st[2];
@@ -236,6 +233,9 @@ static inline unsigned int PackModulate(const unsigned char* m)
     return m[2] | (m[1] << 8) | (m[0] << 16) | (m[3] << 24);
 }
 
+// ============================================================================
+// RE_AddPolyToScene - ea: 0x006D29C0
+// ============================================================================
 void RE_AddPolyToScene(nglTexture* tex, int numVerts, const polyVert_t* verts)
 {
     if (numVerts != 4)

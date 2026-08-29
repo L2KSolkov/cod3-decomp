@@ -1343,7 +1343,6 @@ void ApsGameClient::DebugDrawLine(const math::Dir3& start,
     m_debugLines.push_back(l);
 }
 
-// ea: 0x006DA0C0
 namespace LightGrid {
 struct TOC;
 }
@@ -1357,6 +1356,9 @@ public:
                          math::Mat44* color);  // lightgrid.cpp
 };
 
+// ============================================================================
+// ApsGameClient::GetLightInfoAtPosition - ea: 0x006DA0C0
+// ============================================================================
 bool ApsGameClient::GetLightInfoAtPosition(const math::Dir3& pos,
                                            apsLight::LightInfo& outLightInfo)
 {
@@ -1589,7 +1591,6 @@ LightEffect* AddLight(TPakId pakId, LightEffect::eType type,
     return fx;
 }
 
-// ea: 0x006D3CF0
 struct PakFile;
 class PakManager {
 public:
@@ -1602,6 +1603,9 @@ extern void nglListAddPointLight(unsigned int LightCat,
                                  float Far, const math::Vector4& Color,
                                  bool isVertexPointLight);  // ngl_lighting.cpp
 
+// ============================================================================
+// UpdateLights - ea: 0x006D3CF0
+// ============================================================================
 void UpdateLights(float timeDeltaMS)
 {
     LightEffect** mElements = gLightEffectList.mElements;

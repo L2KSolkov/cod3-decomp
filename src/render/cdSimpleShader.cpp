@@ -130,13 +130,13 @@ cdSimpleShaderMat::cdSimpleShaderMat(nglTexture* iTexture) {
     this->Shader = gCDSimpleShader;
 }
 
-// ============================================================================
-// cdSimpleShader::Register — ea: 0x7D6490
-// ============================================================================
 tlFixedString cdSimpleShader::GetName() {
     return tlFixedString("cdSimple");
 }
 
+// ============================================================================
+// cdSimpleShader::Register — ea: 0x7D6490
+// ============================================================================
 void cdSimpleShader::Register() {
     nglShader::Register();
     cdSimpleRender::RegisterVShader();

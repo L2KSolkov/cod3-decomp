@@ -63,12 +63,12 @@ void ToggleCDScratchShader() {
         (unsigned char)(~byte ^ ((byte ^ ~byte) & 0x7F));
 }
 
+tlFixedString cdScratchShader::GetName() { return tlFixedString("PCUV"); }
+
 // ============================================================================
 // cdScratchShader::Register — register the scratch vertex/pixel shaders.
 // ea: 0x7C56B0
 // ============================================================================
-tlFixedString cdScratchShader::GetName() { return tlFixedString("PCUV"); }
-
 void cdScratchShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdScratchShaderVertex::VS, cdScratchShaderVertex::VShaderTable, 0);

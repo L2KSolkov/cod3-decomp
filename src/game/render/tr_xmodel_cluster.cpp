@@ -389,9 +389,6 @@ void do_shadow(DObj* obj, int model_index, int bone_index,
     }
 }
 
-// ============================================================================
-// R_AddVehicleSurfaces - ea: 0x006D0B50
-// ============================================================================
 static math::Mat43 VehicleWorldMatrix(const DObjSkelMatLocal* bone,
                                       const math::Mat43& matrix)
 {
@@ -506,6 +503,9 @@ static math::Mat43 VehicleWorldMatrix(const DObjSkelMatLocal* bone,
     return world;
 }
 
+// ============================================================================
+// R_AddVehicleSurfaces - ea: 0x006D0B50
+// ============================================================================
 int R_AddVehicleSurfaces(DObj* obj, Entity* entity, const math::Mat43& matrix,
                          float alpha, bool render_shadow)
 {

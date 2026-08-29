@@ -16,11 +16,11 @@
 // Shader global pointer definitions
 cdWorldColorShader* gCDWorldColorShader = nullptr;  // ?gCDWorldColorShader@@3PAVcdWorldColorShader@@A
 
+tlFixedString cdWorldColorShader::GetName() { return tlFixedString("cdWorldColor"); }
+
 // ============================================================================
 // cdWorldColorShader::Register — ea: 0x7D9E30 (empty)
 // ============================================================================
-tlFixedString cdWorldColorShader::GetName() { return tlFixedString("cdWorldColor"); }
-
 void cdWorldColorShader::Register() {
 }
 

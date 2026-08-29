@@ -93,12 +93,12 @@ void ToggleCDSimpleAlphaShader() {
         (unsigned char)(~byte ^ ((byte ^ ~byte) & 0x7F));
 }
 
+tlFixedString cdSimpleAlphaShader::GetName() { return tlFixedString("cdSimpleAlpha"); }
+
 // ============================================================================
 // cdSimpleAlphaShader::Register — register the alpha vertex/pixel shaders.
 // ea: 0x7C7F10
 // ============================================================================
-tlFixedString cdSimpleAlphaShader::GetName() { return tlFixedString("cdSimpleAlpha"); }
-
 void cdSimpleAlphaShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

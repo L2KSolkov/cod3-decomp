@@ -125,11 +125,6 @@ static std::unordered_map<void*, mem_allocation>::iterator find_allocation(void*
 #define dlcalloc(n,s)  calloc(n,s)
 #define dlmemalign(a,s) ((void*)0) // stub
 
-// ============================================================================
-// mem_heap_create — initialize a heap object
-// ea: 0x7BAEF0, 0x7BAF60
-// ============================================================================
-
 void mem_heap_init(mem_heap* heap, void* start, void* cur_left, void* cur_right) {
     memset(heap, 0, sizeof(mem_heap));
     heap->start = start;
@@ -138,6 +133,10 @@ void mem_heap_init(mem_heap* heap, void* start, void* cur_left, void* cur_right)
     heap->end = cur_right;
 }
 
+// ============================================================================
+// mem_heap_create — initialize a heap object
+// ea: 0x7BAF60
+// ============================================================================
 int mem_heap_create(void* start, void* end, mem_heap* out) {
     if (!out) return -1;
     mem_heap_init(out, start, start, end);
@@ -145,6 +144,7 @@ int mem_heap_create(void* start, void* end, mem_heap* out) {
     return 0;
 }
 
+// ea: 0x7BAEF0
 void mem_heap_create(mem_heap* heap, void* start, void* end,
                      mem_heap* reserve) {
     memset(heap, 0, 0x49C);

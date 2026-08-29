@@ -35,10 +35,6 @@ bdNetImpl::~bdNetImpl() {
     stop();
 }
 
-// ============================================================================
-// bdSingleton<bdNetImpl>::getInstance - ea: 0x778310
-// Exact allocation/registry path from the IDA C dump.
-// ============================================================================
 static void destroyNetSingleton() {
     bdNetImpl* instance = bdSingleton<bdNetImpl>::m_instance;
     if (instance != NULL) {
@@ -52,6 +48,10 @@ template <>
 bdNetImpl* bdSingleton<bdNetImpl>::m_instance = NULL;
 
 template <>
+// ============================================================================
+// bdSingleton<bdNetImpl>::getInstance - ea: 0x778310
+// Exact allocation/registry path from the IDA C dump.
+// ============================================================================
 bdNetImpl* bdSingleton<bdNetImpl>::getInstance() {
     bdNetImpl* result = bdSingleton<bdNetImpl>::m_instance;
     if (result == NULL) {

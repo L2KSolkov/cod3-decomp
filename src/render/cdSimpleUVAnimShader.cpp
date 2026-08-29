@@ -126,12 +126,12 @@ void ToggleCDSimpleUVAnimShader() {
 
 }
 
+tlFixedString cdSimpleUVAnimShader::GetName() { return tlFixedString("cdSimpleUVAnim"); }
+
 // ============================================================================
 // cdSimpleUVAnimShader::Register — register the UV-anim shaders.
 // ea: 0x7C6E70
 // ============================================================================
-tlFixedString cdSimpleUVAnimShader::GetName() { return tlFixedString("cdSimpleUVAnim"); }
-
 void cdSimpleUVAnimShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdSimpleUVAnimRender::VS, cdSimpleUVAnimRender::VShaderTable, 0);

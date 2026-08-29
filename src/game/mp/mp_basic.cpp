@@ -12946,7 +12946,6 @@ int MPPlayer::GroundSurfaceType(int surfaceFlags)
     return (surfaceFlags >> 20) & 0x1F;
 }
 
-// ea: 0x0072D070 (anonymous namespace helper; hash cannot be reproduced)
 namespace {
 // ea: 0x0072DFF0
 void FreeEntity(Entity* ent)

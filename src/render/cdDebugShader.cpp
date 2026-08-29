@@ -103,14 +103,14 @@ void ToggleCDDebugShader() {
 
 }
 
-// ============================================================================
-// cdDebugShader::Register — register the debug vertex/pixel shaders.
-// ea: 0x7C6440
-// ============================================================================
 tlFixedString cdDebugShader::GetName() {
     return tlFixedString("cdDebug");
 }
 
+// ============================================================================
+// cdDebugShader::Register — register the debug vertex/pixel shaders.
+// ea: 0x7C6440
+// ============================================================================
 void cdDebugShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdDebugShaderRender::VS, cdDebugShaderRender::VShaderTable, 0);
