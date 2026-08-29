@@ -1988,10 +1988,7 @@ void CreateLanSessionMenu::OnRight(int c)
 void CreateLanSessionMenu::SetPanelFile(PanelFile* pf)
 {
     if (pf == nullptr)
-    {
         ASSERT("pf", "c:\\cod\\code\\game\\mp/ui/CreateLanSessionMenu.cpp", 115);
-        return;
-    }
     panel = pf;
 
     for (int i = 0; i < 4; ++i)
