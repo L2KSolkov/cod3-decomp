@@ -140,12 +140,12 @@ void ToggleCDSimplePrelitShader() {
 
 }
 
+tlFixedString cdSimplePrelitShader::GetName() { return tlFixedString("cdSimplePrelit"); }
+
 // ============================================================================
 // cdSimplePrelitShader::Register — register the prelit vertex/pixel shaders.
 // ea: 0x7D59E0
 // ============================================================================
-tlFixedString cdSimplePrelitShader::GetName() { return tlFixedString("cdSimplePrelit"); }
-
 void cdSimplePrelitShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdSimplePrelitRender::VS, cdSimplePrelitRender::VShaderTable, 0);

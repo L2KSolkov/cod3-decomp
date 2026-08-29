@@ -297,12 +297,12 @@ int cdRiverShaderNode::GetVShaderFogConstantOffset() {
     return -90;
 }
 
+tlFixedString cdRiverShader::GetName() { return tlFixedString("cdRiver"); }
+
 // ============================================================================
 // cdRiverShader::Register — register the river vertex/pixel shaders.
 // ea: 0x7D6C50
 // ============================================================================
-tlFixedString cdRiverShader::GetName() { return tlFixedString("cdRiver"); }
-
 void cdRiverShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdRiverRender::VS, cdRiverRender::VShaderTable, 0);

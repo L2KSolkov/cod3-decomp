@@ -125,12 +125,12 @@ void ToggleCDSimpleSpecularShader() {
 
 }
 
+tlFixedString cdSimpleSpecularShader::GetName() { return tlFixedString("cdSimpleSpecular"); }
+
 // ============================================================================
 // cdSimpleSpecularShader::Register — register the specular shaders.
 // ea: 0x7D4ED0
 // ============================================================================
-tlFixedString cdSimpleSpecularShader::GetName() { return tlFixedString("cdSimpleSpecular"); }
-
 void cdSimpleSpecularShader::Register() {
     nglShader::Register();
     cdSimpleSpecularRender::RegisterVShader();

@@ -106,12 +106,12 @@ void ToggleCDWaterShader() {
         (unsigned char)(~byte ^ ((byte ^ ~byte) & 0x7F));
 }
 
+tlFixedString cdWaterShader::GetName() { return tlFixedString("cdWater"); }
+
 // ============================================================================
 // cdWaterShader::Register — register the water vertex/pixel shaders.
 // ea: 0x7D96E0
 // ============================================================================
-tlFixedString cdWaterShader::GetName() { return tlFixedString("cdWater"); }
-
 void cdWaterShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdWaterRender::VS, cdWaterRender::VShaderTable, 0);

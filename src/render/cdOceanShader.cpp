@@ -323,12 +323,12 @@ int cdOceanShaderNode::GetVShaderParamsStartAddress() {
     return -88;
 }
 
+tlFixedString cdOceanShader::GetName() { return tlFixedString("cdOcean"); }
+
 // ============================================================================
 // cdOceanShader::Register — register the ocean vertex/pixel shaders.
 // ea: 0x7D7EB0
 // ============================================================================
-tlFixedString cdOceanShader::GetName() { return tlFixedString("cdOcean"); }
-
 void cdOceanShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdOceanRender::VS, cdOceanRender::VShaderTable, 0);
