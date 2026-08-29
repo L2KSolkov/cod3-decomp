@@ -28,6 +28,7 @@ VERIFY = ROOT / "analysis" / "VERIFY.tsv"
 SUMMARY = ROOT / "analysis" / "VERIFY_SUMMARY.tsv"
 ANOMALIES = ROOT / "analysis" / "VERIFY_ANOMALIES.tsv"
 TYPES = ROOT / "analysis" / "VERIFY_TYPES.tsv"
+C3_XBE_C = ROOT / "c3_bin" / "codmp_xboxr.xbe.c"
 
 EVIDENCE_FIELDS = [
     "ida_ea", "name", "gate", "result", "session", "date", "source_ref", "detail"
@@ -160,6 +161,22 @@ def asm_source_files() -> list[Path]:
         if root.exists():
             result.extend(path for path in root.rglob("*.asm"))
     return sorted(result)
+
+
+def c3_function_addresses() -> set[int]:
+    """Return exact function-label EAs present in the release decompilation.
+
+    The public map omits some static/unlisted release functions.  IDA's
+    generated C file still records their function boundaries with the
+    ``//----- (EA) -----`` label, which is authoritative supplemental
+    ground truth for source markers that otherwise appear orphaned.
+    """
+    if not C3_XBE_C.exists():
+        return set()
+    pattern = re.compile(r"//-----\s*\(([0-9A-Fa-f]{8})\)\s*-----")
+    return {int(match.group(1), 16)
+            for match in pattern.finditer(C3_XBE_C.read_text(
+                encoding="utf-8", errors="replace"))}
 
 
 def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
@@ -381,6 +398,10 @@ def scan_markers() -> list[Marker]:
             code_before_comment = line.split("//", 1)[0]
             if ";" in code_before_comment and "{" not in code_before_comment:
                 continue
+            if re.search(r"\bea:\s*0x[0-9A-Fa-f]+\s*\.\.\s*0x[0-9A-Fa-f]+", line):
+                # Section/range banners describe a span, not the function
+                # that follows the banner.
+                continue
             if (number + 1 < len(lines)
                     and re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", lines[number + 1])
                     and "{" not in code_before_comment):
@@ -411,6 +432,24 @@ def scan_markers() -> list[Marker]:
                             break
                 candidate_info = hinted_function_candidate(lines, number + 1, hint)
             if candidate_info is None:
+                # Standalone inventory markers that are followed by another
+                # EA entry or by a declaration are metadata, not a second
+                # source implementation. Keep unresolved markers only when
+                # there is no such declaration/banner evidence.
+                metadata_only = False
+                for probe in lines[number + 1:min(len(lines), number + 17)]:
+                    stripped = probe.strip()
+                    if (not stripped or stripped.startswith("//")
+                            or stripped.startswith("/*") or stripped.startswith("*")):
+                        if re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", stripped):
+                            metadata_only = True
+                            break
+                        continue
+                    if ";" in stripped and "{" not in stripped:
+                        metadata_only = True
+                    break
+                if metadata_only:
+                    continue
                 markers.append(Marker(int(match.group(1), 16), str(path.relative_to(ROOT)),
                                       number + 1, "", ""))
                 continue
@@ -1100,6 +1139,7 @@ def main() -> int:
     evidence, evidence_errors = read_evidence()
     today = dt.date.today().isoformat()
     type_rows = type_assertions()
+    release_function_eas = c3_function_addresses()
 
     rows: list[dict[str, str]] = []
     for function in in_scope:
@@ -1118,7 +1158,9 @@ def main() -> int:
 
     anomalies: list[dict[str, str]] = []
     for marker in markers:
-        if marker.address not in by_ea and marker.address not in linked_vas:
+        if (marker.address not in by_ea
+                and marker.address not in linked_vas
+                and marker.address not in release_function_eas):
             anomalies.append({"kind": "ORPHAN_MARKER", "ida_ea": f"0x{marker.address:08X}",
                               "name": marker.candidate, "source": marker.path,
                               "detail": f"line {marker.line}"})
@@ -1128,7 +1170,18 @@ def main() -> int:
         has_asm_marker = any(item.path.lower().endswith(".asm") for item in hits)
         has_cpp_marker = any(not item.path.lower().endswith(".asm") for item in hits)
         intentional_thunk_pair = has_asm_marker and has_cpp_marker
+        # Link-time folding can leave multiple source-level inline/alias
+        # bodies at one release EA.  Accept that only when every body is a
+        # real implementation and one candidate exactly resolves to the map
+        # symbol; empty, declaration-only, or conflicting duplicates remain
+        # actionable anomalies.
+        intentional_comdat_alias = (
+            len(hits) > 1
+            and all(body_class(item.body) == "REAL_BODY" for item in hits)
+            and any(candidate_name_matches(function.name, item.candidate)
+                    for item in hits))
         if (len(hits) > 1 and not intentional_thunk_pair and
+                not intentional_comdat_alias and
                 not (hit is not None and
                      body_class(hit.body) == "REAL_BODY" and
                      sum(1 for item in hits
