@@ -58,6 +58,8 @@ template <typename T>
 struct phys_link_list_base {
     T* m_next_link;  // +0x00
 };
+static_assert(sizeof(phys_link_list_base<void>) == sizeof(void*),
+              "phys_link_list_base layout mismatch");
 
 // ============================================================================
 // phys_simple_link_list<T> — simple list head (4 bytes)
@@ -66,6 +68,8 @@ template <typename T>
 struct phys_simple_link_list {
     T* m_first;  // +0x00
 };
+static_assert(sizeof(phys_simple_link_list<void>) == sizeof(void*),
+              "phys_simple_link_list layout mismatch");
 
 // ============================================================================
 // pulse_sum_cache — cached pulse-sum result per constraint (8 bytes)
