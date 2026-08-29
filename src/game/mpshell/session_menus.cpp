@@ -14022,9 +14022,22 @@ void InGameScoreBoard::Update(float time_inc)
             Entity* v15 = m_playerList.m_elements[i].pEntity;
             if (v15 != nullptr)
             {
-                if (current_selection < 0
-                    && v15 == EntityManager::sInst->mPlayers[mVersion])
-                    current_selection = v13;
+                if (current_selection < 0)
+                {
+                    if (mVersion < 0 || mVersion >= 16)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\EntityManager.h";
+                        AeAssert::gCurrentLine = 19;
+                        AeAssert::gCurrentExpr = "idx<16";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                    }
+                    if (v15 == EntityManager::sInst->mPlayers[mVersion])
+                        current_selection = v13;
+                }
                 MPPlayer* Player = pPlayerManager->GetPlayer(v15);
                 if (Player != nullptr)
                     m_ListBox.SetPlayerID(v13, Player->GetId());
@@ -14197,8 +14210,7 @@ void InGameScoreBoard::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = v9;
-    if (v9 != nullptr)
-        v9->SetNumLines(1);
+    v9->SetNumLines(1);
     FEMultiLineText* v55 =
         (FEMultiLineText*)mem_heap_malloc(0xA8);
     FEMultiLineText* v13 = nullptr;
@@ -14213,8 +14225,7 @@ void InGameScoreBoard::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar2 = v13;
-    if (v13 != nullptr)
-        v13->SetNumLines(1);
+    v13->SetNumLines(1);
     m_ListBox.SetScrollBarQuad(
         UIListBox::kScrollBarArrowDown,
         pf->GetPointer("sb_scroll_arrow_down"));
