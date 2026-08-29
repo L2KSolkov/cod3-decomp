@@ -21,6 +21,7 @@ struct _XMEDIAPACKET {
     unsigned int reserved;
     __int64* prtTimestamp;
 };
+static_assert(sizeof(_XMEDIAPACKET) == 0x18, "_XMEDIAPACKET size mismatch");
 struct XMediaObject;
 struct XFileMediaObject;
 struct XMediaObject_vtbl {
@@ -32,6 +33,7 @@ struct XMediaObject_vtbl {
     HRESULT (__stdcall *Discontinuity)(XMediaObject*);
     HRESULT (__stdcall *Flush)(XMediaObject*);
 };
+static_assert(sizeof(XMediaObject_vtbl) == 0x1C, "XMediaObject_vtbl size mismatch");
 struct XMediaObject {
     XMediaObject_vtbl* __vftable;
 };
@@ -46,6 +48,7 @@ struct IDirectSoundStream_vtbl {
     HRESULT (__stdcall *Discontinuity)(IDirectSoundStream*);
     HRESULT (__stdcall *Flush)(IDirectSoundStream*);
 };
+static_assert(sizeof(IDirectSoundStream_vtbl) == 0x1C, "IDirectSoundStream_vtbl size mismatch");
 struct IDirectSoundStream {
     IDirectSoundStream_vtbl* __vftable;
 };
@@ -61,6 +64,7 @@ struct XFileMediaObject_vtbl {
     HRESULT (__stdcall *GetLength)(XFileMediaObject*, unsigned int*);
     void (__stdcall *DoWork)(XFileMediaObject*);
 };
+static_assert(sizeof(XFileMediaObject_vtbl) == 0x28, "XFileMediaObject_vtbl size mismatch");
 struct XFileMediaObject {
     XFileMediaObject_vtbl* __vftable;
 };
