@@ -251,3 +251,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004F6B90	?stat_WasPlayerWeaponCategoryUsed@@YA_NW4eWeaponCategory@@_N@Z	V4	PASS	ida-manual-game2-stats-20260828	2026-08-28	IDA:0x004F6B90	Release stat_WasPlayerWeaponCategoryUsed matches source.
 0x004F6C80	?stat_SetPlayerWeaponUsed@@YAXH@Z	V3	PASS	ida-manual-game2-stats-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:1888-1893	Direct C3 comparison confirms initialized/data guard and temporary weapon-bit update.
 0x004F6C80	?stat_SetPlayerWeaponUsed@@YAXH@Z	V4	PASS	ida-manual-game2-stats-20260828	2026-08-28	IDA:0x004F6C80	Release stat_SetPlayerWeaponUsed matches source.
+0x004F6D50	?GetBoundCmdPress@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ	V3	PASS	ida-manual-game2-button-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2047-2061	Direct C3 comparison confirms cached-command/null-sentinel behavior and lazy SetCmdBinding fallback.
+0x004F6D50	?GetBoundCmdPress@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ	V4	PASS	ida-manual-game2-button-20260828	2026-08-28	IDA:0x004F6D50	Release ButtonEntry::GetBoundCmdPress matches source.
+0x004F6D80	?GetBoundCmdRelease@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ	V3	PASS	ida-manual-game2-button-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2063-2077	Direct C3 comparison confirms cached-release/null-sentinel behavior and lazy SetCmdBinding fallback.
+0x004F6D80	?GetBoundCmdRelease@ButtonEntry@@QAEPBVBaseCmdFuncInfo@@XZ	V4	PASS	ida-manual-game2-button-20260828	2026-08-28	IDA:0x004F6D80	Release ButtonEntry::GetBoundCmdRelease matches source.
+0x004F6F70	?GetFilename@TestFPS@@AAEXPAD@Z	V3	PASS	ida-manual-game2-button-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2662-2672	Direct C3 comparison confirms stats directory construction and C<cell-index>.csv filename formatting.
+0x004F6F70	?GetFilename@TestFPS@@AAEXPAD@Z	V4	PASS	ida-manual-game2-button-20260828	2026-08-28	IDA:0x004F6F70	Release TestFPS::GetFilename matches source.
