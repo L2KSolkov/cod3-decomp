@@ -2478,22 +2478,50 @@ nflFileID      nslWaveGetFile(nslWaveID waveID) {
 }
 // ea: 0x00827C90
 void          nslWaveBankFree(nslWaveBankID waveBankID) {
-    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr) {
+        txPrintf("NSL", 1,
+                 "Freeing of invalid waveBank %p has been ignored.\n",
+                 waveBankID);
         return;
-    nslWaveBankSlot* slot = &nsl_waveBankSlots[(waveBankID >> 16) % nsl_initParams.aramBase];
-    if (slot->waveBankID != waveBankID)
+    }
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[
+        (waveBankID >> 16) % nsl_initParams.aramBase];
+    if (slot->waveBankID != waveBankID) {
+        txPrintf("NSL", 1,
+                 "Freeing of invalid waveBank %p has been ignored.\n",
+                 waveBankID);
         return;
-    if (slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADING) {
+    }
+    switch (slot->state) {
+    case NSL_WAVE_BANK_SLOT_STATE_PENDING:
+        txPrintf("NSL", 5, "Freeing pending waveBank %p (%s)\n",
+                 waveBankID, nslWaveBankGetName(waveBankID));
+        break;
+    case NSL_WAVE_BANK_SLOT_STATE_LOADING:
+        txPrintf("NSL", 5, "Begin canceling waveBank loading %p (%s)\n",
+                 waveBankID, nslWaveBankGetName(waveBankID));
         nslWaveBankLoaderCancel(&nsl_waveBankLoad);
         return;
-    }
-    if (slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADED && slot->waveBank != nullptr) {
-        nslAramFree(slot->waveBank->storage.backing.waveBankAram);
-        nslMemoryFree(slot->waveBank);
-        slot->waveBank = nullptr;
+    case NSL_WAVE_BANK_SLOT_STATE_LOADED:
+        txPrintf("NSL", 5, "Freeing loaded waveBank %p (%s)\n",
+                 waveBankID, nslWaveBankGetName(waveBankID));
+        if (slot->waveBank != nullptr) {
+            if ((slot->waveBank->waveBankFlags & 0x80u) == 0) {
+                nslAramFree(slot->waveBank->storage.backing.waveBankAram);
+                slot->waveBank->storage.backing.waveBankAram = nullptr;
+                nslMemoryFree(slot->waveBank);
+            } else {
+                nslWaveBankFree(slot->waveBank);
+            }
+            slot->waveBank = nullptr;
+        }
+        break;
+    default:
+        break;
     }
     slot->waveBankID = static_cast<nslWaveBankID>(
-        static_cast<unsigned>(slot->waveBankID) + (nsl_initParams.aramBase << 16));
+        static_cast<unsigned>(slot->waveBankID) +
+        (nsl_initParams.aramBase << 16));
     slot->state = NSL_WAVE_BANK_SLOT_STATE_NOTUSED;
 }
 
