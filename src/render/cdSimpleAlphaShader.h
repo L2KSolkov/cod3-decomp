@@ -60,6 +60,7 @@ static_assert(sizeof(cdSimpleAlphaShader) == 0x10, "cdSimpleAlphaShader size mis
 namespace cdSimpleAlphaRender {
     extern unsigned long VS[2];               // ?VS@cdSimpleAlphaRender@@3PAKA
     extern unsigned int const* VShaderTable[2];  // ?VShaderTable@cdSimpleAlphaRender@@3PAPBIA
+    void RegisterVShader();                   // @0x007C8D80
 }
 namespace cdSimpleAlphaPixel {
     extern unsigned long* PS[2];               // ?PS@cdSimpleAlphaPixel@@3PAPAKA

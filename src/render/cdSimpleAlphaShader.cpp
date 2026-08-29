@@ -29,6 +29,15 @@ namespace cdSimpleAlphaPixel_Fullbright {
     unsigned int const* PShaderTable[2] = {};
 }
 
+// ea: 0x007C8D80
+void cdSimpleAlphaRender::RegisterVShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(&cdSimpleAlphaRender::VS[index],
+                             cdSimpleAlphaRender::VShaderTable[index]);
+    }
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
