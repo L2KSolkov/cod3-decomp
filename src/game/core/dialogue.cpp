@@ -43,15 +43,36 @@ const char* DialogueInstance::Choose()
     return mSounds[mLastSound].mStr;
 }
 
-// InplaceAssetBank/InplaceTree helpers (streamer.o; stubs until ported)
+// InplaceAssetBank/InplaceTree helpers (streamer.o).  Dialogue banks use the
+// same serialized layout as the string-table banks; the shared fixup/tree
+// bridges preserve the release pointer adjustment and lookup semantics.
+extern void PtrFixupTable_Fixup(void* self, void* basePtr);
+extern unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key);
+
+struct DialogueAssetBankLayout {
+    unsigned int mFileId;
+    float mVersion;
+    unsigned int mTreeSize;
+    void* mTreeArray;
+    unsigned int mPtrsSize;
+    void** mPtrsList;
+    void* mPtrFixupTable;
+};
+static_assert(sizeof(DialogueAssetBankLayout) == sizeof(DialogueBank),
+              "Dialogue bank serialized layout mismatch");
+
 void InplaceAssetBank_Fixup_Dialogue(DialogueBank* data)
 {
-    (void)data;
+    DialogueAssetBankLayout* bank =
+        reinterpret_cast<DialogueAssetBankLayout*>(data);
+    void* fixup = reinterpret_cast<unsigned char*>(bank)
+                  + reinterpret_cast<uintptr_t>(bank->mPtrFixupTable);
+    bank->mPtrFixupTable = fixup;
+    PtrFixupTable_Fixup(fixup, bank);
 }
 unsigned int* InplaceTree_Find_Dialogue(void* tree, unsigned int* key)
 {
-    (void)tree; (void)key;
-    return nullptr;
+    return InplaceTree_Find_U32(tree, key);
 }
 
 // DialogueManager.mBanks is opaque; expose element access through the
