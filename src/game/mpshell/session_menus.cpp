@@ -8873,10 +8873,38 @@ void AARScoreboardLoser::SetWinningTeam(team_t team)
     AARScoreboardBase::SetWinningTeam(team);
     m_pYourTeamScore[0]->SetShown(false);
     m_pYourTeamScore[1]->SetShown(false);
-    m_pYourTeamScore[2]->SetShown(false);
-    m_pYourTeamScore[3]->SetShown(false);
-    m_pYourTeamScore[4]->SetShown(false);
-    m_pYourTeamScore[5]->SetShown(false);
+    int shownTeam;
+    if (team != TEAM_ALLIES)
+    {
+        if (team == TEAM_AXIS)
+        {
+            m_pUppercaseText[0]->SetText("MPSCRIPT_ALLIES_ALLCAPS");
+        }
+        else
+        {
+            Entity* FirstLocalPlayer =
+                EntityManager::sInst->GetFirstLocalPlayer();
+            if (FirstLocalPlayer != nullptr
+                && FirstLocalPlayer->sentient != nullptr
+                && FirstLocalPlayer->sentient->eTeam == TEAM_ALLIES)
+            {
+                m_pUppercaseText[0]->SetText("MPSCRIPT_AXIS_DRAW");
+                shownTeam = 1;
+                m_cgTeamShown = TEAM_AXIS;
+                m_pYourTeamScore[shownTeam]->SetShown(true);
+                return;
+            }
+            m_pUppercaseText[0]->SetText("MPSCRIPT_ALLIES_DRAW");
+        }
+        shownTeam = 0;
+        m_cgTeamShown = TEAM_ALLIES;
+        m_pYourTeamScore[shownTeam]->SetShown(true);
+        return;
+    }
+    m_pUppercaseText[0]->SetText("MPSCRIPT_AXIS_ALLCAPS");
+    shownTeam = 1;
+    m_cgTeamShown = TEAM_AXIS;
+    m_pYourTeamScore[shownTeam]->SetShown(true);
 }
 
 // ea: 0x00790E30
