@@ -19891,10 +19891,10 @@ void SetupRound() {
     Broc::bint i(0);
     while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
         Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
-        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
         Broc::bbool triggerDefined;
         mp_util_wad::IsEEDefined_trigger(&triggerDefined, area);
         if ((bool)triggerDefined) {
+            Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
             Broc::string modelName("p_mp_dom_flag_hanging_nt");
             Broc::entity flag = *mp_util_wad::GetEE_flag(trigger);
             Broc::SetModel(&flag, &modelName, 0);
@@ -19936,6 +19936,7 @@ void SetupRound() {
     Broc::dyn_array<Broc::entity> players;
     Broc::GetPlayerArray(&players);
     UpdateAllowedCap();
+    players.~dyn_array();
 }
 }
 namespace _mp_shellshock {
