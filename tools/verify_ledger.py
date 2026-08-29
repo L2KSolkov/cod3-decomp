@@ -403,6 +403,16 @@ def scan_markers() -> list[Marker]:
                 # Section/range banners describe a span, not the function
                 # that follows the banner.
                 continue
+            suffix = line[match.end():].strip()
+            repeated_ea = lambda probe: re.search(
+                rf"\bea:\s*{re.escape(match.group(1))}\b", probe)
+            if suffix and (any(repeated_ea(probe)
+                               for probe in lines[max(0, number - 16):number])
+                           or any(repeated_ea(probe)
+                                  for probe in lines[number + 1:min(len(lines), number + 32)])):
+                # A suffixed annotation adjacent to the same EA is an
+                # explanatory alias/banner; retain the canonical marker.
+                continue
             if (number + 1 < len(lines)
                     and re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", lines[number + 1])
                     and "{" not in code_before_comment):
