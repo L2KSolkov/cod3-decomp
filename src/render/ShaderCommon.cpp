@@ -57,6 +57,7 @@ extern void InitCDWheelMarkShader();
 extern void InitCDPropellerShader();
 extern void InitCDSimpleAlphaShader();
 extern void InitCDGlassShader();
+extern void InitCDHeatHazeShader();
 extern void InitCDGlowShader();
 extern void InitCDGunShader();
 extern void InitCDGunSightShader();
@@ -419,6 +420,7 @@ void InitShaders() {
     InitCDPropellerShader();
     InitCDSimpleAlphaShader();
     InitCDGlassShader();
+    InitCDHeatHazeShader();
     InitCDGlowShader();
     InitCDGunShader();
     InitCDGunSightShader();
