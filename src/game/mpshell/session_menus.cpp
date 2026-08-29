@@ -15345,8 +15345,7 @@ void AARGameModeVote::SetPanelFile(PanelFile* pPanelFile)
                                     0.0f, 0, 0, col);
             }
             helpbar1 = v10;
-            if (v10 != nullptr)
-                v10->SetNumLines(1);
+            v10->SetNumLines(1);
             helpbar1->SetText(v6);
         }
         else
