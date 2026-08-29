@@ -1050,6 +1050,11 @@ def main() -> int:
     functions = parse_map(map_path)
     in_scope = [row for row in functions if row.cls in {"game", "engine"}]
     by_ea = {row.ida_ea: row for row in in_scope}
+    # Source annotations occasionally copied the map's linked-image VA (the
+    # third Publics column) instead of the IDA EA. Treat those as stale
+    # address prose when the same VA is present in the authoritative map;
+    # they must not become orphan-function evidence.
+    linked_vas = {row.va for row in functions}
     markers = scan_markers()
     marker_by_ea: defaultdict[int, list[Marker]] = defaultdict(list)
     for marker in markers:
@@ -1076,7 +1081,7 @@ def main() -> int:
 
     anomalies: list[dict[str, str]] = []
     for marker in markers:
-        if marker.address not in by_ea:
+        if marker.address not in by_ea and marker.address not in linked_vas:
             anomalies.append({"kind": "ORPHAN_MARKER", "ida_ea": f"0x{marker.address:08X}",
                               "name": marker.candidate, "source": marker.path,
                               "detail": f"line {marker.line}"})
