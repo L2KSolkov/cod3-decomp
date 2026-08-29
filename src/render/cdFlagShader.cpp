@@ -27,6 +27,14 @@ namespace cdFlagPixel {
     unsigned long* Shader = nullptr;
 }
 
+// ea: 0x007CB8B0
+void cdFlagVertex::RegisterVShader()
+{
+    nglDxRegisterVShader(cdFlagVertex::VS,
+                         reinterpret_cast<const unsigned int*>(cdFlagVertex::VShaderTable[0]));
+    cdFlagVertex::Shader = cdFlagVertex::VS[0];
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
