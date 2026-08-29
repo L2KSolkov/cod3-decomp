@@ -11374,7 +11374,7 @@ void AARMapVote::TallyVotes()
     }
     for (int i = 0; i < v1; ++i)
     {
-        if (v2 != 0 && m_pMapVoteVals[i] == v2)
+        if (v2 != 0 && this->m_pMapVoteVals[i] == v2)
             v6[v5++] = i;
     }
     int v8;
