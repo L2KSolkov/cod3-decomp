@@ -8209,7 +8209,7 @@ char MI_GetMapIndexbyID(char ID)
     {
         ++v1;
         v2 += 114;
-        if (v1 > g_NumTotalMaps)
+        if (v1 >= g_NumTotalMaps)
             return -1;
     }
     return (char)v1;
