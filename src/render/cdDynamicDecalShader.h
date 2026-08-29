@@ -52,6 +52,8 @@ static_assert(sizeof(cdDynamicDecalShader) == 0x10, "cdDynamicDecalShader size m
 namespace cdDynamicDecalRender {
     extern unsigned long VS[2];                    // ?VS@cdDynamicDecalRender@@3PAKA
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdDynamicDecalRender@@3PAPBIA
+    void RegisterShader();                          // @0x007CD2C0
+    void RegisterVShader();                         // @0x007CD2E0
 }
 namespace cdDynamicDecalPixel {
     extern unsigned long* PS[2];                    // ?PS@cdDynamicDecalPixel@@3PAPAKA

@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdGunShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -41,6 +43,14 @@ namespace cdGunRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007CF000
+void cdGunRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdGunRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdGunRender::VShaderTable[0]));
+    cdGunRender::Shader = cdGunRender::VS[0];
 }
 namespace cdGunPixel {
     static const unsigned int PShaderMicrocode[60] = {

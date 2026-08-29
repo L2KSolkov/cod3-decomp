@@ -19,6 +19,7 @@ namespace cdHeatHazeRender {
     extern unsigned long* VS;                // ?VS@cdHeatHazeRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdHeatHazeRender@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdHeatHazeRender@@3KA
+    void RegisterVShader();                  // @0x007CFC10
 }
 namespace cdHeatHazePixel {
     extern unsigned long** PS;               // ?PS@cdHeatHazePixel@@3PAPAKA

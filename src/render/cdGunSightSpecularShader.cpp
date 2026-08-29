@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdGunSightSpecularShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -19,6 +21,15 @@ cdGunSightSpecularShader* gCDGunSightSpecularShader = nullptr;  // ?gCDGunSightS
 namespace cdGunSightSpecularRender {
     unsigned long VS[2] = {};
     unsigned int const* VShaderTable[2] = {};
+}
+
+// ea: 0x007CDCD0
+void cdGunSightSpecularRender::RegisterVShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdGunSightSpecularRender::VS[index]),
+                             cdGunSightSpecularRender::VShaderTable[index]);
+    }
 }
 namespace cdGunSightSpecularPixel {
     unsigned long* PS[2] = {};

@@ -52,6 +52,7 @@ static_assert(sizeof(cdGunSightShader) == 0x10, "cdGunSightShader size mismatch"
 namespace cdGunSightRender {
     extern unsigned int VS[1];               // ?VS@cdGunSightRender@@3PAKA
     extern unsigned int const* VShaderTable[1]; // ?VShaderTable@cdGunSightRender@@3PAPBIA
+    void RegisterVShader();                  // @0x007CE650
 }
 namespace cdGunSightPixel {
     extern unsigned int* PS[1];              // ?PS@cdGunSightPixel@@3PAPAKA

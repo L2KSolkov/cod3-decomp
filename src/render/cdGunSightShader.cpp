@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdGunSightShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_shader.h"
@@ -27,6 +29,13 @@ cdGunSightShader* gCDGunSightShader = nullptr;  // ?gCDGunSightShader@@3PAVcdGun
 namespace cdGunSightRender {
     unsigned int VS[1] = {};
     unsigned int const* VShaderTable[1] = {};
+}
+
+// ea: 0x007CE650
+void cdGunSightRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdGunSightRender::VS),
+                         cdGunSightRender::VShaderTable[0]);
 }
 namespace cdGunSightPixel {
     unsigned int* PS[1] = {};

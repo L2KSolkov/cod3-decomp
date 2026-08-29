@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdDynamicDecalShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -19,6 +21,21 @@ cdDynamicDecalShader* gCDDynamicDecalShader = nullptr;  // ?gCDDynamicDecalShade
 namespace cdDynamicDecalRender {
     unsigned long VS[2] = {};
     unsigned int const* VShaderTable[2] = {};
+}
+
+// ea: 0x007CD2C0
+void cdDynamicDecalRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdDynamicDecalRender::VS[index]),
+                             cdDynamicDecalRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007CD2E0
+void cdDynamicDecalRender::RegisterVShader()
+{
+    cdDynamicDecalRender::RegisterShader();
 }
 namespace cdDynamicDecalPixel {
     unsigned long* PS[2] = {};

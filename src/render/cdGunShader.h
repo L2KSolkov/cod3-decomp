@@ -51,6 +51,7 @@ namespace cdGunRender {
     extern unsigned long* VS;                 // ?VS@cdGunRender@@3PAKA
     extern unsigned int const** VShaderTable;  // ?VShaderTable@cdGunRender@@3PAPBIA
     extern unsigned long Shader;              // ?Shader@cdGunRender@@3KA
+    void RegisterVShader();                   // @0x007CF000
 }
 namespace cdGunPixel {
     extern unsigned long** PS;                // ?PS@cdGunPixel@@3PAPAKA
