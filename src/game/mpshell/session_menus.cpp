@@ -6242,7 +6242,7 @@ void PlayOnlineMenu::TogglePreviewImage(int option, bool visible)
         return;
     }
     if (Pointer != nullptr)
-        Pointer->SetVisibility(visible ? 1.0f : 0.0f);
+        Pointer->SetVisibility(visible);
 }
 
 // ea: 0x0078E8A0
