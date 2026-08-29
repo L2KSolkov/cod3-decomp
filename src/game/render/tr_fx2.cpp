@@ -738,6 +738,37 @@ ParticleEffect* FX_PlayEffectID(TPakId pakId, int id,
     return PlayEffect(pakId, id, org.v.m128_f32, &axis);
 }
 
+extern "C" void* FX_PlayEffect_Bridge(
+    TPakId pakId, int id, math::Mat43* mat, unsigned int boltObjHandle,
+    unsigned int boltEntHandle, int boltBoneIndex, bool boltAttchedToEnt)
+{
+    if (mat == nullptr)
+        return nullptr;
+    DbLinkedHandle<DObjHandleDb, DObj> objHandle;
+    DbLinkedHandle<EntityHandleDb, Entity> entHandle;
+    objHandle.mHandle.mVal = boltObjHandle;
+    entHandle.mHandle.mVal = boltEntHandle;
+    return PlayEffect(pakId, id, *mat, objHandle, entHandle,
+                      boltBoneIndex, boltAttchedToEnt);
+}
+
+extern "C" void* FX_PlayEffectID_Bridge(TPakId pakId, int id,
+                                          math::Position3* org,
+                                          const float* fwd)
+{
+    if (org == nullptr || fwd == nullptr)
+        return nullptr;
+    return FX_PlayEffectID(pakId, id, *org, fwd);
+}
+
+extern "C" void* FX_PlaySimpleEffectID_Bridge(TPakId pakId, int id,
+                                                math::Position3* org)
+{
+    if (org == nullptr)
+        return nullptr;
+    return FX_PlaySimpleEffectID(pakId, id, *org);
+}
+
 // ============================================================================
 // FX_GetBoneIndex / FX_GetBoneOrientation / FX_PlayEntityEffectID
 // ============================================================================
@@ -960,6 +991,24 @@ ParticleEffect* FX_PlayEntityEffectID(
     Mat.w.v = _mm_setr_ps(ori.origin[0], ori.origin[1], ori.origin[2], 0.0f);
     return PlayEffect(pakId, id, Mat, boltObjHandle, boltEntHandle,
                       boltBoneIndex, boltBoneIndex != 0);
+}
+
+extern "C" void* FX_PlayEntityEffectID_Bridge(
+    TPakId pakId, int id, math::Position3* org, void* axis,
+    unsigned int boltObjHandle, unsigned int boltEntHandle,
+    int boltBoneIndex, bool boltAttchedToEnt)
+{
+    if (org == nullptr)
+        return nullptr;
+    DbLinkedHandle<DObjHandleDb, DObj> objHandle;
+    DbLinkedHandle<EntityHandleDb, Entity> entHandle;
+    objHandle.mHandle.mVal = boltObjHandle;
+    entHandle.mHandle.mVal = boltEntHandle;
+    const float (*axisArray)[3] =
+        reinterpret_cast<const float (*)[3]>(axis);
+    return FX_PlayEntityEffectID(pakId, id, *org,
+                                 axisArray, objHandle, entHandle,
+                                 boltBoneIndex, boltAttchedToEnt);
 }
 
 // ============================================================================

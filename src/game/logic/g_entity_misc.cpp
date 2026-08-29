@@ -3219,33 +3219,43 @@ void RemoveLight(void* light)
 {
     RemoveLight_Bridge(light);
 }
+extern "C" void* FX_PlayEffect_Bridge(
+    TPakId pakId, int id, math::Mat43* mat, unsigned int boltObjHandle,
+    unsigned int boltEntHandle, int boltBoneIndex, bool boltAttchedToEnt);
 void* FX_PlayEffect(TPakId pakId, int id, math::Mat43* mat, void* boltObjHandle,
                     unsigned int boltEntHandle, int boltBoneIndex,
                     bool boltAttchedToEnt)
 {
-    (void)pakId; (void)id; (void)mat; (void)boltObjHandle;
-    (void)boltEntHandle; (void)boltBoneIndex; (void)boltAttchedToEnt;
-    return nullptr;
+    return FX_PlayEffect_Bridge(
+        pakId, id, mat, (unsigned int)(size_t)boltObjHandle, boltEntHandle,
+        boltBoneIndex, boltAttchedToEnt);
 }
+extern "C" void* FX_PlayEffectID_Bridge(TPakId pakId, int id,
+                                          math::Position3* org,
+                                          const float* fwd);
+extern "C" void* FX_PlaySimpleEffectID_Bridge(TPakId pakId, int id,
+                                                math::Position3* org);
+extern "C" void* FX_PlayEntityEffectID_Bridge(
+    TPakId pakId, int id, math::Position3* org, void* axis,
+    unsigned int boltObjHandle, unsigned int boltEntHandle,
+    int boltBoneIndex, bool boltAttchedToEnt);
 void* FX_PlayEffectID(TPakId pakId, int id, math::Position3* org,
                       const float* fwd)
 {
-    (void)pakId; (void)id; (void)org; (void)fwd;
-    return nullptr;
+    return FX_PlayEffectID_Bridge(pakId, id, org, fwd);
 }
 void* FX_PlayEntityEffectID(TPakId pakId, int id, math::Position3* org,
-                            void* axis, void* boltObjHandle,
-                            unsigned int boltEntHandle, int boltBoneIndex,
-                            bool boltAttchedToEnt)
+                             void* axis, void* boltObjHandle,
+                             unsigned int boltEntHandle, int boltBoneIndex,
+                             bool boltAttchedToEnt)
 {
-    (void)pakId; (void)id; (void)org; (void)axis; (void)boltObjHandle;
-    (void)boltEntHandle; (void)boltBoneIndex; (void)boltAttchedToEnt;
-    return nullptr;
+    return FX_PlayEntityEffectID_Bridge(
+        pakId, id, org, axis, (unsigned int)(size_t)boltObjHandle,
+        boltEntHandle, boltBoneIndex, boltAttchedToEnt);
 }
 void* FX_PlaySimpleEffectID(TPakId pakId, int id, math::Position3* org)
 {
-    (void)pakId; (void)id; (void)org;
-    return nullptr;
+    return FX_PlaySimpleEffectID_Bridge(pakId, id, org);
 }
 void AssetBankSet_Dtor(void* self) { (void)self; }
 void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self)
