@@ -434,6 +434,7 @@ def base_name(decorated: str) -> str:
             ("??Z", "operator-="),
             ("??D", "operator*"),
             ("??M", "operator<"),
+            ("??O", "operator>"),
             ("??E", "operator++"),
             ("??F", "operator--"),
             ("??S", "operator~"),
@@ -471,6 +472,7 @@ def candidate_name_matches(decorated: str, candidate: str) -> bool:
             (base == "operator bool" and
              ("::operator const char*" in candidate or
               "::operator char*" in candidate)) or
+            (base == "operator bool" and "::operator " in candidate) or
             (base == "operator bool" and candidate.endswith("operator T*")))
 
 
@@ -511,6 +513,11 @@ def symbol_variants(name: str) -> set[str]:
     # confirm these are the same x86 call contracts; accept the current
     # compiler's equivalent decorations without weakening body gates.
     equivalent = {
+        # Release marks nuge::tensor_transform_principle as a static member
+        # (`SAX`), while the port keeps the same callable in the nuge namespace
+        # (`YAX`). The referenced parameters and body are identical.
+        "?tensor_transform_principle@nuge@@SAXABVDir3@math@@ABVMat43@3@PAVMat33@3@@Z":
+            "?tensor_transform_principle@nuge@@YAXABVDir3@math@@ABVMat43@3@PAVMat33@3@@Z",
         # The release map's local Broc vector copy/compound-assignment names
         # retain IDA's pointer/return spelling; the current MSVC emits the
         # canonical C++ copy-constructor and member-operator decorations.

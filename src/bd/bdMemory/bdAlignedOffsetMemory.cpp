@@ -1,7 +1,6 @@
 // ============================================================================
 // bdAlignedOffsetMemory — aligned allocator with configurable offset
 // Reconstructed from COD3 release decompilation.
-// ea: 0x8A03D0 (bdAlignedOffsetMalloc), 0x8A04A0 (bdAlignedOffsetFree), 0x8A04B0 (bdAlignedOffsetRealloc)
 // ============================================================================
 
 #include "bd/bd_types.h"
@@ -13,11 +12,12 @@ typedef unsigned int bdUWord;
 
 extern const char defaultFileName[];
 
-// ea: 0x8A03C0
+// ea: 0x008A03C0
 void* bdMalloc(unsigned int nSize) {
     return malloc(nSize);
 }
 
+// ea: 0x008A03D0
 void* bdAlignedOffsetMalloc(bdUWord size, bdUWord align, bdUWord offset) {
     const bdUWord mask = align - 1;
     if ((mask & align) != 0) {
@@ -54,10 +54,12 @@ void* bdAlignedOffsetMalloc(bdUWord size, bdUWord align, bdUWord offset) {
     return raw;
 }
 
+// ea: 0x008A04A0
 void bdAlignedOffsetFree(void* ptr) {
     free(*reinterpret_cast<void**>(static_cast<unsigned char*>(ptr) - 4));
 }
 
+// ea: 0x008A04B0
 void* bdAlignedOffsetRealloc(void* ptr, bdUWord oldSize, bdUWord newSize, bdUWord align, bdUWord offset) {
     void* newPtr = bdAlignedOffsetMalloc(newSize, align, offset);
     bdUWord copy = oldSize;

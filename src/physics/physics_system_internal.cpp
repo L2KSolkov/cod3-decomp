@@ -890,7 +890,7 @@ void physics_system::solver_priority_sort() {
 }
 
 // ============================================================================
-// physics_system::generate_partitions_and_stuff - ea: 0x88C830
+// physics_system::generate_partitions_and_stuff
 // ============================================================================
 
 namespace {
@@ -937,6 +937,7 @@ rigid_body* constraint_partition(Constraint* rbc) {
 
 void IPN_verify_rigid_bodies(rigid_body* rb_partition_head);
 
+// ea: 0x0088C830
 void physics_system::generate_partitions_and_stuff(
     phys_constraint_solver_multithreaded::list_constraint_solver* list_cs,
     int* next_psc_visit_counter, float delta_t) {

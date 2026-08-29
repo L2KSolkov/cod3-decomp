@@ -218,6 +218,7 @@ add_library(cod3_aeps STATIC
 add_library(cod3_bd STATIC
     src/bd/bdReference/bdReferencable.h
     src/bd/bdUtilities/bdBitOperations.h
+    src/bd/bdUtilities/bdBitOperations.cpp
     src/bd/bdMemory/bdAlignedOffsetMemory.cpp
     src/bd/bdMemory/bdMallocMemory.h
     src/bd/bdMemory/bdMallocMemory.cpp

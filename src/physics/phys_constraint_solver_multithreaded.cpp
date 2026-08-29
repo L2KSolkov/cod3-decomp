@@ -2499,7 +2499,7 @@ void rbint::setup_constraint(rigid_body* rb, pulse_sum_node* psn) {
         _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver_inline.h", 160,
                   "rb->get_inv_mass() > 0.00001f", defaultFileName))
         __debugbreak();
-    nuge::tensor_transform_principle(&rb->m_inv_inertia, &rb->m_mat,
+    nuge::tensor_transform_principle(rb->m_inv_inertia, rb->m_mat,
                                      &rb->m_world_inv_inertia);
     rb->m_node = psn;
     psn->m_rb = rb;
@@ -2577,27 +2577,28 @@ user_rigid_body& user_rigid_body::operator=(const user_rigid_body& other) {
     return *this;
 }
 
-void nuge::tensor_transform_principle(const math::Dir3* diag, const math::Mat43* mat,
+// ea: 0x00894EB0
+void nuge::tensor_transform_principle(const math::Dir3& diag, const math::Mat43& mat,
                                       math::Mat33* tensor) {
     math::Dir3 v3;
-    v3.v = mat->y.v;
+    v3.v = mat.y.v;
     math::Dir3 v4;
-    v4.v = mat->z.v;
-    __m128 v5 = _mm_shuffle_ps(mat->x.v, v3.v, 68);
-    __m128 v6 = _mm_mul_ps(_mm_shuffle_ps(v5, v4.v, 221), diag->v);
-    __m128 v7 = _mm_mul_ps(_mm_shuffle_ps(v5, v4.v, 136), diag->v);
+    v4.v = mat.z.v;
+    __m128 v5 = _mm_shuffle_ps(mat.x.v, v3.v, 68);
+    __m128 v6 = _mm_mul_ps(_mm_shuffle_ps(v5, v4.v, 221), diag.v);
+    __m128 v7 = _mm_mul_ps(_mm_shuffle_ps(v5, v4.v, 136), diag.v);
     __m128 v8 = _mm_mul_ps(
-        _mm_shuffle_ps(_mm_shuffle_ps(mat->x.v, v3.v, 238), v4.v, 168), diag->v);
+        _mm_shuffle_ps(_mm_shuffle_ps(mat.x.v, v3.v, 238), v4.v, 168), diag.v);
     __m128 v9 = _mm_mul_ps(_mm_shuffle_ps(v7, v7, 170), v4.v);
     __m128 v10 = _mm_mul_ps(_mm_shuffle_ps(v7, v7, 85), v3.v);
     __m128 v11 = _mm_shuffle_ps(v7, v7, 0);
-    tensor->x.v = _mm_add_ps(_mm_add_ps(_mm_mul_ps(v11, mat->x.v), v10), v9);
+    tensor->x.v = _mm_add_ps(_mm_add_ps(_mm_mul_ps(v11, mat.x.v), v10), v9);
     tensor->y.v = _mm_add_ps(
-        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v6, v6, 0), mat->x.v),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v6, v6, 0), mat.x.v),
                    _mm_mul_ps(_mm_shuffle_ps(v6, v6, 85), v3.v)),
         _mm_mul_ps(_mm_shuffle_ps(v6, v6, 170), v4.v));
     tensor->z.v = _mm_add_ps(
-        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v8, v8, 0), mat->x.v),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v8, v8, 0), mat.x.v),
                    _mm_mul_ps(_mm_shuffle_ps(v8, v8, 85), v3.v)),
         _mm_mul_ps(_mm_shuffle_ps(v8, v8, 170), v4.v));
 }

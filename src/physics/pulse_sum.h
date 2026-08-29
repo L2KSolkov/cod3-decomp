@@ -97,8 +97,8 @@ extern const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG;
 namespace nuge {
 void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1, float delta_t,
                      math::Dir3* t_vel, math::Dir3* a_vel);
-void tensor_transform_principle(const math::Dir3* diag, const math::Mat43* mat,
-                                math::Mat33* tensor); // ea: 0x894EB0
+void tensor_transform_principle(const math::Dir3& diag, const math::Mat43& mat,
+                                math::Mat33* tensor);
 }
 
 template <typename T>

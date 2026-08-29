@@ -1,6 +1,5 @@
 // ============================================================================
 // bdShortTimer - short-duration stopwatch (COD3 release)
-// ea: 0x9EC390 (start), 0x9EC3B0 (reset), 0x9EC3C0 (getElapsedTimeInSeconds)
 // ============================================================================
 
 #pragma once
@@ -23,16 +22,20 @@ struct bdPlatformTiming {
 struct bdShortTimer {
     unsigned int m_start;   // +0x00
 
+    // ea: 0x009EC400
     bdShortTimer() : m_start(0) {}
 
+    // ea: 0x009EC390
     void start() {
         m_start = (unsigned int)(bdPlatformTiming::getHiResTimeStamp() / 100);
     }
 
+    // ea: 0x009EC3B0
     void reset() {
         m_start = 0;
     }
 
+    // ea: 0x009EC3C0
     float getElapsedTimeInSeconds() const {
         unsigned __int64 now100 = bdPlatformTiming::getHiResTimeStamp() / 100;
         float elapsed = bdPlatformTiming::getElapsedTime(m_start, now100) * 100.0f;
