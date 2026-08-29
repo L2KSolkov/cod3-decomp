@@ -6903,9 +6903,11 @@ void AnimationPlayer::PlayModifier(nalGenericAnim* anim,
 
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
+extern "C" void InteractionController_ClearQueue_Bridge(void* self);
 
 class InteractionController {
 public:
+    friend void InteractionController_ClearQueue_Bridge(void* self);
     static void* operator new(size_t size, void* p); // core.o 0x004DE710
     static void CreateInst();                   // core.o 0x004DE720
     static void DeleteInst();                   // core.o 0x004E2DA0
@@ -30760,6 +30762,11 @@ void InteractionController::ClearQueue()
     for (int i = 0; i < 10; ++i)
         mQueue[i].mInfoIndex = -1;
     mCurQueueSize = 0;
+}
+
+extern "C" void InteractionController_ClearQueue_Bridge(void* self)
+{
+    static_cast<InteractionController*>(self)->ClearQueue();
 }
 
 // ea: 0x0054C890

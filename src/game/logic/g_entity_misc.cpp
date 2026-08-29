@@ -3953,11 +3953,18 @@ void InplaceAssetBankSet_GdbFileBank_AddBank(void* self, TPakId pak, void* b)
     *slot = b;
 }
 class InspectorManager;
+extern "C" void InteractionController_ClearQueue_Bridge(void* self);
 void InspectorManager_Initialise(InspectorManager* self) { (void)self; }
 void InspectorManager_Render(void* self) { (void)self; }
 void InspectorManager_Update(InspectorManager* self) { (void)self; }
-void InteractionController_ClearQueue(void* self) { (void)self; }
-void InteractionController_Update(void* self, float a) { (void)self; (void)a; }
+void InteractionController_ClearQueue(void* self)
+{
+    InteractionController_ClearQueue_Bridge(self);
+}
+void InteractionController_Update(void* self, float a)
+{
+    static_cast<InteractionController*>(self)->Update(a);
+}
 void InvalidateParticleCollisionCaches() {}
 namespace phys_constraint_solver_multithreaded {
 struct list_constraint_solver;

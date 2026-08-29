@@ -5032,6 +5032,7 @@ public:
     int StartInteraction(Entity* interactable, const char* name,
                          TPakId curPakId); // ?StartInteraction@InteractionController@@QAEHPAVEntity@@PBDW4TPakId@@@Z (anim.o 0x556920)
     void FreeInteraction();                // ?FreeInteraction@InteractionController@@QAEXXZ (g.o 0x4B00A0)
+    void Update(float deltaT);             // anim.o 0x557170
 };
 
 // ea: 0x00556E50
