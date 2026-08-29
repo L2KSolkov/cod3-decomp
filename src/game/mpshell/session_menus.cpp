@@ -10178,8 +10178,7 @@ void VoteMapMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = v5;
-    if (v5 != nullptr)
-        v5->SetNumLines(1);
+    v5->SetNumLines(1);
     helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
 }
 
