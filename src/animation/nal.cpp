@@ -11227,6 +11227,8 @@ public:
     };
 };
 
+static_assert(sizeof(CODNoteData) == 0x1, "CODNoteData layout mismatch");
+
 struct nalComponentData {
     struct SkeletonData {};
     struct AnimData {};
@@ -11239,6 +11241,13 @@ struct nalComponentSignalCounterData : nalComponentData {
     };
 };
 struct nalComponentRLE8Int1Data : nalComponentData {};
+
+static_assert(sizeof(nalComponentData) == 0x1,
+              "nalComponentData layout mismatch");
+static_assert(sizeof(nalComponentSignalCounterData) == 0x1,
+              "nalComponentSignalCounterData layout mismatch");
+static_assert(sizeof(nalComponentRLE8Int1Data) == 0x1,
+              "nalComponentRLE8Int1Data layout mismatch");
 
 // class tag to match binary V-mangled FastCycleTrajectory/nalComponent args
 class nalComponentEnum {
@@ -11260,6 +11269,9 @@ public:
     {
     }
 };
+
+static_assert(sizeof(nalComponentEnum) == 0x10,
+              "nalComponentEnum layout mismatch");
 
 // nalComponent<BASE,DATA,TRACK> - anim.o COD note-track component (all
 // virtuals from the binary vftable; eases per function)
@@ -12903,6 +12915,35 @@ struct nalComponentPacked16EntropyIKSpinData : nalComponentData {
         nalEntropyDecoder::nalPackedFloatDecoder<short> FloatDecoder[4];
     };
 };
+
+static_assert(sizeof(nalComponentTrajectoryPOData) == 0x1,
+              "nalComponentTrajectoryPOData layout mismatch");
+static_assert(sizeof(nalComponentEntropyTrajectoryPOData) == 0x1,
+              "nalComponentEntropyTrajectoryPOData layout mismatch");
+static_assert(sizeof(nalComponentEntropyFloat1Data) == 0x1,
+              "nalComponentEntropyFloat1Data layout mismatch");
+static_assert(sizeof(nalComponentPacked8Float1Data) == 0x1,
+              "nalComponentPacked8Float1Data layout mismatch");
+static_assert(sizeof(nalComponentEntropyFloat3Data) == 0x1,
+              "nalComponentEntropyFloat3Data layout mismatch");
+static_assert(sizeof(nalComponentPacked8EntropyFloat3Data) == 0x1,
+              "nalComponentPacked8EntropyFloat3Data layout mismatch");
+static_assert(sizeof(nalComponentPacked16EntropyFloat3Data) == 0x1,
+              "nalComponentPacked16EntropyFloat3Data layout mismatch");
+static_assert(sizeof(nalComponentEntropyFloat4Data) == 0x1,
+              "nalComponentEntropyFloat4Data layout mismatch");
+static_assert(sizeof(nalComponentPacked8EntropyFloat4Data) == 0x1,
+              "nalComponentPacked8EntropyFloat4Data layout mismatch");
+static_assert(sizeof(nalComponentPacked16EntropyFloat4Data) == 0x1,
+              "nalComponentPacked16EntropyFloat4Data layout mismatch");
+static_assert(sizeof(nalComponentPacked8EntropyQuatData) == 0x1,
+              "nalComponentPacked8EntropyQuatData layout mismatch");
+static_assert(sizeof(nalComponentPacked16EntropyQuatData) == 0x1,
+              "nalComponentPacked16EntropyQuatData layout mismatch");
+static_assert(sizeof(nalComponentEntropyPOData) == 0x1,
+              "nalComponentEntropyPOData layout mismatch");
+static_assert(sizeof(nalComponentPacked16EntropyIKSpinData) == 0x1,
+              "nalComponentPacked16EntropyIKSpinData layout mismatch");
 
 static_assert(sizeof(nalComponentPacked16EntropyIKSpinData::SkeletonComponentData) == 20,
               "nalComponentPacked16EntropyIKSpinData skeleton layout mismatch");
