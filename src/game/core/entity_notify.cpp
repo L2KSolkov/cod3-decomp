@@ -12,6 +12,24 @@ extern void* EntityNotifySet_sAllocator;
 extern void WaitTilOutput_AssignData(void* self, void* data);
 extern "C" void WaitTilOutput_Dtor(void* self, int flags);
 
+// AeThread is defined in the script translation unit.  This declaration is
+// sufficient to bind the release Kill() member without duplicating its state
+// layout in the EntityNotifySet translation unit.
+class AeThread
+{
+public:
+    void Kill();
+};
+
+class EndOnScriptNode
+{
+public:
+    reserved_dlist<EndOnScriptNode>::dlist_node m_dlist_node;
+    Handle mThread;
+
+    AeThread* GetThread();
+};
+
 // ============================================================================
 // EntityNotifySet internals
 // ============================================================================
@@ -133,8 +151,22 @@ bool EntityNotifySet::IsFinished()
 // ea: 0x004C6590
 void EntityNotifySet::KillEndOnThreads()
 {
-    mEndOnList.m_head = nullptr;
-    mEndOnList.m_tail = nullptr;
+    EndOnScriptNode* head = reinterpret_cast<EndOnScriptNode*>(mEndOnList.m_head);
+    reserved_dlist<EndOnScriptNode>::dlist_node* next =
+        head != nullptr ? head->m_dlist_node.mNext : nullptr;
+    if (head == reinterpret_cast<EndOnScriptNode*>(&mEndOnList.m_end)
+        || next == nullptr)
+        return;
+
+    do
+    {
+        AeThread* thread = head->GetThread();
+        if (thread != nullptr)
+            thread->Kill();
+        head = reinterpret_cast<EndOnScriptNode*>(next);
+        next = head->m_dlist_node.mNext;
+    }
+    while (next != nullptr);
 }
 
 extern "C" void* EntityNotifySet_GetNotify_Impl(void* self,
