@@ -323,3 +323,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004F60A0	??0AnimIK@@QAE@XZ	V4	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	IDA:0x004F60A0	Release AnimIK constructor matches source.
 0x004F6090	?FiniDefaultPak@@YAXXZ	V3	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:1546-1553	Direct C3 comparison confirms the default pak buffer is released.
 0x004F6090	?FiniDefaultPak@@YAXXZ	V4	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	IDA:0x004F6090	Release FiniDefaultPak matches source.
+0x0050BA00	?CreateTaskHandle@TaskSys@@QAE?AVHandle@@PAVTask@@@Z	V3	PASS	ida-manual-task-handle-20260828	2026-08-28	src/game/logic/g_debugthread.cpp:1830-1863	Direct C3 comparison confirms the assigned-handle assert, free-bit/index selection, bounds assertion, handle construction, task-handle/object binding, and returned handle.
+0x0050BA00	?CreateTaskHandle@TaskSys@@QAE?AVHandle@@PAVTask@@@Z	V4	PASS	ida-manual-task-handle-20260828	2026-08-28	IDA:0x0050BA00	Release TaskSys::CreateTaskHandle member body matches the restored source and verified handle-database ABI.

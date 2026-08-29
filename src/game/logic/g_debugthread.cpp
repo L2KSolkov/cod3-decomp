@@ -1827,7 +1827,7 @@ Task* TaskSys_GetTaskForEntity(FourCC taskId,
 // ============================================================================
 // TaskSys::CreateTaskHandle - ea: 0x50BA00
 // ============================================================================
-Handle TaskSys_CreateTaskHandle(Task* t)
+Handle TaskSys::CreateTaskHandle(Task* t)
 {
     if (t->mTaskHandle.mVal != 0)
     {
@@ -1860,6 +1860,11 @@ Handle TaskSys_CreateTaskHandle(Task* t)
     t->mTaskHandle.mVal = handle.mVal;
     db->mElements[index].mObject = t;
     return handle;
+}
+
+Handle TaskSys_CreateTaskHandle(Task* t)
+{
+    return TaskSys::sInst.CreateTaskHandle(t);
 }
 
 // ============================================================================
