@@ -8701,10 +8701,21 @@ void PlayOnlineMenu::OnActivate()
 {
     highlighted = m_currSelection;
     FEMenu::OnActivate();
-    if (MPLiveEngine::GetHandle()->internalState == kSignedIn)
+    MPLiveEngine* handle = MPLiveEngine::GetHandle();
+    if (handle->internalState == kSignedIn)
     {
-        // LIVE: show live menu text / hide LAN-only entries
-        TogglePreviewImage(highlighted, true);
+        LiveWrapper::theWrapper->SetNotificationFlag(handle->actualPort, 0,
+                                                      true);
+        friendIcon = 0;
+        panel->GetPointer("game_invite")->SetVisibility(0);
+        panel->GetPointer("friend_request")->SetVisibility(0);
+        SetHigh(highlighted, true);
+        UpdateTextDescription(highlighted);
+        m_IsQuickMatchReady = false;
+    }
+    else
+    {
+        system->ReturnToPreviousMenu(8);
     }
 }
 
