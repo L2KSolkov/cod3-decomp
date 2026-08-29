@@ -8138,14 +8138,13 @@ void GameSettingsEdit::GetScoreLimitsForGameType(eGameType gameType)
 void AARGameSettingsEdit::SetTimerText()
 {
     int v1 = g_MPAARTotalTime;
-    kuju::knet::sTime fSecondsLeftTilNextGame;
-    fSecondsLeftTilNextGame.mTime =
-        v1 - (int)((MultiplayerMgr::sInst->getLocalTime().mTime
-                    - g_MPAARTimer.mTime) * 0.001f);
+    float fSecondsLeftTilNextGame =
+        v1 - ((MultiplayerMgr::sInst->getLocalTime().mTime
+               - g_MPAARTimer.mTime) * 0.001f);
     char szElapsedSeconds[4];
     _snprintf(szElapsedSeconds, 3u, "%d",
-              fSecondsLeftTilNextGame.mTime);
-    if (fSecondsLeftTilNextGame.mTime < 10)
+              (int)fSecondsLeftTilNextGame);
+    if (fSecondsLeftTilNextGame < 10.0f)
         strcpy(&szElapsedSeconds[1], " ");
     panel->GetTextPointer("text_timer_numbers")
         ->SetText(szElapsedSeconds);
