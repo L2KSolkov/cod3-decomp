@@ -3124,8 +3124,17 @@ void HandleDb_ReleaseTaskHandle(void* self, Handle h)
 
 unsigned char* SceneBank_PersistentStorage(void* self, unsigned int a)
 {
-    (void)self; (void)a;
-    return nullptr;
+    if (self == nullptr)
+        return nullptr;
+    struct InplaceByteVector {
+        unsigned int mSize;
+        unsigned char* mList;
+    };
+    InplaceByteVector* storage = reinterpret_cast<InplaceByteVector*>(
+        static_cast<unsigned char*>(self) + 0x48);
+    if (storage->mList == nullptr || a >= storage->mSize)
+        return nullptr;
+    return &storage->mList[a];
 }
 
 struct bdRandom {
