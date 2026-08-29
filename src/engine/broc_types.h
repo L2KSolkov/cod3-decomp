@@ -245,6 +245,10 @@ template <typename T> void push(dyn_array<T>& ar, const T* elt) {
     ar.push_back(*elt);
 }
 
+// IDA release layout: mElements (+0x00), mCapacity (+0x04), mSize (+0x08).
+COD3_STATIC_ASSERT_32BIT(sizeof(dyn_array<int>) == 12,
+                         "Broc::dyn_array size mismatch");
+
 // ea: 0x005EDF90 (Broc::min_val<unsigned int>)
 template <typename T>
 T min_val(const T* lhs, const T* rhs)
