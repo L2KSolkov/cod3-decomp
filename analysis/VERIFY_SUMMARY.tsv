@@ -206,12 +206,12 @@ nal_cache.o	7	0	4	3	0	0	0
 nal_generic.o	68	22	25	21	0	0	0
 nal_generic_component.o	36	31	0	5	0	0	0
 nal_ik.o	2	2	0	0	0	0	0
-nal_init.o	899	651	228	17	3	0	0
+nal_init.o	899	640	229	27	3	0	0
 nal_initlist.o	1	0	0	0	0	1	0
 nal_math.o	1	1	0	0	0	0	0
 nal_sceneanim.o	10	4	1	5	0	0	0
 nal_skeleton.o	10	0	7	3	0	0	0
-nal_stream.o	18	8	2	8	0	0	0
+nal_stream.o	18	7	2	9	0	0	0
 nextgen.o	8	8	0	0	0	0	0
 nfl_common.o	10	10	0	0	0	0	0
 nfl_debug.o	12	12	0	0	0	0	0
@@ -248,7 +248,7 @@ ngl_mesh.o	33	21	1	11	0	0	0
 ngl_meshedit.o	9	0	0	9	0	0	0
 ngl_morph.o	12	5	0	7	0	0	0
 ngl_quad.o	20	20	0	0	0	0	0
-ngl_scene.o	150	149	0	0	0	1	0
+ngl_scene.o	150	144	0	5	0	1	0
 ngl_scenedump.o	7	0	0	7	0	0	0
 ngl_texture.o	11	3	0	8	0	0	0
 ngl_xb_internal.o	2	1	0	0	0	1	0

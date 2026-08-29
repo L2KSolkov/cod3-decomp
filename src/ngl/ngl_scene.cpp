@@ -88,8 +88,27 @@ extern nglRenderNode* nglRenderListEndNode;
 
 
 // ngl_sort helpers (ngl_scene.o inline COMDATs).
-struct nglOpaqueCompare { int dummy; };
-struct nglTransCompare { int dummy; };
+class nglOpaqueCompare {
+public:
+    // ea: 0x00839AE0
+    bool operator()(const std::pair<nglRenderNode*, unsigned int>& NodeA,
+                    const std::pair<nglRenderNode*, unsigned int>& NodeB) {
+        return NodeA.second < NodeB.second;
+    }
+};
+
+class nglTransCompare {
+public:
+    // ea: 0x00839B00
+    bool operator()(const std::pair<nglRenderNode*, unsigned int>& NodeA,
+                    const std::pair<nglRenderNode*, unsigned int>& NodeB) {
+        if (NodeA.second > NodeB.second)
+            return true;
+        if (NodeB.second <= NodeA.second)
+            return NodeA.first < NodeB.first;
+        return false;
+    }
+};
 
 // ============================================================================
 // Data (ngl_scene.o)
@@ -946,8 +965,8 @@ nglScene* nglListBeginSceneNode(nglSceneParamType ParamSource, nglSortInfo* Sort
     return v2;
 }
 
-// ea: 0x83F580 / 0x83F630
-static void nglSortRenderList(nglRenderNode** List, int Count, bool Translucent) {
+template <typename Compare>
+static void nglSortRenderList(nglRenderNode** List, int Count, Compare Cmp) {
     unsigned char* Marker = nglListWorkPos;
     typedef std::pair<nglRenderNode*, unsigned int> SortEntry;
     SortEntry* Table = static_cast<SortEntry*>(nglListAlloc(8 * Count, 0x10));
@@ -962,19 +981,7 @@ static void nglSortRenderList(nglRenderNode** List, int Count, bool Translucent)
         } while (Node != NULL);
     }
     SortEntry* End = &Table[Count];
-    if (Translucent) {
-        std::sort(Table, End, [](const SortEntry& A, const SortEntry& B) {
-            if (A.second > B.second)
-                return true;
-            if (B.second <= A.second)
-                return reinterpret_cast<uintptr_t>(A.first) < reinterpret_cast<uintptr_t>(B.first);
-            return false;
-        });
-    } else {
-        std::sort(Table, End, [](const SortEntry& A, const SortEntry& B) {
-            return A.second < B.second;
-        });
-    }
+    std::sort(Table, End, Cmp);
     nglRenderNode* Next = nglRenderListEndNode;
     SortEntry* Current = &End[-1];
     if (Count != 0) {
@@ -991,11 +998,32 @@ static void nglSortRenderList(nglRenderNode** List, int Count, bool Translucent)
     nglListWorkPos = Marker;
 }
 
+template <typename Compare>
+static void nglSortList(nglRenderNode** List, int Count, Compare Cmp);
+
+// ea: 0x0083F580
+template <>
+void nglSortList<nglOpaqueCompare>(nglRenderNode** List, int Count,
+                                   nglOpaqueCompare Cmp) {
+    nglSortRenderList(List, Count, Cmp);
+}
+
+// ea: 0x0083F630
+template <>
+void nglSortList<nglTransCompare>(nglRenderNode** List, int Count,
+                                  nglTransCompare Cmp) {
+    nglSortRenderList(List, Count, Cmp);
+}
+
 void nglSortScene(nglScene* Scene) {
     for (nglScene* i = Scene->FirstChild; i != NULL; i = i->NextSibling)
         nglSortScene(i);
-    nglSortRenderList(&Scene->OpaqueRenderList, (int)Scene->OpaqueListCount, false);
-    nglSortRenderList(&Scene->TransRenderList, (int)Scene->TransListCount, true);
+    nglSortList<nglOpaqueCompare>(&Scene->OpaqueRenderList,
+                                  (int)Scene->OpaqueListCount,
+                                  nglOpaqueCompare());
+    nglSortList<nglTransCompare>(&Scene->TransRenderList,
+                                 (int)Scene->TransListCount,
+                                 nglTransCompare());
 }
 
 void nglPresent() {
@@ -1007,7 +1035,7 @@ void nglPresent() {
 }
 
 // ============================================================================
-// nglCalculateMatrices - ea: 0x83B900
+// nglCalculateMatrices
 // ============================================================================
 
 static math::Mat44* ViewportToWorldImpl(math::Mat44* result, nglScene* Scene) {
@@ -1073,6 +1101,7 @@ void nglValidateMatrices(nglScene* Scene) {
     }
 }
 
+// ea: 0x0083B900
 void nglCalculateMatrices(nglScene* Scene) {
     if ((Scene->OpaqueListCount != 0 || Scene->TransListCount != 0)
         && _tlAssert("src/ngl_scene.cpp", 416,
