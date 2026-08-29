@@ -362,7 +362,7 @@ def scan_markers() -> list[Marker]:
     # definition a declaration annotation belongs to.
     # A file banner may describe a range (``ea: 0x854490-0x878100``), not a
     # function marker.  Do not turn the range's first address into a marker.
-    pattern = re.compile(r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)(?!\s*-)")
+    pattern = re.compile(r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)\b(?!\s*-)")
     for path in source_files():
         lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
         for number, line in enumerate(lines):

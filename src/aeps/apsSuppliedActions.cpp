@@ -32,7 +32,7 @@ const __m128 Float4_NegZAxis_123 = {0.0f, 0.0f, -1.0f, 0.0f};
 
 namespace {
 
-// ea: 0x00809AB0 - release helper used by source and burst emission counts.
+// ModifyEmitCountByChance - ea: 0x00809AB0
 // The RNG step and threshold comparison follow the IDA C dump/disassembly.
 double ModifyEmitCountByChance(float chanceToRemoveModifier, float originalCount) {
     const float chance = apsCommon::GetChanceToRemove() * chanceToRemoveModifier;
@@ -49,7 +49,7 @@ double ModifyEmitCountByChance(float chanceToRemoveModifier, float originalCount
     return (1.0f - clampedChance) * originalCount;
 }
 
-// ea: 0x00809CA0 - release helper used by alpha-fade actions.
+// FadeOutParticle - ea: 0x00809CA0
 void FadeOutParticle(const apsGroup* group, unsigned char* particle,
                      float* alphaPtr, float alphaFadePerSec, float deltaSec) {
     const float alpha = *alphaPtr - (alphaFadePerSec * deltaSec);
