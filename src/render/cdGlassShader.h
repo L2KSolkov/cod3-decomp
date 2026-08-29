@@ -68,13 +68,13 @@ namespace cdGlassRender {
     extern unsigned long VS[2][2];                  // ?VS@cdGlassRender@@3PAY01KA
     extern unsigned int const* VShaderTable[2][2];   // ?VShaderTable@cdGlassRender@@3PAY01PBIA
     void RegisterVShader();                           // @0x7D0810
-    unsigned int GetVShader(unsigned int, unsigned int); // @0x7D0840
+    unsigned long GetVShader(unsigned int, unsigned int); // @0x7D0840
 }
 namespace cdGlassPixel {
     extern unsigned long* PS[2];                     // ?PS@cdGlassPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];       // ?PShaderTable@cdGlassPixel@@3PAPBIA
     void RegisterPShader();                           // @0x7D0860
-    unsigned int* GetPShader(unsigned int);            // @0x7D0890
+    unsigned long* GetPShader(unsigned int);            // @0x7D0890
 }
 namespace cdGlassSolidColorPixel {
     extern unsigned long* PS[2];                     // ?PS@cdGlassSolidColorPixel@@3PAPAKA
@@ -88,7 +88,7 @@ namespace cdGlassSolidColorPixel {
 extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern nglTexture* gProjShadowTex;  // ?gProjShadowTex@@3PAUnglTexture@@A (render.o)
-extern void gpuSetPixelConstant(unsigned int idx, math::Vector4* data,
+extern void gpuSetPixelConstant(int idx, math::Vector4* data,
                                 unsigned int nelements); // @0x7D0680
 
 extern cdGlassShader* gCDGlassShader;  // @0x10DE538

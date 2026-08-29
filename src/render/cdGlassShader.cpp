@@ -38,9 +38,9 @@ void cdGlassRender::RegisterVShader() {
 }
 
 // ea: 0x7D0840
-unsigned int cdGlassRender::GetVShader(unsigned int param0,
-                                       unsigned int param1) {
-    const unsigned int* shaders = reinterpret_cast<const unsigned int*>(VS);
+unsigned long cdGlassRender::GetVShader(unsigned int param0,
+                                        unsigned int param1) {
+    const unsigned long* shaders = reinterpret_cast<const unsigned long*>(VS);
     return shaders[2 * param0 + param1];
 }
 
@@ -51,8 +51,8 @@ void cdGlassPixel::RegisterPShader() {
 }
 
 // ea: 0x7D0890
-unsigned int* cdGlassPixel::GetPShader(unsigned int index) {
-    return reinterpret_cast<unsigned int*>(PS[index]);
+unsigned long* cdGlassPixel::GetPShader(unsigned int index) {
+    return PS[index];
 }
 
 // ea: 0x7D08A0
@@ -85,7 +85,7 @@ const math::Mat44& math::Mat44::operator=(const math::Mat43& matrix) {
 }
 
 // ea: 0x7D0680
-void gpuSetPixelConstant(unsigned int idx, math::Vector4* data,
+void gpuSetPixelConstant(int idx, math::Vector4* data,
                          unsigned int nelements) {
     D3DDevice_SetPixelShaderConstant(idx, data, nelements);
 }
