@@ -7882,26 +7882,31 @@ MPOptionsSoundMenu* MPOptionsSoundMenu::Me()
     return (MPOptionsSoundMenu*)g_femanager.fems->menus[22];
 }
 
+// ea: 0x007315A0
 MPOptionsControlsMenu* MPOptionsControlsMenu::Me()
 {
     return (MPOptionsControlsMenu*)g_femanager.fems->menus[20];
 }
 
+// ea: 0x00732130
 MPOptionsGameplayMenu* MPOptionsGameplayMenu::Me()
 {
     return (MPOptionsGameplayMenu*)g_femanager.fems->menus[19];
 }
 
+// ea: 0x007328D0
 MPOptionsPreferencesMenu* MPOptionsPreferencesMenu::Me()
 {
     return (MPOptionsPreferencesMenu*)g_femanager.fems->menus[23];
 }
 
+// ea: 0x00733390
 MPProfileEditMenu* MPProfileEditMenu::Me()
 {
     return (MPProfileEditMenu*)g_femanager.fems->menus[29];
 }
 
+// ea: 0x00733910
 MPProfileMainMenu* MPProfileMainMenu::Me()
 {
     return (MPProfileMainMenu*)g_femanager.fems->menus[27];
