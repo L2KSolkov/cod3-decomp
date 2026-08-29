@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdSimplePrelitShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_shader.h"
@@ -53,6 +55,13 @@ namespace cdSimplePrelitRender {
     static unsigned long VShaderHandle = 0;
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
+}
+
+// ea: 0x007D5DB0
+void cdSimplePrelitRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdSimplePrelitRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdSimplePrelitRender::VShaderTable[0]));
 }
 namespace cdSimplePrelitPixel {
     static const unsigned int PShaderMicrocode[60] = {

@@ -49,10 +49,14 @@ static_assert(sizeof(cdWorldBlendPointLitShader) == 0x10, "cdWorldBlendPointLitS
 namespace cdWorldBlendPointLitRender {
     extern unsigned long VS[2];                        // ?VS@cdWorldBlendPointLitRender@@3PAKA
     extern unsigned int const* VShaderTable[2];         // ?VShaderTable@cdWorldBlendPointLitRender@@3PAPBIA
+    void RegisterShader();                              // @0x007DB570
+    void RegisterVShader();                             // @0x007DB590
 }
 namespace cdWorldBlendPointLitProjectedRender {
     extern unsigned long VS[2];                        // ?VS@cdWorldBlendPointLitProjectedRender@@3PAKA
     extern unsigned int const* VShaderTable[2];         // ?VShaderTable@cdWorldBlendPointLitProjectedRender@@3PAPBIA
+    void RegisterShader();                              // @0x007DB5C0
+    void RegisterVShader();                             // @0x007DB5E0
 }
 namespace cdWorldBlendPointLitPixel {
     extern unsigned long* PS[2][2];                    // ?PS@cdWorldBlendPointLitPixel@@3PAY01PAKA

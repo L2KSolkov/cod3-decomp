@@ -300,6 +300,7 @@ void cdSimpleShaderNode::Render() {
 // ============================================================================
 // cdSimpleRender/cdSimplePixel/cdSimpleFullbrightPixel helpers
 // ============================================================================
+// ea: 0x007D6910
 void cdSimpleRender::RegisterVShader() {
     for (int i = 0; i != 2; ++i)
         nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&VS[i]), VShaderTable[i]);

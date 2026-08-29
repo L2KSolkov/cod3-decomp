@@ -302,6 +302,7 @@ void cdSimpleSpecularShaderNode::Render() {
     nglGpuDrawSection(this->Section);
 }
 
+// ea: 0x007D54B0
 void cdSimpleSpecularRender::RegisterVShader() {
     for (int i = 0; i != 2; ++i)
         nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&VS[i]), VShaderTable[i]);

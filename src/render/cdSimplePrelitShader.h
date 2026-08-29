@@ -52,6 +52,7 @@ static_assert(sizeof(cdSimplePrelitShader) == 0x10, "cdSimplePrelitShader size m
 namespace cdSimplePrelitRender {
     extern unsigned long* VS;                  // ?VS@cdSimplePrelitRender@@3PAKA
     extern unsigned int const** VShaderTable;   // ?VShaderTable@cdSimplePrelitRender@@3PAPBIA
+    void RegisterVShader();                    // @0x007D5DB0
 }
 namespace cdSimplePrelitPixel {
     extern unsigned long** PS;                 // ?PS@cdSimplePrelitPixel@@3PAPAKA

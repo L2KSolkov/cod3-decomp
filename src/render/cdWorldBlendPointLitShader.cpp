@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdWorldBlendPointLitShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -136,6 +138,36 @@ namespace cdWorldBlendPointLitProjectedRender {
     };
     unsigned long VS[2] = {};
     unsigned int const* VShaderTable[2] = { VShader0, VShader1 };
+}
+
+// ea: 0x007DB570
+void cdWorldBlendPointLitRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldBlendPointLitRender::VS[index]),
+                             cdWorldBlendPointLitRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007DB590
+void cdWorldBlendPointLitRender::RegisterVShader()
+{
+    cdWorldBlendPointLitRender::RegisterShader();
+}
+
+// ea: 0x007DB5C0
+void cdWorldBlendPointLitProjectedRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldBlendPointLitProjectedRender::VS[index]),
+                             cdWorldBlendPointLitProjectedRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007DB5E0
+void cdWorldBlendPointLitProjectedRender::RegisterVShader()
+{
+    cdWorldBlendPointLitProjectedRender::RegisterShader();
 }
 namespace cdWorldBlendPointLitPixel {
     static const unsigned int PShader0[60] = {
