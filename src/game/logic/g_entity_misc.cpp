@@ -3499,15 +3499,18 @@ void Destructible_CheckpointExplode(Destructible* d)
                                       PAK_ID_INVALID, false);
     }
 }
+class DialogMenuSystem {
+public:
+    void BringUp(const char* text, bool typeOk, bool typeYesNo,
+                 const char* title, bool layer1);
+    void CloseDialog();
+};
 void DialogMenuSystem_BringUp(void* self, const char* a, bool b, bool c,
                               const char* d, bool e)
 {
-    (void)self; (void)a; (void)b; (void)c; (void)d; (void)e;
+    if (self != nullptr)
+        static_cast<DialogMenuSystem*>(self)->BringUp(a, b, c, d, e);
 }
-class DialogMenuSystem {
-public:
-    void CloseDialog();
-};
 void DialogMenuSystem_CloseDialog(void* self)
 {
     if (self != nullptr)
