@@ -112,12 +112,12 @@ void ToggleCDFlagShader() {
     *((unsigned char*)&gShaderSwitchingFlags) = byte;
 }
 
+tlFixedString cdFlagShader::GetName() { return tlFixedString("cdFlag"); }
+
 // ============================================================================
 // cdFlagShader::Register — register the flag vertex/pixel shaders.
 // ea: 0x7CA3C0
 // ============================================================================
-tlFixedString cdFlagShader::GetName() { return tlFixedString("cdFlag"); }
-
 void cdFlagShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdFlagVertex::VS, cdFlagVertex::VShaderTable, 0);

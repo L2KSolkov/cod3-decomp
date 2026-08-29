@@ -59,12 +59,12 @@ void ToggleCDGlassShader() {
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
 }
 
+tlFixedString cdGlassShader::GetName() { return tlFixedString("cdGlass"); }
+
 // ============================================================================
 // cdGlassShader::Register — register the glass vertex/pixel shaders.
 // ea: 0x7D0000
 // ============================================================================
-tlFixedString cdGlassShader::GetName() { return tlFixedString("cdGlass"); }
-
 void cdGlassShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 4; i != 0; --i, ++v0) {

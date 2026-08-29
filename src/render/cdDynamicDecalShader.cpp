@@ -93,12 +93,12 @@ void ToggleCDDynamicDecalShader() {
     *((unsigned char*)&gShaderSwitchingFlags) = byte;
 }
 
+tlFixedString cdDynamicDecalShader::GetName() { return tlFixedString("cdDynamicDecal"); }
+
 // ============================================================================
 // cdDynamicDecalShader::Register — register the dynamic-decal shaders.
 // ea: 0x7CBE80
 // ============================================================================
-tlFixedString cdDynamicDecalShader::GetName() { return tlFixedString("cdDynamicDecal"); }
-
 void cdDynamicDecalShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

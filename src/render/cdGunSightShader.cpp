@@ -115,12 +115,12 @@ void ToggleCDGunSightShader() {
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
 }
 
+tlFixedString cdGunSightShader::GetName() { return tlFixedString("cdGunSight"); }
+
 // ============================================================================
 // cdGunSightShader::Register — register the gun-sight vertex/pixel shaders.
 // ea: 0x7CE200
 // ============================================================================
-tlFixedString cdGunSightShader::GetName() { return tlFixedString("cdGunSight"); }
-
 void cdGunSightShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdGunSightRender::VS, cdGunSightRender::VShaderTable, 0);

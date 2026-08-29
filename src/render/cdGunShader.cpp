@@ -116,12 +116,12 @@ void ToggleCDGunShader() {
 
 }
 
+tlFixedString cdGunShader::GetName() { return tlFixedString("cdGun"); }
+
 // ============================================================================
 // cdGunShader::Register — register the gun vertex/pixel shaders.
 // ea: 0x7CEB70
 // ============================================================================
-tlFixedString cdGunShader::GetName() { return tlFixedString("cdGun"); }
-
 void cdGunShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdGunRender::VS, cdGunRender::VShaderTable, 0);

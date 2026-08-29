@@ -92,12 +92,12 @@ void ToggleCDPropellerShader() {
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
 }
 
+tlFixedString cdPropellerShader::GetName() { return tlFixedString("cdPropeller"); }
+
 // ============================================================================
 // cdPropellerShader::Register — register the propeller vertex/pixel shaders.
 // ea: 0x7D0E50
 // ============================================================================
-tlFixedString cdPropellerShader::GetName() { return tlFixedString("cdPropeller"); }
-
 void cdPropellerShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdPropellerRender::VS, cdPropellerRender::VShaderTable, 0);

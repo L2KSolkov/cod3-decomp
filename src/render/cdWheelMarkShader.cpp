@@ -209,12 +209,12 @@ void InitCDWheelMarkVertexDefBuilder() {
     cdWheelMarkVertexFormat.VertexDeclaration = v0->VertexDeclaration;
 }
 
+tlFixedString cdWheelMarkShader::GetName() { return tlFixedString("cdWheelMark"); }
+
 // ============================================================================
 // cdWheelMarkShader::Register — register the wheel-mark vertex/pixel shaders.
 // ea: 0x7C93D0
 // ============================================================================
-tlFixedString cdWheelMarkShader::GetName() { return tlFixedString("cdWheelMark"); }
-
 void cdWheelMarkShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdWheelMarkShaderVertex::VS, cdWheelMarkShaderVertex::VShaderTable, 0);
