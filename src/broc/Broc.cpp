@@ -529,7 +529,7 @@ int strcmp(const char* lhsa, const char* rhsa) {
 // string::Block implementation
 // ============================================================================
 
-// ea: 0x0049263A0
+// ea: 0x004A9C70
 /*static*/ char* string::Block::GetBuff(string::Block* block) {
     return (char*)(block + 1);
 }

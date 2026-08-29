@@ -45,6 +45,7 @@ PASS = "PASS"
 # segment 9 is MP_LELCS.  Other segments are XDK/CRT and are retained in the
 # manifest but excluded from the in-scope verification ledger.
 SEGMENT_BASES = {2: 0x40C000, 9: 0xC8F720}
+LINKED_IMAGE_BASES = (0x04000000,)
 XDK_LIBS = {
     "dsoundd", "d3d8d", "xonlinesd", "xgraphicsd", "uixd", "xvoiced",
     "d3dx8d", "xapilibd", "dmusicd", "xboxkrnl", "xbdm", "uuid",
@@ -1132,6 +1133,14 @@ def main() -> int:
                     candidate_name_matches(target.name, marker.candidate)):
                 marker.address = normalized
                 break
+        else:
+            for base in LINKED_IMAGE_BASES:
+                normalized = marker.address - base
+                target = map_by_ea.get(normalized)
+                if (target is not None and marker.candidate
+                        and candidate_name_matches(target.name, marker.candidate)):
+                    marker.address = normalized
+                    break
     marker_by_ea: defaultdict[int, list[Marker]] = defaultdict(list)
     for marker in markers:
         marker_by_ea[marker.address].append(marker)
