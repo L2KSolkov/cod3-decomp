@@ -2889,6 +2889,40 @@ SplinePathData* SplineGroup::GetPath()
     return &mPaths.mList[chosen];
 }
 
+// ea: 0x00504BC0
+Task* TaskHandler::GetTaskForEntity(
+    DbLinkedHandle<EntityHandleDb, Entity> h) const
+{
+    struct TaskListView {
+        int mSize;
+        void* mHead;
+        void* mEnd;
+        void* mTail;
+    };
+    static_assert(sizeof(TaskListView) == 0x10,
+                  "Task list layout mismatch");
+
+    const TaskListView* list = reinterpret_cast<const TaskListView*>(
+        reinterpret_cast<const unsigned char*>(this) + 0x10);
+    void* node = list->mHead;
+    const void* end = reinterpret_cast<const unsigned char*>(list) + 0x08;
+    if (node == nullptr || node == end)
+        return nullptr;
+
+    while (node != nullptr)
+    {
+        Task* task = reinterpret_cast<Task*>(
+            static_cast<unsigned char*>(node) - 0x04);
+        if (task->mEntityHandle.mHandle.mVal == h.mHandle.mVal)
+            return task;
+
+        node = *reinterpret_cast<void**>(node);
+        if (node == end)
+            return nullptr;
+    }
+    return nullptr;
+}
+
 struct TaskHandlerImpl;
 Task* HandleDb_GetTask(void* self, Handle h)
 {
@@ -2898,8 +2932,7 @@ Task* HandleDb_GetTask(void* self, Handle h)
 Task* TaskHandler_GetTaskForEntity(TaskHandlerImpl* self,
                                    DbLinkedHandle<EntityHandleDb, Entity> h)
 {
-    (void)self; (void)h;
-    return nullptr;
+    return reinterpret_cast<TaskHandler*>(self)->GetTaskForEntity(h);
 }
 TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id)
 {

@@ -4721,6 +4721,8 @@ extern vmCvar_t g_performanceTest;                // g.o
 extern cdl_proftimer cdl_proftimer_ent_actors;    // game.o
 extern cdl_proftimer cdl_proftimer_dobj_anim;     // game.o
 
+class Task;
+
 // anim.o task-handler system (external; opaque views)
 // TaskHandler layout from the game2.o local type (0x30 bytes).
 struct TaskHandler {
@@ -4734,6 +4736,7 @@ struct TaskHandler {
     TaskHandler(FourCC task_id, uint32_t flags);
 
     FourCC GetId() const;             // game.o 0x4A5340
+    Task* GetTaskForEntity(DbLinkedHandle<EntityHandleDb, Entity> h) const; // game2.o 0x504BC0
 };
 static_assert(sizeof(TaskHandler) == 0x30, "TaskHandler size mismatch");
 struct TaskFunctor {
