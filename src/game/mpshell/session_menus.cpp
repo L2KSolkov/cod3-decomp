@@ -4703,8 +4703,8 @@ void OverlayMenuBase::OnTriangle(int c)
     system->RemoveOverlay();
     if (system->GetActiveMenu() == 14)
     {
-        system->MakeActive(mBackMenu,
-                           g_femanager.fems->menus[14]->highlighted);
+        system->MakeActiveAndReturn(
+            mBackMenu, g_femanager.fems->menus[14]->highlighted);
     }
     else if (system->GetActiveMenu() != mBackMenu)
     {
