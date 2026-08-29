@@ -160,49 +160,63 @@ extern "C" void MultiplayerMgr_SetCompatInstance(void* instance)
     MultiplayerMgr::sInst = static_cast<MultiplayerMgr*>(instance);
 }
 
-// ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z (mp.o; stub)
-int MultiplayerMgr::GetDroppedItemType(int itemType)
-{
-    (void)itemType;
-    return 0;
-}
 void MultiplayerMgr::GetNextDroppedItemID(void* result, int itemType,
-                                         Entity* owner)
+                                           Entity* owner)
 {
-    (void)result; (void)itemType; (void)owner;
+    if (result == nullptr)
+        return;
+    MPEntityHandle value;
+    value.mVal = 0;
+    (void)itemType;
+    (void)owner;
+    memcpy(result, &value, sizeof(value));
 }
 
-// mp.o member stubs (real logic lives in mp.o; ported later).
-// Compatibility symbol used by the existing g_logic ABI view; the exact
-// IDA EHitLocation overload is implemented in mp_basic.cpp.
-void MultiplayerMgr::PlayerDead(Entity* p, Entity* inf, Entity* atk, int dmg,
-                                int mod, int w, const float* pos,
-                                const float* dir, int hl)
-{
-    (void)p; (void)inf; (void)atk; (void)dmg; (void)mod; (void)w;
-    (void)pos; (void)dir; (void)hl;
-}
 bool MultiplayerMgr::IsLocalPlayer(const Entity* player)
 {
-    (void)player;
-    return false;
+    return player != nullptr && IsLocalPlayer(const_cast<Entity*>(player));
 }
 
-// MPPlayerManager / MPPlayerSet stubs (mp.o; ported later)
 MPPlayer* MPPlayerManager::GetLocalPlayer(int nLocalPlayer)
 {
-    (void)nLocalPlayer;
-    return nullptr;
+    if (nLocalPlayer < 0 || nLocalPlayer >= 1)
+        return nullptr;
+    const unsigned char index =
+        *(const unsigned char*)((const char*)this + 0x4111 + nLocalPlayer);
+    if (index >= 0x10u)
+        return nullptr;
+    return (MPPlayer*)((char*)this + 0x1010 + 0x310 * index);
 }
+
 MPPlayer* MPPlayerManager::GetPlayer(unsigned char id)
 {
-    (void)id;
-    return nullptr;
+    if (id >= 0x10u)
+        return nullptr;
+    return (MPPlayer*)((char*)this + 0x1010 + 0x310 * id);
 }
-void MPPlayerManager::SendOthers(bdReference<bdMessage> message, bool reliable)
+
+void MPPlayerManager::SendOthers(bdReference<bdMessage> message,
+                                  const MPPlayer* excludePlayer,
+                                  bool reliable)
 {
-    (void)message; (void)reliable;
+    const unsigned char localId =
+        *(const unsigned char*)((const char*)this + 0x4111);
+    if (localId >= 0x10u)
+        return;
+    MPPlayerSet targets;
+    for (unsigned int i = 0; i < 16; ++i)
+    {
+        MPPlayer* player = (MPPlayer*)((char*)this + 0x1010 + 0x310 * i);
+        const unsigned char id = *(const unsigned char*)player;
+        const void* connection = *(const void**)((char*)player + 0x04);
+        if (connection != nullptr && id != localId && player != excludePlayer
+            && *(const bool*)((const char*)player + 0x46))
+            targets.set(i);
+    }
+    if (targets.mBitPlayers != 0)
+        Send(message, targets, reliable);
 }
+
 // ea: 0x00730350
 unsigned int MPPlayerSet::lowestPlayerIndex() const
 {
@@ -646,7 +660,7 @@ void MPLiveEngine::SendCommunicatorStatus(UIX_VOICE_STATUS_TYPE commStatus)
             buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_FULL_TYPE);
             buffer.m_ptr->writeBits(&commStatus, 0x20);
             MultiplayerMgr::sInst->mPeer->GetPlayerManager()->SendOthers(
-                bdReference<bdMessage>(v3), true);
+                bdReference<bdMessage>(v3), nullptr, true);
         }
     }
 }

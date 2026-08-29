@@ -196,6 +196,7 @@ public:
 class Entity;  // game_types.h
 namespace math { class Position3; class Dir3; }
 enum hitLocation_t;
+enum EDroppedItemTypes;
 namespace kuju { namespace knet { class sTime; } }
 
 struct MultiplayerMgr {
@@ -203,7 +204,6 @@ struct MultiplayerMgr {
     bool mRankedGame;              // +0x35
     bool mLinkCheckEnabled;        // +0x40
     bool IsHost();                 // ?IsHost@MultiplayerMgr@@QAE_NXZ
-    int  GetDroppedItemType(int itemType);  // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z
     class MPEntityHandle {
     public:
         int mVal;
@@ -230,9 +230,6 @@ struct MultiplayerMgr {
                              const math::Position3& position,
                              const math::Dir3& normal,
                              unsigned char surfaceType, Entity* owner);
-    void PlayerDead(Entity* player, Entity* inflictor, Entity* attacker,
-                    int damage, int mod, int weapon, const float* position,
-                    const float* dir, int hitLoc);
     void AttemptToRevivePlayer(Entity* player, Entity* medic);
     void FireMissile(int weapon, const math::Position3& position,
                      const math::Dir3& dir, MultiplayerMgr::MPEntityHandle handle);
@@ -309,7 +306,11 @@ public:
     MPPlayerSet allPlayers();                    // extern mp.o
     void Send(bdReference<bdMessage> message, MPPlayerSet players,
               bool reliable);                    // extern mp.o
-    void SendOthers(bdReference<bdMessage> message, bool reliable);  // extern mp.o
+    void SendOthers(bdReference<bdMessage> message,
+                    const MPPlayer* excludePlayer, bool reliable);  // extern mp.o
+    MultiplayerMgr::MPEntityHandle GetNextDroppedItemID(EDroppedItemTypes itemType,
+                                                        Entity* owner);
+    bool IsLocalPlayer(const Entity* player);
 };
 
 // MPUIInterface - class statics/methods owned by mp.o (mangled as class
