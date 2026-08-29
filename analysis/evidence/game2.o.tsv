@@ -165,3 +165,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004EAA10	?GetEntityHandle@Task@@QBE?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EAA10	Release Task::GetEntityHandle matches source.
 0x004EAA30	?GetTaskHandle@Task@@QBE?AVHandle@@XZ	V3	PASS	ida-manual-game2-accessors-20260828	2026-08-28	src/game/logic/g_debugthread.cpp:974-978	Direct IDA comparison confirms const return of the embedded task handle.
 0x004EAA30	?GetTaskHandle@Task@@QBE?AVHandle@@XZ	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EAA30	Release Task::GetTaskHandle matches source.
+0x004EAB30	??8tlFixedString@@QBE_NABV0@@Z	V3	PASS	ida-manual-game2-accessors-20260828	2026-08-28	src/core/tlFixedString.h:67-75	Direct IDA comparison confirms the eight-word equality comparison and boolean result.
+0x004EAB30	??8tlFixedString@@QBE_NABV0@@Z	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EAB30	Release tlFixedString::operator== matches source.
+0x004EAB70	??9tlFixedString@@QBE_NABV0@@Z	V3	PASS	ida-manual-game2-accessors-20260828	2026-08-28	src/core/tlFixedString.h:78-81	Direct IDA comparison confirms inequality is the negation of the equality result.
+0x004EAB70	??9tlFixedString@@QBE_NABV0@@Z	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EAB70	Release tlFixedString::operator!= matches source.
+0x004EABB0	?c_str@tlFixedString@@QBEPBDXZ	V3	PASS	ida-manual-game2-accessors-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:1998-2002	Direct IDA comparison confirms the const accessor returns the embedded string buffer.
+0x004EABB0	?c_str@tlFixedString@@QBEPBDXZ	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EABB0	Release tlFixedString::c_str matches the out-of-line source definition.
+0x004EABC0	?get_dlist_node_offset@AeThread@@SAHXZ	V3	PASS	ida-manual-game2-accessors-20260828	2026-08-28	src/game/logic/g_debugthread.cpp:100-103	Direct IDA comparison confirms the static accessor returns the release value 0.
+0x004EABC0	?get_dlist_node_offset@AeThread@@SAHXZ	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EABC0	Release AeThread::get_dlist_node_offset matches source.

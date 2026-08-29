@@ -1994,6 +1994,12 @@ struct KeyInfoEntry {
 };
 static_assert(sizeof(KeyInfoEntry) == 8, "KeyInfoEntry size mismatch");
 
+// ea: 0x004EABB0
+const char* tlFixedString::c_str() const
+{
+    return str;
+}
+
 // ea: 0x004EA9C0
 char* KeyInfoEntry::GetBoundCmdName() const
 {

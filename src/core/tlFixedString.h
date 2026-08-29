@@ -82,7 +82,7 @@ public:
     // ea: 0x4B5470
     char* c_str() { return str; }
     // ea: 0x4EABB0
-    const char* c_str() const { return str; }
+    const char* c_str() const;
 
     // ea: 0x4A53E0
     uint32_t* value();  // ?value@tlFixedString@@QAEPAIXZ (g.o 0x4A53E0)
