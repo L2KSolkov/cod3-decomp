@@ -517,6 +517,15 @@ def symbol_variants(name: str) -> set[str]:
         # the release body and the source declaration.
         "?Init@NoiseFloat@@QAEXKMM@Z":
             "?Init@NoiseFloat@@QAEXIMM@Z",
+        # The port keeps SplineEntry as a translation-unit type while the
+        # release compiler emitted it nested beneath SplineMgr.  Layout and
+        # member call contracts are identical in the verified release body.
+        "??0SplineEntry@SplineMgr@@QAE@XZ":
+            "??0SplineEntry@@QAE@XZ",
+        "?Unload@SplineEntry@SplineMgr@@QAEXXZ":
+            "?Unload@SplineEntry@@QAEXXZ",
+        "?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ":
+            "?IsUsed@SplineEntry@@QBE_NXZ",
         "??_0vector@Broc@@QAEAAU01@M@Z":
             "??_0vector@Broc@@QAEAAU01@M@Z",
         # The release map records these CG static methods with the non-static
