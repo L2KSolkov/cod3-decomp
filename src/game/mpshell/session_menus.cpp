@@ -6549,6 +6549,7 @@ void PlayLanMenu::SetLiveOnXBox()
 void PlayOnlineMenu::OnUp(int c)
 {
     (void)c;
+    int old_highlighted = highlighted;
     if (highlighted == 1)
     {
         highlighted = 4;
@@ -6558,13 +6559,16 @@ void PlayOnlineMenu::OnUp(int c)
     {
         Up();
     }
+    TogglePreviewImage(old_highlighted, false);
     TogglePreviewImage(highlighted, true);
+    UpdateTextDescription(highlighted);
 }
 
 // ea: 0x0079CB90
 void PlayOnlineMenu::OnDown(int c)
 {
     (void)c;
+    int old_highlighted = highlighted;
     if (highlighted == 4)
     {
         highlighted = 1;
@@ -6574,7 +6578,9 @@ void PlayOnlineMenu::OnDown(int c)
     {
         Down();
     }
+    TogglePreviewImage(old_highlighted, false);
     TogglePreviewImage(highlighted, true);
+    UpdateTextDescription(highlighted);
 }
 
 // ea: 0x007A09B0
