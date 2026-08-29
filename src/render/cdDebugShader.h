@@ -51,6 +51,7 @@ static_assert(sizeof(cdDebugShader) == 0x10, "cdDebugShader size mismatch");
 namespace cdDebugShaderRender {
     extern unsigned long* VS;                // ?VS@cdDebugShaderRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdDebugShaderRender@@3PAPBIA
+    void RegisterVShader();                  // @0x007C68E0
 }
 namespace cdDebugPixel {
     extern unsigned long** PS;               // ?PS@cdDebugPixel@@3PAPAKA

@@ -40,6 +40,13 @@ namespace cdDebugPixel {
     unsigned int const** PShaderTable = nullptr;
 }
 
+// ea: 0x007C68E0
+void cdDebugShaderRender::RegisterVShader()
+{
+    nglDxRegisterVShader(cdDebugShaderRender::VS,
+                         reinterpret_cast<const unsigned int*>(cdDebugShaderRender::VShaderTable[0]));
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
