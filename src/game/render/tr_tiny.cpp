@@ -6,6 +6,7 @@
 
 #include "core/math_types.h"
 #include "core/color.h"
+#include "core/fourcc.h"
 
 #include <stdint.h>
 #include <stddef.h>
@@ -931,12 +932,10 @@ public:
 template <class T, class Tree>
 class InplaceAssetBank {
 public:
-    uint8_t _pad[0x08];
+    FourCC mFileId;                  // +0x00
+    float mVersion;                  // +0x04
     Tree mTree;                      // +0x08
-    struct Ptrs {
-        unsigned int mSize;          // +0x10
-        T** mList;                   // +0x14
-    } mPtrs;                         // +0x10
+    InplaceVector<T const*> mPtrs;   // +0x10
     PtrFixupTable* mPtrFixupTable;   // +0x18
     unsigned int Size() const;       // ?Size@?$InplaceAssetBank@...@@QBEIXZ
     T* operator[](unsigned int idx); // ?operator[]@?$InplaceAssetBank@...@@QAEP...@@I@Z (core.o)
@@ -952,12 +951,18 @@ unsigned int InplaceAssetBank<T, Tree>::Size() const
 template <class T, class Tree>
 T* InplaceAssetBank<T, Tree>::operator[](unsigned int idx)  // ?operator[]@?$InplaceAssetBank@...@@QAEP...@@I@Z (core.o)
 {
-    return mPtrs.mList[idx];
+    return const_cast<T*>(mPtrs.mList[idx]);
 }
 template unsigned int
 InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned int>>::Size() const;  // @ 0x6EC050
 template unsigned int
 InplaceAssetBank<XModel, InplaceTree<InplaceString, unsigned int>>::Size() const;      // @ 0x6EC160
+static_assert(sizeof(InplaceAssetBank<XModel,
+                                     InplaceTree<InplaceString, unsigned int>>) == 0x1C,
+              "XModel InplaceAssetBank size mismatch");
+static_assert(sizeof(InplaceAssetBank<XModelParts,
+                                     InplaceTree<InplaceString, unsigned int>>) == 0x1C,
+              "XModelParts InplaceAssetBank size mismatch");
 
 // ============================================================================
 // ae_pair / ae_sized_array_base / ae_sized_array
@@ -2559,16 +2564,35 @@ phys_static_array<T, N>::phys_static_array()
 }
 
 // ParticleEffect::RaycastData
-class apsBounds;
+struct proxy_obj_t;
+struct bounded_proxy_obj_t;
 class proximity_data_t {
 public:
+    math::Position3 lo;               // +0x000
+    math::Position3 hi;               // +0x010
+    uint8_t boxesBuf[0x400];          // +0x020
+    proxy_obj_t* boxes_slot;          // +0x420
+    int boxes_count;                  // +0x424
+    uint8_t _pad428[0x08];            // +0x428
+    uint8_t brushesBuf[0x400];        // +0x430
+    proxy_obj_t* brushes_slot;        // +0x830
+    int brushes_count;                // +0x834
+    uint8_t _pad838[0x08];            // +0x838
+    uint8_t poliesBuf[0x1000];        // +0x840
+    bounded_proxy_obj_t* polies_slot; // +0x1840
+    int polies_count;                 // +0x1844
+    uint8_t _pad1848[0x08];            // +0x1848
     proximity_data_t();                // ??0proximity_data_t@@QAE@XZ (g.o)
 };
+static_assert(sizeof(proximity_data_t) == 0x1850,
+              "proximity_data_t size mismatch");
 struct ParticleEffect::RaycastData {
     apsBounds mBounds;                 // +0x00
     proximity_data_t mProximityData;   // +0x20
     RaycastData();                     // ??0RaycastData@ParticleEffect@@QAE@XZ @ 0x6EF030
 };
+static_assert(sizeof(ParticleEffect::RaycastData) == 0x1870,
+              "ParticleEffect::RaycastData size mismatch");
 ParticleEffect::RaycastData::RaycastData()
 {
     mBounds.Init();
