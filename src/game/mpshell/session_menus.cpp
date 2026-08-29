@@ -8254,6 +8254,7 @@ void AARMapVote::OnDown(int c)
 void GameSettingsEdit::OnUp(int c)
 {
     (void)c;
+    int highlighted = this->highlighted;
     Up();
     if (mScrollBarUpFader.mQuad != nullptr)
     {
@@ -8264,7 +8265,12 @@ void GameSettingsEdit::OnUp(int c)
         mScrollBarUpFader.mAlphaDelta = fabs(0.5f);
         mScrollBarUpFader.mQuad->SetAlpha(1.0f);
     }
-    UpdateScrollBar();
+    else
+    {
+        mScrollBarUpFader.mFading = false;
+    }
+    UpdateSplitScreenOptions(highlighted);
+    UpdateHighlight();
 }
 
 // ea: 0x0079B760
