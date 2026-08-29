@@ -15943,13 +15943,32 @@ void InstantActionMenu::Select(int entry_num)
     case 1:
         params.mGameType = -1;
         break;
+    case 2:
+        params.mGameType = 5;
+        break;
+    case 3:
+        params.mGameType = 4;
+        break;
+    case 4:
+        params.mGameType = 1;
+        break;
+    case 5:
+        params.mGameType = 2;
+        break;
+    case 6:
+        params.mGameType = 3;
+        break;
+    case 7:
+        params.mGameType = 7;
+        break;
     default:
-        params.mGameType = 0;
+        ASSERT("0", "c:\\cod\\code\\game\\mp/ui/InstantActionMenu.cpp", 78);
         break;
     }
-    MPUIInterface::mGameConnectionType =
-        MPUIInterface::kGameConnectionTypeLocal;
+    memset(&params.mMapID, 255, 24);
+    params.mSessionNamePrefix[0] = 0;
     MPUIInterface::SetQueryParams(params);
+    system->MakeActiveAndReturn(12);
 }
 
 // ea: 0x00791800
