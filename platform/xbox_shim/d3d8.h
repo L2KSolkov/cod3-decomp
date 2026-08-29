@@ -172,6 +172,7 @@ struct D3DTexture : D3DBaseTexture {
         return SurfaceLevel2 != NULL ? 0 : 0x8007000E;
     }
 };
+static_assert(sizeof(D3DTexture) == 0x14, "D3DTexture size mismatch");
 struct D3DCubeTexture : D3DBaseTexture {
     unsigned int __stdcall GetCubeMapSurface(_D3DCUBEMAP_FACES FaceType, unsigned int Level,
                                              D3DSurface** ppCubeMapSurface) {
@@ -180,7 +181,9 @@ struct D3DCubeTexture : D3DBaseTexture {
         return CubeMapSurface2 != NULL ? 0 : 0x8007000E;
     }
 };
+static_assert(sizeof(D3DCubeTexture) == 0x14, "D3DCubeTexture size mismatch");
 struct D3DVolumeTexture : D3DBaseTexture {};
+static_assert(sizeof(D3DVolumeTexture) == 0x14, "D3DVolumeTexture size mismatch");
 struct D3DSurface {
     unsigned int Common;  // +0x00
     unsigned int Data;    // +0x04
@@ -201,6 +204,7 @@ struct D3DSurface {
     }
 };
 static_assert(sizeof(D3DSurface) == 0x18, "D3DSurface size mismatch");
+static_assert(sizeof(_D3DRECT) == 0x10, "_D3DRECT size mismatch");
 
 // ---- Palette (Xbox D3D8, 12 bytes, verified against IDA) -----------------
 struct D3DPalette {
