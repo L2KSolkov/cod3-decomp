@@ -5524,7 +5524,9 @@ bool AARMenuSystem::GetPanelFileUsers(
     }
     else if (strcmp(name, "SP_small_textbox_ingame.PANEL") == 0)
     {
-        array.push_back((PanelFileUser*)g_femanager.mAARS->menus[10]);
+        PanelFileUser* user = g_femanager.mAARS != nullptr
+            ? (PanelFileUser*)g_femanager.mAARS->menus[10] : nullptr;
+        array.push_back(user);
     }
     return oldSize != array.m_size;
 }
