@@ -5941,7 +5941,9 @@ public:
     struct sentient_s* sentient;      // +0x25C
     void* scr_vehicle;                // +0x260
     void* pTurretInfo;                // +0x264
-    unsigned char _pad4[0x3D4 - 0x268];
+    unsigned char _pad4[0x3B0 - 0x268];
+    const void* item;                  // +0x3B0
+    unsigned char _pad4b[0x3D4 - 0x3B4];
     struct tagInfo_t* tagInfo;        // +0x3D4
     Entity* tagChildren;              // +0x3D8
 
@@ -26681,6 +26683,38 @@ __declspec(noinline) void DObjCalcSubModelAnim_AnimationPlayer(
         DObjApplyPoseWrapper(obj, i, iPhase, v5, false);
     }
 }
+}
+
+// ea: 0x00554870
+extern "C" void DObjCalcAnim_Release(DObj* obj, int iPhase)
+{
+    int modelIndex = 0;
+    if (obj == nullptr)
+    {
+        XANIM_ASSERT("obj", "c:\\cod\\code\\game\\xanim.cpp", 4160,
+                     "old cod assert");
+    }
+    if (obj->skel == nullptr)
+        return;
+
+    Entity* entity = obj->mEntity;
+    if (entity != nullptr
+        && ((entity->flags & 0x80400000) != 0
+            || entity->item != nullptr
+            || (entity->scr_vehicle != nullptr
+                && *reinterpret_cast<void**>(
+                    reinterpret_cast<unsigned char*>(entity->scr_vehicle)
+                    + 0x518) != nullptr)))
+        return;
+
+    while (modelIndex < obj->numModels)
+    {
+        if (obj->animPlayers[modelIndex] != nullptr)
+            DObjCalcSubModelAnim_AnimationPlayer(obj, modelIndex, iPhase);
+        else
+            DObjCalcSubModelAnim_XAnim(obj, modelIndex, iPhase);
+        ++modelIndex;
+    }
 }
 
 // Force emission of the xanim.cpp anonymous-namespace helpers (internal

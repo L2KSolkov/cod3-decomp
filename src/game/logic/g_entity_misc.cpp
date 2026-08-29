@@ -3516,8 +3516,15 @@ void DialogMenuSystem_CloseDialog(void* self)
     if (self != nullptr)
         static_cast<DialogMenuSystem*>(self)->CloseDialog();
 }
-void DObjCalcAnim(DObj* obj, int a) { (void)obj; (void)a; }
-void DObjCalcAnim(void* obj, int a) { (void)obj; (void)a; }
+extern "C" void DObjCalcAnim_Release(DObj* obj, int iPhase);
+void DObjCalcAnim(DObj* obj, int a)
+{
+    DObjCalcAnim_Release(obj, a);
+}
+void DObjCalcAnim(void* obj, int a)
+{
+    DObjCalcAnim_Release(static_cast<DObj*>(obj), a);
+}
 void DObjCreate(DObjModel* models, int numModels, void* tree, void* out,
                 int gameId)
 {
