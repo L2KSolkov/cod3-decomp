@@ -4124,6 +4124,7 @@ public:
     static void* sInst;  // ?sInst@DynamicDecalMgr@@2PAV1@A @ 0xF74478
     static DynamicDecalMgr* Inst();  // ?Inst@DynamicDecalMgr@@SAPAV1@XZ (g.o 0x4A9E70)
     void Update(float deltaTime);    // render.o 0x6C5F30
+    void DestroyAllDecals();         // render.o 0x6DCEC0
     void Add(nglTexture* texture, float zBias, bool alphaBlend, int maxNum,
              const math::Position3& pos, const math::Position3& normal,
              float radius, float angle, const Color& color,

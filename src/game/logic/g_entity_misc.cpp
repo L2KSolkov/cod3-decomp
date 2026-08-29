@@ -3588,7 +3588,12 @@ void DObjGetHierarchyBits(DObj* obj, int a, int* b)
 }
 void DObjUpdateChildren(DObj* obj, int a) { (void)obj; (void)a; }
 void DObjUpdateLod(Entity* e) { (void)e; }
-void DynamicDecalMgr_DestroyAllDecals() {}
+void DynamicDecalMgr_DestroyAllDecals()
+{
+    DynamicDecalMgr* instance = DynamicDecalMgr::Inst();
+    if (instance != nullptr)
+        instance->DestroyAllDecals();
+}
 void DynamicDecalMgr_Update(void* self, float a)
 {
     static_cast<DynamicDecalMgr*>(self)->Update(a);
@@ -4066,7 +4071,13 @@ void MI_ResetMapList()
     }
     g_NumBaseMaps = g_NumTotalMaps;
 }
-void MusicMgr_Update(void* self, float a) { (void)self; (void)a; }
+struct MusicMgr;
+extern void MusicMgr_Update_Impl(MusicMgr* self, float dt);
+void MusicMgr_Update(void* self, float a)
+{
+    if (self != nullptr)
+        MusicMgr_Update_Impl(static_cast<MusicMgr*>(self), a);
+}
 class nglRenderNode;
 void nglDxUnbindVertexBuffer() {}
 void ngliExitList() {}
@@ -5448,6 +5459,11 @@ void MusicMgr::Update(float dt)
             v22->SetVolume(newVolumec);
         }
     }
+}
+
+void MusicMgr_Update_Impl(MusicMgr* self, float dt)
+{
+    self->Update(dt);
 }
 
 // ea: 0x006217F0
