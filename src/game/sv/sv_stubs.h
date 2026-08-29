@@ -1265,12 +1265,16 @@ static_assert(sizeof(EntityHandleDb) == 27312, "EntityHandleDb size mismatch");
 struct XModel;
 class XModelManager {
 public:
-    uint8_t _pad[4];
+    // The complete render-side definition is in tr_aeps2.cpp.  Keep this
+    // cross-object view opaque but at the release-verified size so placement
+    // users and pointer arithmetic retain the 0x190-byte ABI.
+    uint8_t _opaque[0x190];
     static XModelManager* sInst;           // ?sInst@XModelManager@@2PAV1@A
     static XModelManager* Inst();          // ?Inst@XModelManager@@SAPAV1@XZ
     IVPointer<XModel> GetXModel(TPakId pak_id, const char* name);
 };
-static_assert(sizeof(XModelManager) == 4, "XModelManager size mismatch (opaque)");
+static_assert(sizeof(XModelManager) == 0x190,
+              "XModelManager size mismatch (opaque)");
 
 // ============================================================================
 // EntityManager â€” entity factory (opaque; only sv.o fields used)
