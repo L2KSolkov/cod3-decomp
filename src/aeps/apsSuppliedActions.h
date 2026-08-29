@@ -415,4 +415,45 @@ struct apsEnvCollideAction : apsAction {
     float GetVersion() const { return 1.0f; }
     APS_DECLARE_RETRIEVE(apsEnvCollideAction, apsAction())};
 
+// Release UDT inventory: every concrete supplied action retains the
+// apsAction base footprint (0x1C bytes); keep these assertions adjacent to the
+// declarations so later field additions cannot silently change the ABI.
+static_assert(sizeof(apsSourceAction) == 0x1C, "apsSourceAction size mismatch");
+static_assert(sizeof(apsBurstAction) == 0x1C, "apsBurstAction size mismatch");
+static_assert(sizeof(apsRandomSpawnAction) == 0x1C, "apsRandomSpawnAction size mismatch");
+static_assert(sizeof(apsLifetimeAction) == 0x1C, "apsLifetimeAction size mismatch");
+static_assert(sizeof(apsAlphaFadeAction) == 0x1C, "apsAlphaFadeAction size mismatch");
+static_assert(sizeof(apsAlphaFadeInOutAction) == 0x1C, "apsAlphaFadeInOutAction size mismatch");
+static_assert(sizeof(apsRandomAlphaFadeInOutAction) == 0x1C, "apsRandomAlphaFadeInOutAction size mismatch");
+static_assert(sizeof(apsLinearScaleAction) == 0x1C, "apsLinearScaleAction size mismatch");
+static_assert(sizeof(apsLinearScaleSyncAction) == 0x1C, "apsLinearScaleSyncAction size mismatch");
+static_assert(sizeof(apsExponentialScaleAction) == 0x1C, "apsExponentialScaleAction size mismatch");
+static_assert(sizeof(apsLinearScaleWidthAction) == 0x1C, "apsLinearScaleWidthAction size mismatch");
+static_assert(sizeof(apsExponentialScaleWidthAction) == 0x1C, "apsExponentialScaleWidthAction size mismatch");
+static_assert(sizeof(apsLinearScaleHeightAction) == 0x1C, "apsLinearScaleHeightAction size mismatch");
+static_assert(sizeof(apsExponentialScaleHeightAction) == 0x1C, "apsExponentialScaleHeightAction size mismatch");
+static_assert(sizeof(apsMoveAction) == 0x1C, "apsMoveAction size mismatch");
+static_assert(sizeof(apsObjectMoveAction) == 0x1C, "apsObjectMoveAction size mismatch");
+static_assert(sizeof(apsPositionMoveAction) == 0x1C, "apsPositionMoveAction size mismatch");
+static_assert(sizeof(apsMoveAtFixedVelocityAction) == 0x1C, "apsMoveAtFixedVelocityAction size mismatch");
+static_assert(sizeof(apsForceAction) == 0x1C, "apsForceAction size mismatch");
+static_assert(sizeof(apsColorShiftAction) == 0x1C, "apsColorShiftAction size mismatch");
+static_assert(sizeof(apsVelocityDragAction) == 0x1C, "apsVelocityDragAction size mismatch");
+static_assert(sizeof(apsAngularVelocityDragAction) == 0x1C, "apsAngularVelocityDragAction size mismatch");
+static_assert(sizeof(apsVectorAngularVelocityDragAction) == 0x1C, "apsVectorAngularVelocityDragAction size mismatch");
+static_assert(sizeof(apsWorldPlaneReflectionAction) == 0x1C, "apsWorldPlaneReflectionAction size mismatch");
+static_assert(sizeof(apsUVAFrameAnimAction) == 0x1C, "apsUVAFrameAnimAction size mismatch");
+static_assert(sizeof(apsAngleTrackVelocityAction) == 0x1C, "apsAngleTrackVelocityAction size mismatch");
+static_assert(sizeof(apsAngleTrackElementXAction) == 0x1C, "apsAngleTrackElementXAction size mismatch");
+static_assert(sizeof(apsAngleTrackElementYAction) == 0x1C, "apsAngleTrackElementYAction size mismatch");
+static_assert(sizeof(apsAngleTrackElementZAction) == 0x1C, "apsAngleTrackElementZAction size mismatch");
+static_assert(sizeof(apsPointAttractorAction) == 0x1C, "apsPointAttractorAction size mismatch");
+static_assert(sizeof(apsLineAttractorAction) == 0x1C, "apsLineAttractorAction size mismatch");
+static_assert(sizeof(apsDecayLineAttractorAction) == 0x1C, "apsDecayLineAttractorAction size mismatch");
+static_assert(sizeof(apsKappaTauAction) == 0x1C, "apsKappaTauAction size mismatch");
+static_assert(sizeof(apsSpawnAction) == 0x1C, "apsSpawnAction size mismatch");
+static_assert(sizeof(apsSpawnOnDeathAction) == 0x1C, "apsSpawnOnDeathAction size mismatch");
+static_assert(sizeof(apsTrajectoryAction) == 0x1C, "apsTrajectoryAction size mismatch");
+static_assert(sizeof(apsEnvCollideAction) == 0x1C, "apsEnvCollideAction size mismatch");
+
 #endif // COD3_AEPS_APSSUPPLIEDACTIONS_H
