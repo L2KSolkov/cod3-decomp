@@ -683,12 +683,12 @@ unsigned long nfsLock()
 #endif
 {
 #ifdef _WIN32
-    DWORD result;
+    DWORD result = 0;
     if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI)
         return WaitForSingleObject(s_nfsMutex, INFINITE);
     return result;
 #else
-    unsigned long result;
+    const unsigned long result = 0;
     return result;
 #endif
 }
@@ -700,12 +700,12 @@ int nfsUnlock()
 #endif
 {
 #ifdef _WIN32
-    BOOL result;
+    BOOL result = FALSE;
     if (s_initParams.threadMode == NFL_THREAD_MODE_MULTI)
         return ReleaseMutex(s_nfsMutex);
     return result;
 #else
-    int result;
+    const int result = 0;
     return result;
 #endif
 }

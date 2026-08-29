@@ -51,7 +51,7 @@ void EntityNotifySet::AddEndOn(EndOnScriptNode* node)
     ++mEndOnList.m_size;
 }
 
-// ea: 0x005EF700 (scr.o)
+// ea: 0x00600200 (scr.o)
 void EntityNotifySet::RmvEndOn(EndOnScriptNode* node)
 {
     mEndOnList.erase(node);

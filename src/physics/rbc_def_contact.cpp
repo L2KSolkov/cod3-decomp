@@ -58,7 +58,7 @@ void rigid_body_constraint_contact::verify_constraint(rigid_body* b1_, rigid_bod
     verify_is_in_physics_system(this, b1_, b2_);
 }
 
-// rigid_body_constraint_contact::add_cpi_simple - ea: 0x878650
+// rigid_body_constraint_contact::add_cpi_simple - ea: 0x008785A0
 void rigid_body_constraint_contact::add_cpi_simple(
     contact_point_info* cpi, rigid_body* const b1_, rigid_body* const b2_) {
     if (cpi == NULL &&

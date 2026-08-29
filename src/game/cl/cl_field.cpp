@@ -61,6 +61,15 @@ struct KeyInfo {
 };
 ae_array_fixed<ae_array_fixed<KeyInfoEntry2, 256>, 1> KeyInfo::mKeys;
 
+// Exported view used by client input/front-end code.  It must alias the real
+// binding storage; the former compatibility stub left this pointer null.
+struct KeyInfoEntry3 {
+    int mState;
+    char* mBoundCmdName;
+};
+KeyInfoEntry3 (*KeyInfo_mKeys)[256] =
+    reinterpret_cast<KeyInfoEntry3 (*)[256]>(&KeyInfo::mKeys.m_elements[0]);
+
 // ea: 0x5398F0
 void KeyInfo::SetDown(int keyIndex, int clnt, int down)
 {
@@ -567,19 +576,19 @@ void GetSwirlSpeedDirect(float& fCosDeltaAngle, int& iRotationDir,
     float* v3 = prevDir[iStickIndex];
     if (*v3 != 0.0f || dword_F11E4C[3 * iStickIndex] != 0.0f)
     {
-        *fCosDeltaAngle = (dword_F11E50[3 * iStickIndex] * 0.0f)
-                          + (*v3 * currDir[0])
+        fCosDeltaAngle = (dword_F11E50[3 * iStickIndex] * 0.0f)
+                          + (v3[0] * currDir[0])
                           + (dword_F11E4C[3 * iStickIndex] * v7);
         float crossPro[2];
         CrossProduct(prevDir[iStickIndex], currDir, crossPro);
         if (crossPro[0] <= 0.0f)
         {
             if (crossPro[0] < 0.0f)
-                *iRotationDir = -1;
+                iRotationDir = -1;
         }
         else
         {
-            *iRotationDir = 1;
+            iRotationDir = 1;
         }
     }
     v3[0] = currDir[0];
@@ -592,7 +601,7 @@ void SwirlControl(int stickIndex)
 {
     float fCosDelta = -2.0f;
     int rotateDir = 0;
-    GetSwirlSpeedDirect(&fCosDelta, &rotateDir, stickIndex);
+    GetSwirlSpeedDirect(fCosDelta, rotateDir, stickIndex);
     float v2 = (1.0f - fCosDelta) * rotateDir;
     if (stickIndex == 1)
     {

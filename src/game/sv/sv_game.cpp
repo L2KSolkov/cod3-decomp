@@ -43,24 +43,169 @@ XAnimTree* DObjGetTree(DObj* obj)  // ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z
     return (XAnimTree*)obj->tree[0];
 }
 
-extern void XAnimFindServerNoteTrack(XAnimTree* tree, unsigned int animIndex,
-                                     float dtime);  // anim.o 0x541CD0
-extern void XAnimUpdateServerInfoInternal(XAnimTree* tree,
-                                          unsigned int animIndex,
-                                          float dtime, bool bNotify);  // anim.o
+struct XAnimEntry {
+    unsigned int hash;
+    unsigned short numAnims;
+    unsigned short parent;
+    void* anim;
+    void* notify;
+    int lastAttempt;
+    unsigned char lastChosenChild;
+    unsigned char pad[3];
+    struct { unsigned short flags; unsigned short children; } sync;
+};
+struct XAnimInfo {
+    unsigned short notifyChild;
+    short notifyIndex;
+    unsigned int notifyName;
+    unsigned short notifyType;
+    unsigned short prev;
+    unsigned short next;
+    unsigned char s[36];
+    void* pEntity;
+};
+extern XAnimInfo g_info[512];
+extern void XAnimUpdateServerNotify(XAnimTree* tree, unsigned int animIndex);
 Entity* gGameEnt = nullptr;  // ?gGameEnt@@3PAVEntity@@A (anim.o @ 0xF25A2C)
 
-// Stubs for anim.o server-info internals (full port deferred; keeps the
-// server-side DObj update chain linkable until the XAnim internals land).
+static XAnimEntry* ServerAnimEntry(XAnimTree* tree, unsigned int index)
+{
+    auto* anims = *reinterpret_cast<unsigned char**>(
+        reinterpret_cast<unsigned char*>(tree) + 8);
+    if (anims == nullptr)
+        return nullptr;
+    const unsigned int count = *reinterpret_cast<unsigned int*>(anims + 4);
+    if (index >= count)
+        return nullptr;
+    return reinterpret_cast<XAnimEntry*>(
+        *reinterpret_cast<unsigned char**>(anims + 8)
+        + index * sizeof(XAnimEntry));
+}
+
+static float ServerAnimRateFrequency(XAnimTree* tree, unsigned int index)
+{
+    XAnimEntry* entry = ServerAnimEntry(tree, index);
+    if (entry == nullptr)
+        return 1.0f;
+    if (entry->numAnims == 0)
+    {
+        if (entry->anim == nullptr)
+            return 1.0f;
+        const float duration = *reinterpret_cast<float*>(
+            reinterpret_cast<unsigned char*>(entry->anim) + 0x38);
+        return duration != 0.0f ? 1.0f / duration : 0.0f;
+    }
+    float totalWeight = 0.0f;
+    float weightedRate = 0.0f;
+    for (unsigned int i = 0; i < entry->numAnims; ++i)
+    {
+        const unsigned int child = entry->sync.children + i;
+        const unsigned short infoIndex =
+            *reinterpret_cast<unsigned short*>(
+                reinterpret_cast<unsigned char*>(tree) + 0x18 + 2 * child);
+        if (infoIndex == 0 || infoIndex >= 512)
+            continue;
+        const float weight = *reinterpret_cast<float*>(g_info[infoIndex].s + 0x14);
+        if (weight <= 0.0f)
+            continue;
+        totalWeight += weight;
+        weightedRate += ServerAnimRateFrequency(tree, child) * weight * weight;
+    }
+    return totalWeight != 0.0f ? weightedRate / totalWeight : 0.0f;
+}
+
+static void ServerAnimCheckNoteTrack(XAnimTree* tree, unsigned int animIndex,
+                                     float dtime)
+{
+    XAnimEntry* entry = ServerAnimEntry(tree, animIndex);
+    if (entry == nullptr)
+        return;
+    const unsigned short infoIndex = *reinterpret_cast<unsigned short*>(
+        reinterpret_cast<unsigned char*>(tree) + 0x18 + 2 * animIndex);
+    if (infoIndex == 0 || infoIndex >= 512)
+        return;
+    XAnimInfo& info = g_info[infoIndex];
+    const float weight = *reinterpret_cast<float*>(info.s + 0x14);
+    if (weight == 0.0f)
+        return;
+    if (entry->numAnims != 0)
+    {
+        for (unsigned int i = 0; i < entry->numAnims; ++i)
+            ServerAnimCheckNoteTrack(tree, entry->sync.children + i, dtime);
+        return;
+    }
+    const float rate = *reinterpret_cast<float*>(info.s + 0x18)
+                     * ServerAnimRateFrequency(tree, animIndex) * dtime;
+    if (rate == 0.0f)
+        return;
+    const float oldTime = *reinterpret_cast<float*>(info.s + 0x04);
+    float time = oldTime + rate;
+    const bool looping = entry->anim != nullptr
+        && ((*reinterpret_cast<unsigned char*>(
+                 reinterpret_cast<unsigned char*>(entry->anim) + 0x34) & 1)
+            != 0);
+    if (looping)
+    {
+        time -= static_cast<float>(static_cast<int>(time));
+        if (time < 0.0f)
+            time += 1.0f;
+    }
+    else if (time > 1.0f)
+        time = 1.0f;
+    *reinterpret_cast<float*>(info.s + 0x00) = time;
+    XAnimUpdateServerNotify(tree, animIndex);
+}
+
 void XAnimFindServerNoteTrack(XAnimTree* tree, unsigned int animIndex,
                               float dtime)  // ?XAnimFindServerNoteTrack (anim.o 0x541CD0)
 {
-    (void)tree; (void)animIndex; (void)dtime;
+    ServerAnimCheckNoteTrack(tree, animIndex, dtime);
 }
 void XAnimUpdateServerInfoInternal(XAnimTree* tree, unsigned int animIndex,
                                    float dtime, bool bNotify)
 {
-    (void)tree; (void)animIndex; (void)dtime; (void)bNotify;
+    XAnimEntry* entry = ServerAnimEntry(tree, animIndex);
+    if (entry == nullptr)
+        return;
+    const unsigned short infoIndex = *reinterpret_cast<unsigned short*>(
+        reinterpret_cast<unsigned char*>(tree) + 0x18 + 2 * animIndex);
+    if (infoIndex == 0 || infoIndex >= 512)
+        return;
+    XAnimInfo& info = g_info[infoIndex];
+    if (*reinterpret_cast<float*>(info.s + 0x14) == 0.0f)
+        return;
+    if (entry->numAnims != 0)
+    {
+        for (unsigned int i = 0; i < entry->numAnims; ++i)
+            XAnimUpdateServerInfoInternal(tree, entry->sync.children + i,
+                                          dtime, bNotify);
+        return;
+    }
+    const float oldTime = *reinterpret_cast<float*>(info.s + 0x04);
+    const float rate = *reinterpret_cast<float*>(info.s + 0x18)
+                     * ServerAnimRateFrequency(tree, animIndex) * dtime;
+    float time = oldTime + rate;
+    const bool looping = entry->anim != nullptr
+        && ((*reinterpret_cast<unsigned char*>(
+                 reinterpret_cast<unsigned char*>(entry->anim) + 0x34) & 1)
+            != 0);
+    if (looping)
+    {
+        if (time < 0.0f)
+            time += 1.0f - static_cast<float>(static_cast<int>(-time));
+        if (time >= 1.0f)
+            time -= static_cast<float>(static_cast<int>(time));
+    }
+    else
+    {
+        if (time < 0.0f)
+            time = 0.0f;
+        if (time > 1.0f)
+            time = 1.0f;
+    }
+    *reinterpret_cast<float*>(info.s + 0x00) = time;
+    if (bNotify)
+        XAnimUpdateServerNotify(tree, animIndex);
 }
 
 // ea: 0x00552C20 (anim.o)

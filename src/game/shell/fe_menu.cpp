@@ -1151,7 +1151,7 @@ FEMenuListBox* FEMenu::AddListBoxEntry(int index, FEText* t, int numLines)
 // FEMenuSystem
 // ============================================================================
 
-// ea: 0x00570A10
+// ea: 0x005709D0
 FEMenuSystem::~FEMenuSystem()
 {
     if (menus != nullptr)

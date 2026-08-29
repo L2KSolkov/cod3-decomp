@@ -438,6 +438,9 @@ public:
     static void* operator new(size_t, void* ptr) noexcept {
         return ptr;
     }
+    static void operator delete(void* ptr, void*) noexcept {
+        (void)ptr;
+    }
     static void operator delete(void* ptr) {
         bdMemory::deallocate(ptr);
     }

@@ -509,13 +509,13 @@ void MPMainMenuXBox::OnUp(int c)
 // ea: 0x778C10
 void MPMainMenuXBox::UpdateWidescreen(BOOL widescreen)
 {
-    if (mWidescreen != widescreen)
+    if (mWidescreen != (widescreen != FALSE))
     {
         FEMenu::UpdateWidescreen(widescreen);
         if (mOptionDescription != nullptr)
             mOptionDescription->UpdateForWidescreen(widescreen);
         if (panel != nullptr)
-            mWidescreen = widescreen;
+            mWidescreen = widescreen != FALSE;
     }
 }
 
@@ -709,7 +709,7 @@ void MPMainMenuXBox::SetImage()
 // ea: 0x77A860
 void MPMainMenuXBox::OnActivate()
 {
-    *controller::inst()->accepting_input_from_controller = 0x01010101;
+    *controller::inst()->accepting_input_from_controller = true;
     if (mWidescreen != (cg_widescreen_integer != 0))
         UpdateWidescreen(cg_widescreen_integer != 0);
     MultiplayerMgr::sInst->mRankedGame = false;

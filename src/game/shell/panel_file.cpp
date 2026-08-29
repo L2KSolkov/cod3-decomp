@@ -308,7 +308,7 @@ void PanelQuad::SetVisibility(float alpha)
     }
 }
 
-// ea: 0x576870
+// ea: 0x0057A370
 void PanelQuad::SetAlpha(float alpha)
 {
     SetVisibility(alpha);
@@ -1361,7 +1361,7 @@ void PanelQuad::Mask(float percent, mask_type maskType, float uv_width)
     pqs.mElements[0]->Mask(percent, maskType, uv_width, scale);
 }
 
-// ea: 0x579640
+// ea: 0x00579610
 void PanelQuadSection::Mask(float mask, mask_type type, float uv_width,
                             float scale)
 {

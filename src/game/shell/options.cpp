@@ -64,7 +64,7 @@ struct KeyInfoEntry3 {
     int  mState;          // mDown:2, mRepeats:30
     char* mBoundCmdName;  // +0x04
 };
-extern KeyInfoEntry3 KeyInfo_mKeys[2][256];
+extern KeyInfoEntry3 (*KeyInfo_mKeys)[256];
 
 // ============================================================================
 // shell.o data (verified VAs from IDA)
@@ -750,15 +750,15 @@ void InGameOptionsMenu::OnTriangle(int c)
         || entries[1]->GetValue()
             != gSaveGameData[port].mStubData.mControllerButtonConfiguration
         || entries[4]->GetValue()
-            != gSaveGameData[port].mStubData.mInvertAim
+            != (int)gSaveGameData[port].mStubData.mInvertAim
         || entries[5]->GetValue()
-            != gSaveGameData[port].mStubData.mAdsToggle
+            != (int)gSaveGameData[port].mStubData.mAdsToggle
         || entries[6]->GetValue()
-            != gSaveGameData[port].mStubData.mStickyAim
+            != (int)gSaveGameData[port].mStubData.mStickyAim
         || entries[7]->GetValue()
-            != gSaveGameData[port].mStubData.mTankStyle
+            != (int)gSaveGameData[port].mStubData.mTankStyle
         || entries[8]->GetValue()
-            != gSaveGameData[port].mStubData.mVibration
+            != (int)gSaveGameData[port].mStubData.mVibration
         || entries[2]->GetValue()
             != gSaveGameData[port].mStubData.mHorizontalSensitivity
         || entries[3]->GetValue()
@@ -1088,15 +1088,15 @@ void AARInGameOptionsMenu::OnTriangle(int c)
         || entries[1]->GetValue()
             != gSaveGameData[port].mStubData.mControllerButtonConfiguration
         || entries[4]->GetValue()
-            != gSaveGameData[port].mStubData.mInvertAim
+            != (int)gSaveGameData[port].mStubData.mInvertAim
         || entries[5]->GetValue()
-            != gSaveGameData[port].mStubData.mAdsToggle
+            != (int)gSaveGameData[port].mStubData.mAdsToggle
         || entries[6]->GetValue()
-            != gSaveGameData[port].mStubData.mStickyAim
+            != (int)gSaveGameData[port].mStubData.mStickyAim
         || entries[7]->GetValue()
-            != gSaveGameData[port].mStubData.mTankStyle
+            != (int)gSaveGameData[port].mStubData.mTankStyle
         || entries[8]->GetValue()
-            != gSaveGameData[port].mStubData.mVibration
+            != (int)gSaveGameData[port].mStubData.mVibration
         || entries[2]->GetValue()
             != (int)((float)gSaveGameData[port]
                          .mStubData.mHorizontalSensitivity

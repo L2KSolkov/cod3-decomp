@@ -4838,7 +4838,7 @@ void rb_vehicle::set_throttle(float throttle)
     m_throttle = throttle;
 }
 
-// ea: 0x6E69B0 (inline COMDAT)
+// ea: 0x006F29B0 (inline COMDAT)
 void rb_vehicle::set_hand_brake(float braking)
 {
     if (braking < 0.0f || braking > 1.0f)
@@ -8439,7 +8439,7 @@ public:
         return a.m_b2 < b.m_b2;
     }
 
-    static int avl_max(int a, int b) { return a <= b ? b : a; }  // ea: 0x71B490
+    static int avl_max(int a, int b) { return a <= b ? b : a; }
 
     // find - ea: 0x717160
     V* find(const K& key)
@@ -9508,6 +9508,7 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
                     __debugbreak();
             }
             int BoneParent = owner->mDObj->GetBoneParent(v110);
+            math::Mat43 v46;
             if (BoneParent < 0)
             {
                 const math::Mat43::Packed& BaseRelMat =
@@ -9530,7 +9531,6 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
             const math::Mat43& parentMat =
                 owner->mDObj->GetMat(BoneParent);
             const math::Mat43& Mat = owner->mDObj->GetMat(v110);
-            math::Mat43 v46;
             phys_full_inv_multiply_mat(v46, parentMat, Mat);
             *v4 = MatToQuat(v46);
             *v5 = v46.w;
@@ -12190,7 +12190,7 @@ struct entity_path_view {
     scr_vehicle_t* scr_vehicle;  // +0x00
 };
 
-// ea: 0x6F5EC0
+// ea: 0x006F5CC0
 rigid_body_constraint_custom_path* path_constraint_create(Entity* veh)
 {
     if (veh == nullptr

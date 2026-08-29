@@ -8,7 +8,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Compile flags matching VC7.1 /O2 behavior
 if(MSVC)
-    add_compile_options(/fp:precise /GR- /Zi)
+    add_compile_options(
+        "$<$<COMPILE_LANGUAGE:C,CXX>:/fp:precise>"
+        "$<$<COMPILE_LANGUAGE:C,CXX>:/GR->"
+        "$<$<COMPILE_LANGUAGE:C,CXX>:/Zi>"
+    )
     # The reconstructed Win32 target is built with many Xbox-era stack layouts.
     # Disable MSVC's Debug-only /RTC instrumentation so a runtime-check dialog
     # cannot stop startup; source-level assertions remain enabled.
@@ -322,8 +326,6 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_client.cpp
     src/game/logic/g_main.cpp
     src/game/logic/g_accessors.cpp
-    src/game/logic/placement_delete.asm
-    src/game/logic/g_math_shims.asm
     src/game/logic/g_old_mangle_thunks.asm
     src/game/logic/g_scr_vehicle.cpp
     src/game/logic/g_testfps.cpp

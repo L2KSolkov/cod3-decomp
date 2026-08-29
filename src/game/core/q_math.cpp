@@ -143,8 +143,8 @@ enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);
 
 // Forward declarations (mutually recursive angle/axis helpers)
-const float vectoyaw(const float* const const vec);
-const float vectosignedyaw(const float* const const vec);
+const float vectoyaw(const float* const vec);
+const float vectosignedyaw(const float* const vec);
 const float vectopitch(const float* const vec);
 const float vectosignedpitch(const float* const vec);
 void vectoangles(const float* const vec, float* const angles);
@@ -289,7 +289,7 @@ void ByteToDir(int b, float* const dir)
 // ============================================================================
 
 // ea: 0x004B61C0
-const float _DotProduct(const float* const const v1, const float* const const v2)
+const float _DotProduct(const float* const v1, const float* const v2)
 {
     return v1[2] * v2[2] + v1[1] * v2[1] + *v1 * *v2;
 }
@@ -354,13 +354,13 @@ const int VectorCompareEpsilon(const float* const v1,
 }
 
 // ea: 0x004B6360
-const float _VectorLength(const float* const const v)
+const float _VectorLength(const float* const v)
 {
     return sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
 }
 
 // ea: 0x004B63B0
-const float VectorDistance(const float* const const v1, const float* const const v2)
+const float VectorDistance(const float* const v1, const float* const v2)
 {
     float dir = *v2 - *v1;
     float v4 = v2[1] - v1[1];
@@ -379,7 +379,7 @@ const float VectorDistanceSquared(const float* const p1,
 }
 
 // ea: 0x004B6440
-const float VectorDistance2D(const float* const const v1, const float* const const v2)
+const float VectorDistance2D(const float* const v1, const float* const v2)
 {
     float dir = *v2 - *v1;
     float dir_4 = v2[1] - v1[1];
@@ -387,7 +387,7 @@ const float VectorDistance2D(const float* const const v1, const float* const con
 }
 
 // ea: 0x004B6480
-const float VectorDistanceSquared2D(const float* const const p1,
+const float VectorDistanceSquared2D(const float* const p1,
                                const float* const p2)
 {
     float v = *p2 - *p1;
@@ -1043,7 +1043,7 @@ const unsigned int ColorBytes4(float r, float g, float b, float a)
 }
 
 // ea: 0x004B9870
-const float NormalizeColor(const float* const const in, float* const out)
+const float NormalizeColor(const float* const in, float* const out)
 {
     float v4 = in[1];
     float max = *in;
@@ -1255,7 +1255,7 @@ void AxisCopy(const float (*const in)[3], float (*const out)[3])
 }
 
 // ea: 0x004B9EE0
-const int PlaneFromPoints(float* const plane, const float* const const a, const float* const const b, const float* const const c)
+const int PlaneFromPoints(float* const plane, const float* const a, const float* const b, const float* const c)
 {
     float v4 = c[1] - a[1];
     float v5 = c[2] - a[2];
@@ -1360,7 +1360,7 @@ const float Q_rint(float in)
 }
 
 // ea: 0x004BA1B0
-const float ColorNormalize(const float* const const in, float* const out)
+const float ColorNormalize(const float* const in, float* const out)
 {
     float v4 = in[1];
     float max = *in;
@@ -2730,7 +2730,7 @@ static float FastACos(float x)
 }
 
 // ea: 0x004BE010
-const float vectoyaw(const float* const const vec)
+const float vectoyaw(const float* const vec)
 {
     if (vec[1] == 0.0f && *vec == 0.0f)
         return 0.0f;
@@ -2767,7 +2767,7 @@ const float vectoyaw(const float* const const vec)
 }
 
 // ea: 0x004BE300
-const float vectosignedyaw(const float* const const vec)
+const float vectosignedyaw(const float* const vec)
 {
     if (vec[1] == 0.0f && *vec == 0.0f)
         return 0.0f;
@@ -3080,7 +3080,7 @@ float RotationToYaw(const float* const rot)
 }
 
 // ea: 0x004C8C60
-const int BoxOnPlaneSide(const float* const const emins, const float* const const emaxs, const cplane_s* p)
+const int BoxOnPlaneSide(const float* const emins, const float* const emaxs, const cplane_s* p)
 {
     float dist1, dist2;
     switch (p->signbits)

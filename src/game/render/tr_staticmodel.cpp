@@ -256,6 +256,8 @@ void R_AddStaticModelSurfaces(StaticModel* ent)
 
     ValidatePakId(ctx.mPakId);
     int lodIdx2 = 0;
+    math::Mat43 localToWorld;
+    math::Position3 pos;
     if (ctx.mValue->lod[0] == nullptr)
     {
         do
@@ -280,7 +282,6 @@ void R_AddStaticModelSurfaces(StaticModel* ent)
 
     XModelGetBasePose(ctx, boneMtxList_0, boneMtxList_0);
 
-    math::Mat43 localToWorld;
     localToWorld.x.v = _mm_setr_ps(ent->axis[0][0], ent->axis[0][1],
                                    ent->axis[0][2], 0.0f);
     localToWorld.y.v = _mm_setr_ps(ent->axis[1][0], ent->axis[1][1],
@@ -291,7 +292,6 @@ void R_AddStaticModelSurfaces(StaticModel* ent)
                                    ent->origin[2], 1.0f);
 
     nglLightContext* lightCtx = nglCreateLightContext();
-    math::Position3 pos;
     pos.v = localToWorld.w.v;
     pos.v.m128_f32[3] = 0.0f;
     if (ent->lgridDataInitialized != 0)
@@ -347,8 +347,10 @@ lit:
     shaderParams->Array[0] = 0;
     shaderParams->Array[1] = 0;
     unsigned int id = nglLightContextParamID;
-    shaderParams->Array[0] |= (1u << id);
-    shaderParams->Array[1] |= (1u << id) >> 32;
+    if (id < 32)
+        shaderParams->Array[0] |= 1u << id;
+    else
+        shaderParams->Array[1] |= 1u << (id - 32);
     shaderParams->Array[id + 2] = (unsigned int)lightCtx;
 
     for (unsigned int bone = 0; ; ++bone)
@@ -380,8 +382,10 @@ lit:
         if (mesh != nullptr)
         {
             unsigned int fid = cdFlagRandomSeedID;
-            shaderParams->Array[0] |= (1u << fid);
-            shaderParams->Array[1] |= (1u << fid) >> 32;
+            if (fid < 32)
+                shaderParams->Array[0] |= 1u << fid;
+            else
+                shaderParams->Array[1] |= 1u << (fid - 32);
             shaderParams->Array[fid + 2] = (unsigned int)ent;
 
             // worldTransform = localToWorld * boneMat (rows x/y/z/w)
@@ -410,8 +414,10 @@ lit:
                            localToWorld.w.v));
 
             unsigned int rid = isRotatingTextureParamID;
-            shaderParams->Array[0] |= (1u << rid);
-            shaderParams->Array[1] |= (1u << rid) >> 32;
+            if (rid < 32)
+                shaderParams->Array[0] |= 1u << rid;
+            else
+                shaderParams->Array[1] |= 1u << (rid - 32);
             shaderParams->Array[rid + 2] = 0;
 
             nglMeshParams params;

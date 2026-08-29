@@ -1400,7 +1400,8 @@ void CreateSessionMenu::GrabSessionName()
         MPLiveEngine* Handle = MPLiveEngine::GetHandle();
         LivePlayer* LocalPlayer =
             (LivePlayer*)Handle->GetLocalPlayer(Handle->actualPort);
-        _snprintf(m_szSessionName, 0x10u, "%S", LocalPlayer->gamertag);
+        _snprintf(m_szSessionName, 0x10u, "%S",
+                  reinterpret_cast<const wchar_t*>(LocalPlayer->gamertag));
     }
     else if (MPUIInterface::IsLANGame())
     {
@@ -1843,7 +1844,8 @@ void CreateLanSessionMenu::GrabSessionName(int c)
         MPLiveEngine* Handle = MPLiveEngine::GetHandle();
         LivePlayer* LocalPlayer =
             (LivePlayer*)Handle->GetLocalPlayer(Handle->actualPort);
-        _snprintf(m_szSessionName, 0x10u, "%S", LocalPlayer->gamertag);
+        _snprintf(m_szSessionName, 0x10u, "%S",
+                  reinterpret_cast<const wchar_t*>(LocalPlayer->gamertag));
     }
     else if (MPUIInterface::IsLANGame())
     {
@@ -7667,7 +7669,8 @@ void CreateSessionAdvancedMenu::GrabSessionName()
         MPLiveEngine* Handle = MPLiveEngine::GetHandle();
         LivePlayer* LocalPlayer =
             (LivePlayer*)Handle->GetLocalPlayer(Handle->actualPort);
-        _snprintf(m_szSessionName, 0x10u, "%S", LocalPlayer->gamertag);
+        _snprintf(m_szSessionName, 0x10u, "%S",
+                  reinterpret_cast<const wchar_t*>(LocalPlayer->gamertag));
     }
     else if (MPUIInterface::IsLANGame())
     {

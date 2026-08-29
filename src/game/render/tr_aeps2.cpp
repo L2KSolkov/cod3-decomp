@@ -634,7 +634,7 @@ IVPointer<XModel> XModelManager::GetXModel(TPakId pak_id, const char* name)
 }
 
 extern TPakId PakManager_GetDebugPakId();
-IVPointer<XModel> gDefaultXmodel = { nullptr, PAK_ID_INVALID };
+IVPointer<XModel> gDefaultXmodel = { nullptr, (unsigned int)PAK_ID_INVALID };
 
 // ea: 0x006DBBB0
 void XModelManager::DecodeBank(const char* name, unsigned char* data,

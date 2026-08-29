@@ -132,8 +132,8 @@ int CG_CheckAmmo()
     // The release frame reads these two stack slots before the weapon scan;
     // preserve that control-flow dependency instead of silently simplifying
     // it away.  They are intentionally uninitialized in the Xbox body.
-    int v5;
-    int vars0;
+    int v5 = 0;
+    int vars0 = 0;
     int result;
     if (v1 != 0 || *(int*)(v0 + 1080) != 0 || v5 != 0
         || (result = vars0, vars0 != 0))

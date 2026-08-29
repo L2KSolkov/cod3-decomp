@@ -316,6 +316,11 @@ struct CurveEvalFunc {
     static void* operator new(unsigned int size, bool forceHeapAlloc,
                               const char* file, int line);
     static void* operator new(unsigned int, void* p) { return p; }
+    static void operator delete(void* ptr, void* p)
+    {
+        (void)ptr;
+        (void)p;
+    }
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line);
     static void operator delete(void* ptr);
@@ -362,6 +367,11 @@ public:
     static void* operator new(unsigned int size, bool forceHeapAlloc,
                               const char* file, int line);
     static void* operator new(unsigned int, void* p) { return p; }
+    static void operator delete(void* ptr, void* p)
+    {
+        (void)ptr;
+        (void)p;
+    }
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line);
     static void operator delete(void* ptr);

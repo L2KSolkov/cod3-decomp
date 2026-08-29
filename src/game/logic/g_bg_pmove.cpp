@@ -9386,9 +9386,9 @@ int BG_CheckProneValid(
     float vRight[3];
     float vUp[3];
     collision_context_t context;
-    float fTraceHeight;
-    float fLegsPitch;
-    float fFirstTraceDist;
+    float fTraceHeight = 0.0f;
+    float fLegsPitch = 0.0f;
+    float fFirstTraceDist = 0.0f;
     float vForward[3];
     float vTorsoPos[3];
     float v69;
@@ -10253,6 +10253,7 @@ int BG_GetMaxAmmoPakAmmo(const PlayerState* pPS, int iSlot)
 void PM_UpdateAimDownSightFlag()
 {
     PlayerState* ps = pm->ps;
+    math::Dir3 v20;
     int pm_type = pm->ps->pm_type;
     if (pm_type >= 6)
         goto LABEL_40;
@@ -10276,7 +10277,6 @@ void PM_UpdateAimDownSightFlag()
         angles[1] = pm->ps->viewangles[1];
         angles[2] = 0.0f;
         angles[0] = 0.0f;
-        math::Dir3 v20;
         AnglesToForward(angles, v20.v.m128_f32);
         if (pm->ps->serverCursorHint == 12)
         {

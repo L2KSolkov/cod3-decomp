@@ -176,7 +176,7 @@ static void SV_LoadMpExe_Command() {
 }
 
 // ============================================================================
-// SV_MapRestart_CheckPoint_f — ea: 0x51E780 (static)
+// SV_MapRestart_CheckPoint_f (static)
 // ============================================================================
 static void SV_MapRestart_CheckPoint_f() {
 }
@@ -211,7 +211,7 @@ void SV_LoadGameContinue_f() {
 }
 
 // ============================================================================
-// SV_StringUsage_f — ea: 0x51E860 (static)
+// SV_StringUsage_f (static)
 // ============================================================================
 static void SV_StringUsage_f() {
 }
@@ -312,7 +312,7 @@ void SV_MapRestart() {
 }
 
 // ============================================================================
-// SV_MapRestartComp_f — ea: 0x525DD0 (static; thunk to SV_MapRestart_Command)
+// SV_MapRestartComp_f (static; thunk to SV_MapRestart_Command)
 // ============================================================================
 static void SV_MapRestartComp_f() {
     SV_MapRestart_Command();

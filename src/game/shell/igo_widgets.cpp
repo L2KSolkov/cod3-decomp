@@ -1963,7 +1963,7 @@ void IGOTimerWidget::Init(PanelFile* panel)
     }
 }
 
-// ea: 0x005762A0
+// ea: 0x005776A0
 void IGOTimerWidget::Update(float time_inc)
 {
     (void)time_inc;
@@ -3886,7 +3886,7 @@ void IGOJeepMapWidget::WithinMap(float x, float y, float& scaleX,
     scaleY = (mapSizeY[1] - y) / mapSizeY[2];
 }
 
-// ea: 0x00578A90
+// ea: 0x005789A0
 void IGOJeepMapWidget::Update(float time_inc)
 {
     (void)time_inc;

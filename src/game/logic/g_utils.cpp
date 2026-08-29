@@ -161,7 +161,7 @@ Entity* EntityHandleDb::Find(int fieldofs, HashString match) const
     return *i;
 }
 
-// ea: 0x004B0F80 (g.o)
+// non-const forwarding overload
 Entity* EntityHandleDb::Find(int fieldofs, HashString match)
 {
     return static_cast<const EntityHandleDb*>(this)->Find(fieldofs, match);

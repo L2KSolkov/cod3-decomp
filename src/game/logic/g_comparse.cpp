@@ -252,7 +252,7 @@ void Com_ParseReturnToMark(const char** text, com_parse_mark_t* mark)
 }
 
 // ============================================================================
-// SkipWhitespace + Com_ParseExt - ea: 0x610200
+// SkipWhitespace + Com_ParseExt
 // ============================================================================
 static const char* SkipWhitespace(const char* data, int* hasNewLines)
 {
@@ -277,7 +277,7 @@ static const char* SkipWhitespace(const char* data, int* hasNewLines)
 }
 
 // ============================================================================
-// Com_ParseCSV - ea: 0x60FF40
+// Com_ParseCSV
 // ============================================================================
 static parseInfo_t* Com_ParseCSV(char** data_p, int allowLineBreaks)
 {

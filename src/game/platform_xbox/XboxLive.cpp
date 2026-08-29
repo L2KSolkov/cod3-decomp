@@ -1393,7 +1393,8 @@ void LiveWrapper::CheckMutingChanges(unsigned int controllerIndex)
                     break;
                 }
             }
-            if (remotePlayers[v11].mutedBy[controllerIndex] != currMuteState)
+            if ((bool)remotePlayers[v11].mutedBy[controllerIndex]
+                != (bool)currMuteState)
             {
                 remotePlayers[v11].SetMuted(controllerIndex, currMuteState);
                 SendMuteUpdate(&localPlayers[controllerIndex].xuid,

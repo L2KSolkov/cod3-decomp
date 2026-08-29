@@ -1456,7 +1456,7 @@ static bool Path_CanClaimNodeInternal(const PathNodes::PathNode* pNode,
 int Path_CanClaimChainNode(const PathNodes::PathNode* pNode,
                            sentient_s* pClaimer)
 {
-    bool bAllowInvalidation;
+    bool bAllowInvalidation = false;
     if (Path_CanClaimNodeInternal(pNode, pClaimer, bAllowInvalidation) != 0)
     {
         sentient_s* Sentient = Sentient_FirstSentient(4);
@@ -1478,7 +1478,7 @@ int Path_CanClaimChainNode(const PathNodes::PathNode* pNode,
 int Path_CanClaimNode(const PathNodes::PathNode* pNode,
                       sentient_s* pClaimer)
 {
-    bool bAllowInvalidation;
+    bool bAllowInvalidation = false;
     return Path_CanClaimNodeInternal(pNode, pClaimer, bAllowInvalidation);
 }
 

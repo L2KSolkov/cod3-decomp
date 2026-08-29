@@ -935,7 +935,7 @@ void Render()
 {
     if (StatusBar::sStatusBarActive->integer == 0)
         return;
-    static bool sS5_41 = false;
+    static unsigned int sS5_41 = 0;
     static int sStatus_iMemUsed = 0;
     static int sStatus_iMemFree = 0;
     static float sStatus_memPeak = 0.0f;

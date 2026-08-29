@@ -250,7 +250,6 @@ extern vmCvar_t g_performanceTestDeltaAngle; // ?g_performanceTestDeltaAngle@@3U
 extern vmCvar_t g_performanceTestCell;       // ?g_performanceTestCell@@3UvmCvar_t@@A (game2.o)
 extern int FS_CreatePath(char* path);  // ?FS_CreatePath@@YAHPAD@Z
 extern int gStartTime;                       // ?gStartTime@@3HA (game2.o)
-extern char* strtok(char* str, const char* delim);
 extern int sscanf(const char* s, const char* fmt, ...);
 
 void TestFPS::Test()

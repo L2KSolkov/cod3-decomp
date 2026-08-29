@@ -352,7 +352,7 @@ public:
              int stable_min_contact_count);
     void update_col_mat();
 
-    // get_mat / dangerous_get_mat - ea: 0x6E4D00 / 0x6E4D50 (inline COMDATs)
+    // get_mat / dangerous_get_mat - ea: 0x006F0D00 / 0x006F0D50 (inline COMDATs)
     const math::Mat43& get_mat() const { return m_mat; }  // ?get_mat@rigid_body@@QBEABVMat43@math@@XZ
     math::Mat43& dangerous_get_mat() { return m_mat; }    // ?dangerous_get_mat@rigid_body@@QAEAAVMat43@math@@XZ
 
@@ -375,7 +375,7 @@ public:
         m_col_mat.w.v = _mm_add_ps(m_col_mat.w.v, t.v);
     }
 
-    // set_gravity_dir / set_max_avel - ea: 0x6E4EA0 / 0x6E4EC0 (inline COMDATs)
+    // set_gravity_dir / set_max_avel - ea: 0x006F0EA0 / 0x006F0B80 (inline COMDATs)
     void set_gravity_dir(const math::Dir3& d)  // ?set_gravity_dir@rigid_body@@QAEXABVDir3@math@@@Z
     {
         m_gravity_dir.v = d.v;
@@ -550,7 +550,7 @@ public:
                      const math::Dir3& b2_axis, float delta_t);
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
     void set_joint_limit_active(unsigned int f, bool b);
-    // get_joint_limit_active - ea: 0x6E5060 (inline COMDAT)
+    // get_joint_limit_active - ea: 0x006F1060 (inline COMDAT)
     const unsigned int get_joint_limit_active(unsigned int f) const
     {
         return (m_flags >> (6 + f)) & 1;

@@ -946,7 +946,6 @@ const math::Position3& math::Position3::operator=(const math::Dir3& _v)
     return *this;
 }
 // ea: 0x004A5ED0
-// ea: 0x004A5F00
 math::Position3::Position3(const math::Position3::Packed& _p)
 {
     v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
@@ -989,7 +988,6 @@ math::Position3::Packed::Packed()
 {
 }
 // ea: 0x004A5F40
-// ea: 0x004A5F60
 math::Vector4::Vector4(const math::Dir3& _v)
 {
     v = _mm_shuffle_ps(_v.v, _mm_shuffle_ps(_mm_setzero_ps(), _v.v, 0xA0), 0x34);
@@ -2923,9 +2921,6 @@ class PhysData;
 template class ae_sized_array<ae_heap_base*, 32>;
 template class ae_sized_array<Entity*, 4096>;
 template class DbLinkedHandle<EntityHandleDb, Entity>;
-template class ae_fixed_string<64, unsigned char>;
-template class ae_fixed_string<256, unsigned short>;
-template class ae_fixed_string<32, unsigned char>;
 template class InplaceVector<math::Mat43::Packed>;
 template class InplaceVector<XBoneHierarchy>;
 template class InplaceVector<nglMesh*>;
@@ -3369,9 +3364,6 @@ template class cFreeList<DSkelMax>;
 template class cFreeList<DSkel4>;
 
 // ae_vector / ae_sized_array remaining instantiations (g.o 0x4ACF00-0x4AE100)
-template class ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>;
-template class ae_vector<debug_sphere>;
-template class ae_vector<debug_aabb>;
 template class ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>;
 template class ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 64>;
 template class ae_sized_array<Entity*, 128>;
@@ -3381,9 +3373,6 @@ template class ae_sized_array<ae_fixed_string<512, unsigned short>, 64>;
 template class ae_array<CGBank*, 99>;
 template class InplaceVector<AnimTree>;
 template class InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>;
-template class ae_fixed_string<1024, unsigned short>;
-template class ae_fixed_string<128, unsigned char>;
-template class DbLinkedHandle<TaskSys, Task>;
 
 template class ae_pair<const char*, void (*)()>;
 template class ae_pair<const char*, void (*)(Entity*)>;

@@ -3926,6 +3926,7 @@ void AbstractEffectSound::FrameAdvance(float delta_t)
     math::Position3 v79b;
     v79b.v.m128_f32[0] = v79b.v.m128_f32[1] = v79b.v.m128_f32[2] =
         v79b.v.m128_f32[3] = 0.0f;
+    math::Position3 pos;
     float minRange = -1.0f;
     float maxRange = -1.0f;
     SoundDevice::Sound* mObject =
@@ -4057,7 +4058,6 @@ void AbstractEffectSound::FrameAdvance(float delta_t)
                 p_currentOrigin =
                     Owner != nullptr ? &Owner->r.currentOrigin : &v79;
         }
-        math::Position3 pos;
         pos.v.m128_f32[0] = p_currentOrigin->v.m128_f32[0];
         pos.v.m128_f32[1] = p_currentOrigin->v.m128_f32[1];
         pos.v.m128_f32[2] = p_currentOrigin->v.m128_f32[2];

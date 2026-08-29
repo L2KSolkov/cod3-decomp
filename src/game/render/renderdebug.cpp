@@ -129,7 +129,7 @@ float below = 55.0f;  // ?below@@3MA @ 0xE01DE8
 class LightEffect {
 public:
     enum eType : int { PROJECTED_TEXTURE = 0x0, VERTEX_LIGHT = 0x1 };
-    enum eTime : int { FLASH = 0x1, FOREVER = 0xFFFFFFFF };
+    enum eTime : int { FLASH = 0x1, FOREVER = -1 };
     float mColor[4];          // +0x20
     bool mFlicker;            // +0x3C
     float mColorOriginal[4];  // +0x40
@@ -218,9 +218,6 @@ DebugLine::DebugLine(const math::Position3& pt1, const math::Position3& pt2,
     mThickness = thickness;
 }
 
-template class ae_vector<DebugSphere>;
-template class ae_vector<DebugLine>;
-template class ae_vector<DebugTri>;
 
 ae_vector<DebugSphere> gDebugSpheres;  // ?gDebugSpheres@@3V?$ae_vector@VDebugSphere@@@@A @ 0x13641BC
 ae_vector<DebugLine> gDebugLines;      // ?gDebugLines@@3V?$ae_vector@VDebugLine@@@@A @ 0x1366C84

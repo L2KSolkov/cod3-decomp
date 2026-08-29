@@ -4313,7 +4313,8 @@ void sGameListing::FromXboxLive(const CDefaultResult& info)
     mGameInfo.m_ptr = gi;
     if (gi != nullptr)
         ++gi->m_refCount;
-    sprintf(mGameInfo.m_ptr->mName, "%S", info.host_name);
+    sprintf(mGameInfo.m_ptr->mName, "%S",
+            reinterpret_cast<const wchar_t*>(info.host_name));
     mGameInfo.m_ptr->mMapID = (unsigned char)info.game_map[0];
     mGameInfo.m_ptr->mGameType = (unsigned char)info.num_players[0];
     mGameInfo.m_ptr->mGameSubType = info.sub_type[0] != 0;
@@ -7521,7 +7522,7 @@ MPPlayer* MPPlayerManager::GetPlayer(const Entity* const entity)
     return nullptr;
 }
 
-// ea: 0x007760450
+// ea: 0x00760450
 void MPPlayerManager::RemoveDroppedItems()
 {
     for (int i = 0; i < 16; ++i)
@@ -8034,7 +8035,7 @@ void MPProfileEditMenu::ButtonHeldAction()
     }
 }
 
-// ea: 0x0077337B0 (Select dispatches to sibling option menus)
+// ea: 0x007337B0 (Select dispatches to sibling option menus)
 void MPProfileEditMenu::Select(int entry_num)
 {
     switch (entry_num)
@@ -9060,7 +9061,7 @@ Entity* MultiplayerMgr::FindDroppedItem(EDroppedItemTypes item, int id,
     return nullptr;
 }
 
-// ea: 0x00761590
+// ea: 0x00761570
 Entity* MultiplayerMgr::FindDroppedItem(EDroppedItemTypes item, int id,
                                         Entity* owner)
 {
@@ -16597,7 +16598,7 @@ void MPVehicle::SeatChange(MPPlayer* player, int newSeatIdx)
     }
 }
 
-// ea: 0x007739D60
+// ea: 0x00739D60
 void MPPlayerManager::HandleVoiceData(const bdReceivedMessage& receivedMsg)
 {
     bdReference<bdConnection> conn = receivedMsg.getConnection();
@@ -27424,7 +27425,8 @@ void MPPlayerManager::HandleAddPlayerReply(
                     (LivePlayer*)Handle->GetLocalPlayer(Handle->actualPort);
                 *(LivePlayer*)&data.livePlayer = *LocalPlayer;
                 sprintf(data.name, "%S",
-                        ((LivePlayer*)&data.livePlayer)->gamertag);
+                        reinterpret_cast<const wchar_t*>(
+                            ((LivePlayer*)&data.livePlayer)->gamertag));
                 Cvar_Set("name", data.name);
             }
             else
@@ -27446,7 +27448,8 @@ void MPPlayerManager::HandleAddPlayerReply(
                                                   ->GetLocalPlayer(
                                                       v14->actualPort);
                             _snprintf(data.name, 0x20u, "%S",
-                                      v15->gamertag);
+                                      reinterpret_cast<const wchar_t*>(
+                                          v15->gamertag));
                             goto label27;
                         }
                     }
@@ -30545,6 +30548,8 @@ void MPPlayerManager::HandleVehicleRequestEntry(
         {
             bdReference<bdMessage> msg = receivedMsg.getMessage();
             bdReference<bdBitBuffer> buffer = msg.m_ptr->getPayload();
+            bdReference<bdMessage> message;
+            bdReference<bdBitBuffer> b2;
             unsigned char id = 0;
             int seatIdx = 0;
             int entryIdx = 0;
@@ -30642,13 +30647,12 @@ void MPPlayerManager::HandleVehicleRequestEntry(
             *(unsigned int*)((char*)this + 0x55E0) = seq;
             v10->mVehicleEventSequence = seq;
             bdMessage* out = new bdMessage(0x47u, false);
-            bdReference<bdMessage> message;
             message.m_ptr = out;
             if (out != nullptr)
                 ++out->m_refCount;
             extern int g_NumBdMessages;
             ++g_NumBdMessages;
-            bdReference<bdBitBuffer> b2 = out->getPayload();
+            b2 = out->getPayload();
             unsigned char vid = v11->mId;
             if (b2.m_ptr != nullptr)
                 ++b2.m_ptr->m_refCount;
@@ -31253,7 +31257,8 @@ void MPPeer::onSessionStatusChange(bdSession::bdSessionStatus previous,
                     LivePlayer* LocalPlayer =
                         (LivePlayer*)v9->GetLocalPlayer(v9->actualPort);
                     sprintf(MPUIInterface::mServerParams.mName, "%S",
-                            LocalPlayer->gamertag);
+                            reinterpret_cast<const wchar_t*>(
+                                LocalPlayer->gamertag));
                     Handle->StartLiveSession(
                         &MPUIInterface::mServerParams, publicOccupied,
                         privateOccupied);

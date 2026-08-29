@@ -301,6 +301,11 @@ struct ScriptEventHandler {
         (void)size;
         return placement;
     }
+    static void operator delete(void* ptr, void* placement)
+    {
+        (void)ptr;
+        (void)placement;
+    }
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line); // ea: 0x004EAC90
     static void operator delete(void* ptr);                  // ea: 0x004EACB0

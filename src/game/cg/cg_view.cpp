@@ -177,7 +177,7 @@ extern float dword_F63C58[4 * 1580];
 extern float dword_F63C5C[4 * 1580];
 
 extern const float AngleNormalize360(float angle);
-extern const const float AngleNormalize180(float angle);
+extern const float AngleNormalize180(float angle);
 extern const float AngleSubtract(float a1, float a2);
 extern void CL_SetViewAnglesAxis(int axis, float angle);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
@@ -1969,7 +1969,7 @@ extern void AnglesToAxis(const float* const angles,
                          float (*const axis)[3]);
 extern void AxisToAngles(const float (*const axis)[3], float* const angles);
 extern const float AngleNormalize360(float angle);
-extern const const float AngleNormalize180(float angle);
+extern const float AngleNormalize180(float angle);
 extern int dword_F64030[4 * 1580];
 extern int dword_F64034[4 * 1580];
 extern int dword_F64038[4 * 1580];

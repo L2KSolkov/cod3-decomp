@@ -348,7 +348,9 @@ void FrontEndMenuSystem::CheckIfSignedInXBox()
                             LiveWrapper::theWrapper->GetLocalPlayer(
                                 v6->actualPort);
                         char narrowName[16];
-                        sprintf(narrowName, "%S", LocalPlayer->gamertag);
+                        sprintf(narrowName, "%S",
+                                reinterpret_cast<const wchar_t*>(
+                                    LocalPlayer->gamertag));
                         const char* STBString =
                             STBManager::sInst->GetSTBString(
                                 "MPFRONTEND_SIGNED_IN_AS");

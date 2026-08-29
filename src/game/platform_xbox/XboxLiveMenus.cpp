@@ -212,9 +212,6 @@ struct _LAUNCH_DATA {
 // resolved), unlike GetCommandLineA()'s raw string. Used by Xbox_LaunchInfo
 // below to bridge the real process command line into the game on Win32,
 // where there is no dashboard/debugger launch-data equivalent.
-extern "C" int __argc;
-extern "C" char** __argv;
-
 // XGetLaunchInfo (XAPI; stub)
 int XGetLaunchInfo(unsigned int* pdwLaunchDataType,
                    _LAUNCH_DATA* pLaunchData)
@@ -396,12 +393,12 @@ void XboxLiveOptionsMenu::UpdateSplitScreen()
 // ea: 0x721FC0
 void XboxLiveOptionsMenu::UpdateWidescreen(BOOL widescreen)
 {
-    if (mWidescreen != widescreen)
+    if (mWidescreen != (widescreen != FALSE))
     {
         PanelFile* mPanel = this->mPanel;
         if (mPanel != nullptr)
         {
-            mWidescreen = widescreen;
+            mWidescreen = widescreen != FALSE;
             mPanel->UpdateWidescreen(widescreen, 320.0f);
             if (mHelpbar != nullptr)
                 mHelpbar->UpdateForWidescreen(widescreen);

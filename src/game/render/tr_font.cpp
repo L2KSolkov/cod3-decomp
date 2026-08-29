@@ -21,6 +21,7 @@ bool Warning(const char* fmtstring, ...);
 }
 
 struct nglTexture;
+struct nglFont;
 
 static inline int HIBYTE(unsigned short v)
 {
@@ -54,8 +55,32 @@ extern void nglListAddQuad(nglQuad* Quad);  // ngl.o
 struct refimport_t {
     uint8_t _pad[0x80];
     void (*AdjustFrom640)(float* x, float* y, float* w, float* h);  // +0x80
+    nglFont* (*UI_GetFontInfo)(int font, float scale);               // +0x84
 };
 extern refimport_t ri;  // ?ri@@3Urefimport_t@@A @ 0xF741E8
+extern float sGlobalFontScale;
+extern void nglGetStringDimensions(nglFont* Font, const char* Text,
+                                   unsigned int* Width, unsigned int* Height,
+                                   float ScaleX, float ScaleY);
+
+// ea: 0x006C5B40
+int RE_Text_Width(const char* text, int font, float scale,
+                  float charWidth, int limit)
+{
+    (void)charWidth;
+    (void)limit;
+    if (text == nullptr || ri.UI_GetFontInfo == nullptr)
+        return 0;
+    const float fontScale = sGlobalFontScale * scale;
+    nglFont* info = ri.UI_GetFontInfo(font, fontScale);
+    if (info == nullptr)
+        return 0;
+    unsigned int width = 0;
+    unsigned int height = 0;
+    nglGetStringDimensions(info, text, &width, &height,
+                           fontScale, fontScale);
+    return static_cast<int>(width);
+}
 
 // static buffer (render.o @ 0xF78370)
 static char szText[256];

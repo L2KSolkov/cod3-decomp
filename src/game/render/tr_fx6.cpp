@@ -8,6 +8,7 @@
 #include "game/trace_types.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 // render.o rain-drop state (@ 0xF78600 / 0xF784C0 / 0xF784B0 / 0xF784B4 / 0xF78734)
 static math::Position3 buffer_pos[16];
@@ -18,7 +19,6 @@ static unsigned int s_rainInit;  // $S69_2
 
 extern bool gEnableRainDrops;  // ?gEnableRainDrops@@3_NA (tr_fx2.cpp)
 extern int currCl;             // ?currCl@@3HA @ 0xF1579C
-extern "C" int rand();
 #define _rand rand
 
 // Entity view (r +0xE0, mHandle +0x234)

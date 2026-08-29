@@ -921,6 +921,9 @@ bool collide_sphere_triangle(const math::Position3& sphere_center,
                              const math::Dir3& normal_in,
                              math::Position3* hitp, math::Dir3* hitn)
 {
+    __m128 v20;
+    __m128 v21;
+    __m128 v22;
     __m128 v = sphere_center.v;
     math::Dir3 v9;
     v9.v = _mm_sub_ps(v0_in.v, sphere_center.v);
@@ -956,11 +959,11 @@ bool collide_sphere_triangle(const math::Position3& sphere_center,
         *hitn = v9;
         goto LABEL_27;
     }
-    __m128 v20 = _mm_mul_ps(v11.v, v11.v);
+    v20 = _mm_mul_ps(v11.v, v11.v);
     float nhitn_sq =
         v20.m128_f32[0]
         + (v20.m128_f32[1] + v20.m128_f32[2]);
-    __m128 v21 = _mm_mul_ps(v11.v, v12.v);
+    v21 = _mm_mul_ps(v11.v, v12.v);
     float v44 =
         v21.m128_f32[0]
         + (v21.m128_f32[1] + v21.m128_f32[2]);
@@ -970,7 +973,7 @@ bool collide_sphere_triangle(const math::Position3& sphere_center,
         *hitn = v11;
         goto LABEL_27;
     }
-    __m128 v22 = _mm_mul_ps(v12.v, v12.v);
+    v22 = _mm_mul_ps(v12.v, v12.v);
     float c1_a =
         v22.m128_f32[0]
         + (v22.m128_f32[1] + v22.m128_f32[2]);
@@ -9680,6 +9683,7 @@ int CM_PointSightTraceToEntities_r(sightpointtrace_t* clip,
                                    const math::Position3* p2,
                                    collision_context_t* context)
 {
+    math::Position3 mid;
     if ((clip->contentmask & node->contentsEntities) == 0)
         return 0;
     int axis = node->axis;
@@ -9727,7 +9731,6 @@ int CM_PointSightTraceToEntities_r(sightpointtrace_t* clip,
         v9 = v18;
     }
     float midF = (p2f - p1f) * frac + p1f;
-    math::Position3 mid;
     mid.v = _mm_add_ps(p1->v, _mm_mul_ps(_mm_sub_ps(p2->v, p1->v),
                                          _mm_set1_ps(frac)));
     int side = v9 < 0.0f;
@@ -10287,6 +10290,7 @@ void CM_CapsuleAreaEntities(TouchEntityData& entities, WorldSector* node,
                             const math::Position3& p2, float radius,
                             const collision_context_t& context)
 {
+    math::Position3 mid;
     if (p1f >= 1.0f)
         return;
     if ((node->contentsEntities & context.contentmask) == 0)
@@ -10382,7 +10386,6 @@ void CM_CapsuleAreaEntities(TouchEntityData& entities, WorldSector* node,
     if (frac > 1.0f)
         frac = 1.0f;
 
-    math::Position3 mid;
     mid.v.m128_f32[0] = p1.v.m128_f32[0]
         + (p2.v.m128_f32[0] - p1.v.m128_f32[0]) * frac;
     mid.v.m128_f32[1] = p1.v.m128_f32[1]
@@ -10451,6 +10454,7 @@ static int CM_ClipSightTraceToEntities_r(sightclip_t* clip, WorldSector* node,
                                          const math::Position3* p2,
                                          const collision_context_t* context)
 {
+    math::Position3 mid;
     int result;
     if ((clip->contentmask & node->contentsEntities) == 0)
         return 0;
@@ -10553,7 +10557,6 @@ static int CM_ClipSightTraceToEntities_r(sightclip_t* clip, WorldSector* node,
     if (frac > 1.0f)
         frac = 1.0f;
 
-    math::Position3 mid;
     mid.v.m128_f32[0] = p1->v.m128_f32[0]
         + (p2->v.m128_f32[0] - p1->v.m128_f32[0]) * frac;
     mid.v.m128_f32[1] = p1->v.m128_f32[1]

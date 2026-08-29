@@ -880,7 +880,6 @@ reserved_dlist<AeThreadState>::node_to_object(
         reinterpret_cast<const unsigned char*>(node) - 4);
 }
 
-// ea: 0x005EFBA0
 template <>
 void reserved_dlist<AeThreadState>::delete_all()
 {
@@ -5362,14 +5361,12 @@ static void BrocFree(void* p)
         mem_heap_free(p);
 }
 
-// ea: 0x005EF710
 AeThread::BrocObjCreated::BrocObjCreated(BrocObjCreated* n)
     : next(n)
 {
     list.m_size = 0;
 }
 
-// ea: 0x005EF730
 void* AeThread::BrocObjCreated::operator new(size_t size)
 {
     (void)size;
@@ -22942,6 +22939,8 @@ extern void CallFunctor(AeThreadFunctor* f);  // ?CallFunctor@@YAXPAVAeThreadFun
 // then switching ESP/SEH/registers/flags back to the SetJmp frame before RET.
 // Keep that transfer in one x86 helper so the compiler cannot emit a normal
 // C++ epilogue on the restored stack.
+#pragma warning(push)
+#pragma warning(disable:4733)
 __declspec(naked) static void AeThreadRestoreContext(unsigned int targetEsp)
 {
     __asm {
@@ -22955,6 +22954,7 @@ __declspec(naked) static void AeThreadRestoreContext(unsigned int targetEsp)
         retn
     }
 }
+#pragma warning(pop)
 extern bool gPumpThreads;              // ?gPumpThreads@@3_NA
 extern bool gPumpThreadsForMapChange;  // ?gPumpThreadsForMapChange@@3_NA
 

@@ -5554,17 +5554,17 @@ void          nslDriverSetBufferSize(unsigned) {}
 // ============================================================================
 // nslAram — Xbox audio RAM management
 // ============================================================================
-// ea: 0x00422DC0
+// ea: 0x00822DC0
 void*         nslAramGetBase() { return nsl_aramBase; }
-// ea: 0x00422DD0
+// ea: 0x00822DD0
 unsigned      nslAramGetSize() { return nsl_aramSize; }
-// ea: 0x00422DE0
+// ea: 0x00822DE0
 unsigned      nslAramGetFree() { return nsl_aramFree; }
-// ea: 0x00422DF0
+// ea: 0x00822DF0
 void          nslAramSetAlignment(unsigned alignment) { nsl_aramAlignment = alignment; }
-// ea: 0x00422E00
+// ea: 0x00822E00
 unsigned      nslAramGetAlignment() { return nsl_aramAlignment; }
-// ea: 0x00422E10
+// ea: 0x00822E10
 void          nslAramInit(void* base, unsigned size) {
     if (nsl_aramBase != nullptr || nsl_aramSize != 0 ||
         nsl_aramStackBottom != -1 || nsl_aramStackTop != 64) {
@@ -5579,7 +5579,7 @@ void          nslAramInit(void* base, unsigned size) {
         nsl_aramAlignment * ((baseAddress + nsl_aramAlignment - 1u) / nsl_aramAlignment));
     nsl_aramSize = nsl_aramAlignment * ((size - nsl_aramAlignment) / nsl_aramAlignment);
 }
-// ea: 0x00422EA0
+// ea: 0x00822EA0
 unsigned      nslAramGetFreeBlock(unsigned* ptop, unsigned* pbottom) {
     int stackBottom = nsl_aramStackBottom;
     unsigned bottom = nsl_aramSize;
@@ -5615,7 +5615,7 @@ unsigned      nslAramGetFreeBlock(unsigned* ptop, unsigned* pbottom) {
     nsl_aramFree = bottom - top;
     return nsl_aramFree;
 }
-// ea: 0x00422F90
+// ea: 0x00822F90
 void*         nslAramAlloc(unsigned size, unsigned flags) {
     const unsigned alignedSize = nsl_aramAlignment *
         ((nsl_aramAlignment + size - 1u) / nsl_aramAlignment);
@@ -5652,7 +5652,7 @@ void*         nslAramAlloc(unsigned size, unsigned flags) {
     nslAramGetFreeBlock(nullptr, nullptr);
     return result;
 }
-// ea: 0x004230A0
+// ea: 0x008230A0
 void          nslAramFree(void* buffer) {
     if (buffer == nullptr)
         return;

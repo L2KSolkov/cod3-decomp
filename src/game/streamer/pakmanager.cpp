@@ -423,7 +423,6 @@ unsigned int extract_color(const Color& col)
 extern int Cmd_Argc();       // core.o
 extern char* Cmd_Argv(int arg);  // core.o
 extern void Com_Printf(const char* fmt, ...);  // core.o
-extern double atof(const char* nptr);
 extern void tlPrintf(const char* fmt, ...);      // tl_system.o
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
 extern char* va(const char* fmt, ...);  // ?va@@YAPADPBDZZ (g_q_shared.cpp)
@@ -2981,8 +2980,6 @@ struct ScriptEventHandler {
     bool AddEvent(HashString h, const char* callback);  // ?AddEvent@ScriptEventHandler@@QAE_NVHashString@@PBD@Z
 };
 extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler (g.o)
-extern int _stricmp(const char* a, const char* b);  // core.o
-extern int _strnicmp(const char* a, const char* b, size_t n);  // core.o
 // hash_const (runtime-filled hash constants; mirrors str_const_t layout)
 struct hash_const_t {
     uint8_t _pad[0x1D4];
@@ -3512,7 +3509,7 @@ mem_heap* ae_heap::GetHeapPointer()
     return &mHeap;
 }
 
-// ea: 0x4BB280 (core.o; exact IDA reconstruction)
+// (SetupActorHeap; no map-listed function)
 ae_heap* SetupActorHeap()
 {
     ae_heap* result = gActorHeap;
@@ -8862,7 +8859,8 @@ void PakManager::DebugRender()
             }
             PrintBankUsage(v73, totalBanks, (const TBankAlloc*)&v78.xenon,
                            true);
-            sprintf(v74, "%s%s", v73, v75.mBuff);
+            sprintf(v74, "%s%S", v73,
+                    reinterpret_cast<const wchar_t*>(v75.mBuff));
 
             float loadTime = 0.0f;
             if (pak->mLoadStats != nullptr)
@@ -9155,7 +9153,7 @@ void cdLoadSkelCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
     }
 }
 
-// ea: 0x665E60 (empty no-op)
+// (empty no-op callback; no map-listed function)
 void cdDeleteSkelCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                           void* UserData)
 {
@@ -9225,7 +9223,7 @@ void cdLoadMaterialCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
     nglProcessMaterial(Data);
 }
 
-// ea: 0x665EB0 (empty no-op)
+// (empty no-op callback; no map-listed function)
 void cdDeleteMaterialCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                               void* UserData)
 {
@@ -9250,7 +9248,7 @@ void cdLoadParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                                  (unsigned int)EffectInplace);
 }
 
-// ea: 0x665D20 (empty no-op)
+// (empty no-op callback; no map-listed function)
 void cdDeleteParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                               void* UserData)
 {
@@ -15540,7 +15538,7 @@ unsigned int InstanceBankMgr::Add(eInstanceBankType type, TPakId pakId,
     return 0;
 }
 
-// ea: 0x66C590
+// ea: 0x0066C500
 bool InstanceBankMgr::GetAnimOffset(const char* name, TPakId pakId,
                                     unsigned int* out_offset,
                                     unsigned int* out_size)

@@ -343,6 +343,12 @@ DObj::DObj(TPakId pakId)
     }
 }
 
+void DObj_Ctor(void* obj, int pakId)
+{
+    if (obj != nullptr)
+        new (obj) DObj(static_cast<TPakId>(pakId));
+}
+
 // ============================================================================
 // DObjFree - ea: 0x006C47A0
 // ============================================================================

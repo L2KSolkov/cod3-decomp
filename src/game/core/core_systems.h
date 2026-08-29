@@ -1069,6 +1069,10 @@ class ActiveEffectSet {
 public:
     static PoolAllocator* sAllocator;
     static void* operator new(size_t size, bool forceHeapAlloc);
+    static void operator delete(void* ptr, bool forceHeapAlloc) {
+        (void)ptr;
+        (void)forceHeapAlloc;
+    }
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line);
     static void operator delete(void* ptr);
@@ -1846,6 +1850,10 @@ public:
     void KillEndOnThreads();
     static void UpdateList();
     static void* operator new(size_t size, bool forceHeapAlloc);
+    static void operator delete(void* ptr, bool forceHeapAlloc) {
+        (void)ptr;
+        (void)forceHeapAlloc;
+    }
     static void operator delete(void* ptr);
     static void SetAllocator(PoolAllocator* allocator);
     static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A @ 0xF00E2C

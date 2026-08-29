@@ -820,21 +820,21 @@ template short ReadUnaligned<short>(const void* iMem);
 template <class T>
 const math::Dir3& toUnitDir3(const T& v)  // ??$toUnitDir3@VDir3@math@@@@YAABVDir3@math@@ABV01@@Z @ 0x6EA950
 {
-    return (const math::Dir3&)v;
+    return *reinterpret_cast<const math::Dir3*>(&v);
 }
 template const math::Dir3& toUnitDir3<math::Dir3>(const math::Dir3& v);
 
 template <class T>
 const math::Position3& toPosition3(const T& v)  // ??$toPosition3@VDir3@math@@@@YAABVPosition3@math@@ABVDir3@1@@Z @ 0x6EA960
 {
-    return (const math::Position3&)v;
+    return *reinterpret_cast<const math::Position3*>(&v);
 }
 template const math::Position3& toPosition3<math::Dir3>(const math::Dir3& v);
 
 template <class T>
 const math::Dir3& toDir3(const T& v)  // ??$toDir3@VDir3@math@@@@YAABVDir3@math@@ABV01@@Z @ 0x6EA970
 {
-    return (const math::Dir3&)v;
+    return *reinterpret_cast<const math::Dir3*>(&v);
 }
 template const math::Dir3& toDir3<math::Dir3>(const math::Dir3& v);
 
@@ -1203,8 +1203,6 @@ int ae_vector<T>::size() const
     return mSize;
 }
 template class ae_vector<LightEffect*>;
-template class ae_vector<ParticleEffect*>;
-template class ae_vector<DebugTexturedQuad2D>;
 
 // ============================================================================
 // batch 92 - 137..364 byte render.o symbols (all bodies/types from IDA)
@@ -3728,7 +3726,6 @@ void VMathVectorCopy(float* v1, const math::Vector4& v2)  // ?VMathVectorCopy@@Y
 }
 
 // XModelParts bone queries
-extern int _stricmp(const char* a, const char* b);
 int XModelParts::GetBoneIndex(const char* name)  // 0x6EB640
 {
     if (name == nullptr)

@@ -197,6 +197,7 @@ static __m64 afmv_from_bits(std::uint64_t bits) {
 static std::uint64_t afmv_to_bits(__m64 value) {
     std::uint64_t bits;
     std::memcpy(&bits, &value, sizeof(bits));
+    _mm_empty();
     return bits;
 }
 static __m64 afmv_pavgb(__m64 a, __m64 b) {
@@ -445,6 +446,7 @@ static __m64 afmv_load64(const unsigned char* p) {
 }
 static void afmv_store64(unsigned char* p, __m64 value) {
     std::memcpy(p, &value, sizeof(value));
+    _mm_empty();
 }
 static void afmv_mc_avg_O16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -455,6 +457,7 @@ static void afmv_mc_avg_O16(unsigned char* dest, const unsigned char* ref, int s
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_avg_O8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -464,6 +467,7 @@ static void afmv_mc_avg_O8(unsigned char* dest, const unsigned char* ref, int st
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_copy_O16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -494,6 +498,7 @@ static void afmv_mc_avg_X16(unsigned char* dest, const unsigned char* ref, int s
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_avg_X8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -503,6 +508,7 @@ static void afmv_mc_avg_X8(unsigned char* dest, const unsigned char* ref, int st
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_copy_X16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -513,6 +519,7 @@ static void afmv_mc_copy_X16(unsigned char* dest, const unsigned char* ref, int 
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_copy_X8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -522,6 +529,7 @@ static void afmv_mc_copy_X8(unsigned char* dest, const unsigned char* ref, int s
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_avg_Y16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -532,6 +540,7 @@ static void afmv_mc_avg_Y16(unsigned char* dest, const unsigned char* ref, int s
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_avg_Y8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -541,6 +550,7 @@ static void afmv_mc_avg_Y8(unsigned char* dest, const unsigned char* ref, int st
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_copy_Y16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -551,6 +561,7 @@ static void afmv_mc_copy_Y16(unsigned char* dest, const unsigned char* ref, int 
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_copy_Y8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -560,6 +571,7 @@ static void afmv_mc_copy_Y8(unsigned char* dest, const unsigned char* ref, int s
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static __m64 afmv_mc_bilinear(__m64 a, __m64 b, __m64 c, __m64 d) {
     const __m64 ab = _m_pavgb(a, b);
@@ -579,6 +591,7 @@ static void afmv_mc_avg_XY16(unsigned char* dest, const unsigned char* ref, int 
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_avg_XY8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -589,6 +602,7 @@ static void afmv_mc_avg_XY8(unsigned char* dest, const unsigned char* ref, int s
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_copy_XY16(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -600,6 +614,7 @@ static void afmv_mc_copy_XY16(unsigned char* dest, const unsigned char* ref, int
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 static void afmv_mc_copy_XY8(unsigned char* dest, const unsigned char* ref, int stride, int height) {
     do {
@@ -609,6 +624,7 @@ static void afmv_mc_copy_XY8(unsigned char* dest, const unsigned char* ref, int 
         dest += stride;
         --height;
     } while (height != 0);
+    _mm_empty();
 }
 afmv_mc_t afmv_mc = {
     {afmv_mc_copy_O16, afmv_mc_copy_X16, afmv_mc_copy_Y16, afmv_mc_copy_XY16,
@@ -2764,11 +2780,13 @@ static void afmv_idct_first_pair(__m64& first, __m64& second, const std::int16_t
     first = _m_packssdw(_m_psradi(_m_paddd(v7, v8), 15), _m_psradi(_m_paddd(v9, v10), 15));
     second = _m_pshufw(_m_packssdw(_m_psradi(_m_psubd(v9, v10), 15),
                                    _m_psradi(_m_psubd(v7, v8), 15)), 177);
+    _mm_empty();
 }
 
 static void afmv_macro_block_copy(unsigned char* dest, int stride, const __m64* block) {
     for (unsigned row = 0; row < 8; ++row)
         afmv_store64(dest + row * stride, _m_packuswb(block[row * 2], block[row * 2 + 1]));
+    _mm_empty();
 }
 
 static void afmv_macro_block_add(unsigned char* dest, int stride, const __m64* block) {
@@ -2779,6 +2797,7 @@ static void afmv_macro_block_add(unsigned char* dest, int stride, const __m64* b
         const __m64 high = _m_paddsw(_m_punpckhbw(current, zero), block[row * 2 + 1]);
         afmv_store64(dest + row * stride, _m_packuswb(low, high));
     }
+    _mm_empty();
 }
 
 static void afmv_macro_block_add_dc(unsigned char* dest, int stride, const short* block) {
@@ -2794,6 +2813,7 @@ static void afmv_macro_block_add_dc(unsigned char* dest, int stride, const short
         afmv_store64(dest + row * stride,
                      _m_psubusb(_m_paddusb(current, positiveBytes), negativeBytes));
     }
+    _mm_empty();
 }
 
 // ea: 0x00832260
@@ -2893,6 +2913,7 @@ void MacroBlockIdct(short* mb) {
         block[13] = _m_psrawi(_m_psubsw(v145, v140), 6);
         block[15] = _m_psrawi(v152, 6);
     }
+    _mm_empty();
 }
 
 // ea: 0x00832A10
@@ -2962,10 +2983,13 @@ static void afmv_yuv_to_rgb(const unsigned char* py, const unsigned char* pu,
     red = _m_punpcklbw(redLow, redHigh);
     green = _m_punpcklbw(greenLow, greenHigh);
     blue = _m_punpcklbw(blueLow, blueHigh);
+    _mm_empty();
 }
 
 static unsigned afmv_byte(__m64 value, unsigned index) {
-    return static_cast<unsigned>((afmv_to_bits(value) >> (index * 8)) & 0xFFu);
+    const unsigned result = static_cast<unsigned>((afmv_to_bits(value) >> (index * 8)) & 0xFFu);
+    _mm_empty();
+    return result;
 }
 
 // ea: 0x00833130
@@ -3009,6 +3033,7 @@ void afmvYUV2RGB16(unsigned char** src_yuv, unsigned char* dest_rgb, int width) 
             dest_rgb += 16;
         }
     }
+    _mm_empty();
 }
 
 // ea: 0x00833270
@@ -3050,4 +3075,5 @@ void afmvYUV2RGB32(unsigned char** src_yuv, unsigned char* dest_rgb, int width) 
             dest_rgb += 32;
         }
     }
+    _mm_empty();
 }

@@ -893,7 +893,7 @@ void G_RemoveHeadHitEnt(Entity* pSelf)
     }
 }
 
-// G_HitLocStrcpy - ea: 0x0044AF00 (release no-op export)
+// G_HitLocStrcpy (release no-op export)
 void G_HitLocStrcpy(unsigned char* out, const char* in)
 {
     (void)out;

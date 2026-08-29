@@ -5108,7 +5108,7 @@ public:
                           bool damage) const;  // game.o 0x603F20 (QBE)
 };
 
-extern struct CollisionDesc {
+struct CollisionDesc {
     math::Position3 coord;    // +0x00
     math::Position3 normal;   // +0x10
     int material;             // +0x20
@@ -9302,6 +9302,7 @@ void SoundDevice::Sound::SetVelocity(const math::Dir3& vel)
 // ea: 0x0062C7A0
 void SoundDevice::Sound::Update()
 {
+    math::Position3 v10;
     if (this->mSource == NSL_SOURCE_ID_INVALID)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -9340,7 +9341,6 @@ void SoundDevice::Sound::Update()
         }
         if (mObject != nullptr)
         {
-            math::Position3 v10;
             v10.v = mObject->r.currentOrigin.v;
             if ((__fpclass(v10.v.m128_f32[0]) & 0x297) == 0
                 && (__fpclass(v10.v.m128_f32[1]) & 0x297) == 0

@@ -27,6 +27,7 @@ extern void InterpolateAnglesSmooth(float* const curAngles,
 extern void InterpolatePositionSmooth(float* const curPos,
                                       float const* const initialPos,
                                       float const* const targetPos, float t);
+extern const float AngleNormalize180(float angle);
 
 // ea: 0x006BB690
 void InterpolateAnglesSmooth(math::Position3& curAngles,
@@ -606,7 +607,6 @@ struct localEntity_t {
     refEntity_t  refEntity;  // +0x40
 };
 
-extern const const float AngleNormalize180(float angle);
 extern vmCvar_t cg_bobAmplitudeProne;     // 0x00F5ED68
 extern vmCvar_t cg_bobAmplitudeDucked;    // 0x00F5B850
 extern vmCvar_t cg_bobAmplitudeStanding;  // 0x00F5E978
@@ -4176,8 +4176,6 @@ struct XModelParts {
     const char* GetBoneName(unsigned int i);  // ea: 0x006BBA40
 };
 
-extern int _stricmp(const char* dst, const char* src);
-extern int _strnicmp(const char* dst, const char* src, size_t count);
 
 // ea: 0x006BBA40
 const char* XModelParts::GetBoneName(unsigned int i)

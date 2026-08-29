@@ -532,6 +532,7 @@ public:
 
     trRefEntity(int foo);    // ??0trRefEntity@@QAE@H@Z (game.o 0x6618B0)
     void* operator new(size_t s, void* p) { return p; }  // placement
+    static void operator delete(void* ptr, void* p) { (void)ptr; (void)p; }
     static void* operator new(size_t s);     // ??2trRefEntity@@SAPAXI@Z (game.o 0x620240)
     static void operator delete(void* ptr);  // ??3trRefEntity@@SAXPAX@Z (game.o 0x620250)
     void SetInSnapshot();    // ?SetInSnapshot@trRefEntity@@QAEXXZ (render.o)
@@ -3580,7 +3581,7 @@ extern int dword_F641D4[4 * 1580];           // 0xF641D4
 
 // Broc::TVehiclenodeHandle (IDA type 566)
 enum TVehiclenodeHandle : int {
-    INVALID_VEHICLENODE_HANDLE = 0xFFFFFFFF,
+    INVALID_VEHICLENODE_HANDLE = -1,
 };
 float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker, Entity* pInflictor,
                               const float* point, int mod);
@@ -5383,6 +5384,7 @@ public:
     static void operator delete(void* ptr, bool forceHeapAlloc,
                                 const char* file, int line);  // ??3Task@@SAXPAX_NPBDH@Z
     static void* operator new(size_t, void* p) { return p; }  // placement
+    static void operator delete(void* ptr, void* p) { (void)ptr; (void)p; }
     static class PoolAllocator* sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
     static void SetAllocator(PoolAllocator* allocator);
 };
@@ -5562,6 +5564,7 @@ public:
 
     void* operator new(size_t s);  // ??2DObj@@SAPAXI@Z (render.o)
     void* operator new(size_t s, void* p) { return p; }  // placement
+    static void operator delete(void* ptr, void* p) { (void)ptr; (void)p; }
     void operator delete(void* p); // ??3DObj@@SAXPAX@Z (render.o)
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
     DObj(TPakId pakId);            // ??0DObj@@QAE@W4TPakId@@@Z (render.o 0x6D9920)

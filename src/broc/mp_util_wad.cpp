@@ -6782,7 +6782,7 @@ bint operator+(bint lhs, bint rhs) {
     return bint(lhs.mVal + rhs.mVal);
 }
 
-// operator<(bfloat, bint) - ea: 0x949670
+// operator<(bfloat, bint)
 bbool operator<(bfloat lhs, bint rhs) {
     return bbool(rhs.mVal > lhs.mVal);
 }
@@ -6792,7 +6792,7 @@ bbool operator<(bint lhs, bfloat rhs) {
     return bbool(rhs.mVal > lhs.mVal);
 }
 
-// operator<(int, bint) - ea: 0x949A30
+// operator<(int, bint)
 bbool operator<(int lhs, bint rhs) {
     return bbool(lhs < rhs.mVal);
 }
@@ -8173,7 +8173,7 @@ const Broc::ExtendedEntity* Broc::entity::GetEE() const {
     return ee != nullptr ? ee : &Broc::ExtendedEntity::nullEnt;
 }
 
-// LocalEE - ea: 0x9587D0
+// LocalEE - ea: 0x009587C0
 mp_util_wad::LocalFields* Broc::entity::LocalEE() const {
     const Broc::ExtendedEntity* ee = GetEE();
     return reinterpret_cast<mp_util_wad::LocalFields*>(

@@ -119,7 +119,7 @@ struct bdPlatformMutex {
 // ============================================================================
 struct bdInAddr {
     union { bdUInt m_iaddr; struct { unsigned char b1,b2,b3,b4; } m_bytes; } inUn;
-    bdInAddr() { inUn.m_iaddr = 0xFF00FF00; }   // ea: 0x8B5E42
+    bdInAddr() { inUn.m_iaddr = 0xFF00FF00; }   // ea: 0x008B5E40
     bdInAddr(bdUInt a) { inUn.m_iaddr = a; }
     explicit bdInAddr(const char* s) { fromString(s); }
     void fromString(const char* s) { inUn.m_iaddr = inet_addr(s); }

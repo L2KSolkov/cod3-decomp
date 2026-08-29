@@ -4429,7 +4429,7 @@ void G_VehSetSwitchNode(vehicle_pathpos_t* vpp, short srcNodeIdx, short dstNodeI
     }
 }
 
-// ea: 0x0045F1A0 (VP_CopyNode)
+// (VP_CopyNode helper)
 void VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst)
 {
     dst->mName = src->mName;

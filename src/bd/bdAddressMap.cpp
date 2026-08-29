@@ -64,7 +64,7 @@ bdCommonAddr::bdCommonAddr(const XNADDR& addr, uint16_t port)
 }
 
 // ============================================================================
-// bdCommonAddr (hostAddr copy with new addr/port) - ea: 0x8B75F3 usage
+// bdCommonAddr (hostAddr copy with new addr/port)
 // ============================================================================
 bdCommonAddr::bdCommonAddr(const bdReference<bdCommonAddr>& hostAddr,
                            const XNADDR& addr, uint16_t port)

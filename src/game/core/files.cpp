@@ -959,6 +959,7 @@ int FS_Seek(int f, long offset, int origin)
     if (!AeAssert::IsIgnored()
         && AeAssert::Warning(va("Bad origin %i in FS_Seek", origin)))
         __debugbreak();
+    return -1;
 }
 
 // ea: 0x004C78A0
@@ -1178,6 +1179,7 @@ int FS_Write(const void* buffer, int len, int h)
     if (v7 != (unsigned int)-1)
         goto writeMore;
     Com_Printf("FS_Write: -1 bytes written\n");
+    return 0;
 }
 
 // ea: 0x004BDC70

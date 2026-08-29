@@ -500,7 +500,7 @@ public:
     };
     enum eTime : int {
         FLASH = 0x1,
-        FOREVER = 0xFFFFFFFF,
+        FOREVER = -1,
     };
 
     eType mType;                  // +0x00

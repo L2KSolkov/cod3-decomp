@@ -167,15 +167,19 @@ nglLightContext* calc_lighting(Entity* entity, const math::Mat43& matrix,
 
     unsigned int* Array = shaderParams.Array;
     unsigned int id = nglLightContextParamID;
-    Array[0] |= (1u << id);
-    Array[1] |= (1u << id) >> 32;
+    if (id < 32)
+        Array[0] |= 1u << id;
+    else
+        Array[1] |= 1u << (id - 32);
     shaderParams.Array[id + 2] = (unsigned int)ctx;
     if (alpha > 0.0f)
     {
         unsigned int* arr = shaderParams.Array;
         unsigned int aid = cdSimpleAlphaAlphaParamID;
-        arr[0] |= (1u << aid);
-        arr[1] |= (1u << aid) >> 32;
+        if (aid < 32)
+            arr[0] |= 1u << aid;
+        else
+            arr[1] |= 1u << (aid - 32);
         shaderParams.Array[aid + 2] = *(unsigned int*)&alpha;
     }
     return ctx;
@@ -263,8 +267,10 @@ bool AddTextureMatrix(Entity* ent, unsigned int boneNameHash,
     shaderParams.Array[id + 2] = (unsigned int)m;
     unsigned int* arr = shaderParams.Array;
     unsigned int rid = isRotatingTextureParamID;
-    arr[0] |= (1u << rid);
-    arr[1] |= (1u << rid) >> 32;
+    if (rid < 32)
+        arr[0] |= 1u << rid;
+    else
+        arr[1] |= 1u << (rid - 32);
     shaderParams.Array[rid + 2] = boneNameHash == g_tag_left_gear_hash
                                 || boneNameHash == g_tag_right_gear_hash
         ? 1u : 0u;

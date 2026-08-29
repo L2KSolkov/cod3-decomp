@@ -148,7 +148,7 @@ public:
     unsigned int mCapacity;   // +0x04
     unsigned int mSize;       // +0x08
 
-    dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}  // ea: 0x93305B
+    dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}
     dyn_array(const dyn_array& rhs) : mElements(NULL), mCapacity(0), mSize(0) {
         operator=(rhs);
     }
@@ -166,7 +166,7 @@ public:
         mCapacity = rhs.mCapacity;
         mSize = rhs.mSize;
     }
-    ~dyn_array() { destroy_all(); }  // ea: 0x933129
+    ~dyn_array() { destroy_all(); }
 
     void destroy_all() {
         delete[] mElements;

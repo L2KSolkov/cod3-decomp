@@ -809,6 +809,11 @@ public:
             tlMemFree(ptr);
         }
         static void* operator new(unsigned int, void* p) { return p; }
+        static void operator delete(void* ptr, void* p)
+        {
+            (void)ptr;
+            (void)p;
+        }
 
         // ??0nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QAE@PAV1@PBVnalBaseSkeleton@@@Z
         nalInstanceClass(nalAnimClass<T>* a, const nalBaseSkeleton* s);
@@ -1734,6 +1739,11 @@ public:
     // ??2/??3nalGenericPose@nalGeneric@@SAPAXI@Z (anim.o 0x55E730/0x55E750)
     static void* operator new(unsigned int sz);
     static void* operator new(unsigned int, void* p) { return p; }
+    static void operator delete(void* ptr, void* p)
+    {
+        (void)ptr;
+        (void)p;
+    }
     static void operator delete(void* ptr);
 
     // ea: 0x008549D0
@@ -10725,8 +10735,6 @@ template void PakDelete<InteractInputRcvr>(TPakId, InteractInputRcvr*, bool);
 template float lerp<float>(const float&, const float&, float);
 template float ReadUnaligned<float>(const void*);
 template float ReadIncUnaligned<float>(char*&);
-template struct ae_fixed_string<64, unsigned char>;
-template struct ae_fixed_string<32, unsigned char>;
 template bool operator==<32, unsigned char>(
     const ae_fixed_string<32, unsigned char>&, const char*);
 template class nalGeneric::nalGenericComponentHandle<nalPositionOrientation>;
@@ -18574,7 +18582,7 @@ void nalComponent<nalComponentQuatBase,
     (void)skeletonData;
 }
 
-// ea: 0x00860E30
+// ea: 0x00860E20
 template <>
 void nalComponent<nalComponentQuatBase,
                   nalComponentPacked16EntropyQuatData,
@@ -18585,7 +18593,7 @@ void nalComponent<nalComponentQuatBase,
                                            & ~uintptr_t(3u));
 }
 
-// ea: 0x00860E50
+// ea: 0x00860E40
 template <>
 void nalComponent<nalComponentQuatBase,
                   nalComponentPacked16EntropyQuatData,
@@ -19534,7 +19542,7 @@ void nalComponentEntropyPO::ComponentSetupPartialDecode(
     *srcPtr = cursor + length;
 }
 
-// ea: 0x008620D0
+// ea: 0x00862040
 template <>
 void nalComponent<nalComponentPOBase,
                   nalComponentEntropyPOData,
@@ -29497,7 +29505,6 @@ int InteractState::Release(int buttonIndex)
     return buttonIndex != 27 && buttonIndex != 9;
 }
 
-// ea: 0x0056EB0 (virtual; empty in binary)
 void InteractState_PostPhysicsUpdate(InteractState* self, float deltaT)
 {
     (void)self; (void)deltaT;
@@ -31495,7 +31502,7 @@ InteractState* InteractState::Update(float deltaT)
     return result;
 }
 
-// ea: 0x0056EB0 (?PostPhysicsUpdate@InteractState@@UAEXM@Z; empty)
+// ea: 0x00556EB0 (?PostPhysicsUpdate@InteractState@@UAEXM@Z; empty)
 void InteractState::PostPhysicsUpdate(float deltaT)
 {
     (void)deltaT;
