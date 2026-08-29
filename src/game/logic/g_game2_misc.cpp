@@ -3064,10 +3064,37 @@ bool SmokeGrenadeMgr::EntityCanSeeEntity(const Entity* ent,
 // ============================================================================
 // SmokeGrenadeMgr::Update
 // ============================================================================
+// ea: 0x00519BD0
 extern void ae_vector_erase(void* self, int idx);  // ?erase@?$ae_vector@USmokeGrenadeInfo
 void ae_vector_erase(void* self, int idx)
 {
-    (void)self; (void)idx;
+    SmokeGrenadeInfoList* list =
+        static_cast<SmokeGrenadeInfoList*>(self);
+    if (list->mSize <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 254;
+        AeAssert::gCurrentExpr = "mSize > 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("can't erase in empty vector"))
+            __debugbreak();
+    }
+    if (idx < list->mSize)
+    {
+        SmokeGrenadeInfo* dst = &list->mElements[idx];
+        SmokeGrenadeInfo* last = &list->mElements[list->mSize - 1];
+        dst->mEffect = last->mEffect;
+        dst->mTime = last->mTime;
+        for (int i = 0; i < 10; ++i)
+            dst->bHit[i] = last->bHit[i];
+
+        last->mEffect = nullptr;
+        last->mTime = 0.0f;
+        for (int i = 0; i < 10; ++i)
+            last->bHit[i] = false;
+        --list->mSize;
+    }
 }
 
 // ea: 0x4F9CC0
@@ -3558,24 +3585,29 @@ int InsertDroneMaster(Entity* e, unsigned int animIndex)
 // ea: 0x4FF910
 int RemoveDrone(Entity* e, unsigned int animIndex)
 {
+    (void)animIndex;
     unsigned int mVal = e->mHandle.mHandle.mVal;
+    bool removed = false;
     for (int i = 0; i < gDroneAEMap.m_size; ++i)
     {
         ae_pair<unsigned int, DroneHandleVec*>* entry = gDroneAEMap.m_elements[i];
         DroneHandleVec* vec = entry->second;
-        for (int j = 0; j < vec->mSize; ++j)
+        DbLinkedHandle<EntityHandleDb, Entity>* elements = vec->mElements;
+        DbLinkedHandle<EntityHandleDb, Entity>* end = &elements[vec->mSize];
+        for (DbLinkedHandle<EntityHandleDb, Entity>* it = elements;
+             it != end; ++it)
         {
-            if (vec->mElements[j].mHandle.mVal == mVal)
+            if (it->mHandle.mVal == mVal)
             {
-                // erase by shifting
-                for (int k = j; k < vec->mSize - 1; ++k)
-                    vec->mElements[k] = vec->mElements[k + 1];
-                --vec->mSize;
+                vec->erase(it);
+                removed = true;
                 break;
             }
         }
+        if (removed)
+            break;
     }
-    e->mFlags &= ~8u;
+    e->mFlags &= ~0xCu;
     return 0;
 }
 
