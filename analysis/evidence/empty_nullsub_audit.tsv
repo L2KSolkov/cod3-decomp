@@ -209,6 +209,8 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008AA0A0	??0bdUnreliableSendWindow@@QAE@XZ	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1681403	Release installs the vtable and clears sequence/queue state, matching source construction.
 0x00854390	??0nalAnimCache@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/animation/nal.cpp:1484	Source initializer list sets Hits, Misses, Access, and Frame; the empty body is complete.
 0x00854390	??0nalAnimCache@@QAE@XZ	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1600582	Release sets Hits, Misses, Access, and Frame = -1 exactly as source; pointer fields are intentionally untouched.
+0x00925270	??BHashStr@@QBE?BIXZ	V3	PASS	inline-manual-audit-20260828	2026-08-28	src/engine/broc_types.h:39	Source conversion operator returns mVal directly; inline body is complete.
+0x00925270	??BHashStr@@QBE?BIXZ	V4	PASS	inline-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1793455	Release conversion operator returns this->mVal directly, matching source.
 0x0088E240	??0?$phys_link_list@Vpulse_sum_normal@@@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/physics/pulse_sum.h:309	Source initializer list clears m_first and m_last; the empty body is complete.
 0x0088E240	??0?$phys_link_list@Vpulse_sum_normal@@@@QAE@XZ	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1655252	Release clears m_first and m_last, matching source.
 0x0088EE40	??0?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vrigid_body_constraint_contact@@@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/physics/pulse_sum.h:460	Source initializer list clears m_tree_root; the empty body is complete.

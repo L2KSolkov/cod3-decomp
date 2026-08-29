@@ -1119,8 +1119,8 @@ void phys_heap_memory_pool<T>::swap_adjacent_fast(iterator* i, iterator* i_next)
 }
 
 template <typename T>
+// ea: 0x0088F060 (per-instantiation COMDAT)
 void phys_heap_memory_pool<T>::destroy() {
-    // ea: 0x88F060 (per-instantiation COMDAT)
     if (m_slot_array != NULL) {
         if (m_alloc_list != (T**)&m_slot_array[m_slot_array_size] &&
             _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 236,
