@@ -69,7 +69,23 @@ float dword_F04458[256];
 float dword_F0445C[256];
 
 CameraShake g_cameraShake[4];
-CameraShakeType shakeTable[32];  // ?shakeTable@@3PAVCameraShakeType@@A (game2.o @ 0x11C8800)
+CameraShakeType shakeTable[14] =
+{
+    { 0, 0, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { 1, 0, 0.2f, 2.5f, 2.5f, 1.0f, 1.0f, 0.1f, 0.0f },
+    { 2, 0, 0.54f, 5.09f, 0.54f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { 3, 0, 0.75f, 6.2f, 0.75f, 0.8f, 0.0f, 0.0f, 0.0f },
+    { 4, 0, 0.65f, 5.46f, 1.2f, 0.8f, 0.0f, 0.0f, 0.0f },
+    { 5, 1, 1.5f, 40.0f, 0.07f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { 6, 1, 3.0f, 12.0f, 0.02f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { 7, 1, 0.0f, 0.09f, 0.045f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { 8, 1, 1.3f, 40.2f, 0.1f, 1.0f, 0.0f, 0.05f, 0.0f },
+    { 9, 1, 1.3f, 40.2f, 0.02f, 1.0f, 0.0f, 0.05f, 0.0f },
+    { 10, 0, 0.18f, 3.0f, 3.2f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { 11, 0, 0.18f, 5.0f, 0.02f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { 12, 0, 0.6f, 0.2f, 0.3f, 1.0f, 0.0f, 0.0f, 0.0f },
+    { -1, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f }
+};  // ?shakeTable@@3PAVCameraShakeType@@A (game2.o @ 0x11C8800)
 int dword_F037B8[256];   // ?dword_F037B8@@3PAHA (game2.o)
 float g_ShakeTestMag;   // ?g_ShakeTestMag@@3MA (game2.o @ 0xE05FB8)
 float g_ShakeTestFreq;  // ?g_ShakeTestFreq@@3MA (game2.o)

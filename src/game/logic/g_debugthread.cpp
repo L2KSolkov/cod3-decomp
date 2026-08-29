@@ -129,10 +129,12 @@ extern int mem_get_high_used_bytes(mem_heap_type heap_name);  // ?mem_get_high_u
 // ============================================================================
 // nalGeneric local surface (animation/nal.cpp; used by AnimationPlayer)
 // ============================================================================
-struct nalPositionOrientationLocal {
-    math::Position3 pos;    // +0x00
-    math::Dir3 orient;      // +0x10
+class nalPositionOrientation {
+public:
+    math::Quaternion orient; // +0x00
+    math::Position3 pos;     // +0x10
 };
+typedef nalPositionOrientation nalPositionOrientationLocal;
 struct nalMatrix4x4Local {
     float m[4][4];          // +0x00
 };
@@ -140,23 +142,27 @@ struct nalMatrix4x4Local {
 namespace nalGeneric {
 class nalGenericAnim;
 class nalGenericInstance;
-class nalGenericBoneHandle {
+class nalGenericSkeleton;
+struct nalGenericBoneHandle {
 public:
-    unsigned int index;   // +0x00
-    void* skeleton;       // +0x04
+    const nalGenericSkeleton* Skeleton; // +0x00
+    int BoneIndex;                      // +0x04
 };
 class nalGenericPose {
 public:
-    unsigned char* m_data;  // +0x00
-    unsigned int m_size;    // +0x04
+    const nalGenericSkeleton* Skeleton; // +0x00 (nalBasePose)
+    int LOD;                             // +0x04 (nalBasePose)
+    void* PoseData;                      // +0x08
+    bool AllocedData;                    // +0x0C
+    unsigned char _padding[3];           // +0x0D
     nalGenericPose& operator=(const nalGenericPose& other);
-    nalPositionOrientationLocal GetModelPositionOrientation(
+    nalPositionOrientation GetModelPositionOrientation(
         const nalGenericBoneHandle& handle) const;  // ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z
 };
 class nalGenericSkeleton {
 public:
     void GetBoneHandle(nalGenericBoneHandle& handle,
-                       const tlFixedString& boneName);  // ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z
+                       const tlFixedString& boneName) const;  // ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z
 };
 void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
            const nalGenericPose& b);  // ?Blend@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z
@@ -164,25 +170,15 @@ void BlendTorso(nalGenericPose& out, float blend, const nalGenericPose& a,
                 const nalGenericPose& b);  // ?BlendTorso@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z
 }  // namespace nalGeneric
 
-// nalGeneric stubs (animation/nal.cpp; port later)
+// nalGeneric::BlendTorso remains a release-body porting target; the other
+// methods resolve to their release-backed definitions in cod3_game_anim.
 namespace nalGeneric {
 nalGenericPose& nalGenericPose::operator=(const nalGenericPose& other)
 {
-    (void)other;
+    memcpy(this, &other, sizeof(*this));
     return *this;
 }
-nalPositionOrientationLocal nalGenericPose::GetModelPositionOrientation(
-    const nalGenericBoneHandle& handle) const
-{
-    (void)handle;
-    nalPositionOrientationLocal r = {};
-    return r;
-}
-void nalGenericSkeleton::GetBoneHandle(nalGenericBoneHandle& handle,
-                                       const tlFixedString& boneName)
-{
-    (void)handle; (void)boneName;
-}
+
 void BlendTorso(nalGenericPose& out, float blend, const nalGenericPose& a,
                 const nalGenericPose& b)
 {
@@ -2282,10 +2278,10 @@ void AnimationPlayer::GetPose(nalGeneric::nalGenericPose& Pose,
     static tlFixedString gunStr("TAG_WEAPON_RIGHT");
     nalGeneric::nalGenericBoneHandle handHandle;
     nalGeneric::nalGenericBoneHandle gunHandle;
-    handHandle.index = 0;
-    handHandle.skeleton = nullptr;
-    gunHandle.index = 0;
-    gunHandle.skeleton = nullptr;
+    handHandle.BoneIndex = 0;
+    handHandle.Skeleton = nullptr;
+    gunHandle.BoneIndex = 0;
+    gunHandle.Skeleton = nullptr;
     Skeleton->GetBoneHandle(handHandle, handStr);
     Skeleton->GetBoneHandle(gunHandle, gunStr);
 
