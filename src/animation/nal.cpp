@@ -1483,8 +1483,7 @@ extern "C" void nalAnimationCache_MemFree(void* ptr, unsigned int size)
 
 // ea: 0x00854390
 nalAnimCache::nalAnimCache()
-    : Heap(nullptr), LRUObject(nullptr), MRUObject(nullptr), Hits(0),
-      Misses(0), Access(0), Frame(static_cast<unsigned>(-1))
+    : Hits(0), Misses(0), Access(0), Frame(static_cast<unsigned>(-1))
 {
 }
 

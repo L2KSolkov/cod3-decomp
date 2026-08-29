@@ -225,7 +225,7 @@ struct pulse_sum_contact {
         float x;  // +0x00
         float y;  // +0x04
 
-        vec2() : x(0.0f), y(0.0f) {}           // ea: 0x891FB0
+        vec2() {}                              // ea: 0x891FB0
         vec2(float x_, float y_) : x(x_), y(y_) {}  // ea: 0x891FC0
         vec2 operator-(const vec2& other) const { return vec2(x - other.x, y - other.y); }
         void operator-=(const vec2& other) { x -= other.x; y -= other.y; }

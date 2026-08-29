@@ -252,7 +252,7 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
         # wrappers) can exceed 240 characters before their opening brace.
         # Keep scanning until a declaration-sized limit instead of dropping
         # the marker and falsely failing V1.
-        if len(text) > 600:
+        if len(text) > 1600:
             text = ""
     return None
 
