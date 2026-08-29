@@ -1,0 +1,19 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x005173B0	??0PerformanceStats@TestFPS@@QAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1076120	Release constructor only returns this after compiler vtable setup; empty source body is complete.
+0x005173B0	??0PerformanceStats@TestFPS@@QAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1076120	Release body has no state writes beyond implicit construction; source preserves the constructor behavior.
+0x00518860	??0ParticleIterator@apsRenderSort@@QAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1076975	Release constructor only installs the vtable; source leaves compiler-generated construction intact.
+0x00518860	??0ParticleIterator@apsRenderSort@@QAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1076975	Release and source have no explicit state-changing constructor body.
+0x00518870	??0UnsortedParticleIterator@apsRenderSort@@QAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1076984	Release constructor only installs the vtable; source leaves compiler-generated construction intact.
+0x00518870	??0UnsortedParticleIterator@apsRenderSort@@QAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1076984	Release and source have no explicit state-changing constructor body.
+0x0051BB30	??0SortedParticleIterator@apsRenderSort@@QAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1079654	Release constructor only installs the vtable; source leaves compiler-generated construction intact.
+0x0051BB30	??0SortedParticleIterator@apsRenderSort@@QAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1079654	Release and source have no explicit state-changing constructor body.
+0x00560220	??1CODNoteTrack@@UAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1119673	Release destructor only restores the base vtable; empty source body is compiler-complete.
+0x00560220	??1CODNoteTrack@@UAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1119673	Release and source perform no explicit resource/state cleanup in this destructor.
+0x005619A0	??1SceneAnimClient@@UAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1120990	Release destructor only restores the base vtable; empty source body is compiler-complete.
+0x005619A0	??1SceneAnimClient@@UAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1120990	Release and source perform no explicit resource/state cleanup in this destructor.
+0x00563EB0	??1XAnimUpdateTask@@UAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1122363	Release destructor only restores Task's vtable; empty source body is compiler-complete.
+0x00563EB0	??1XAnimUpdateTask@@UAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1122363	Release and source perform no explicit resource/state cleanup in this destructor.
+0x00563EF0	??1AnimationUpdateTask@@UAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1122379	Release destructor only restores Task's vtable; empty source body is compiler-complete.
+0x00563EF0	??1AnimationUpdateTask@@UAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1122379	Release and source perform no explicit resource/state cleanup in this destructor.
+0x00567CF0	??1IGOCompassWidget@@UAE@XZ	V3	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1125209	Release destructor only restores IGOWidget's vtable; empty source body is compiler-complete.
+0x00567CF0	??1IGOCompassWidget@@UAE@XZ	V4	PASS	release-nullsub-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1125209	Release and source perform no explicit resource/state cleanup in this destructor.
