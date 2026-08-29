@@ -5706,7 +5706,7 @@ void AARScoreboardLoser::OnActivate()
 {
     AARScoreboardBase::OnActivate();
     m_pYourTeamScore[4]->SetShown(false);
-    m_pYourTeamScore[5]->SetShown(false);
+    m_pYourTeamScore[5]->SetShown(true);
 }
 
 // ea: 0x007ABBD0
