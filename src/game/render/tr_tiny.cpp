@@ -161,11 +161,24 @@ unsigned int nglDxRenderState::GetZFunc() { return dword_BC2CF4; }
 // nglShader virtual no-ops
 // ============================================================================
 struct nglMaterial;
-class nglShader {
+class tlInitList {
 public:
+private:
+    tlInitList* next;                // +0x04
+    static tlInitList* head;         // ?head@tlInitList@@0PAV1@A (cdDebugVertexDef.cpp)
+    friend class cdAepsShader;
+public:
+    virtual ~tlInitList() {}
+};
+
+class nglShader : public tlInitList {
+public:
+    bool Disabled;                   // +0x08
+    int ID;                          // +0x0C
     virtual void ReleaseMaterial(nglMaterial* mat);   // ?ReleaseMaterial@nglShader@@UAEXPAUnglMaterial@@@Z @ 0x6E7DF0
     virtual void RebaseMaterial(nglMaterial* mat, unsigned int id);  // ?RebaseMaterial@nglShader@@UAEXPAUnglMaterial@@I@Z @ 0x6E7E00
 };
+static_assert(sizeof(nglShader) == 0x10, "nglShader layout mismatch");
 void nglShader::ReleaseMaterial(nglMaterial*) {}
 void nglShader::RebaseMaterial(nglMaterial*, unsigned int) {}
 
@@ -187,15 +200,6 @@ class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
 extern void mem_heap_free(void* ptr);
-class tlInitList {
-public:
-private:
-    tlInitList* next;                // +0x04
-    static tlInitList* head;         // ?head@tlInitList@@0PAV1@A (cdDebugVertexDef.cpp)
-    friend class cdAepsShader;
-public:
-    virtual ~tlInitList() {}
-};
 class tlFixedString {
 public:
     tlFixedString(const char* str);  // ??0tlFixedString@@QAE@PBD@Z
@@ -208,9 +212,8 @@ public:
     static ShaderSwitching_t ShaderSwitching;  // ?ShaderSwitching@ShaderCommon@@3TShaderSwitching_t@1@A
 };
 ShaderCommon::ShaderSwitching_t ShaderCommon::ShaderSwitching;
-class cdAepsShader : public tlInitList {
+class cdAepsShader : public nglShader {
 public:
-    bool Disabled;                   // +0x08
     cdAepsShader();                  // ??0cdAepsShader@@QAE@XZ @ 0x6E87F0
     virtual ~cdAepsShader();   // ??1cdAepsShader@@UAE@XZ @ 0x6EBF60
     virtual void AddNode(nglMeshNode* node, nglMeshSection* section,
@@ -232,6 +235,9 @@ tlFixedString cdAepsShader::GetName()
     return tlFixedString("Particles");
 }
 void cdAepsShader::operator delete(void* ptr) { mem_heap_free(ptr); }
+
+static_assert(sizeof(cdAepsShader) == 0x10,
+              "cdAepsShader layout mismatch");
 
 // ============================================================================
 // apsClient
@@ -610,6 +616,9 @@ ScopeDisableWarnings::~ScopeDisableWarnings()
 {
     TlSystemCallbacks::sWarningsEnabled = true;
 }
+
+static_assert(sizeof(ScopeDisableWarnings) == 0x1,
+              "ScopeDisableWarnings layout mismatch");
 
 // ============================================================================
 // DObj / cdl_proftimer / AnimationPlayer
@@ -2395,6 +2404,8 @@ jqModule::jqModule(void (__cdecl* code)(jqBatch*), const char* name)
     Name = name;
 }
 
+static_assert(sizeof(jqModule) == 0x8, "jqModule layout mismatch");
+
 class ParticleEraserPred {
 public:
     bool operator()(const ParticleEffect* effect);  // ??RParticleEraserPred@@QAE_NPBVParticleEffect@@@Z @ 0x6E8730
@@ -2404,6 +2415,9 @@ bool ParticleEraserPred::operator()(const ParticleEffect* effect)
     return effect == nullptr;
 }
 
+static_assert(sizeof(ParticleEraserPred) == 0x1,
+              "ParticleEraserPred layout mismatch");
+
 class LightEraserPred {
 public:
     bool operator()(const LightEffect* effect);  // ??RLightEraserPred@@QAE_NPBVLightEffect@@@Z @ 0x6E8860
@@ -2412,6 +2426,9 @@ bool LightEraserPred::operator()(const LightEffect* effect)
 {
     return effect == nullptr;
 }
+
+static_assert(sizeof(LightEraserPred) == 0x1,
+              "LightEraserPred layout mismatch");
 
 template class IVPointer<XModelParts>;
 
@@ -2424,6 +2441,9 @@ struct cdDynamicDecalVertex {
     float TexCoord_y;                // +0x10
     unsigned int Color;                // +0x14
 };
+
+static_assert(sizeof(cdDynamicDecalVertex) == 0x18,
+              "cdDynamicDecalVertex layout mismatch");
 template <class T, class I>
 class nglMeshIterator {
 public:
