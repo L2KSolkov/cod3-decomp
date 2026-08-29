@@ -39,10 +39,14 @@ static_assert(sizeof(cdWorldShader) == 0x10, "cdWorldShader size mismatch");
 namespace cdWorldRender {
     extern unsigned long VS[4][2];                       // ?VS@cdWorldRender@@3PAY01KA
     extern unsigned int const* VShaderTable[4];           // ?VShaderTable@cdWorldRender@@3PAY01PBIA
+    void RegisterShader();                                // @0x007DFFE0
+    void RegisterVShader();                               // @0x007E0010
 }
 namespace cdWorldProjectedRender {
     extern unsigned long VS[2];                           // ?VS@cdWorldProjectedRender@@3PAKA
     extern unsigned int const* VShaderTable[2];            // ?VShaderTable@cdWorldProjectedRender@@3PAPBIA
+    void RegisterShader();                                // @0x007E0040
+    void RegisterVShader();                               // @0x007E0070
 }
 namespace cdWorldPixel {
     extern unsigned long* PS[2][2][2];                    // ?PS@cdWorldPixel@@3PAY111PAKA

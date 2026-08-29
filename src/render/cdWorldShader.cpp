@@ -392,7 +392,13 @@ namespace cdWorldSolidColorPixel {
 // cdWorldRender::RegisterShader — register the 4 world vertex shaders.
 // ea: 0x7DFFE0 (inline COMDAT)
 // ============================================================================
-inline void cdWorldRender_RegisterShader() {
+void cdWorldRender::RegisterShader() {
+    for (int index = 0; index != 4; ++index)
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldRender::VS[0][index]),
+                             cdWorldRender::VShaderTable[index]);
+}
+
+void cdWorldRender_RegisterShader() {
     for (int v0 = 0; v0 < 4; ++v0) {
         nglDxRegisterVShader(reinterpret_cast<unsigned long*>(
                                  &cdWorldRender::VS[v0 / 2][v0 & 1]),
@@ -404,10 +410,28 @@ inline void cdWorldRender_RegisterShader() {
 // cdWorldProjectedRender::RegisterShader — register the 2 projected VShaders.
 // ea: 0x7E0040 (inline COMDAT)
 // ============================================================================
-inline void cdWorldProjectedRender_RegisterShader() {
+void cdWorldProjectedRender::RegisterShader() {
+    for (int index = 0; index != 2; ++index)
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldProjectedRender::VS[index]),
+                             cdWorldProjectedRender::VShaderTable[index]);
+}
+
+void cdWorldProjectedRender_RegisterShader() {
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
         nglDxRegisterVShaderSafe((unsigned int*)&cdWorldProjectedRender::VS[v0], cdWorldProjectedRender::VShaderTable, v0);
     }
+}
+
+// ea: 0x007E0010
+void cdWorldRender::RegisterVShader()
+{
+    cdWorldRender::RegisterShader();
+}
+
+// ea: 0x007E0070
+void cdWorldProjectedRender::RegisterVShader()
+{
+    cdWorldProjectedRender::RegisterShader();
 }
 
 // ============================================================================

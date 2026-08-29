@@ -63,6 +63,7 @@ namespace cdSkyShaderRender {
     extern unsigned long* VS;                // ?VS@cdSkyShaderRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdSkyShaderRender@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdSkyShaderRender@@3KA
+    void RegisterVShader();                  // @0x007E1620
 }
 namespace cdSkyShaderPixel {
     extern unsigned long** PS;               // ?PS@cdSkyShaderPixel@@3PAPAKA

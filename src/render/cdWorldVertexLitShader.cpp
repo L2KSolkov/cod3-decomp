@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdWorldVertexLitShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_shader.h"
@@ -42,6 +44,14 @@ namespace cdWorldVertexLitRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007DEC70
+void cdWorldVertexLitRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdWorldVertexLitRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdWorldVertexLitRender::VShaderTable[0]));
+    cdWorldVertexLitRender::Shader = cdWorldVertexLitRender::VS[0];
 }
 namespace cdWorldVertexLitPixel {
     static const unsigned int PShaderMicrocode[60] = {

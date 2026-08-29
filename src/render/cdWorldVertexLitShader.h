@@ -58,6 +58,7 @@ namespace cdWorldVertexLitRender {
     extern unsigned long* VS;                // ?VS@cdWorldVertexLitRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdWorldVertexLitRender@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdWorldVertexLitRender@@3KA
+    void RegisterVShader();                  // @0x007DEC70
 }
 namespace cdWorldVertexLitPixel {
     extern unsigned long** PS;               // ?PS@cdWorldVertexLitPixel@@3PAPAKA

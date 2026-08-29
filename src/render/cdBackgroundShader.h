@@ -52,6 +52,7 @@ namespace cdBackgroundRender {
     extern unsigned long* VS;                // ?VS@cdBackgroundRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdBackgroundRender@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdBackgroundRender@@3KA
+    void RegisterVShader();                  // @0x007E0A40
 }
 namespace cdBackgroundPixel {
     extern unsigned long** PS;               // ?PS@cdBackgroundPixel@@3PAPAKA

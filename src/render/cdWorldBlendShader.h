@@ -52,10 +52,14 @@ static_assert(sizeof(cdWorldBlendShader) == 0x10, "cdWorldBlendShader size misma
 namespace cdWorldBlendRender {
     extern unsigned long VS[2];                    // ?VS@cdWorldBlendRender@@3PAKA
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdWorldBlendRender@@3PAPBIA
+    void RegisterShader();                          // @0x007DE1E0
+    void RegisterVShader();                         // @0x007DE200
 }
 namespace cdWorldBlendProjectedRender {
     extern unsigned long VS[2];                    // ?VS@cdWorldBlendProjectedRender@@3PAKA
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdWorldBlendProjectedRender@@3PAPBIA
+    void RegisterShader();                          // @0x007DE230
+    void RegisterVShader();                         // @0x007DE250
 }
 namespace cdWorldBlendPixel {
     extern unsigned long* PS[2][2];                // ?PS@cdWorldBlendPixel@@3PAY01PAKA

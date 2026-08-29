@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdBackgroundShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_shader.h"
@@ -42,6 +44,14 @@ namespace cdBackgroundRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007E0A40
+void cdBackgroundRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdBackgroundRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdBackgroundRender::VShaderTable[0]));
+    cdBackgroundRender::Shader = cdBackgroundRender::VS[0];
 }
 namespace cdBackgroundPixel {
     static const unsigned int PShaderMicrocode[60] = {

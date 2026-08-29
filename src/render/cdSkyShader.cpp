@@ -8,6 +8,8 @@
 // ============================================================================
 #include "cdSkyShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_shader.h"
@@ -60,6 +62,14 @@ namespace cdSkyShaderRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007E1620
+void cdSkyShaderRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdSkyShaderRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdSkyShaderRender::VShaderTable[0]));
+    cdSkyShaderRender::Shader = cdSkyShaderRender::VS[0];
 }
 namespace cdSkyShaderPixel {
     static const unsigned int PShaderMicrocode[60] = {

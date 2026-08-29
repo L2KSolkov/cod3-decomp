@@ -9,6 +9,8 @@
 //   cdWorldBlendShader::AddNode @0x7DD350
 // ============================================================================
 #include "cdWorldBlendShader.h"
+
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
 #include "cdWorldShader.h"
 
 #include "ngl/ngl_lighting.h"
@@ -146,6 +148,34 @@ namespace cdWorldBlendProjectedRender {
     };
     unsigned long VS[2] = {};
     unsigned int const* VShaderTable[2] = { VShader0, VShader1 };
+}
+
+void cdWorldBlendRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldBlendRender::VS[index]),
+                             cdWorldBlendRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007DE200
+void cdWorldBlendRender::RegisterVShader()
+{
+    cdWorldBlendRender::RegisterShader();
+}
+
+void cdWorldBlendProjectedRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdWorldBlendProjectedRender::VS[index]),
+                             cdWorldBlendProjectedRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007DE250
+void cdWorldBlendProjectedRender::RegisterVShader()
+{
+    cdWorldBlendProjectedRender::RegisterShader();
 }
 namespace cdWorldBlendPixel {
     static const unsigned int PShader0[60] = {
