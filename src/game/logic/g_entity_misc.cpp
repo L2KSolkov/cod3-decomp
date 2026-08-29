@@ -4391,16 +4391,34 @@ void orthonormalize(math::Mat43* m)
         _mm_mul_ps(_mm_shuffle_ps(x.v, x.v, 18),
                    _mm_shuffle_ps(normalizedY.v, normalizedY.v, 9)));
 }
-void PathNodeMgr_CleanUpManager(void* self) { (void)self; }
+void PathNodeMgr_CleanUpManager(void* self)
+{
+    PathNodeMgr* manager = self != nullptr
+        ? static_cast<PathNodeMgr*>(self) : PathNodeMgr::sInst;
+    if (manager != nullptr)
+        manager->CleanUpManager();
+}
 void PathNodeMgr_ConnectPathsForEntity(void* self, Entity* e)
 {
-    (void)self; (void)e;
+    PathNodeMgr* manager = self != nullptr
+        ? static_cast<PathNodeMgr*>(self) : PathNodeMgr::sInst;
+    if (manager != nullptr && e != nullptr)
+        manager->ConnectPathsForEntity(e);
 }
 void PathNodeMgr_DissociateSentient(void* self, sentient_s* s)
 {
-    (void)self; (void)s;
+    PathNodeMgr* manager = self != nullptr
+        ? static_cast<PathNodeMgr*>(self) : PathNodeMgr::sInst;
+    if (manager != nullptr && s != nullptr)
+        manager->DissociateSentient(s);
 }
-void PathNodeMgr_InitPaths(void* self) { (void)self; }
+void PathNodeMgr_InitPaths(void* self)
+{
+    PathNodeMgr* manager = self != nullptr
+        ? static_cast<PathNodeMgr*>(self) : PathNodeMgr::sInst;
+    if (manager != nullptr)
+        manager->InitPaths();
+}
 void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& a, const math::Dir3& b)
 {
     if (fabsf(PhysDot3(a, b)) >= 0.001f
