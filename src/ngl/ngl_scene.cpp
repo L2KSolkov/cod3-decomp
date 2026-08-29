@@ -466,10 +466,12 @@ float nglGetRemainingFrameTime() {
     return NextFlip - (float)__rdtsc() * 0.0000013636364f;
 }
 
-void nglListEndScene() {
+nglScene* nglListEndScene() {
+    nglScene* result = nglBuildScene;
     if (nglBuildScene == nglRootBuildScene)
         tlFatal("Scene stack underflow (too many nglListEndScene calls!).\n");
     nglBuildScene = nglBuildScene->Parent;
+    return result;
 }
 
 nglScene* nglListSelectScene(nglScene* scene) {

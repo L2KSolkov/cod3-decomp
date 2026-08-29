@@ -248,7 +248,7 @@ void nglSetEndOfRenderCallback(void (*Fn)(void*), void* Data);
 void nglSetEndOfFrameCallback(void (*Fn)(void*), void* Data);
 void nglSetEndOfVBlankCallback(void (*Fn)(void*), void* Data);
 float nglGetRemainingFrameTime();
-void nglListEndScene();
+nglScene* nglListEndScene();
 nglScene* nglListSelectScene(nglScene* scene);
 bool nglHiresScreenShotInProgress();
 unsigned int nglHiresScreenShotNumColumns();

@@ -793,7 +793,7 @@ extern nglScene* nglListBeginScene(nglSceneParamType paramSource);
 extern void nglSetClearFlags(unsigned int flags);
 extern void nglSetZTestEnable(bool enable);
 extern void nglSetZWriteEnable(bool enable);
-extern void nglListEndScene();
+extern nglScene* nglListEndScene();
 extern void nglSetView(float x1, float y1, float x2, float y2);
 extern void nglSetScissor(float x1, float y1, float x2, float y2);
 extern void CG_DrawCrosshair();

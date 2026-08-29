@@ -495,8 +495,7 @@ nglScene* GlowRender() {
     nglSetZTestEnable(false);
     nglSetZWriteEnable(false);
     nglListAddCustomNode(GlowCallback, NULL, &SortInfo);
-    nglListEndScene();
-    return nullptr;
+    return nglListEndScene();
 }
 
 // ea: 0x7BF690
