@@ -186,7 +186,7 @@ dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	166	16	93	1	1194	0
 game.o	1158	458	11	658	0	31	0
 game2.o	1040	409	71	136	8	416	0
-game_xbox.o	365	151	93	106	0	15	0
+game_xbox.o	365	151	93	105	0	16	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
 inftrees.o	1	1	0	0	0	0	0

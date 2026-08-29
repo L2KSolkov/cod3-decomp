@@ -3291,8 +3291,22 @@ void* mem_heap_malloc_sz(unsigned int size)
 {
     return mem_heap_malloc(size);
 }
-void* MPLiveEngine_GetHandle() { return nullptr; }
-void* ShaderCommon_StartShotPerfTest() { return nullptr; }
+class MPLiveEngine {
+public:
+    static MPLiveEngine* GetHandle();
+};
+void* MPLiveEngine_GetHandle()
+{
+    return MPLiveEngine::GetHandle();
+}
+namespace ShaderCommon {
+struct ShotPerfTest;
+ShotPerfTest* StartShotPerfTest();
+}
+void* ShaderCommon_StartShotPerfTest()
+{
+    return static_cast<void*>(ShaderCommon::StartShotPerfTest());
+}
 void* COD3_mem_alloc(unsigned int a, unsigned int b)
 {
     return mem_heap_malloc(static_cast<int>(b), a);

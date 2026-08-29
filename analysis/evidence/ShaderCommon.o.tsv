@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007BF6B0	?StartShotPerfTest@ShaderCommon@@YAPAXXZ	V3	PASS	ida-manual-shotperf-20260828	2026-08-28	IDA:0x007BF6B0;src/render/ShaderCommon.cpp:348-353;src/game/logic/g_entity_misc.cpp:3304-3309	Source routes the global ABI shim to ShaderCommon::StartShotPerfTest.
+0x007BF6B0	?StartShotPerfTest@ShaderCommon@@YAPAXXZ	V4	PASS	ida-manual-shotperf-20260828	2026-08-28	IDA:0x007BF6B0;c3_bin/codmp_xboxr.xbe.c:1482043-1482053	Release allocates a 0x5D0 ShotPerfTest block and constructs it when allocation succeeds; source matches.
