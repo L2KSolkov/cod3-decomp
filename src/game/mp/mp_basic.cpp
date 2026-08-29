@@ -10295,13 +10295,12 @@ int PlayerStats::ScoreForStat(int stat, int value)
     return (int)((float)value * playerStatsInfo[stat].mContributesToScore);
 }
 
-// ea: 0x007346D0 (first 24 stats x 5 entries + final 5 x 1)
+// ea: 0x007346D0 (first 24 stats x 8 entries + final 5 x 1)
 int PlayerStats::TotalScoreForStats(short* const stats)
 {
     float v1 = 0.0f;
-    // 24 stat groups: each stat's mContributesToScore lives in a 20-byte
-    // record; the binary unrolls 5 stats per iteration.
-    for (int group = 0; group < 24; group += 5)
+    // The release unrolls the first 24 stats in three groups of eight.
+    for (int group = 0; group < 24; group += 8)
     {
         v1 += (float)stats[group + 0]
                   * playerStatsInfo[group + 0].mContributesToScore;
@@ -10313,6 +10312,19 @@ int PlayerStats::TotalScoreForStats(short* const stats)
                   * playerStatsInfo[group + 3].mContributesToScore;
         v1 += (float)stats[group + 4]
                   * playerStatsInfo[group + 4].mContributesToScore;
+        v1 += (float)stats[group + 5]
+                  * playerStatsInfo[group + 5].mContributesToScore;
+        v1 += (float)stats[group + 6]
+                  * playerStatsInfo[group + 6].mContributesToScore;
+        v1 += (float)stats[group + 7]
+                  * playerStatsInfo[group + 7].mContributesToScore;
+    }
+    // The remaining five stats are stored contiguously after the unrolled
+    // groups in the release implementation.
+    for (int stat = 24; stat < 29; ++stat)
+    {
+        v1 += (float)stats[stat]
+                  * playerStatsInfo[stat].mContributesToScore;
     }
     return (int)v1;
 }
