@@ -23,6 +23,7 @@ extern int g_MPAARTotalTime;           // mp.o
 extern kuju::knet::sTime g_MPAARTimer;  // mp.o
 extern float unk_F6A284[4 * 802];      // @ 0xF6A284 (cg.o)
 extern float unk_F6A27C[4 * 802];      // @ 0xF6A27C (cg.o; old viewports)
+extern float unk_F6A280[4 * 802];      // @ 0xF6A280 (cg.o; previous viewports)
 extern unsigned char unk_F6A294[4 * 3208];  // @ 0xF6A294 (cg.o)
 extern int cl_aADS[2];                  // ?cl_aADS@@3PAHA (cl.o)
 extern void ApplyControllerStickConfig(int stickConfig);    // game2.o
@@ -201,7 +202,7 @@ void FESplitScreenMenu::UpdateSplitScreen()
         int v5 = 3208 * mVersion;
         mViewport = (int)unk_F6A284[802 * mVersion];
         mSplitScreenMenu->MoveSplitScreen(
-            mViewport, (int)unk_F6A27C[1 + 802 * mVersion]);
+            mViewport, (int)unk_F6A280[802 * mVersion]);
         if (wasSplitScreen != (mViewport != 0))
             SwapMenus();
     }
