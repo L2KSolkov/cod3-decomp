@@ -170,6 +170,10 @@ struct ai_transition_cmd_t {
 };
 static_assert(sizeof(ai_transition_cmd_t) == 0x08,
               "ai_transition_cmd_t size mismatch");
+static_assert(offsetof(ai_transition_cmd_t, eTransition) == 0x00,
+              "ai_transition_cmd_t::eTransition offset mismatch");
+static_assert(offsetof(ai_transition_cmd_t, eState) == 0x04,
+              "ai_transition_cmd_t::eState offset mismatch");
 
 // ============================================================================
 // scr_anim_s — script animation handle (4 bytes)
@@ -243,6 +247,32 @@ struct ActorLookAt {
     float mPitchTurnSpeed; // +0x38
 };
 static_assert(sizeof(ActorLookAt) == 0x3C, "ActorLookAt size mismatch");
+static_assert(offsetof(ActorLookAt, mDoLookAt) == 0x00,
+              "ActorLookAt::mDoLookAt offset mismatch");
+static_assert(offsetof(ActorLookAt, mLookAtPos) == 0x04,
+              "ActorLookAt::mLookAtPos offset mismatch");
+static_assert(offsetof(ActorLookAt, mSpineK) == 0x10,
+              "ActorLookAt::mSpineK offset mismatch");
+static_assert(offsetof(ActorLookAt, mYawCur) == 0x14,
+              "ActorLookAt::mYawCur offset mismatch");
+static_assert(offsetof(ActorLookAt, mYawMin) == 0x18,
+              "ActorLookAt::mYawMin offset mismatch");
+static_assert(offsetof(ActorLookAt, mYawMax) == 0x1C,
+              "ActorLookAt::mYawMax offset mismatch");
+static_assert(offsetof(ActorLookAt, mYawDelta) == 0x20,
+              "ActorLookAt::mYawDelta offset mismatch");
+static_assert(offsetof(ActorLookAt, mYawTurnSpeed) == 0x24,
+              "ActorLookAt::mYawTurnSpeed offset mismatch");
+static_assert(offsetof(ActorLookAt, mPitchCur) == 0x28,
+              "ActorLookAt::mPitchCur offset mismatch");
+static_assert(offsetof(ActorLookAt, mPitchMin) == 0x2C,
+              "ActorLookAt::mPitchMin offset mismatch");
+static_assert(offsetof(ActorLookAt, mPitchMax) == 0x30,
+              "ActorLookAt::mPitchMax offset mismatch");
+static_assert(offsetof(ActorLookAt, mPitchDelta) == 0x34,
+              "ActorLookAt::mPitchDelta offset mismatch");
+static_assert(offsetof(ActorLookAt, mPitchTurnSpeed) == 0x38,
+              "ActorLookAt::mPitchTurnSpeed offset mismatch");
 
 // ============================================================================
 // actor_physics_t — actor physics state (304 bytes)
@@ -289,6 +319,10 @@ struct path_trim_t {
     int iDelta; // +0x04
 };
 static_assert(sizeof(path_trim_t) == 8, "path_trim_t size mismatch");
+static_assert(offsetof(path_trim_t, iIndex) == 0x00,
+              "path_trim_t::iIndex offset mismatch");
+static_assert(offsetof(path_trim_t, iDelta) == 0x04,
+              "path_trim_t::iDelta offset mismatch");
 
 // ============================================================================
 // sentient_s — AI sentient base (368 bytes)
