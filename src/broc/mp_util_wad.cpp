@@ -5216,6 +5216,17 @@ struct mp_plane {
     Broc::dyn_array<float>        plane_dists;       // +0x30
     Broc::dyn_array<Broc::vector> plane_angles;      // +0x3C
 };
+static_assert(sizeof(mp_plane) == 0x48, "_mp_airplanes::mp_plane size mismatch");
+static_assert(offsetof(mp_plane, plane_model) == 0x00, "mp_plane::plane_model offset mismatch");
+static_assert(offsetof(mp_plane, plane_sound) == 0x04, "mp_plane::plane_sound offset mismatch");
+static_assert(offsetof(mp_plane, plane_speed) == 0x08, "mp_plane::plane_speed offset mismatch");
+static_assert(offsetof(mp_plane, plane_min_delay) == 0x0C, "mp_plane::plane_min_delay offset mismatch");
+static_assert(offsetof(mp_plane, plane_max_delay) == 0x10, "mp_plane::plane_max_delay offset mismatch");
+static_assert(offsetof(mp_plane, plane_sound_delay) == 0x14, "mp_plane::plane_sound_delay offset mismatch");
+static_assert(offsetof(mp_plane, plane_start_orgs) == 0x18, "mp_plane::plane_start_orgs offset mismatch");
+static_assert(offsetof(mp_plane, plane_end_orgs) == 0x24, "mp_plane::plane_end_orgs offset mismatch");
+static_assert(offsetof(mp_plane, plane_dists) == 0x30, "mp_plane::plane_dists offset mismatch");
+static_assert(offsetof(mp_plane, plane_angles) == 0x3C, "mp_plane::plane_angles offset mismatch");
 
 extern void* plane_flyby__functor(Broc::entity self, mp_plane plane_struct, Broc::bint num);
 extern void* plane_roll__functor(Broc::entity self);
