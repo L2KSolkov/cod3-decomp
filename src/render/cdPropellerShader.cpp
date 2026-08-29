@@ -71,15 +71,18 @@ void InitCDPropellerShader() {
     cdPropellerShader* result = (cdPropellerShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdPropellerShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdPropellerShader
-        ShaderCommon::ShaderSwitching.__s0[3] &= ~1;
         gCDPropellerShader = result;
     } else {
         gCDPropellerShader = NULL;
     }
+}
+
+// ea: 0x7D12B0
+cdPropellerShader::cdPropellerShader() {
+    next = tlInitList::head;
+    tlInitList::head = this;
+    Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[3] &= ~1;
 }
 
 // ============================================================================
@@ -125,6 +128,7 @@ unsigned long* cdPropellerFullbrightPixel::GetPShader() {
     return cdPropellerFullbrightPixel::PS[0];
 }
 
+// ea: 0x7D12E0
 tlFixedString cdPropellerShader::GetName() { return tlFixedString("cdPropeller"); }
 
 // ============================================================================
@@ -152,6 +156,9 @@ cdPropellerShaderNode::~cdPropellerShaderNode() = default;
 
 // ea: 0x7D1430
 cdPropellerShader::~cdPropellerShader() = default;
+
+// ea: 0x7D1440
+PropellerContext::PropellerContext() {}
 
 // ============================================================================
 // cdPropellerShader::AddNode — add a propeller node to the transparent list.

@@ -43,12 +43,18 @@ static_assert(sizeof(cdPropellerShaderNode) == 0x18, "cdPropellerShaderNode size
 // ============================================================================
 class cdPropellerShader : public nglShader {
 public:
+    cdPropellerShader(); // @0x7D12B0
     virtual tlFixedString GetName(); // @0x7D12E0
     virtual void Register();  // @0x7D0E50
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D0E90
     virtual ~cdPropellerShader(); // @0x7D1430
 };
 static_assert(sizeof(cdPropellerShader) == 0x10, "cdPropellerShader size mismatch");
+
+// IDA names this empty render context constructor at 0x7D1440.
+struct PropellerContext {
+    PropellerContext(); // @0x7D1440
+};
 
 // ============================================================================
 // Shader data externs (defined in render_xboxr:cdPropellerShaderVertex.o)
