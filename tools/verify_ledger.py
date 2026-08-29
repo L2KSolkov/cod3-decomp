@@ -397,7 +397,16 @@ def scan_markers() -> list[Marker]:
             markers.append(Marker(int(match.group(1), 16), str(path.relative_to(ROOT)),
                                   number + 1, candidate, matching_body(lines, brace_line)))
     markers.extend(scan_asm_markers())
-    return markers
+    # A section banner and the canonical annotation can carry the same EA
+    # and readable candidate. Keep the later annotation, which is closest to
+    # the actual definition, while preserving distinct overloads/addresses.
+    deduped: dict[tuple[int, str, str], Marker] = {}
+    for marker in markers:
+        key = (marker.address, marker.path, marker.candidate)
+        previous = deduped.get(key)
+        if previous is None or marker.line > previous.line:
+            deduped[key] = marker
+    return list(deduped.values())
 
 
 def base_name(decorated: str) -> str:
