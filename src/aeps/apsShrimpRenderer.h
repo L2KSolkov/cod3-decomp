@@ -39,9 +39,9 @@ class apsShrimpNode : public apsRenderNode {
 public:
     class apsShrimpRenderer* mRenderer;  // +0xB0
 
-    void SetRenderer(class apsShrimpRenderer* r) { mRenderer = r; }   // ea: 0x802F90
+    void SetRenderer(class apsShrimpRenderer* r) { mRenderer = r; }   // ea: 0x00804480
     class apsShrimpRenderer& Renderer();                              // ea: 0x813860
-    virtual void GetDesc(char* buf);                                  // ea: 0x802FA0
+    virtual void GetDesc(char* buf);
     virtual void Render() override;                                   // ea: 0x812D90 (apsShrimpNode.o)
 };
 static_assert(sizeof(apsShrimpNode) == 0xC0, "apsShrimpNode size mismatch");

@@ -16,7 +16,7 @@
 class apsColorBillboardNode : public apsBillboardNode {
 public:
     virtual void GetDesc(char* buf);
-    virtual void Render() override;  // ea: 0x805670
+    virtual void Render() override;
 };
 static_assert(sizeof(apsColorBillboardNode) == 0xC0, "apsColorBillboardNode size mismatch");
 // ============================================================================

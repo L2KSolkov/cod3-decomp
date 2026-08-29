@@ -25,7 +25,7 @@ apsBillboardRenderer.o	12	2	3	4	0	3	0
 apsColorBillboardNode.o	16	0	1	0	0	15	0
 apsColorBillboardRenderer.o	11	4	1	2	0	4	0
 apsColorRectangleNode.o	16	0	1	0	0	15	0
-apsColorRectangleRenderer.o	21	12	2	2	0	5	0
+apsColorRectangleRenderer.o	21	10	4	2	0	5	0
 apsColorUVANode.o	16	0	1	0	0	15	0
 apsColorUVARectangleNode.o	16	0	1	0	0	15	0
 apsColorUVARectangleRenderer.o	19	11	1	2	0	5	0
@@ -46,7 +46,7 @@ apsRectangleRenderer.o	11	4	0	3	0	4	0
 apsRegister.o	515	497	0	18	0	0	0
 apsRenderer.o	3	0	0	3	0	0	0
 apsShrimpNode.o	24	0	0	0	0	24	0
-apsShrimpRenderer.o	14	6	1	2	0	5	0
+apsShrimpRenderer.o	14	5	2	2	0	5	0
 apsSimpleMeshNode.o	10	0	0	0	0	10	0
 apsSimpleMeshRenderer.o	30	6	7	5	0	11	1
 apsSuppliedActions.o	125	76	40	8	0	1	0

@@ -17,7 +17,7 @@ class apsRectangleNode : public apsBillboardNode {
 public:
     apsRectangleNode();
     virtual void GetDesc(char* buf);
-    virtual void Render() override;  // ea: 0x804EA0
+    virtual void Render() override;
 };
 static_assert(sizeof(apsRectangleNode) == 0xC0, "apsRectangleNode size mismatch");
 // ============================================================================
@@ -44,13 +44,13 @@ static_assert(sizeof(apsRectangleRenderer) == 0x80, "apsRectangleRenderer size m
 namespace apsRectangleRender {
     extern unsigned long* VS;                  // ?VS@apsRectangleRender@@3PAKA
     extern const unsigned long** VShaderTable; // ?VShaderTable@apsRectangleRender@@3PAPBIA
-    unsigned long GetVShader();                // ea: 0x80DD50
+    unsigned long GetVShader();
     void RegisterVShader();                    // release: 0x8052A0
 }
 namespace apsRectangleRenderPixel {
     extern unsigned long** PS;                 // ?PS@apsRectangleRenderPixel@@3PAPAKA
     extern const unsigned long** PShaderTable; // ?PShaderTable@apsRectangleRenderPixel@@3PAPBIA
-    unsigned long* GetPShader();               // ea: 0x80DD60
+    unsigned long* GetPShader();
     void RegisterPShader();                    // release: 0x8052C0
     void InitPShader();                        // release: 0x8052E0
 }

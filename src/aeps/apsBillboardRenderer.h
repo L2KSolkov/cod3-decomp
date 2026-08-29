@@ -76,10 +76,10 @@ public:
     class apsBillboardRenderer* mRenderer;         // +0xB0
     apsRenderSort::Buffer*      mRenderSortBuffer; // +0xB4
     class apsBillboardRenderer* Renderer() { return mRenderer; }  // ea: 0x8048B0
-    void SetRenderer(class apsBillboardRenderer* r) { mRenderer = r; }  // ea: 0x804890
-    void SetRenderSortBuffer(apsRenderSort::Buffer* b) { mRenderSortBuffer = b; }  // ea: 0x8048D0
+    void SetRenderer(class apsBillboardRenderer* r) { mRenderer = r; }  // ea: 0x008048F0
+    void SetRenderSortBuffer(apsRenderSort::Buffer* b) { mRenderSortBuffer = b; }  // ea: 0x00804900
     apsRenderSort::Buffer* GetRenderSortBuffer(); // ea: 0x813DC0
-    virtual void GetDesc(char* buf);              // ea: 0x8048E0
+    virtual void GetDesc(char* buf);
     virtual void Render() override;               // ea: 0x813C90 (apsBillboardNode.o)
 };
 static_assert(sizeof(apsBillboardNode) == 0xC0, "apsBillboardNode size mismatch");
