@@ -11782,7 +11782,7 @@ void AARGameModeVote::SelectMode(int indexMode)
     bdReference<bdBitBuffer> buffer = v6->getPayload();
     MPPlayerManager* pMan =
         MultiplayerMgr::sInst->mPeer->GetPlayerManager();
-    unsigned char v20 = 3;
+    unsigned char v20 = 2;
     buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_UNSIGNED_CHAR8_TYPE);
     buffer.m_ptr->writeBits(&v20, 8u);
     v20 = pMan->getPlayerIndex(0);
