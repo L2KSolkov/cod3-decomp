@@ -917,6 +917,14 @@ const math::Dir3& math::Dir3::operator=(const math::Dir3::Packed& _p)
     v = _mm_set_ps(0.0f, _p.z, _p.y, _p.x);
     return *this;
 }
+// ea: 0x007F08D0
+void math::Dir3::Packed::Set(float _x, float _y, float _z)
+{
+    x = _x;
+    y = _y;
+    z = _z;
+}
+
 void math::Dir3::Packed::Set(const math::Dir3& _v)
 {
     x = _v.v.m128_f32[0];

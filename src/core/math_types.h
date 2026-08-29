@@ -94,6 +94,7 @@ public:
     // Packed layout (3 floats, 12 bytes — for network/disk)
     struct Packed {
         float x, y, z;
+        void Set(float _x, float _y, float _z);  // apsRegister.o 0x007F08D0
         void Set(const Dir3& v);  // game.o 0x00602050
         const Packed& operator=(const Dir3& v);  // game.o 0x006020E0
         float GetX() const;  // ?GetX@Packed@Dir3@math@@QBEMXZ (render.o 0x6E5EC0)
@@ -259,6 +260,7 @@ public:
 
     struct Packed {
         float x, y, z, w;
+        void Set(float _x, float _y, float _z, float _w);  // apsRegister.o 0x007F0900
         float GetX() const;  // ?GetX@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6020)
         float GetY() const;  // ?GetY@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6030)
         float GetZ() const;  // ?GetZ@Packed@Vector4@math@@QBEMXZ (render.o 0x6E6040)

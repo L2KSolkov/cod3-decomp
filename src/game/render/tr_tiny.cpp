@@ -1209,6 +1209,15 @@ template class ae_vector<LightEffect*>;
 // ============================================================================
 
 // Vector4::Packed Set / assign
+// ea: 0x007F0900
+void math::Vector4::Packed::Set(float _x, float _y, float _z, float _w)
+{
+    x = _x;
+    y = _y;
+    z = _z;
+    w = _w;
+}
+
 void math::Vector4::Packed::Set(const math::Vector4& v)  // 0x6E5EF0
 {
     x = v.v.m128_f32[0];
