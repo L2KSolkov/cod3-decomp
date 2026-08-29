@@ -110,12 +110,24 @@ public:
     void OnCircle(int c);
     void OnSquare(int c);
     void OnStart(int c);
+
+protected:
     void ButtonHeldAction();
+
+public:
     void UpdateSplitScreen();
+
+protected:
     void WireForSignedOut();
+
+public:
     void SetPanelFile(PanelFile* pf);
     void OnActivate();
+
+protected:
     void WireForSignedIn();
+
+public:
     void Update(float time_inc);
     void PanelFileUnloaded(PanelFile* pf);
 };
