@@ -5886,6 +5886,7 @@ void SessionListMenu::OnActivate()
     mShowUpArrow = false;
     mNumGames = 0;
     m_ListBox.SelectLine(0);
+    InitMenu();
 }
 
 // ea: 0x007ABF20
