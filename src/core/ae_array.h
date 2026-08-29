@@ -117,6 +117,7 @@ public:
     // ea: 0x005EA690
     // ea: 0x005EA4B0
     // ea: 0x004AC5F0
+    // ea: 0x007BF9A0
     void push_back(const T& val) {
         if (m_size >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;

@@ -168,6 +168,7 @@ ShaderSwitchPair gShaderSwitches[36] = {
 // ============================================================================
 // ShotPerfTest::ShaderInfo
 // ============================================================================
+// ea: 0x007BF860
 ShotPerfTest::ShaderInfo::ShaderInfo() {
     sampleTime = 0.5f;
     numSamples = 0;
@@ -179,6 +180,7 @@ ShotPerfTest::ShaderInfo::ShaderInfo() {
     tex = 0;
 }
 
+// ea: 0x007BF8A0
 void ShotPerfTest::ShaderInfo::Finalize() {
     int v1 = numSamples - 1;
     float v2 = 1.0f / v1;
@@ -191,6 +193,7 @@ void ShotPerfTest::ShaderInfo::Finalize() {
     nodes = v3;
 }
 
+// ea: 0x007BFA20
 void ShotPerfTest::ShaderInfo::Update(float deltaT) {
     int numSamples = this->numSamples;
     if (numSamples > 0) {
@@ -222,6 +225,7 @@ void ShotPerfTest::ShaderInfo::Update(float deltaT) {
 // ============================================================================
 // ShotPerfTest
 // ============================================================================
+// ea: 0x007BFB30
 ShotPerfTest::ShotPerfTest() {
     mCurShader = kShaderSwitch_cdglow;
     mFinished = false;
@@ -245,6 +249,12 @@ ShotPerfTest::ShotPerfTest() {
     }
 }
 
+// ea: 0x007BF900
+bool ShotPerfTest::IsFinished() const {
+    return mFinished;
+}
+
+// ea: 0x007BFC00
 void ShotPerfTest::Update(float deltaT) {
     if (!mFinished) {
         float sampleTime = mUnrestricted.sampleTime;
@@ -274,6 +284,7 @@ void ShotPerfTest::Update(float deltaT) {
     }
 }
 
+// ea: 0x007BFD00
 void ShotPerfTest::GenerateReport(
     ae_sized_array<ae_fixed_string<512, unsigned short>, 64>* report) {
     ShaderSwitching.as_u32 = 0;
@@ -538,3 +549,9 @@ void ToggleShader(const char* iName) {
 }
 
 } // namespace ShaderCommon
+
+// Force the release-instantiated fixed-string helpers to remain link-visible
+// in the same object, matching the corresponding ShaderCommon exports.
+template bool ae_fixed_string<64, unsigned char>::empty() const;
+template unsigned char& ae_fixed_string<64, unsigned char>::operator[](int);
+template void ae_fixed_string<64, unsigned char>::to_lower();

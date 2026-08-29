@@ -113,7 +113,7 @@ struct ShotPerfTest {
     ShaderInfo mResults[36];   // +0x30
 
     ShotPerfTest();
-    bool IsFinished() const { return mFinished; }
+    bool IsFinished() const;
     void Update(float deltaT);
     void GenerateReport(ae_sized_array<ae_fixed_string<512, unsigned short>, 64>* report);
 };

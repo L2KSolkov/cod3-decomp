@@ -687,6 +687,16 @@ def symbol_variants(name: str) -> set[str]:
             "?ShaderGetTextureNoDefault@ShaderCommon@@YAPAUnglTexture@@PBVtlFixedString@@@Z",
         "?GetFarFogColor@ShaderCommon@@YA?AVVector4@math@@XZ":
             "?GetFarFogColor@ShaderCommon@@YAPAVVector4@math@@PAV23@@Z",
+        # The release byte-string operator[] uses a signed-char reference
+        # decoration, while the port's unsigned-char storage emits the ABI-
+        # equivalent unsigned-byte reference decoration.
+        "??A?$ae_fixed_string@$0EA@E@@QAEAADH@Z":
+            "??A?$ae_fixed_string@$0EA@E@@QAEAAEH@Z",
+        # GenerateReport's release map uses a reference spelling for the
+        # output array; the current compiler emits the equivalent pointer
+        # spelling used by the actual call site.
+        "?GenerateReport@ShotPerfTest@ShaderCommon@@QAEXAAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z":
+            "?GenerateReport@ShotPerfTest@ShaderCommon@@QAEXPAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z",
         "?DObjAllocateSubModelPose@?A0x7516322e@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z":
             "?DObjAllocateSubModelPose@?A0x49388f53@@YAXPAVDObj@@HPAVnalGenericSkeleton@nalGeneric@@@Z",
         "?CG_SaveEntity@@YAXV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z":

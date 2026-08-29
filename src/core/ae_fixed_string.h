@@ -24,6 +24,16 @@ void Split(char* dstBuff, int* const dstLen, char* srcBuff, int* const srcLen,
            char splitOn, int capacity);
 }
 
+namespace AeAssert {
+enum ECoderId : int;
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
 template <int CAPACITY, typename CHAR = char>
 class ae_fixed_string {
 public:
@@ -59,8 +69,22 @@ public:
     // ea: 0x004AD320
     // ea: 0x004ADE60
     char* c_str() { return (char*)mBuff; }
+    // ea: 0x007BF920 (ae_fixed_string<64,unsigned char>)
+    CHAR& operator[](int idx) {
+        if (idx < 0 || idx > length()) {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:/cod/code/ae\\core/ae_fixed_string.h";
+            AeAssert::gCurrentLine = 155;
+            AeAssert::gCurrentExpr = "0 <= idx && idx <= length()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        return mBuff[idx];
+    }
     // ea: 0x004AC730
     int length() const { return mLength; }
+    // ea: 0x007BF910 (ae_fixed_string<64,unsigned char>)
+    bool empty() const { return mLength == 0; }
     // ea: 0x004AD330
     // ea: 0x004AE3F0
     // ea: 0x004AE4E0
@@ -95,6 +119,7 @@ public:
 
     // ?to_lower@?$ae_fixed_string@$0CA@E@@QAEXXZ (g.o 0x4ACE50)
     // ea: 0x004ACE50
+    // ea: 0x007BF990
     void to_lower() {
         _strlwr((char*)mBuff);
     }
@@ -161,6 +186,7 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
 
     // ea: 0x004B0FB0
     // ea: 0x004B1610
+    // ea: 0x007BFBB0 (ae_formatted_string<512,unsigned short>)
     // Narrow-format overload (formats into a wide buffer via %ls-style values).
     ae_formatted_string(const char* fmt, ...) {
         char tmp[512];
