@@ -26,34 +26,43 @@ struct LocalFields {
 
     struct __unnamed {
         struct flag_struct {
+            unsigned int mHandle;
             Broc::entity& GetRef();
         };
         struct trigger_struct {
+            unsigned int mHandle;
             const Broc::entity* operator=(const Broc::entity* rhs);
             Broc::entity* Get(Broc::entity* result);
             Broc::entity& GetRef();
         };
         struct capStatus_struct {
+            unsigned int mHandle;
             const float& operator=(const float& rhs);
             ::bfloat& GetRef();
         };
         struct capTeam_struct {
+            unsigned int mHandle;
             const int& operator=(const int& rhs);
             ::bint& GetRef();
         };
         struct capAllowedTeam_struct {
+            unsigned int mHandle;
             const int& operator=(const int& rhs);
         };
         struct holder_struct {
+            unsigned int mHandle;
             Broc::entity& GetRef();
         };
         struct home_position_struct {
+            unsigned int mHandle;
             Broc::vector& GetRef();
         };
         struct home_angles_struct {
+            unsigned int mHandle;
             Broc::vector& GetRef();
         };
         struct pickupCaptureDelayTime_struct {
+            unsigned int mHandle;
             const Broc::bint* Get(Broc::bint* result) const;
             const int& operator=(const int& rhs);
         };
@@ -73,6 +82,24 @@ struct LocalFields {
         unsigned char mProxyFields[4];
     };
 };
+static_assert(sizeof(LocalFields::__unnamed::flag_struct) == 4,
+              "LocalFields::flag proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::trigger_struct) == 4,
+              "LocalFields::trigger proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::capStatus_struct) == 4,
+              "LocalFields::capStatus proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::capTeam_struct) == 4,
+              "LocalFields::capTeam proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::capAllowedTeam_struct) == 4,
+              "LocalFields::capAllowedTeam proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::holder_struct) == 4,
+              "LocalFields::holder proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::home_position_struct) == 4,
+              "LocalFields::home_position proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::home_angles_struct) == 4,
+              "LocalFields::home_angles proxy size mismatch");
+static_assert(sizeof(LocalFields::__unnamed::pickupCaptureDelayTime_struct) == 4,
+              "LocalFields::pickupCaptureDelayTime proxy size mismatch");
 static_assert(sizeof(LocalFields) == 0x14, "mp_util_wad::LocalFields size mismatch");
 
 // ============================================================================
