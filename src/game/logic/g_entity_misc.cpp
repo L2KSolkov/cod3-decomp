@@ -29,6 +29,16 @@
 #include <stdio.h>
 #include <string.h>
 
+// ea: 0x004AF190
+DObjModel::DObjModel()
+    : model(), boneName((Broc::string::Block*)nullptr), animTree(nullptr)
+{
+    model.mValue = nullptr;
+    model.mPakId = PAK_ID_INVALID;
+    // The release constructor does not write ignoreCollision; preserve that
+    // behavior instead of inventing an initialization value.
+}
+
 namespace BrocHelper {
 unsigned int (__cdecl* GetBroFuncByName(const char* name,
                                         bool enforceExists))(void*);
