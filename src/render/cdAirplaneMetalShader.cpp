@@ -57,12 +57,12 @@ void ToggleCDAirplaneMetalShader() {
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
 }
 
+tlFixedString cdAirplaneMetalShader::GetName() { return tlFixedString("cdAirplaneMetal"); }
+
 // ============================================================================
 // cdAirplaneMetalShader::Register — register the airplane-metal shaders.
 // ea: 0x7D41A0
 // ============================================================================
-tlFixedString cdAirplaneMetalShader::GetName() { return tlFixedString("cdAirplaneMetal"); }
-
 void cdAirplaneMetalShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdAirplaneMetalRender::VS, cdAirplaneMetalRender::VShaderTable, 0);

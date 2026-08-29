@@ -135,12 +135,12 @@ void ToggleCDCharShader() {
 
 }
 
+tlFixedString cdCharShader::GetName() { return tlFixedString("cdChar"); }
+
 // ============================================================================
 // cdCharShader::Register — register the character vertex/pixel shaders.
 // ea: 0x7D2BE0
 // ============================================================================
-tlFixedString cdCharShader::GetName() { return tlFixedString("cdChar"); }
-
 void cdCharShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdCharShaderRender::VS, cdCharShaderRender::VShaderTable, 0);

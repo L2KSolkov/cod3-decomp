@@ -59,12 +59,12 @@ void ToggleCDCharSpecularShader() {
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
 }
 
+tlFixedString cdCharSpecularShader::GetName() { return tlFixedString("cdCharSpecular"); }
+
 // ============================================================================
 // cdCharSpecularShader::Register — register the char-specular shaders.
 // ea: 0x7D21A0
 // ============================================================================
-tlFixedString cdCharSpecularShader::GetName() { return tlFixedString("cdCharSpecular"); }
-
 void cdCharSpecularShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {

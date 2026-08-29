@@ -137,12 +137,12 @@ void ToggleCDDecalShader() {
 
 }
 
+tlFixedString cdDecalShader::GetName() { return tlFixedString("cdDecal"); }
+
 // ============================================================================
 // cdDecalShader::Register — register the decal vertex/pixel shaders.
 // ea: 0x7D1820
 // ============================================================================
-tlFixedString cdDecalShader::GetName() { return tlFixedString("cdDecal"); }
-
 void cdDecalShader::Register() {
     nglShader::Register();
     nglDxRegisterVShaderSafe((unsigned int*)cdDecalRender::VS, cdDecalRender::VShaderTable, 0);

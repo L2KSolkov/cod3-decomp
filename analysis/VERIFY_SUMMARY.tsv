@@ -132,13 +132,13 @@ bdTrulyRandom.obj	3	1	1	0	0	1	0
 bdUnicastConnection.obj	152	141	6	5	0	0	0
 bdUnreliableReceiveWindow.obj	7	2	1	3	1	0	0
 bdUnreliableSendWindow.obj	32	27	1	3	1	0	0
-cdAirplaneMetalShader.o	21	18	0	3	0	0	0
+cdAirplaneMetalShader.o	21	17	0	4	0	0	0
 cdBackgroundShader.o	24	19	0	5	0	0	0
-cdCharShader.o	24	21	0	3	0	0	0
-cdCharSpecularShader.o	24	21	0	3	0	0	0
+cdCharShader.o	24	20	0	4	0	0	0
+cdCharSpecularShader.o	24	20	0	4	0	0	0
 cdDebugShader.o	26	18	0	8	0	0	0
 cdDebugVertexDef.o	7	5	0	0	0	2	0
-cdDecalShader.o	22	18	0	4	0	0	0
+cdDecalShader.o	22	17	0	5	0	0	0
 cdDynamicDecalShader.o	37	32	0	5	0	0	0
 cdDynamicDecalVertexDef.o	2	0	1	0	0	1	0
 cdFlagShader.o	42	37	0	5	0	0	0
@@ -150,7 +150,7 @@ cdGunSightSpecularShader.o	22	17	0	5	0	0	0
 cdHeatHazeShader.o	20	18	0	2	0	0	0
 cdOceanGlobals.o	19	5	0	14	0	0	0
 cdOceanShader.o	23	14	1	8	0	0	0
-cdPrelitShader.o	25	22	0	3	0	0	0
+cdPrelitShader.o	25	21	0	4	0	0	0
 cdPropellerShader.o	22	17	0	5	0	0	0
 cdRiverShader.o	37	28	1	8	0	0	0
 cdScratchShader.o	46	35	0	10	0	1	0
