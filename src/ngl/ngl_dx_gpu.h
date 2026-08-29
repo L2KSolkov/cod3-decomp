@@ -198,6 +198,7 @@ static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch")
 // ============================================================================
 class nglMeshNode {
 public:
+    math::Mat43 GetLToV(const math::Mat43& WorldToView) const; // @0x7D06A0
     math::Mat43       LocalToWorld;   // +0x00
     math::Mat44       LocalToScreen;  // +0x40
     nglMesh*          Mesh;           // +0x80

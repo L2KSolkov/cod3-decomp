@@ -75,6 +75,38 @@ void gpuSetPixelConstant(unsigned int idx, math::Vector4* data,
     D3DDevice_SetPixelShaderConstant(idx, data, nelements);
 }
 
+// ea: 0x7D06A0
+math::Mat43 nglMeshNode::GetLToV(const math::Mat43& WorldToView) const {
+    math::Mat43 result;
+    const __m128 viewX = WorldToView.x.v;
+    const __m128 viewY = WorldToView.y.v;
+    const __m128 viewZ = WorldToView.z.v;
+    const __m128 localY = LocalToWorld.y.v;
+    const __m128 localZ = LocalToWorld.z.v;
+    const __m128 localX = LocalToWorld.x.v;
+    const __m128 translation = LocalToWorld.w.v;
+    const __m128 localYView = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(localY, localY, 0), viewX),
+                   _mm_mul_ps(_mm_shuffle_ps(localY, localY, 85), viewY)),
+        _mm_mul_ps(_mm_shuffle_ps(localY, localY, 170), viewZ));
+    const __m128 localZView = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(localZ, localZ, 0), viewX),
+                   _mm_mul_ps(_mm_shuffle_ps(localZ, localZ, 85), viewY)),
+        _mm_mul_ps(_mm_shuffle_ps(localZ, localZ, 170), viewZ));
+    result.x.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(localX, localX, 0), viewX),
+                   _mm_mul_ps(_mm_shuffle_ps(localX, localX, 85), viewY)),
+        _mm_mul_ps(_mm_shuffle_ps(localX, localX, 170), viewZ));
+    result.y.v = localYView;
+    result.z.v = localZView;
+    result.w.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(translation, translation, 0), viewX),
+                   _mm_mul_ps(_mm_shuffle_ps(translation, translation, 85), viewY)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(translation, translation, 170), viewZ),
+                   WorldToView.w.v));
+    return result;
+}
+
 // ============================================================================
 // InitCDGlassShader — allocate the shader and link into the init list.
 // ea: 0x7CFF90
