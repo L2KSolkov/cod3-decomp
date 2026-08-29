@@ -838,7 +838,7 @@ extern void FN_DebugThread_Select_Target();
 extern void FN_DebugAnims_Select_Target();
 extern void FN_DumpThreadsForTarget();
 extern void FN_DumpThreadsForAll();
-extern int FN_DebugEntity_BBoxes();
+extern void FN_DebugEntity_BBoxes();
 
 // Aim-assist / input tuning globals
 extern cvar_t* bg_stickyAimRender;  // ?bg_stickyAimRender@@3PAUcvar_t@@A (game.o)

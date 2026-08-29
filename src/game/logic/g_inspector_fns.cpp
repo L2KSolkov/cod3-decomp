@@ -225,18 +225,17 @@ void FN_DumpThreadsForAll()
 }
 
 // ea: 0x4F4830
-int FN_DebugEntity_BBoxes()
+void FN_DebugEntity_BBoxes()
 {
-    int result = ++g_drawEntBBoxes.integer;
+    ++g_drawEntBBoxes.integer;
     if (g_drawEntBBoxes.integer == 1)
     {
         g_drawEntBBoxes.integer = 2;
     }
-    else if (result == 7)
+    else if (g_drawEntBBoxes.integer == 7)
     {
         g_drawEntBBoxes.integer = 0;
     }
-    return result;
 }
 
 // ea: 0x4F8F20
