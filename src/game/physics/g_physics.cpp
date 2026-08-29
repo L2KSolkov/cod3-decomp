@@ -16461,3 +16461,24 @@ void biped_system::setup_physics(Entity* owner)
     }
     set_gravity_multiplier(1.0f * PHYSICS_GRAVITY_SCALE_1);
 }
+
+// Release UDT size checks from the phys_xboxr IDA type inventory.
+static_assert(sizeof(bone_mass_info) == 0x1D0, "bone_mass_info size mismatch");
+static_assert(sizeof(infoSurfProperty_t) == 0x8, "infoSurfProperty_t size mismatch");
+static_assert(sizeof(phys_collision_allocater) == 0x5C, "phys_collision_allocater size mismatch");
+static_assert(sizeof(rb_collision_capsule) == 0x50, "rb_collision_capsule size mismatch");
+static_assert(sizeof(wheel_collision_info) == 0x70, "wheel_collision_info size mismatch");
+static_assert(sizeof(phys_gjk_geom_list) == 0x30, "phys_gjk_geom_list size mismatch");
+static_assert(sizeof(vehicle_collision_info) == 0x8, "vehicle_collision_info size mismatch");
+static_assert(sizeof(phys_gjk_geom_cod_base) == 0x40, "phys_gjk_geom_cod_base size mismatch");
+static_assert(sizeof(phys_gjk_geom_aabb) == 0x60, "phys_gjk_geom_aabb size mismatch");
+static_assert(sizeof(phys_gjk_geom_vert_list) == 0x50, "phys_gjk_geom_vert_list size mismatch");
+static_assert(sizeof(vi6) == 0x6, "vi6 size mismatch");
+static_assert(sizeof(gjk_geom_database) == 0x1C, "gjk_geom_database size mismatch");
+static_assert(sizeof(prop_phys_collision) == 0x1, "prop_phys_collision size mismatch");
+static_assert(sizeof(phys_collide_data_callback) == 0x4, "phys_collide_data_callback size mismatch");
+static_assert(sizeof(collide_entities_callback) == 0xC, "collide_entities_callback size mismatch");
+static_assert(sizeof(physics_colgeom_visitor) == 0x810, "physics_colgeom_visitor size mismatch");
+static_assert(sizeof(phys_anim_bone) == 0x60, "phys_anim_bone size mismatch");
+static_assert(sizeof(rb_collision_sphere) == 0x20, "rb_collision_sphere size mismatch");
+static_assert(sizeof(rb_capsule_pair) == 0x8, "rb_capsule_pair size mismatch");
