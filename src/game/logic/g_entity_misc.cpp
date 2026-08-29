@@ -2851,11 +2851,42 @@ const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row, int col)
     return nullptr;
 }
 
-struct SplineGroup;
-SplineGroup* SplineGroup_GetPath(void* self)
+class SplinePathData {
+public:
+    unsigned int mNumDronesOnPath;
+    InplaceVector<float> mSpline;
+    InplaceVector<unsigned int> mEventIndices;
+    InplaceVector<unsigned char> mEventInfo;
+};
+static_assert(sizeof(SplinePathData) == 0x1C,
+              "SplinePathData layout mismatch");
+
+class SplineGroup {
+public:
+    InplaceVector<SplinePathData> mPaths;
+    int mLastChosen;
+    InplaceString mName;
+    SplinePathData* GetPath();
+};
+static_assert(sizeof(SplineGroup) == 0x10,
+              "SplineGroup layout mismatch");
+
+// ea: 0x0051BA80
+SplinePathData* SplineGroup::GetPath()
 {
-    (void)self;
-    return nullptr;
+    unsigned int count = mPaths.mSize;
+    if (count == 0)
+        return nullptr;
+    if (count == 1)
+        return &mPaths.mList[0];
+
+    unsigned int chosen;
+    do
+    {
+        chosen = static_cast<unsigned int>(rand()) % count;
+    } while (chosen == static_cast<unsigned int>(mLastChosen));
+    mLastChosen = static_cast<int>(chosen);
+    return &mPaths.mList[chosen];
 }
 
 struct TaskHandlerImpl;

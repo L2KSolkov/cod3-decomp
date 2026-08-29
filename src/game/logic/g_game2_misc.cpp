@@ -2683,9 +2683,23 @@ struct SplineGroupFile {
     void** mPtrs;     // +0x04 InplaceVector<SplineGroup*>
 };
 
-struct SplineGroup;
-struct SplinePathData {
-    float* mSpline;  // +0x00 InplaceVector<float>
+struct SplineNodeInfo {
+    InplaceString mAnim;
+    unsigned int mEvent;
+    InplaceString mNodeId;
+};
+class SplinePathData {
+public:
+    unsigned int mNumDronesOnPath;
+    InplaceVector<float> mSpline;
+    InplaceVector<unsigned int> mEventIndices;
+    InplaceVector<SplineNodeInfo> mEventInfo;
+};
+static_assert(sizeof(SplinePathData) == 0x1C,
+              "SplinePathData layout mismatch");
+class SplineGroup {
+public:
+    SplinePathData* GetPath();
 };
 struct SplinePath {
     void* mEventIndices;  // +0x00
@@ -2704,11 +2718,11 @@ public:
     SplineEntry mList[32];             // +0x04
 
     SplineEntry* GetUnusedEntry();     // ea: 0x4F9700
-    virtual void UnloadBank(int pakId); // ea: 0x4F97C0
+    virtual void UnloadBank(TPakId pakId); // ea: 0x4F97C0
     static bool EndOfSpline(const float* p);  // ea: 0x4F59A0
     void AddSplineGroupFile(unsigned char* data, int pakId);  // ea: 0x4FF5B0
-    SplinePathData* GetSplinePathData(unsigned int name, int* pakId);  // ea: 0x4FF5D0
-    SplineGroup* GetSplinePathGroup(unsigned int name, int* pakId);    // ea: 0x4FF660
+    SplinePathData* GetSplinePathData(unsigned int name, TPakId& pakId);  // ea: 0x4FF5D0
+    SplineGroup* GetSplinePathGroup(unsigned int name, TPakId& pakId);    // ea: 0x4FF660
     void GetSpline(unsigned int name, SplinePath* splinePath);         // ea: 0x4FF6F0
     void GetSpline(const char* name, SplinePath* splinePath);          // ea: 0x5045C0
     SplineMgr();                                                       // ea: 0x504580
@@ -2890,7 +2904,7 @@ SplineEntry* SplineMgr::GetUnusedEntry()
 }
 
 // ea: 0x4F97C0
-void SplineMgr::UnloadBank(int pakId)
+void SplineMgr::UnloadBank(TPakId pakId)
 {
     int v4 = 0;
     for (;;)
@@ -3243,8 +3257,6 @@ bool SplineMgr::EndOfSpline(const float* p)
 // ============================================================================
 extern unsigned int InplaceTree_Find(void* tree, const unsigned int* key);
 extern void InplaceAssetBank_Fixup(void* data);
-extern SplineGroup* SplineGroup_GetPath(void* self);
-
 // ea: 0x4FF5B0
 void SplineMgr::AddSplineGroupFile(unsigned char* data, int pakId)
 {
@@ -3255,9 +3267,9 @@ void SplineMgr::AddSplineGroupFile(unsigned char* data, int pakId)
 }
 
 // ea: 0x4FF5D0
-SplinePathData* SplineMgr::GetSplinePathData(unsigned int name, int* pakId)
+SplinePathData* SplineMgr::GetSplinePathData(unsigned int name, TPakId& pakId)
 {
-    *pakId = -1;
+    pakId = PAK_ID_INVALID;
     if (name == 0)
         return nullptr;
     for (int v4 = 0; v4 < 32; ++v4)
@@ -3274,8 +3286,8 @@ SplinePathData* SplineMgr::GetSplinePathData(unsigned int name, int* pakId)
                     ((SplineGroupFile*)file)->mPtrs[*v7];
                 if (v8 != nullptr)
                 {
-                    *pakId = mList[v4].pakId;
-                    return (SplinePathData*)SplineGroup_GetPath(v8);
+                    pakId = static_cast<TPakId>(mList[v4].pakId);
+                    return v8->GetPath();
                 }
             }
         }
@@ -3284,9 +3296,9 @@ SplinePathData* SplineMgr::GetSplinePathData(unsigned int name, int* pakId)
 }
 
 // ea: 0x4FF660
-SplineGroup* SplineMgr::GetSplinePathGroup(unsigned int name, int* pakId)
+SplineGroup* SplineMgr::GetSplinePathGroup(unsigned int name, TPakId& pakId)
 {
-    *pakId = -1;
+    pakId = PAK_ID_INVALID;
     if (name == 0)
         return nullptr;
     for (int v4 = 0; v4 < 32; ++v4)
@@ -3303,7 +3315,7 @@ SplineGroup* SplineMgr::GetSplinePathGroup(unsigned int name, int* pakId)
                     ((SplineGroupFile*)file)->mPtrs[*v7];
                 if (v8 != nullptr)
                 {
-                    *pakId = mList[v4].pakId;
+                    pakId = static_cast<TPakId>(mList[v4].pakId);
                     return v8;
                 }
             }
@@ -3334,11 +3346,10 @@ void SplineMgr::GetSpline(unsigned int name, SplinePath* splinePath)
                     ((SplineGroupFile*)file)->mPtrs[*v8];
                 if (v9 != nullptr)
                 {
-                    SplinePathData* path =
-                        (SplinePathData*)SplineGroup_GetPath(v9);
+                    SplinePathData* path = v9->GetPath();
                     splinePath->mEventHashes = nullptr;
                     splinePath->mEventIndices = nullptr;
-                    splinePath->mSpline = (float*)&path->mSpline[0];
+                    splinePath->mSpline = &path->mSpline[0];
                     return;
                 }
             }
