@@ -153,4 +153,6 @@ private:
     static unsigned char*  sGlobalRemovalList[200];
 };
 
+static_assert(sizeof(apsGroup) == 0xE0, "apsGroup size mismatch");
+
 #endif // COD3_AEPS_APSGROUP_H

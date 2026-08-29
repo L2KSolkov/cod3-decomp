@@ -10,4 +10,6 @@ struct FourCC {
     int GetVal() const;
 };
 
+static_assert(sizeof(FourCC) == 0x4, "FourCC size mismatch");
+
 bool operator==(FourCC lhs, FourCC rhs);

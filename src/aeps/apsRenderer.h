@@ -41,6 +41,9 @@ struct apsRendererRenderInfo {
     }
 };
 
+static_assert(sizeof(apsRendererRenderInfo) == 0x40,
+              "apsRendererRenderInfo size mismatch");
+
 struct apsFixupParams {
     struct Lookup {
         unsigned int id;
@@ -55,6 +58,9 @@ struct apsFixupParams {
     int    numActions;     // +0x40C
     Lookup actions[128];   // +0x410
 };
+
+static_assert(sizeof(apsFixupParams) == 0x810,
+              "apsFixupParams size mismatch");
 
 class apsRenderer {
 public:
