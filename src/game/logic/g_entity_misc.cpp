@@ -4074,7 +4074,12 @@ void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& a, const math::Dir3& b)
     (void)a; (void)b;
 }
 void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m) { (void)m; }
-void PHYS_ASSERT_UNIT(const math::Dir3* a) { (void)a; }
+extern void PHYS_ASSERT_UNIT(const math::Dir3& v);
+void PHYS_ASSERT_UNIT(const math::Dir3* a)
+{
+    if (a != nullptr)
+        PHYS_ASSERT_UNIT(*a);
+}
 void physics_debug_render() {}
 extern int Scr_IsSystemActive(unsigned char sys);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
