@@ -75,6 +75,24 @@ def main() -> int:
                         ("sizeof", "TestTemplate<int>", "8"),
                     ]
 
+            # Conflicting declarations of an IDA global must remain visible
+            # to the anomaly queue; an unsized/sized disagreement is an ABI
+            # risk even when each translation unit compiles independently.
+            conflict_root = ledger.ROOT / "tools" / "_global_conflict_test.h"
+            conflict_root.write_text(
+                "extern int dword_F6A28C;\n"
+                "extern int dword_F6A28C[4 * 802];\n",
+                encoding="utf-8",
+            )
+            original_sources = ledger.source_files
+            ledger.source_files = lambda: [conflict_root]
+            try:
+                conflicts = ledger.global_conflicts()
+            finally:
+                ledger.source_files = original_sources
+                conflict_root.unlink()
+            assert conflicts and conflicts[0][0] == "dword_F6A28C"
+
             # Explicit V4 release evidence is sufficient to clear an empty
             # body from the unreviewed-stub anomaly class.
             assert evidence[("0X0040C000", "fn", "V4")]["result"] == "PASS"
