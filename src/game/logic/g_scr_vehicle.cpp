@@ -63,6 +63,56 @@ void rb_vehicle_update_from_network(rb_vehicle* self,
 
 static float VEH_LerpAngle(float targetAngle, float currentAngle, float rate);
 
+// ea: 0x0045C4B0
+// Resolve the wheel tag for the requested wheel and return both its bone index
+// and world-space origin.  The release helper owns the bone lookup and emits a
+// drop error when a vehicle model is missing a required wheel tag; callers must
+// not attempt to read an uninitialized skeleton matrix when the lookup fails.
+static const char* const s_vehicleWheelTags[6] = {
+    "tag_wheel_front_left",  "tag_wheel_front_right",
+    "tag_wheel_back_left",   "tag_wheel_back_right",
+    "tag_wheel_middle_left", "tag_wheel_middle_right",
+};
+
+int VEH_GetWheelOrigin(Entity* ent, int wheelIndex, __m128* origin)
+{
+    vehicle_info_t* info = s_vehicleInfos[ent->scr_vehicle->infoIdx];
+    int boneIndex = SV_DObjGetBoneIndex(ent, s_wheelTagHashes[wheelIndex]);
+    DObjSkelMat* matrix = nullptr;
+    if (boneIndex >= 0)
+    {
+        G_DObjCalcBone(ent, boneIndex);
+        matrix = &SV_DObjGetMatrixArray(ent)[boneIndex];
+    }
+    if (boneIndex < 0 || matrix == nullptr)
+    {
+        const char* vehicleName = ent->targetname.mBlock != nullptr
+                                     ? (const char*)&ent->targetname.mBlock[1]
+                                     : defaultFileName;
+        Com_Error(ERR_DROP, "\x15Script vehicle [%s] needs [%s]\n",
+                  vehicleName, s_vehicleWheelTags[wheelIndex]);
+    }
+    origin->m128_f32[0] = matrix->origin[0];
+    origin->m128_f32[1] = matrix->origin[1];
+    origin->m128_f32[2] = matrix->origin[2];
+    if (ent->active == 2)
+    {
+        float lengthSquared = origin->m128_f32[0] * origin->m128_f32[0]
+                            + origin->m128_f32[1] * origin->m128_f32[1]
+                            + origin->m128_f32[2] * origin->m128_f32[2];
+        float maxRadius = info->maxs.v.m128_f32[0];
+        if (lengthSquared > maxRadius * maxRadius)
+        {
+            float length = sqrtf(lengthSquared);
+            const float scale = (maxRadius - 2.0f) / length;
+            origin->m128_f32[0] *= scale;
+            origin->m128_f32[1] *= scale;
+            origin->m128_f32[2] *= scale;
+        }
+    }
+    return boneIndex;
+}
+
 extern void VEH_UpdatePO(Entity* ent, char* move, int msec);
 extern void VEH_GroundTrace(Entity* ent);
 extern void VEH_GroundMove(Entity* ent, int msec);
@@ -8026,13 +8076,14 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
     float wheelPos[6][3];
     for (int i = 0; i < numWheels; ++i)
     {
-        int bone = VEH_GetWheelOrigin(ent);
-        DObjSkelMat mtx;
-        if (bone >= 0)
-            G_DObjGetWorldBoneIndexMatrix(ent, bone, &mtx);
-        float local[3] = { mtx.origin[0] - veh->phys.origin.v.m128_f32[0],
-                           mtx.origin[1] - veh->phys.origin.v.m128_f32[1],
-                           mtx.origin[2] - veh->phys.origin.v.m128_f32[2] };
+        __m128 wheelOrigin;
+        VEH_GetWheelOrigin(ent, i, &wheelOrigin);
+        float local[3] = { wheelOrigin.m128_f32[0]
+                               - veh->phys.origin.v.m128_f32[0],
+                           wheelOrigin.m128_f32[1]
+                               - veh->phys.origin.v.m128_f32[1],
+                           wheelOrigin.m128_f32[2]
+                               - veh->phys.origin.v.m128_f32[2] };
         float t[3];
         MatrixTransformVector43(local, trans, t);
         wheelPos[i][0] = t[0];
@@ -8068,13 +8119,14 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
     int mask = (ent->active != 2) ? 593 : 0x10000 + 593;
     for (int i = 0; i < numWheels; ++i)
     {
-        int bone = VEH_GetWheelOrigin(ent);
-        DObjSkelMat mtx;
-        if (bone >= 0)
-            G_DObjGetWorldBoneIndexMatrix(ent, bone, &mtx);
-        float local[3] = { mtx.origin[0] - veh->phys.origin.v.m128_f32[0],
-                           mtx.origin[1] - veh->phys.origin.v.m128_f32[1],
-                           mtx.origin[2] - veh->phys.origin.v.m128_f32[2] };
+        __m128 wheelOrigin;
+        int bone = VEH_GetWheelOrigin(ent, i, &wheelOrigin);
+        float local[3] = { wheelOrigin.m128_f32[0]
+                               - veh->phys.origin.v.m128_f32[0],
+                           wheelOrigin.m128_f32[1]
+                               - veh->phys.origin.v.m128_f32[1],
+                           wheelOrigin.m128_f32[2]
+                               - veh->phys.origin.v.m128_f32[2] };
         float wheelCenter[3];
         MatrixTransformVector43(local, trans, wheelCenter);
         float start[3] = {

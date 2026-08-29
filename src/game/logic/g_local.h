@@ -3940,12 +3940,9 @@ void  HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
 extern int TAG_WHEEL_FRONT_LEFT;                     // g.o enum
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 extern float r;                                      // g.o @ 0xDD8228
-// ?VEH_GetWheelOrigin@@YAHPAVEntity@@@Z (g.o 0x45C4B0; stub)
-inline int VEH_GetWheelOrigin(Entity* ent)
-{
-    (void)ent;
-    return 0;
-}
+// ?VEH_GetWheelOrigin@@YAHPAUEntity@@HPAU__m128@@@Z
+// (g.o 0x45C4B0; release ABI: ent in ESI, wheel index, output origin)
+int VEH_GetWheelOrigin(Entity* ent, int wheelIndex, __m128* origin);
 struct traceWork_t;
 struct cdl_cinfo1;
 struct cdl_poly_inl_t;
