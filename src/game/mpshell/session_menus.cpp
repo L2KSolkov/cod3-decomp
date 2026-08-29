@@ -5371,7 +5371,9 @@ void InGameOverlay::Draw()
     if (panel != nullptr)
         panel->Draw();
     FEMenu::Draw();
-    if (m_State >= 3 && m_State <= 9 && m_IsAARTimerEnabled)
+    if (m_State >= OVERLAY_AAR_SIGNIN_SIGNOUT
+        && m_State <= OVERLAY_AAR_TOGGLE_VOICE
+        && m_IsAARTimerEnabled)
     {
         m_IsAARTimerEnabled =
             AARXBoxLiveIngameOptions::Me()->SetTimerText();
