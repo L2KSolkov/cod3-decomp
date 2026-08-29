@@ -184,7 +184,7 @@ crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	166	16	93	1	1194	0
-game.o	1158	458	11	668	0	21	0
+game.o	1158	458	11	660	0	29	0
 game2.o	1040	409	71	137	8	415	0
 game_xbox.o	365	151	93	106	0	15	0
 inffast.o	1	1	0	0	0	0	0
@@ -288,7 +288,7 @@ rbc_def_custom.o	4	2	0	2	0	0	0
 rbc_def_generic.o	26	25	1	0	0	0	0
 rbc_def_ragdoll.o	38	33	4	1	0	0	0
 rbc_def_vehicle.o	46	41	4	1	0	0	0
-render.o	1038	675	2	306	0	55	0
+render.o	1038	675	2	305	0	56	0
 rigid_body.o	13	11	1	1	0	0	0
 scr.o	1540	488	1	22	0	1029	0
 shell.o	2214	831	27	945	0	411	0

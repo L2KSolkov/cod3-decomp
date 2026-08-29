@@ -4317,13 +4317,42 @@ struct nglShaderParamSet;
 struct Color;
 void setup_color(const Color& c, nglShaderParamSet& p) { (void)c; (void)p; }
 void SetupCDHeatHazeShader() {}
-void SoundDevice_DampenAllSounds(void* self, float a) { (void)self; (void)a; }
-void SoundDevice_PauseAllSounds(void* self) { (void)self; }
-void SoundDevice_ReleaseSound(void* self, void* s) { (void)self; (void)s; }
-void SoundDevice_SetNumberOfListeners(void* self, int a) { (void)self; (void)a; }
-void SoundDevice_StopAllSounds(void* self) { (void)self; }
-void SoundDevice_UndampenAllSounds(void* self) { (void)self; }
-void SoundDevice_UnpauseAllSounds(void* self) { (void)self; }
+void SoundDevice_DampenAllSounds(void* self, float a)
+{
+    if (self != nullptr)
+        static_cast<SoundDevice*>(self)->DampenAllSounds(a);
+}
+void SoundDevice_PauseAllSounds(void* self)
+{
+    if (self != nullptr)
+        static_cast<SoundDevice*>(self)->PauseAllSounds();
+}
+void SoundDevice_ReleaseSound(void* self, void* s)
+{
+    if (self != nullptr && s != nullptr)
+        static_cast<SoundDevice*>(self)->ReleaseSound(
+            static_cast<SoundDevice::Sound*>(s));
+}
+void SoundDevice_SetNumberOfListeners(void* self, int a)
+{
+    if (self != nullptr)
+        static_cast<SoundDevice*>(self)->SetNumberOfListeners(a);
+}
+void SoundDevice_StopAllSounds(void* self)
+{
+    if (self != nullptr)
+        static_cast<SoundDevice*>(self)->StopAllSounds();
+}
+void SoundDevice_UndampenAllSounds(void* self)
+{
+    if (self != nullptr)
+        static_cast<SoundDevice*>(self)->UndampenAllSounds();
+}
+void SoundDevice_UnpauseAllSounds(void* self)
+{
+    if (self != nullptr)
+        static_cast<SoundDevice*>(self)->UnpauseAllSounds();
+}
 void SoundMediaMgr_PlayLandingSound(void* self, Entity* e, int a, bool b)
 {
     (void)self; (void)e; (void)a; (void)b;
