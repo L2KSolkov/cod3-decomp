@@ -2771,14 +2771,30 @@ void TaskSys::SendTask(Task* t)
     ++list->m_size;
 }
 
-void TaskSys_PostTask_glue(Task* t) { (void)t; }
+void TaskSys_PostTask_glue(Task* t)
+{
+    TaskSys::sInst.PostTask(t);
+}
 extern "C" void TaskSys_PostTask_bridge(void* t)
 {
     TaskSys::sInst.PostTask(static_cast<Task*>(t));
 }
-void TaskSys_DeliverTasks_glue() {}
+extern void TaskSys_DeliverTasks();
+void TaskSys_DeliverTasks_glue()
+{
+    TaskSys_DeliverTasks();
+}
 
-void rigid_body::add_force(const math::Dir3& f) { (void)f; }
+void rigid_body::add_force(const math::Dir3& f)
+{
+    if ((~(this->m_flags >> 6) & 1u) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 149,
+                     "debug_flag_is_not_in_collision()", defaultFileName))
+        __debugbreak();
+    __m128* forceSum = reinterpret_cast<__m128*>(
+        reinterpret_cast<unsigned char*>(this) + 0x110);
+    *forceSum = _mm_add_ps(*forceSum, f.v);
+}
 struct rigid_body_constraint_ragdoll {
     void set_joint_limit_active(unsigned int a, bool b);
 };
