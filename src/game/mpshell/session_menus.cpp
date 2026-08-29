@@ -2551,9 +2551,7 @@ bool GameSettingsEdit::ResponseYesApplyNowHelper()
     MPUIInterface::SetupCvars(false);
     MultiplayerMgr::sInst->SendServerParams();
     void (*callbackHostOptionsChanged)(int) =
-        gpBrocAPI != nullptr
-            ? *(void (**)(int))((unsigned char*)gpBrocAPI + 0xCE8)
-            : nullptr;
+        *(void (**)(int))((unsigned char*)gpBrocAPI + 0xCE8);
     if (callbackHostOptionsChanged != nullptr)
         callbackHostOptionsChanged(1);
     system->ReturnToPreviousMenu(-1);
