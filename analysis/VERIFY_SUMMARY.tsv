@@ -179,13 +179,13 @@ cl.o	341	9	0	260	0	72	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
 controller_xbox.o	16	15	0	0	0	1	0
-core.o	1437	605	27	313	0	492	0
+core.o	1437	605	27	310	0	495	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	166	16	93	1	1194	0
 game.o	1158	458	11	581	0	108	0
-game2.o	1040	409	71	127	8	425	0
+game2.o	1040	409	71	123	8	429	0
 game_xbox.o	365	151	93	104	0	17	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
