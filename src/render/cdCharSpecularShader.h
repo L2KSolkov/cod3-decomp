@@ -49,6 +49,8 @@ static_assert(sizeof(cdCharSpecularShader) == 0x10, "cdCharSpecularShader size m
 namespace cdCharSpecularShaderRender {
     extern unsigned long VS[2];                    // ?VS@cdCharSpecularShaderRender@@3PAKA
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdCharSpecularShaderRender@@3PAPBIA
+    void RegisterShader();                          // @0x007D26F0
+    void RegisterVShader();                         // @0x007D2720
 }
 namespace cdCharSpecularPixel {
     extern unsigned long* PS[2];                    // ?PS@cdCharSpecularPixel@@3PAPAKA

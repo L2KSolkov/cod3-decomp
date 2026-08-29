@@ -47,6 +47,7 @@ static_assert(sizeof(cdPrelitShader) == 0x10, "cdPrelitShader size mismatch");
 namespace cdPrelitRender {
     extern unsigned long* VS;                 // ?VS@cdPrelitRender@@3PAKA
     extern unsigned int const** VShaderTable;  // ?VShaderTable@cdPrelitRender@@3PAPBIA
+    void RegisterVShader();                   // @0x007D3CA0
 }
 namespace cdPrelitPixel {
     extern unsigned long** PS;                // ?PS@cdPrelitPixel@@3PAPAKA

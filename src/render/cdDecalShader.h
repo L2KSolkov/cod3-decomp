@@ -53,6 +53,7 @@ static_assert(sizeof(cdDecalShader) == 0x10, "cdDecalShader size mismatch");
 namespace cdDecalRender {
     extern unsigned long* VS;                       // ?VS@cdDecalRender@@3PAKA
     extern unsigned int const** VShaderTable;        // ?VShaderTable@cdDecalRender@@3PAPBIA
+    void RegisterVShader();                           // @0x007D1D10
 }
 namespace cdDecalPixel {
     extern unsigned long** PS;                       // ?PS@cdDecalPixel@@3PAPAKA

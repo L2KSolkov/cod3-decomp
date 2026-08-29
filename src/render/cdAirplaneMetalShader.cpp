@@ -9,6 +9,8 @@
 // ============================================================================
 #include "cdAirplaneMetalShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -18,6 +20,13 @@ cdAirplaneMetalShader* gCDAirplaneMetalShader = nullptr;  // ?gCDAirplaneMetalSh
 namespace cdAirplaneMetalRender {
     unsigned long* VS = nullptr;
     unsigned int const** VShaderTable = nullptr;
+}
+
+// ea: 0x007D4960
+void cdAirplaneMetalRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdAirplaneMetalRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdAirplaneMetalRender::VShaderTable[0]));
 }
 namespace cdAirplaneMetalPixel {
     unsigned long** PS = nullptr;

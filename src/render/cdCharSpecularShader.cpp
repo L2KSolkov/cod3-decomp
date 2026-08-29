@@ -9,6 +9,8 @@
 // ============================================================================
 #include "cdCharSpecularShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -18,6 +20,21 @@ cdCharSpecularShader* gcdCharSpecularShader = nullptr;  // ?gcdCharSpecularShade
 namespace cdCharSpecularShaderRender {
     unsigned long VS[2] = {};
     unsigned int const* VShaderTable[2] = {};
+}
+
+// ea: 0x007D26F0
+void cdCharSpecularShaderRender::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&cdCharSpecularShaderRender::VS[index]),
+                             cdCharSpecularShaderRender::VShaderTable[index]);
+    }
+}
+
+// ea: 0x007D2720
+void cdCharSpecularShaderRender::RegisterVShader()
+{
+    cdCharSpecularShaderRender::RegisterShader();
 }
 namespace cdCharSpecularPixel {
     unsigned long* PS[2] = {};

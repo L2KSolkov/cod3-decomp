@@ -9,6 +9,8 @@
 // ============================================================================
 #include "cdPrelitShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -32,6 +34,13 @@ namespace cdPrelitRender {
     static unsigned long VShaderHandle = 0;
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
+}
+
+// ea: 0x007D3CA0
+void cdPrelitRender::RegisterVShader()
+{
+    nglDxRegisterVShader(cdPrelitRender::VS,
+                         reinterpret_cast<const unsigned int*>(cdPrelitRender::VShaderTable[0]));
 }
 namespace cdPrelitPixel {
     static const unsigned int PShaderMicrocode[60] = {

@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdDecalShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include "ngl/ngl_dx_gpu.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_shader.h"
@@ -62,6 +64,13 @@ namespace cdDecalRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007D1D10
+void cdDecalRender::RegisterVShader()
+{
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdDecalRender::VS),
+                         cdDecalRender::VShaderTable[0]);
 }
 namespace cdDecalPixel {
     static const unsigned int PShaderMicrocode[60] = {

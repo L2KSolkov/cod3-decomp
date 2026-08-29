@@ -47,6 +47,7 @@ namespace cdCharShaderRender {
     extern unsigned long* VS;                 // ?VS@cdCharShaderRender@@3PAKA
     extern unsigned int const** VShaderTable;  // ?VShaderTable@cdCharShaderRender@@3PAPBIA
     extern unsigned long Shader;              // ?Shader@cdCharShaderRender@@3KA
+    void RegisterVShader();                   // @0x007D3130
 }
 namespace cdCharPixel {
     extern unsigned long** PS;                // ?PS@cdCharPixel@@3PAPAKA

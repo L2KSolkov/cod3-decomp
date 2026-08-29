@@ -50,6 +50,7 @@ static_assert(sizeof(cdAirplaneMetalShader) == 0x10, "cdAirplaneMetalShader size
 namespace cdAirplaneMetalRender {
     extern unsigned long* VS;                // ?VS@cdAirplaneMetalRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdAirplaneMetalRender@@3PAPBIA
+    void RegisterVShader();                  // @0x007D4960
 }
 namespace cdAirplaneMetalPixel {
     extern unsigned long** PS;               // ?PS@cdAirplaneMetalPixel@@3PAPAKA

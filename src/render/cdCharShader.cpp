@@ -9,6 +9,8 @@
 // ============================================================================
 #include "cdCharShader.h"
 
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
+
 #include <intrin.h>
 
 // Shader global pointer definitions
@@ -60,6 +62,14 @@ namespace cdCharShaderRender {
     unsigned long* VS = &VShaderHandle;
     unsigned int const** VShaderTable = VShaderTableStorage;
     unsigned long Shader = 0;
+}
+
+// ea: 0x007D3130
+void cdCharShaderRender::RegisterVShader()
+{
+    nglDxRegisterVShader(cdCharShaderRender::VS,
+                         reinterpret_cast<const unsigned int*>(cdCharShaderRender::VShaderTable[0]));
+    cdCharShaderRender::Shader = cdCharShaderRender::VS[0];
 }
 namespace cdCharPixel {
     static const unsigned int PShaderMicrocode[60] = {
