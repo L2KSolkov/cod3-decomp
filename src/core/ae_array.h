@@ -206,8 +206,7 @@ public:
         T* m_ptr;  // +0x00
         iterator() : m_ptr(nullptr) {}
     private:
-        // ea: 0x004AE610
-        // ea: 0x004AE610
+    // ea: 0x004AE610
         // ea: 0x004AE650
         iterator(T* ptr) : m_ptr(ptr) {}  // ??0iterator@...@@AAE@PAPAVEntity@@@Z (g.o 0x4AE610)
     public:
