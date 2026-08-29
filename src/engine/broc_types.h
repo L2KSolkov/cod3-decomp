@@ -814,8 +814,24 @@ public:
 COD3_STATIC_ASSERT_32BIT(sizeof(hudelem) == 4, "Broc::hudelem size mismatch");
 COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::x_struct) == 4,
                          "hudelem x_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::y_struct) == 4,
+                         "hudelem y_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::alignX_struct) == 4,
+                         "hudelem alignX_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::alignY_struct) == 4,
+                         "hudelem alignY_struct size mismatch");
 COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::sort_struct) == 4,
                          "hudelem sort_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::fontScale_struct) == 4,
+                         "hudelem fontScale_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::alpha_struct) == 4,
+                         "hudelem alpha_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::red_struct) == 4,
+                         "hudelem red_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::green_struct) == 4,
+                         "hudelem green_struct size mismatch");
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem::__unnamed::blue_struct) == 4,
+                         "hudelem blue_struct size mismatch");
 
 // ============================================================================
 // EEHelper / EEDefault — template helpers for ExtendedEntity field types
