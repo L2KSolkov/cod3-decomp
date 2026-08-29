@@ -837,3 +837,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00974830	?main@_mp_war@@YAXVentity@Broc@@@Z	V2	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x00974830	Release decompile confirms callback assignments, constants, no-flag assertion path, faction model mapping, and call order.
 0x00974DF0	?StartGame@_mp_war@@YAXVentity@Broc@@@Z	V1	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:18329-18348	Source matches release delayed SetupRound, StartRound, RunFrame thread, Code_EnterGame, and WARScore thread startup.
 0x00974DF0	?StartGame@_mp_war@@YAXVentity@Broc@@@Z	V2	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x00974DF0	Release decompile confirms the same 0.5-second delay, first-round flag, level handles, thread labels, and sequencing.
+0x009790C0	?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:18778-19016	Source implementation is complete against the release control-flow and state transitions.
+0x009790C0	?WAR_FlagUpdate@_mp_war@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x009790C0	Release decompile and constants match the source implementation.
+0x0097B000	?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19019-19078	Source implementation is complete against the release player/capture accounting path.
+0x0097B000	?WAR_TouchFlag@_mp_war@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097B000	Release decompile and constants match source.
+0x0097B580	?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19080-19092	Source implementation is complete against the release geometric speed sum.
+0x0097B580	?GetCapSpeed@_mp_war@@YA?AUbfloat@@Ubint@@@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097B580	Release loop and constants match source.
+0x0097B640	?UpdateAllowedCap@_mp_war@@YAXXZ	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19094-19120	Source implementation is complete against the release active/inactive objective update path.
+0x0097B640	?UpdateAllowedCap@_mp_war@@YAXXZ	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097B640	Release branch behavior and objective parameters match source.
+0x0097B850	?AllowCap@_mp_war@@YAXUbint@@H@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19122-19141	Source implementation is complete against the release cap-allowance/reset path.
+0x0097B850	?AllowCap@_mp_war@@YAXUbint@@H@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097B850	Release model, objective, and field-reset behavior match source.
+0x0097BB60	?WAR_InitFlag@_mp_war@@YAXVentity@Broc@@H@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19143-19236	Source implementation is complete against the release flag setup and handler registration path.
+0x0097BB60	?WAR_InitFlag@_mp_war@@YAXVentity@Broc@@H@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097BB60	Release constants/call order match source after capSpeed initialization fix.
+0x0097C410	?SortMarkers@_mp_war@@YAXXZ	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19238-19269	Source implementation is complete against the release marker sort.
+0x0097C410	?SortMarkers@_mp_war@@YAXXZ	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097C410	Release key comparisons and swaps match source.
+0x0097D110	?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19385-19448	Source implementation is complete against the release inactive-flag warning loop.
+0x0097D110	?WarnPlayerAboutInactiveFlag@_mp_war@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097D110	Release hint/audio timing and polling behavior match source.
+0x0097D620	?CallbackDebugRender@_mp_war@@YAXXZ	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19450-19563	Source implementation is complete against the release WAR debug-render callback.
+0x0097D620	?CallbackDebugRender@_mp_war@@YAXXZ	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097D620	Release labels, thresholds, geometry, and cleanup match source.
+0x0097E280	?DebugRenderSpawnPoints@_mp_war@@YAXXZ	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:19565-19629	Source implementation is complete against the release spawn-point debug renderer.
+0x0097E280	?DebugRenderSpawnPoints@_mp_war@@YAXXZ	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x0097E280	Release spawn filtering, bounds, colors, and cleanup match source.
+0x00974830	?main@_mp_war@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:18262-18327	Source implementation is complete against the release WAR startup registration and initialization path.
+0x00974830	?main@_mp_war@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x00974830	Release callback wiring, constants, model mapping, and thread startup match source.
+0x00974DF0	?StartGame@_mp_war@@YAXVentity@Broc@@@Z	V3	PASS	ida-manual-war-20260829	2026-08-29	src/broc/mp_util_wad.cpp:18329-18348	Source implementation is complete against the release delayed round/game startup path.
+0x00974DF0	?StartGame@_mp_war@@YAXVentity@Broc@@@Z	V4	PASS	ida-manual-war-20260829	2026-08-29	IDA:0x00974DF0	Release delay, thread labels, and startup sequencing match source.
