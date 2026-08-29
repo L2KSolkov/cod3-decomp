@@ -4433,17 +4433,11 @@ Handle EffectEventSys::ExecEffectQuery()
                != EntityHandleDb::sInst.mElements[v6].mKey
         || EntityHandleDb::sInst.mElements[v6].mObject == nullptr)
     {
-        if (mPendingQueries.m_size != 0)
-            --mPendingQueries.m_size;
-        mCurrentQuery = nullptr;
         result.mVal = 0;
         return result;
     }
     if (mEffectSets.m_size == 512)
     {
-        if (mPendingQueries.m_size != 0)
-            --mPendingQueries.m_size;
-        mCurrentQuery = nullptr;
         result.mVal = 0;
         return result;
     }
@@ -4472,9 +4466,6 @@ Handle EffectEventSys::ExecEffectQuery()
         result.mVal = v10->mId.mVal;
         return result;
     }
-    if (mPendingQueries.m_size != 0)
-        --mPendingQueries.m_size;
-    mCurrentQuery = nullptr;
     result.mVal = 0;
     return result;
 }

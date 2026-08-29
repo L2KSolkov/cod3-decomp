@@ -592,9 +592,6 @@ void G_ParseInteractionInfo(TPakId pakId)
 class Handle {
 public:
     unsigned int mVal;  // +0x00
-
-    Handle() : mVal(0) {}
-    Handle(unsigned int value) : mVal(value) {}
 };
 
 // AbstractEffect (core_systems.h; vtable slot order must match: dtor,
@@ -4529,6 +4526,18 @@ void SceneManager::UpdateEffects(float delta_t)
                             false).mVal;
                         effect->mEffectHandle = h.mVal;
                         fxset = EffectEventSys::sInst->GetActiveEffectSet(h);
+                        if (fxset == nullptr)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::ARO;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\scenemanager.cpp";
+                            AeAssert::gCurrentLine = 430;
+                            AeAssert::gCurrentExpr = "fxset";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert(
+                                       "should always have a fx set here, even if the trigger does nothing"))
+                                __debugbreak();
+                        }
                         effect->mState = 1;
                     }
                     else
@@ -13857,11 +13866,7 @@ void SetupPoolAllocator()
     void* block = mem_heap_malloc(0x3Cu);
     PoolAllocator* common = nullptr;
     if (block != nullptr)
-        // The common allocator is shared by script states and effect objects.
-        // Permit heap fallback when a fixed pool reaches its steady-state
-        // high-water mark; otherwise one busy map turns a recoverable pool
-        // miss into a global tlFatal/debug break.
-        common = new (block) PoolAllocator(cfgList, 3u);
+        common = new (block) PoolAllocator(cfgList, 2u);
 
     gCommonPoolAllocator = common;
     BrocSys::SetupScriptAllocators(common);
