@@ -13,6 +13,7 @@
 
 #include "cdSimpleColorShader.h"
 #include "ngl/nglTexture.h"
+#include "ngl/ngl_lighting.h"
 
 // ============================================================================
 // cdGlassShaderMat — glass shader material (36 bytes)
@@ -50,6 +51,20 @@ static_assert(sizeof(cdGlassShader) == 0x10, "cdGlassShader size mismatch");
 // Shader data externs (defined in render_xboxr:cdGlassShaderVertex.o)
 // ============================================================================
 namespace cdGlassRender {
+    struct Params {
+        math::Mat44 mLToS;           // +0x00
+        math::Mat44 mLToV;           // +0x40
+        math::Vector4 mSpecLightDir; // +0x80
+        math::Vector4 mEyePos;       // +0x90
+        float mAlpha;                // +0xA0
+        unsigned char pad_A4[12];    // IDA tail padding to 0xB0.
+
+        Params();                    // @0x7D0930
+    };
+    static_assert(sizeof(Params) == 0xB0, "cdGlassRender::Params size mismatch");
+    template <typename T>
+    void SetConstants(const T& params); // @0x7D0950
+
     extern unsigned long VS[2][2];                  // ?VS@cdGlassRender@@3PAY01KA
     extern unsigned int const* VShaderTable[2][2];   // ?VShaderTable@cdGlassRender@@3PAY01PBIA
     void RegisterVShader();                           // @0x7D0810

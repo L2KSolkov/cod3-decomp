@@ -60,6 +60,21 @@ void cdGlassSolidColorPixel::RegisterPShader() {
     nglDxRegisterPShader(PS, PShaderTable[0]);
 }
 
+// ea: 0x7D0930
+cdGlassRender::Params::Params() {}
+
+// ea: 0x7D0940
+nglDirLightInfo::nglDirLightInfo() {}
+
+// ea: 0x7D0950
+template <typename T>
+void cdGlassRender::SetConstants(const T& params) {
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, &params, 0x28u);
+}
+
+template void cdGlassRender::SetConstants<cdGlassRender::Params>(
+    const cdGlassRender::Params& params);
+
 // ea: 0x7D0600
 const math::Mat44& math::Mat44::operator=(const math::Mat43& matrix) {
     x.v = _mm_shuffle_ps(matrix.x.v, _mm_shuffle_ps(_mm_setzero_ps(), matrix.x.v, 160), 52);

@@ -53,6 +53,7 @@ static_assert(sizeof(nglLightContext) == 0x70, "nglLightContext size mismatch");
 // nglDirLightInfo - 32 bytes
 // ============================================================================
 struct nglDirLightInfo {
+    nglDirLightInfo();
     math::Dir3     Dir;    // +0x00
     math::Vector4  Color;  // +0x10
 };
