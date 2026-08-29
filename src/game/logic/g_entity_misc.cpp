@@ -3457,7 +3457,48 @@ void D3DDevice_SetVertexShaderInputDirect(void* a, int b, void* c)
 {
     (void)a; (void)b; (void)c;
 }
-void Destructible_CheckpointExplode(Destructible* d) { (void)d; }
+extern Entity* SpawnBrokenPiece(Entity* owner, const char* classname,
+                                const char* modelName,
+                                const math::Position3* origin,
+                                bool makeDestructible);
+
+void Destructible_CheckpointExplode(Destructible* d)
+{
+    if (d == nullptr)
+        return;
+
+    const unsigned int mask = d->mFlags;
+    if ((mask & 0x400) == 0 || (mask & 0x400000) == 0)
+        return;
+
+    d->mFlags = (mask | 0x200000) & ~0x400000u;
+    CheckpointMgr* checkpoints = CheckpointMgr::sInst;
+    const unsigned short exploder =
+        static_cast<unsigned short>(d->mExploderNum);
+    checkpoints->mCurrentScriptExploded
+        .mElements[checkpoints->mCurrentScriptExploded.m_size++] = exploder;
+
+    for (unsigned int i = 0; i < d->mSwapInModels.mSize; ++i)
+    {
+        math::Position3 origin;
+        origin.v = _mm_setzero_ps();
+        if (i < d->mSwapInPositions.mSize)
+        {
+            origin.v.m128_f32[0] = d->mSwapInPositions[i].x;
+            origin.v.m128_f32[1] = d->mSwapInPositions[i].y;
+            origin.v.m128_f32[2] = d->mSwapInPositions[i].z;
+        }
+        const InplaceString& model = d->mSwapInModels[i];
+        Entity* piece = SpawnBrokenPiece(nullptr, "script_model",
+                                          model.mStr, &origin, false);
+        if (piece == nullptr || i >= d->mSwapInEffects.mSize)
+            continue;
+        const InplaceString& effect = d->mSwapInEffects[i];
+        if (effect.mStr != nullptr && *effect.mStr != '\0')
+            PostEffectEventScriptCall(piece, effect.mStr, false,
+                                      PAK_ID_INVALID, false);
+    }
+}
 void DialogMenuSystem_BringUp(void* self, const char* a, bool b, bool c,
                               const char* d, bool e)
 {
