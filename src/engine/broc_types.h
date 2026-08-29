@@ -692,6 +692,7 @@ struct ExtendedEntity {
 COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity) == 12, "Broc::ExtendedEntity size mismatch");
 COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity::KVPair) == 8, "Broc::ExtendedEntity::KVPair size mismatch");
 
+// ea: 0x00984D90
 // The release string specialization constructs the output object in place;
 // this preserves its copy-constructor registration/lifetime semantics instead
 // of routing through string::operator= as the generic typed accessor does.
