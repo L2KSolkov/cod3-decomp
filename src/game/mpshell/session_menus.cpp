@@ -16619,6 +16619,14 @@ void AARGameSettingsView::OnActivate()
     mCurrentServerParams = &MPUIInterface::mServerParams;
     GameSettingsView::UpdateOptions();
     UpdateSplitScreenOptions(highlighted);
+    panel->GetPointer("bkg")->SetShown(true);
+    panel->GetTextPointer("text_timer_numbers")->SetShown(true);
+    panel->GetTextPointer("text_timer_text")->SetShown(true);
+    panel->GetTextPointer("text_timer_text")
+        ->SetText("MPGAME_AAR_SECONDS_TIL_NEXT_GAME");
+    panel->GetTextPointer("text_title_AAR")->SetShown(true);
+    panel->GetTextPointer("text_title_AAR")
+        ->SetText("MPGAME_AFTER_ACTION_REVIEW");
 }
 
 // ============================================================================
