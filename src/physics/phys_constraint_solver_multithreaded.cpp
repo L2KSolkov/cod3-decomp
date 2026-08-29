@@ -2202,8 +2202,8 @@ urbri_ok:
     *list_urbri = v17;
 }
 
+// ea: 0x00897B10
 void pulse_sum_constraint_solver::solve_constraints() {
-    // ea: 0x897B10
     if (m_si.m_psc_visit_counter >= m_si.m_next_psc_visit_counter &&
         _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver_inline.h", 115,
                   "m_si.m_psc_visit_counter < m_si.m_next_psc_visit_counter", ""))
@@ -2276,8 +2276,8 @@ void pulse_sum_constraint_solver::solve_constraints() {
     }
 }
 
+// ea: 0x00898250
 void pulse_sum_constraint_solver::execute_constraint_solver(rigid_body* head) {
-    // ea: 0x898250
     if (m_first_partition_head == NULL &&
         _tlAssert("c:/cod/code/tl/physics/include/constraint_solver\\pulse_sum_constraint_solver_inline.h", 197,
                   "m_first_partition_head", ""))

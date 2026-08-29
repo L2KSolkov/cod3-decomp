@@ -4282,10 +4282,10 @@ bool SightTrace(traceWork_t* tw, const math::Position3& p0,
     return v4;
 }
 
-// ea: 0x006340A0 (DCGSet model variant, returns hit num)
 extern int SightTraceThroughLeaf(traceWork_t* tw,
                                  const DCGSet* set);  // game.o 0x624070
 
+// ea: 0x006340A0 (DCGSet model variant, returns hit num)
 int SightTrace(int oldHitNum, const math::Position3& start_ref,
                const math::Position3& end_ref, const math::Position3& mins_ref,
                const math::Position3& maxs_ref, DCGSet* model,
@@ -11923,7 +11923,7 @@ extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
 extern void* nglLockSectionIndices(nglMeshSection* Section);
 extern void* nglLockSectionVertices(nglMeshSection* Section);
 extern nglMesh* auxCloseScratchMesh(nglMesh* m);
-struct nglMeshParams;
+class nglMeshParams;
 struct nglShaderParamSet;
 class nglMeshNode;
 extern nglMeshNode* nglListAddMesh(nglMesh* Mesh,

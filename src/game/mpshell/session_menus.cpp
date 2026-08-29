@@ -10987,7 +10987,6 @@ void GameSettingsView::Update(float time_inc)
     }
 }
 
-// ea: 0x00792090
 static const char* const szMPPauseEntriesText[7] = {
     "slot_01_text_option", "slot_02_text_option", "slot_03_text_option",
     "slot_04_text_option", "slot_05_text_option", "slot_06_text_option",
@@ -11090,6 +11089,7 @@ void PauseMenu::SetPanelFileSplitScreen(PanelFile* pf)
         ->SetText("MPGAME_MULTIPLAYER_MENU");
 }
 
+// ea: 0x00792090
 void AARPauseMenu::SetPanelFile(PanelFile* pf)
 {
     if (pf == nullptr)
