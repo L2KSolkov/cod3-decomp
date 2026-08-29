@@ -3128,13 +3128,28 @@ unsigned char* SceneBank_PersistentStorage(void* self, unsigned int a)
     return nullptr;
 }
 
-struct bdRandom;
+struct bdRandom {
+    unsigned int m_val;
+};
 unsigned int bdRandom_nextUInt(void* self)
 {
-    (void)self;
-    return 0;
+    if (self == nullptr)
+        return 0;
+    bdRandom* random = static_cast<bdRandom*>(self);
+    int value = 16807 * static_cast<int>(random->m_val % 127773u)
+        - 2836 * static_cast<int>(random->m_val / 127773u);
+    if (value <= 0)
+        value += 0x7FFFFFFF;
+    random->m_val = static_cast<unsigned int>(value);
+    return random->m_val;
 }
-void bdRandom_setSeed(void* self, unsigned int seed) { (void)self; (void)seed; }
+void bdRandom_setSeed(void* self, unsigned int seed)
+{
+    if (self == nullptr)
+        return;
+    bdRandom* random = static_cast<bdRandom*>(self);
+    random->m_val = seed != 0 ? seed : 12195257u;
+}
 
 namespace BrocSys {
 unsigned int GetEnt(const Broc::string& value, int fieldnameHash,
