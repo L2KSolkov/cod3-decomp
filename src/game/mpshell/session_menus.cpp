@@ -8355,7 +8355,6 @@ CreateSessionAdvancedMenu::CreateSessionAdvancedMenu(FEMenuSystem* s)
         m_pText[i] = nullptr;
     memset(&m_pSlotText, 0, sizeof(m_pSlotText));
     memset(&m_pSlotArrow, 0, sizeof(m_pSlotArrow));
-    memset(m_szSessionName, 0, sizeof(m_szSessionName));
 }
 
 // ea: 0x0078E170
