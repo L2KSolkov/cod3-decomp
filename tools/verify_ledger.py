@@ -469,7 +469,8 @@ def candidate_name_matches(decorated: str, candidate: str) -> bool:
     return (base in candidate or candidate_base in candidate or candidate.endswith(base) or
             (base == "operator bool" and
              ("::operator const char*" in candidate or
-              "::operator char*" in candidate)))
+              "::operator char*" in candidate)) or
+            (base == "operator bool" and candidate.endswith("operator T*")))
 
 
 def dumpbin_path() -> str | None:

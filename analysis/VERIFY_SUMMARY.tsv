@@ -190,7 +190,7 @@ game_xbox.o	365	151	93	110	0	11	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
 inftrees.o	1	1	0	0	0	0	0
-jobqueue.o	26	7	0	19	0	0	0
+jobqueue.o	26	6	0	20	0	0	0
 jobqueue_legacy.o	11	8	0	3	0	0	0
 mem_lib.o	47	31	2	14	0	0	0
 mem_lib_platform.o	11	11	0	0	0	0	0
