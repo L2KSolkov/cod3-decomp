@@ -17,30 +17,35 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // ============================================================================
 // apsParam inline operators (apsRegister.h declares; defined here)
 // ============================================================================
+// ea: 0x007F09A0
 apsParam::operator nglTexture*() const {
     if (mType != TEXTURE && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 91,
                                       "mType==TEXTURE", "incorrect parameter!"))
         __debugbreak();
     return mData.mTexture;
 }
+// ea: 0x007F09D0
 apsParam::operator nglMesh*() const {
     if (mType != MESH && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 92,
                                    "mType==MESH", "incorrect parameter!"))
         __debugbreak();
     return mData.mMesh;
 }
+// ea: 0x007F0A00
 apsParam::operator int() const {
     if (mType != INT32 && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 94,
                                     "mType==INT32", "incorrect parameter!"))
         __debugbreak();
     return mData.mI32;
 }
+// ea: 0x007F0A30
 apsParam::operator float() const {
     if (mType != FLOAT32 && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 95,
                                       "mType==FLOAT32", "incorrect parameter!"))
         __debugbreak();
     return mData.mFloat;
 }
+// ea: 0x007F0A60
 apsParam::operator math::Dir3::Packed() const {
     if (mType != VECTOR3D && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 99,
                                        "mType==VECTOR3D", "incorrect parameter!"))
@@ -49,6 +54,7 @@ apsParam::operator math::Dir3::Packed() const {
     r.x = mData.mVector3d[0]; r.y = mData.mVector3d[1]; r.z = mData.mVector3d[2];
     return r;
 }
+// ea: 0x007F0AB0
 apsParam::operator math::Dir3() const {
     if (mType != VECTOR3D && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 100,
                                        "mType==VECTOR3D", "incorrect parameter!"))
@@ -57,6 +63,7 @@ apsParam::operator math::Dir3() const {
     r.v = _mm_set_ps(0.0f, mData.mVector3d[2], mData.mVector3d[1], mData.mVector3d[0]);
     return r;
 }
+// ea: 0x007F0B30
 apsParam::operator math::Vector4::Packed() const {
     if (mType != COLOR && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 106,
                                     "mType==COLOR", "incorrect parameter!"))
@@ -68,6 +75,7 @@ apsParam::operator math::Vector4::Packed() const {
     r.w = mData.mColor.a * 0.0039215689f;
     return r;
 }
+// ea: 0x007F0BD0
 unsigned int apsParam::operator!=(apsParam rhs) const {
     if (mType != rhs.mType)
         return 1;
@@ -87,6 +95,7 @@ unsigned int apsParam::operator!=(apsParam rhs) const {
         return 1;
     }
 }
+// ea: 0x007F0C60
 math::Dir3::Packed apsParam2apsVector3Packed(const apsParam& param) {
     if (param.mType != VECTOR3D && _tlAssert("c:/cod/code/tl/aeps/include\\apsRegister.h", 99,
                                              "mType==VECTOR3D", "incorrect parameter!"))
@@ -95,6 +104,7 @@ math::Dir3::Packed apsParam2apsVector3Packed(const apsParam& param) {
     r.x = param.mData.mVector3d[0]; r.y = param.mData.mVector3d[1]; r.z = param.mData.mVector3d[2];
     return r;
 }
+// ea: 0x007F0CB0
 math::Dir3 apsParam2apsVector3(apsParam& param) {
     return (math::Dir3)param;
 }

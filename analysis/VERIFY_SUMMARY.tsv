@@ -43,7 +43,7 @@ apsMemory.o	94	64	0	28	0	2	0
 apsPFD.o	4	0	0	4	0	0	0
 apsRectangleNode.o	16	0	1	0	0	15	0
 apsRectangleRenderer.o	11	4	0	3	0	4	0
-apsRegister.o	515	497	0	14	0	4	0
+apsRegister.o	515	484	3	14	0	14	0
 apsRenderer.o	3	0	0	3	0	0	0
 apsShrimpNode.o	24	0	0	0	0	24	0
 apsShrimpRenderer.o	14	5	2	2	0	5	0

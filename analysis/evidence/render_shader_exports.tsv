@@ -65,3 +65,29 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x007E0A40	?RegisterVShader@cdBackgroundRender@@YAXXZ	V4	PASS	ida-render-exports-20260829	2026-08-29	IDA:decompile:0x007E0A40;src/render/cdBackgroundShader.cpp	Source matches the release registration and shader-handle assignment.
 0x007E1620	?RegisterVShader@cdSkyShaderRender@@YAXXZ	V3	PASS	ida-render-exports-20260829	2026-08-29	IDA:decompile:0x007E1620;src/render/cdSkyShader.cpp	Release body registers VShaderTable[0] and stores VS[0] in Shader.
 0x007E1620	?RegisterVShader@cdSkyShaderRender@@YAXXZ	V4	PASS	ida-render-exports-20260829	2026-08-29	IDA:decompile:0x007E1620;src/render/cdSkyShader.cpp	Source matches the release registration and shader-handle assignment.
+0x007F0990	??0apsParam@@QAE@XZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0990;src/aeps/apsParam.h	Release constructor initializes mType to INT32 and clears mData.
+0x007F0990	??0apsParam@@QAE@XZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0990;src/aeps/apsParam.h	Source constructor matches the release initialization.
+0x007F09A0	??BapsParam@@QBEPAUnglTexture@@XZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F09A0;src/aeps/apsRegister.cpp	Release type-check, assert, and texture return match source.
+0x007F09A0	??BapsParam@@QBEPAUnglTexture@@XZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F09A0;src/aeps/apsRegister.cpp	Source conversion matches the release body.
+0x007F09D0	??BapsParam@@QBEPAUnglMesh@@XZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F09D0;src/aeps/apsRegister.cpp	Release type-check, assert, and mesh return match source.
+0x007F09D0	??BapsParam@@QBEPAUnglMesh@@XZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F09D0;src/aeps/apsRegister.cpp	Source conversion matches the release body.
+0x007F0A00	??BapsParam@@QBEHXZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0A00;src/aeps/apsRegister.cpp	Release type-check, assert, and integer return match source.
+0x007F0A00	??BapsParam@@QBEHXZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0A00;src/aeps/apsRegister.cpp	Source conversion matches the release body.
+0x007F0A30	??BapsParam@@QBEMXZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0A30;src/aeps/apsRegister.cpp	Release type-check, assert, and float return match source.
+0x007F0A30	??BapsParam@@QBEMXZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0A30;src/aeps/apsRegister.cpp	Source conversion matches the release body.
+0x007F0A60	??BapsParam@@QBE?AUPacked@Dir3@math@@XZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0A60;src/aeps/apsRegister.cpp	Release vector type-check, assert, copy, and return match source.
+0x007F0A60	??BapsParam@@QBE?AUPacked@Dir3@math@@XZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0A60;src/aeps/apsRegister.cpp	Source conversion matches the release body.
+0x007F0AB0	??BapsParam@@QBE?AVDir3@math@@XZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0AB0;src/aeps/apsRegister.cpp	Release vector conversion and assert match source.
+0x007F0AB0	??BapsParam@@QBE?AVDir3@math@@XZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0AB0;src/aeps/apsRegister.cpp	Source conversion matches the release body.
+0x007F0B30	??BapsParam@@QBE?AUPacked@Vector4@math@@XZ	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0B30;src/aeps/apsRegister.cpp	Release color type-check, assert, byte scaling, and packed return match source.
+0x007F0B30	??BapsParam@@QBE?AUPacked@Vector4@math@@XZ	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0B30;src/aeps/apsRegister.cpp	Source conversion matches the release body.
+0x007F0BD0	??9apsParam@@QBEIV0@@Z	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0BD0;src/aeps/apsRegister.cpp	Release type dispatch, vector comparison, and default assert match source.
+0x007F0BD0	??9apsParam@@QBEIV0@@Z	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0BD0;src/aeps/apsRegister.cpp	Source inequality operator matches the release body.
+0x007F0C60	?apsParam2apsVector3Packed@@YA?AUPacked@Dir3@math@@ABVapsParam@@@Z	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0C60;src/aeps/apsRegister.cpp	Release vector type-check, assert, copy, and return match source.
+0x007F0C60	?apsParam2apsVector3Packed@@YA?AUPacked@Dir3@math@@ABVapsParam@@@Z	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0C60;src/aeps/apsRegister.cpp	Source helper matches the release body.
+0x007F0CB0	?apsParam2apsVector3@@YA?AVDir3@math@@ABVapsParam@@@Z	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0CB0;src/aeps/apsRegister.cpp	Release helper delegates to apsParam Dir3 conversion.
+0x007F0CB0	?apsParam2apsVector3@@YA?AVDir3@math@@ABVapsParam@@@Z	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0CB0;src/aeps/apsRegister.cpp	Source helper matches the release delegation.
+0x007F08D0	?Set@Packed@Dir3@math@@QAEXMMM@Z	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F08D0;src/game/logic/g_accessors.cpp	Release body stores the three float arguments directly in the packed vector.
+0x007F08D0	?Set@Packed@Dir3@math@@QAEXMMM@Z	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F08D0;src/game/logic/g_accessors.cpp	Source setter matches the release stores.
+0x007F0900	?Set@Packed@Vector4@math@@QAEXMMMM@Z	V3	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0900;src/game/render/tr_tiny.cpp	Release body stores the four float arguments directly in the packed vector.
+0x007F0900	?Set@Packed@Vector4@math@@QAEXMMMM@Z	V4	PASS	ida-aps-register-20260829	2026-08-29	IDA:decompile:0x007F0900;src/game/render/tr_tiny.cpp	Source setter matches the release stores.

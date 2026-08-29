@@ -47,6 +47,7 @@ public:
         void*              mShaderWorksShader;
     } mData;                       // +0x04 (12 bytes)
 
+    // ea: 0x007F0990
     apsParam() { mType = INT32; mData.mU32 = 0; }         // ??0apsParam@@QAE@XZ
 
     operator nglTexture*() const;   // ??BapsParam@@QBEPAUnglTexture@@XZ
