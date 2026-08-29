@@ -588,12 +588,10 @@ static int nslSlotIndex(const txSlotPool* pool, txSlot slot) {
     return entry->slot == slot ? static_cast<int>(result) : -1;
 }
 
-// ea: 0x0082CCB0
 static txSlot nslSlotFirst(const txSlotPool* pool) {
     return pool->usedSlots.next->slot;
 }
 
-// ea: 0x0082CCD0
 static txSlot nslSlotNext(const txSlotPool* pool, txSlot slot) {
     const unsigned result =
         slot & (static_cast<unsigned>(pool->mask) | 0x80000000u);
