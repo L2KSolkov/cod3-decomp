@@ -16375,10 +16375,9 @@ PlayOnlineMenu::PlayOnlineMenu(FEMenuSystem* s)
     flags = (int16_t)(flags | 0x80);
     mJoiningFriend = false;
     friendIcon = 0;
-    m_pBkgDetail4 = nullptr;
-    m_pBkgDetail5 = nullptr;
-    m_IsQuickMatchReady = false;
     default_color_scheme = 5;
+    panel = nullptr;
+    highlightedDefault = 1;
 }
 
 // ea: 0x007AF3E0
