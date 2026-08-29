@@ -57,3 +57,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x006EB850	?GetBoneParent@XModelParts@@QBEHI@Z	V4	PASS	ida-manual-2026-08-27	2026-08-27	IDA:0x006EB850	Release hierarchy bounds assert metadata and mHierarchy[i].mParentIndex return match source.
 0x006C86D0	?RemoveLight@@YAXPAVLightEffect@@@Z	V3	PASS	ida-manual-render-small-20260828	2026-08-28	src/game/render/tr_fx3.cpp:197-216	Source searches the light list, erases the matching element, and releases a non-null light.
 0x006C86D0	?RemoveLight@@YAXPAVLightEffect@@@Z	V4	PASS	ida-manual-render-small-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1331133-1331154	Release RemoveLight has the same list scan, ae_vector erase, null guard, and allocator release.
+0x006D79D0	?FX_GetBoneIndex@@YAHPBVDObj@@I@Z	V3	PASS	ida-manual-fx-bone-20260828	2026-08-28	src/game/render/tr_fx2.cpp:792-797	Source returns -1 for a null DObj and otherwise delegates directly to DObjGetBoneIndex.
+0x006D79D0	?FX_GetBoneIndex@@YAHPBVDObj@@I@Z	V4	PASS	ida-manual-fx-bone-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1342329-1342334	Release has the same null guard, DObjGetBoneIndex delegation, and -1 fallback.
