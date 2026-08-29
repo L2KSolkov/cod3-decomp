@@ -66,3 +66,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0072F520	?SetQueryParams@MPUIInterface@@SAXAAUsServerQueryParams@@@Z	V4	PASS	mp-ui-helper-audit-20260829	2026-08-29	c3_bin/codmp_xboxr.xbe.c:1393772-1393776	Release performs the same mQueryParams assignment.
 0x00730240	?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z	V3	PASS	mp-ui-helper-audit-20260829	2026-08-29	src/game/mp/mp_basic.cpp:7340-7343	Source copies the supplied server-create parameters into the current server state.
 0x00730240	?SetServerParams@MPUIInterface@@SAXABUsServerCreateParams@@@Z	V4	PASS	mp-ui-helper-audit-20260829	2026-08-29	c3_bin/codmp_xboxr.xbe.c:1394376-1394380	Release performs the same mServerParams assignment.
+0x007305D0	?Me@MPOptionsScreenMenu@@SAPAV1@XZ	V3	PASS	mp-options-menu-audit-20260829	2026-08-29	src/game/mp/mp_basic.cpp:7874-7877	Source returns the menu-system slot 21 as MPOptionsScreenMenu.
+0x007305D0	?Me@MPOptionsScreenMenu@@SAPAV1@XZ	V4	PASS	mp-options-menu-audit-20260829	2026-08-29	c3_bin/codmp_xboxr.xbe.c:1394587-1394591	Release returns g_femanager.fems->menus + 21, matching source.
