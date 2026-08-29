@@ -6318,7 +6318,7 @@ void AARMapVote::OnUp(int c)
     if (m_ListBox.mTopLine + m_ListBox.mSelectedLine != 0)
         m_ListBox.OnUp(c);
     else
-        m_ListBox.SelectLine(g_NumBaseMaps - 1);
+        m_ListBox.SelectLine(g_NumBaseMaps);
 }
 
 // ea: 0x00791970
