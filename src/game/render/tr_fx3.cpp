@@ -213,6 +213,11 @@ void RemoveLight(LightEffect* light)
         LightEffect::sAllocator->Release(light);
 }
 
+extern "C" void RemoveLight_Bridge(void* light)
+{
+    RemoveLight(static_cast<LightEffect*>(light));
+}
+
 // ae_pair (class tag V; matches ?sArray@ParticleEffect mangling)
 template <typename A, typename B>
 class ae_pair {

@@ -3208,12 +3208,17 @@ unsigned int InplaceTree_Find(void* tree, const unsigned int* key)
     return 0;
 }
 
+extern "C" void* AddLight_Bridge(TPakId pakId, int type,
+                                   math::Position3* pos, int time);
 void* AddLight(TPakId pakId, int type, math::Position3* pos, int time)
 {
-    (void)pakId; (void)type; (void)pos; (void)time;
-    return nullptr;
+    return AddLight_Bridge(pakId, type, pos, time);
 }
-void RemoveLight(void* light) { (void)light; }
+extern "C" void RemoveLight_Bridge(void* light);
+void RemoveLight(void* light)
+{
+    RemoveLight_Bridge(light);
+}
 void* FX_PlayEffect(TPakId pakId, int id, math::Mat43* mat, void* boltObjHandle,
                     unsigned int boltEntHandle, int boltBoneIndex,
                     bool boltAttchedToEnt)

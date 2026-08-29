@@ -1591,6 +1591,15 @@ LightEffect* AddLight(TPakId pakId, LightEffect::eType type,
     return fx;
 }
 
+extern "C" void* AddLight_Bridge(TPakId pakId, int type,
+                                   math::Position3* pos, int time)
+{
+    if (pos == nullptr)
+        return nullptr;
+    return AddLight(pakId, (LightEffect::eType)type, *pos,
+                    (LightEffect::eTime)time);
+}
+
 struct PakFile;
 class PakManager {
 public:
