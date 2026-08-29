@@ -12,6 +12,9 @@
 #include <wchar.h>
 #include <new>
 
+extern float unk_F6A284[];
+extern float unk_F6A280[];
+
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)
 // ============================================================================
@@ -915,7 +918,8 @@ void XBoxLiveIngameOptionsCOD3::ButtonHeldAction()
 // ea: 0x778F30
 void XBoxLiveIngameOptionsCOD3::UpdateSplitScreen()
 {
-    panel->UpdateSplitScreen(0, 0);
+    panel->UpdateSplitScreen(unk_F6A284[802 * mVersion],
+                             unk_F6A280[802 * mVersion]);
 }
 
 // ea: 0x778F60
