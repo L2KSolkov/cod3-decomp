@@ -60,6 +60,14 @@ namespace cdSimpleUVAnimFullbrightPixel {
     unsigned long* Shader = nullptr;
 }
 
+// ea: 0x007C78B0
+void cdSimpleUVAnimRender::RegisterVShader()
+{
+    nglDxRegisterVShader(cdSimpleUVAnimRender::VS,
+                         reinterpret_cast<const unsigned int*>(cdSimpleUVAnimRender::VShaderTable[0]));
+    cdSimpleUVAnimRender::Shader = cdSimpleUVAnimRender::VS[0];
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
