@@ -5028,6 +5028,7 @@ VoteGameTypeMenu::VoteGameTypeMenu(FEMenuSystem* pauseMenuSystem)
 {
     mPlayerMgr = nullptr;
     mGameTypeList = nullptr;
+    default_color_scheme = 9;
 }
 
 // ea: 0x007907D0
