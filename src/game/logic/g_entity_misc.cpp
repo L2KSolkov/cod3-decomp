@@ -9,6 +9,7 @@
 
 #include "game/logic/g_local.h"
 #include "game/logic/g_camerashake.h"
+#include "game/logic/g_inspector.h"
 #include "core/mem_heap.h"
 #include "core/tlFixedString.h"
 #include "input/controller.h"
@@ -3952,11 +3953,19 @@ void InplaceAssetBankSet_GdbFileBank_AddBank(void* self, TPakId pak, void* b)
     }
     *slot = b;
 }
-class InspectorManager;
 extern "C" void InteractionController_ClearQueue_Bridge(void* self);
-void InspectorManager_Initialise(InspectorManager* self) { (void)self; }
-void InspectorManager_Render(void* self) { (void)self; }
-void InspectorManager_Update(InspectorManager* self) { (void)self; }
+void InspectorManager_Initialise(InspectorManager* self)
+{
+    self->Initialise();
+}
+void InspectorManager_Render(void* self)
+{
+    static_cast<InspectorManager*>(self)->Render();
+}
+void InspectorManager_Update(InspectorManager* self)
+{
+    self->Update();
+}
 void InteractionController_ClearQueue(void* self)
 {
     InteractionController_ClearQueue_Bridge(self);
