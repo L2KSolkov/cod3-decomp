@@ -19205,7 +19205,7 @@ void WAR_InitFlag(Broc::entity self, int flag_id) {
     originField.Get(&origin);
     *mp_util_wad::GetEE_flagEnd(linked) = origin + offsetEnd;
 
-    *mp_util_wad::GetEE_capSpeed(linked) = flag_id;
+    *mp_util_wad::GetEE_capSpeed(linked) = 0;
     Broc::bint now;
     Broc::GetTime(&now);
     *mp_util_wad::GetEE_lastTouch(self) = now;
