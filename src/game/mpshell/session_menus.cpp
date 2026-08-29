@@ -5306,6 +5306,7 @@ void AARScoreboardWinner::SetPanelFile(PanelFile* pf)
     AARScoreboardBase::SetPanelFile(pf);
     m_pYourTeamScore[4]->SetShown(true);
     m_pYourTeamScore[5]->SetShown(false);
+    helpbar1->SetText("MPGAME_HELP_WINNERS_AAR_SCOREBOARD");
 }
 
 // ============================================================================
@@ -8035,7 +8036,7 @@ void AARScoreboardBase::SetPanelFile(PanelFile* pf)
 
     FEText* helpbar = m_pUppercaseText.m_elements[8];
     FEMultiLineText* helpbar1Text =
-        (FEMultiLineText*)mem_heap_malloc(0, 0xA8u);
+        (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (helpbar1Text != nullptr)
     {
         color32 col = helpbar->GetColor();
@@ -8050,7 +8051,7 @@ void AARScoreboardBase::SetPanelFile(PanelFile* pf)
     helpbar1->SetNumLines(1);
 
     FEMultiLineText* helpbar2Text =
-        (FEMultiLineText*)mem_heap_malloc(0, 0xA8u);
+        (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (helpbar2Text != nullptr)
     {
         color32 col = helpbar->GetColor();
