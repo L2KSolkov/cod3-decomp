@@ -1495,45 +1495,78 @@ void          nslRemoveEmitterSource(nslEmitterID eid, nslSourceID sid) {
         return;
     *reinterpret_cast<int*>(reinterpret_cast<unsigned char*>(source) + 0x114u) = -1;
 }
+// ea: 0x00827F80
 void          nslUpdateBanks() {
-    if (nsl_initParams.aramBase == 0 || nsl_waveBankSlots == nullptr)
+    unsigned result = nsl_initParams.aramBase;
+    int selectedIndex = -1;
+    int pendingIndex = -1;
+    unsigned pendingOrder = static_cast<unsigned>(-1);
+    if (result == 0)
         return;
 
-    int loadIndex = -1;
-    unsigned loadOrder = static_cast<unsigned>(-1);
-    for (unsigned i = 0; i < nsl_initParams.aramBase; ++i) {
+    for (unsigned i = 0; i < result; ++i) {
         nslWaveBankSlot* slot = &nsl_waveBankSlots[i];
         if (slot->state == NSL_WAVE_BANK_SLOT_STATE_PENDING) {
-            if (loadOrder > slot->loadOrder) {
-                loadOrder = slot->loadOrder;
-                loadIndex = static_cast<int>(i);
+            if (pendingOrder > slot->loadOrder) {
+                selectedIndex = static_cast<int>(i);
+                pendingOrder = slot->loadOrder;
+                pendingIndex = static_cast<int>(i);
             }
-        } else if (slot->state == NSL_WAVE_BANK_SLOT_STATE_LOADING) {
-            const nslWaveBankLoaderState state = nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
-            if (state == NSL_WAVE_BANK_LOADER_STATE_COMPLETED) {
-                slot->waveBank = nsl_waveBankLoad.waveBank;
-                slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
-                slot->profile.timeLoaded = nsl_time;
-                slot->profile.frameLoaded = nsl_frame;
-                nslWaveBankSort(slot->waveBank);
-                loadIndex = -1;
-                nsl_waveBankLoad.state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
-            } else if (state == NSL_WAVE_BANK_LOADER_STATE_CANCELED || state < 0) {
-                slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
-                nslWaveBankFree(slot->waveBankID);
-                nsl_waveBankLoad.state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
-            }
+            continue;
         }
+        if (slot->state != NSL_WAVE_BANK_SLOT_STATE_LOADING)
+            continue;
+
+        const nslWaveBankLoaderState state =
+            nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
+        if (state == NSL_WAVE_BANK_LOADER_STATE_COMPLETED) {
+            slot->waveBank = nsl_waveBankLoad.waveBank;
+            slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
+            nslWaveBankSort(slot->waveBank);
+            slot->profile.timeLoaded = nsl_time;
+            slot->profile.frameLoaded = nsl_frame;
+
+            const nslWaveBank* waveBank = slot->waveBank;
+            const unsigned streamBytes = waveBank->streamOffset;
+            const unsigned streamKb = (streamBytes + 1023u) >> 10;
+            const unsigned aramKb = (waveBank->aramSize + 1023u) >> 10;
+            txPrintf("NSL", 3,
+                     "Bank %s(%p) loaded: %d[%d]ms %d[%d]frames %dkb=%dkb+%dkb %d[%d]kb/s\n",
+                     waveBank->name, slot->waveBankID,
+                     nsl_time - slot->profile.timeCreated,
+                     nsl_time - slot->profile.timeStarted,
+                     nsl_frame - slot->profile.frameCreated,
+                     nsl_frame - slot->profile.frameStarted,
+                     streamKb, aramKb, streamKb - aramKb,
+                     streamBytes / (nsl_time - slot->profile.timeCreated + 1u),
+                     streamBytes / (nsl_time - slot->profile.timeStarted + 1u));
+            selectedIndex = pendingIndex;
+        } else if (state == NSL_WAVE_BANK_LOADER_STATE_CANCELED) {
+            txPrintf("NSL", 0, "Canceled loading of waveBank %p\n",
+                     slot->waveBankID);
+            slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
+            nslWaveBankFree(slot->waveBankID);
+        } else if (state < NSL_WAVE_BANK_LOADER_STATE_INITIAL) {
+            txPrintf("NSL", 0, "Failure %d loading waveBank %p\n", state,
+                     slot->waveBankID);
+            slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADED;
+            nslWaveBankFree(slot->waveBankID);
+        } else {
+            continue;
+        }
+        nsl_waveBankLoad.state = NSL_WAVE_BANK_LOADER_STATE_INITIAL;
     }
 
-    if (loadIndex >= 0 && nsl_waveBankLoad.state == NSL_WAVE_BANK_LOADER_STATE_INITIAL) {
-        nslWaveBankSlot* slot = &nsl_waveBankSlots[loadIndex];
-        slot->profile.timeStarted = nsl_time;
-        slot->profile.frameStarted = nsl_frame;
-        slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADING;
-        nslWaveBankLoaderInit(&nsl_waveBankLoad, slot->flags, slot->file, slot->fileOffset);
-        nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
-    }
+    if (selectedIndex == -1 ||
+        nsl_waveBankLoad.state != NSL_WAVE_BANK_LOADER_STATE_INITIAL)
+        return;
+    nslWaveBankSlot* slot = &nsl_waveBankSlots[selectedIndex];
+    slot->profile.timeStarted = nsl_time;
+    slot->profile.frameStarted = nsl_frame;
+    slot->state = NSL_WAVE_BANK_SLOT_STATE_LOADING;
+    nslWaveBankLoaderInit(&nsl_waveBankLoad, slot->flags, slot->file,
+                          slot->fileOffset);
+    nslWaveBankLoaderUpdate(&nsl_waveBankLoad);
 }
 
 // ea: 0x00822520
