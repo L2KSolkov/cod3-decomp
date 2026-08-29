@@ -3438,14 +3438,16 @@ void controller_stop_all_rumble(void* self)
                                        : controller::inst();
     pad->stop_all_rumble();
 }
-void CurveManager_PostEvent(void* self, unsigned int a, unsigned int b, float c)
-{
-    (void)self; (void)a; (void)b; (void)c;
-}
 class CurveManager {
 public:
+    void PostEvent(unsigned int entityHandle, unsigned int hash, float value);
     void Update(float tickDelta);
 };
+void CurveManager_PostEvent(void* self, unsigned int a, unsigned int b, float c)
+{
+    if (self != nullptr)
+        static_cast<CurveManager*>(self)->PostEvent(a, b, c);
+}
 void CurveManager_Update(void* self, float a)
 {
     static_cast<CurveManager*>(self)->Update(a);
