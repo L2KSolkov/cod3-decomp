@@ -2121,6 +2121,12 @@ DObj* Entity::GetDObj()
 {
     return mDObj;
 }
+
+// core.o 0x4B5640
+const DObj* Entity::GetDObj() const
+{
+    return mDObj;
+}
 // ea: 0x004A68B0
 void Entity::SetDestructible(IVPointer<Destructible> d)
 {
