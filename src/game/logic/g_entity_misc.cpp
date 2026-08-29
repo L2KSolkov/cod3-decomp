@@ -3661,7 +3661,45 @@ void DObjGetHierarchyBits(DObj* obj, int a, int* const b)
     BrocSys::ConvertHashToString((int)obj->duplicateParts);
 }
 void DObjUpdateChildren(DObj* obj, int a) { (void)obj; (void)a; }
-void DObjUpdateLod(Entity* e) { (void)e; }
+extern float gZoomRatio;
+// ea: 0x006CE750
+void DObjUpdateLod(Entity* e)
+{
+    DObj* obj = e->mDObj;
+    if ((g_DOBJF_NOT_RENDERED_LAST_FRAME & obj->mFlags) == 0
+        || (e->mFlags & 2u) != 0)
+    {
+        const __m128 delta = _mm_sub_ps(
+            e->r.currentOrigin.v,
+            EntityManager::sInst->GetPlayer(currCl)->r.currentOrigin.v);
+        const __m128 squared = _mm_mul_ps(delta, delta);
+        const float distanceSquared = gZoomRatio
+            * (squared.m128_f32[0] + squared.m128_f32[1]
+               + squared.m128_f32[2]);
+        int lod = 0;
+        if (distanceSquared < 518400.0f)
+        {
+            if (distanceSquared < 230400.0f)
+            {
+                if (distanceSquared >= 57600.0f)
+                    lod = 2;
+                obj->SetLOD(lod);
+            }
+            else
+            {
+                obj->SetLOD(3);
+            }
+        }
+        else
+        {
+            obj->SetLOD(4);
+        }
+    }
+    else
+    {
+        obj->SetLOD(5);
+    }
+}
 void DynamicDecalMgr_DestroyAllDecals()
 {
     DynamicDecalMgr* instance = DynamicDecalMgr::Inst();
