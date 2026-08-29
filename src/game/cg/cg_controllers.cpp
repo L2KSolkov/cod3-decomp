@@ -36,6 +36,7 @@ struct cgs_t {
     int controller;  // +0x04
     unsigned char _data[0xC80];
 };
+static_assert(sizeof(cgs_t) == 0xC88, "cgs_t size mismatch");
 enum { kLocalPlayerStateUnused = 0 };
 
 // ea: 0x006BC070
