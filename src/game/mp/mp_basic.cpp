@@ -7907,7 +7907,7 @@ MPProfileMainMenu* MPProfileMainMenu::Me()
 // ============================================================================
 // MP profile menus (mp.o)
 // ============================================================================
-bool MPProfileEditMenu::DialogResponseOk(int)
+bool MPProfileEditMenu::DialogResponseOk()
 {
     return true;
 }
@@ -16110,8 +16110,8 @@ void MPProfileEditMenu::OnActivate(int previous)
                      true);
         DialogMenuSystem* v8 = g_femanager.GetDMS(currCl);
         int v10 = v8->GetActiveMenu();
-        v8->GetLayer(v10 == 0)->AddOption("MEM_DIALOG_OK",
-                                          DialogResponseOk);
+        v8->GetLayer(v10 == 0)->AddOption(
+            "MEM_DIALOG_OK", (bool (*)(int))DialogResponseOk);
         DialogMenuSystem* v12 = g_femanager.GetDMS(currCl);
         int v13 = v12->GetActiveMenu();
         v12->GetLayer(v13 == 0)->triangleResponse = (void (*)(int))j_nullsub_96;

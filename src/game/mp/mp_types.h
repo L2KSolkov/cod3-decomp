@@ -1398,7 +1398,7 @@ public:
 
     MPProfileEditMenu(FEMenuSystem* s);  // ??0MPProfileEditMenu@@QAE@PAVFEMenuSystem@@@Z (mp.o 0x7656C0)
     static MPProfileEditMenu* Me();  // ?Me@MPProfileEditMenu@@SAPAV1@XZ
-    static bool DialogResponseOk(int index);  // ?DialogResponseOk@MPProfileEditMenu@@SA_NH@Z
+    static bool DialogResponseOk();  // ?DialogResponseOk@MPProfileEditMenu@@SA_NXZ
     static const char* const kProfileTextOptionStrings[];        // ?kProfileTextOptionStrings@MPProfileEditMenu@@0QBQBDB @ 0xD19670
     static const char* const kProfileTextInstructionStrings[];   // ?kProfileTextInstructionStrings@MPProfileEditMenu@@0QBQBDB @ 0xD19684
     virtual void PanelFileUnloaded(PanelFile* pPanelFile);  // ?PanelFileUnloaded@MPProfileEditMenu@@UAEXPAVPanelFile@@@Z (mp.o 0x733640)
