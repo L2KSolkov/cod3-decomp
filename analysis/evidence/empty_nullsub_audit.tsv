@@ -123,3 +123,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AEA40	??0IGOWidget@@QAE@H@Z	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1165804	Release installs the vtable and writes is_shown, force_appear, and mClient exactly as source.
 0x005AEB30	??0IGOMapObject@@QAE@XZ	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/game/shell/broc_shell.cpp:18	Source initializer list initializes draw; the empty body is complete.
 0x005AEB30	??0IGOMapObject@@QAE@XZ	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1165850	Release writes draw = false and returns this, matching the source initializer-list constructor.
+0x0055E420	??0nalBasePoseBlender@@IAE@PBVnalBaseSkeleton@@@Z	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/animation/nal.cpp:7614	Source initializer list stores Skeleton; the empty body is complete.
+0x0055E420	??0nalBasePoseBlender@@IAE@PBVnalBaseSkeleton@@@Z	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1117942	Release installs the nalBasePoseBlender vtable and stores Skeleton, matching source.
+0x005AF040	??0sTime@knet@kuju@@QAE@J@Z	V3	PASS	constructor-manual-audit-20260828	2026-08-28	src/game/platform_xbox/MPLiveEngine.cpp:22	Source initializer list stores mTime from ms; the empty body is complete.
+0x005AF040	??0sTime@knet@kuju@@QAE@J@Z	V4	PASS	constructor-manual-audit-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1166168	Release stores mTime = ms and returns this, matching source.
