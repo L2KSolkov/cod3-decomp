@@ -16704,7 +16704,7 @@ void PlayOnlineMenu::Select(int entry_num, int c)
             *(int*)((char*)fems + 0x54) = 10;
             OverlayMenu* v6 = g_femanager.fems != nullptr
                 ? (OverlayMenu*)g_femanager.fems->menus[16] : nullptr;
-            *(int*)((char*)v6 + 0x54) = 10;
+            *(int*)((char*)v6 + 0x58) = 10;
             system->AddOverlay(16);
         }
         m_IsQuickMatchReady = true;
