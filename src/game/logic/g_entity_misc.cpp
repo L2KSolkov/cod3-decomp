@@ -3045,9 +3045,25 @@ TaskHandler* TaskSys::LookupHandler(FourCC id) const
 }
 
 struct TaskHandlerImpl;
+struct TaskHandleDbView {
+    unsigned int mFreeIndices;
+    struct DbElement {
+        Task* mObject;
+        int mKey;
+    } mElements[32];
+    void* mDebugCallback;
+};
+
 Task* HandleDb_GetTask(void* self, Handle h)
 {
-    (void)self; (void)h;
+    if (self == nullptr || h.mVal == 0)
+        return nullptr;
+    TaskHandleDbView* db = static_cast<TaskHandleDbView*>(self);
+    unsigned int index = h.mVal & 0x1FFFu;
+    if (index < 0x20u
+        && (h.mVal >> 13) == static_cast<unsigned int>(
+               db->mElements[index].mKey))
+        return db->mElements[index].mObject;
     return nullptr;
 }
 Task* TaskHandler_GetTaskForEntity(TaskHandlerImpl* self,
@@ -3060,12 +3076,51 @@ TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id)
     TaskHandler* handler = TaskSys::sInst.LookupHandler(FourCC((int)id));
     return reinterpret_cast<TaskHandlerImpl*>(handler);
 }
-void HandleDb_AllocateTaskHandle(void* self, Task** t) { (void)self; (void)t; }
+void HandleDb_AllocateTaskHandle(void* self, Task** t)
+{
+    if (self == nullptr || t == nullptr || *t == nullptr)
+        return;
+    TaskHandleDbView* db = static_cast<TaskHandleDbView*>(self);
+    unsigned int freeBits = db->mFreeIndices;
+    if (freeBits == 0)
+        return;
+    unsigned int bit = freeBits & (~freeBits + 1u);
+    unsigned int index = 0;
+    while ((bit >> index) != 1u)
+        ++index;
+    db->mFreeIndices &= ~(1u << index);
+    Handle handle;
+    handle.mVal = (static_cast<unsigned int>(db->mElements[index].mKey)
+                   << 13) | index;
+    (*t)->mTaskHandle.mVal = handle.mVal;
+    db->mElements[index].mObject = *t;
+}
 void HandleDb_BindTaskObject(void* self, Handle h, Task* t)
 {
-    (void)self; (void)h; (void)t;
+    if (self == nullptr || t == nullptr)
+        return;
+    TaskHandleDbView* db = static_cast<TaskHandleDbView*>(self);
+    unsigned int index = h.mVal & 0x1FFFu;
+    if (index < 0x20u
+        && (h.mVal >> 13) == static_cast<unsigned int>(
+               db->mElements[index].mKey))
+        db->mElements[index].mObject = t;
 }
-void HandleDb_ReleaseTaskHandle(void* self, Handle h) { (void)self; (void)h; }
+void HandleDb_ReleaseTaskHandle(void* self, Handle h)
+{
+    if (self == nullptr || h.mVal == 0)
+        return;
+    TaskHandleDbView* db = static_cast<TaskHandleDbView*>(self);
+    unsigned int index = h.mVal & 0x1FFFu;
+    if (index < 0x20u
+        && (h.mVal >> 13) == static_cast<unsigned int>(
+               db->mElements[index].mKey))
+    {
+        db->mFreeIndices |= 1u << index;
+        db->mElements[index].mObject = nullptr;
+        ++db->mElements[index].mKey;
+    }
+}
 
 unsigned char* SceneBank_PersistentStorage(void* self, unsigned int a)
 {
