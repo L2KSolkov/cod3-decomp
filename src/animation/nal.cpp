@@ -27509,7 +27509,6 @@ public:
     // ??0InteractInputRcvr@@QAE@W4TPakId@@@Z (0x53A8C0)
     InteractInputRcvr(TPakId curPakId);
 
-    void* __vftable;     // +0x00
     int mType;           // +0x04
     int mPakId;          // +0x08
     unsigned int mFlags; // +0x0C
@@ -27648,6 +27647,21 @@ protected:
     virtual void MeasureInput(float& rate, float& progress,
                               float deltaT);  // 0x53CD80
 };
+
+static_assert(sizeof(InteractInputRcvr) == 0x54,
+              "InteractInputRcvr size mismatch");
+static_assert(sizeof(InteractInputRcvrButtonMash) == 0x60,
+              "InteractInputRcvrButtonMash size mismatch");
+static_assert(sizeof(InteractInputRcvrButtonPress) == 0x5C,
+              "InteractInputRcvrButtonPress size mismatch");
+static_assert(sizeof(InteractInputRcvrStickSwirl) == 0x64,
+              "InteractInputRcvrStickSwirl size mismatch");
+static_assert(sizeof(InteractInputRcvrStickToggleVert) == 0x5C,
+              "InteractInputRcvrStickToggleVert size mismatch");
+static_assert(sizeof(InteractInputRcvrStickToggleHoriz) == 0x5C,
+              "InteractInputRcvrStickToggleHoriz size mismatch");
+static_assert(sizeof(InteractInputRcvrRowboat) == 0x54,
+              "InteractInputRcvrRowboat size mismatch");
 
 InteractInputRcvr* InteractInputRcvr::sInputRcvrs[kInputTypeCount] = {
     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
