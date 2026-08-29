@@ -153,7 +153,7 @@ cdOceanShader.o	23	12	1	9	0	1	0
 cdPrelitShader.o	25	20	0	4	0	1	0
 cdPropellerShader.o	22	6	1	4	0	11	0
 cdRiverShader.o	37	26	1	8	0	2	0
-cdScratchShader.o	46	34	0	10	0	2	0
+cdScratchShader.o	46	34	0	4	0	8	0
 cdScratchVertexDef.o	2	0	0	0	0	2	0
 cdSimpleAlphaShader.o	31	25	0	5	0	1	0
 cdSimpleColorShader.o	13	9	0	4	0	0	0
