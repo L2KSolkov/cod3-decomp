@@ -670,6 +670,7 @@ void FN_ShakeTestFunction()
 // ea: 0x4F8F70
 CameraShake::CameraShake()
 {
+    Initialise();
 }
 
 // ea: 0x005185C0

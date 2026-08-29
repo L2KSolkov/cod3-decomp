@@ -511,6 +511,12 @@ def symbol_variants(name: str) -> set[str]:
             "?GetIndex@?$SizedHandle@$0M@$0BE@@@QBEIXZ",
         "?GetKey@?$SizedHandle@$0M@$0BE@@@QBEHXZ":
             "?GetKey@?$SizedHandle@$0M@$0BE@@@QBEIXZ",
+        # The release map decorates NoiseFloat::Init's 32-bit unsigned
+        # parameter as `K` (unsigned long), while current MSVC emits `I`
+        # (unsigned int).  They are the same x86 call contract, confirmed by
+        # the release body and the source declaration.
+        "?Init@NoiseFloat@@QAEXKMM@Z":
+            "?Init@NoiseFloat@@QAEXIMM@Z",
         "??_0vector@Broc@@QAEAAU01@M@Z":
             "??_0vector@Broc@@QAEAAU01@M@Z",
         # The release map records these CG static methods with the non-static

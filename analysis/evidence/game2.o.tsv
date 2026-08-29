@@ -263,3 +263,21 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004F98D0	?AddEvent@ScriptEventHandler@@QAE_NVHashString@@0@Z	V4	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	IDA:0x004F98D0	Release ScriptEventHandler::AddEvent(HashString,HashString) matches source.
 0x00518740	??0ScriptEvent@ScriptEventHandler@@QAE@XZ	V3	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:318-323	Direct C3 comparison confirms ScriptEvent notify and callback hashes initialize to zero.
 0x00518740	??0ScriptEvent@ScriptEventHandler@@QAE@XZ	V4	PASS	ida-manual-game2-scriptevents-20260828	2026-08-28	IDA:0x00518740	Release ScriptEvent constructor helper matches source.
+0x004F8F70	??0CameraShake@@QAE@XZ	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:670-674	Source now explicitly invokes Initialise after member construction, matching the release constructor’s instance initialization call.
+0x004F8F70	??0CameraShake@@QAE@XZ	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x004F8F70	Release CameraShake constructor calls the five-element instance constructor iterator followed by Initialise; source now matches.
+0x005184C0	??0NoiseFloat@@QAE@XZ	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:160-167	Direct C3 comparison confirms random seed, octave count, frequency, and range initialization.
+0x005184C0	??0NoiseFloat@@QAE@XZ	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x005184C0	Release NoiseFloat constructor matches source.
+0x00518520	?Init@NoiseFloat@@QAEXKMM@Z	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:174-181	Direct C3 comparison confirms random seed replacement and all three parameter assignments.
+0x00518520	?Init@NoiseFloat@@QAEXKMM@Z	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x00518520	Release NoiseFloat::Init matches source.
+0x00518570	?SetFrequency@NoiseFloat@@QAEXM@Z	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:183-187	Direct C3 comparison confirms frequency assignment.
+0x00518570	?SetFrequency@NoiseFloat@@QAEXM@Z	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x00518570	Release NoiseFloat::SetFrequency matches source.
+0x00518590	?SetRange@NoiseFloat@@QAEXM@Z	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:189-193	Direct C3 comparison confirms range assignment.
+0x00518590	?SetRange@NoiseFloat@@QAEXM@Z	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x00518590	Release NoiseFloat::SetRange matches source.
+0x005185C0	?Set3DScale@CameraShake@@QAEXM@Z	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:675-679	Direct C3 comparison confirms m_scale3D assignment.
+0x005185C0	?Set3DScale@CameraShake@@QAEXM@Z	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x005185C0	Release CameraShake::Set3DScale matches source.
+0x005185E0	?Get3DScale@CameraShake@@QAEMXZ	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:681-685	Direct C3 comparison confirms m_scale3D return.
+0x005185E0	?Get3DScale@CameraShake@@QAEMXZ	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x005185E0	Release CameraShake::Get3DScale matches the float-returning source ABI.
+0x005185F0	?SetScaleCOD@CameraShake@@QAEXMH@Z	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:687-692	Direct C3 comparison confirms scale and only-ADS flag assignments.
+0x005185F0	?SetScaleCOD@CameraShake@@QAEXMH@Z	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x005185F0	Release CameraShake::SetScaleCOD matches source.
+0x00518610	?GetScaleCOD@CameraShake@@QAEMXZ	V3	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	src/game/logic/g_camerashake.cpp:694-698	Direct C3 comparison confirms m_scaleCOD return.
+0x00518610	?GetScaleCOD@CameraShake@@QAEMXZ	V4	PASS	ida-manual-game2-camera-ctor-20260828	2026-08-28	IDA:0x00518610	Release CameraShake::GetScaleCOD matches the float-returning source ABI.
