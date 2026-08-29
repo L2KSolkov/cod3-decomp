@@ -13266,6 +13266,17 @@ int MultiplayerMgr::GetPlayerId(const Entity* player) const
     int result = (int)mPeer;
     if (mPeer != nullptr)
     {
+        if (mPeer == (MPPeer*)-29920)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\mp/MultiplayerMgr.cpp";
+            AeAssert::gCurrentLine = 936;
+            AeAssert::gCurrentExpr = "mPeer->GetPlayerManager()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Peer has not been created yet"))
+                __debugbreak();
+        }
         if (player != nullptr)
             return ((MPPlayerManager*)((char*)mPeer + 0x74E0))
                 ->GetPlayer(player)->mId;
