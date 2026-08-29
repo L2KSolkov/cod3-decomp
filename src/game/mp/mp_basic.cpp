@@ -16426,7 +16426,8 @@ void MPPlayerManager::SendPlayer(const MPPlayer* player,
                 }
                 if (message.m_ptr != nullptr)
                     ++message.m_ptr->m_refCount;
-                ((bdSession*)((char*)this + 0x4114))->send(message, reliable);
+                ((bdSession*)((char*)this + 0x4114))
+                    ->send(connection, message, reliable);
             }
             else
             {
