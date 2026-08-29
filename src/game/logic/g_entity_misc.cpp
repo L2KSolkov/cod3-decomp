@@ -3346,7 +3346,14 @@ void BrocSys_ShellShock(unsigned int a, const Broc::string& b, float c)
 {
     BrocSys::ShellShock(a, b, c);
 }
-void ButtonMgr_UpdateBinding(int a, int b) { (void)a; (void)b; }
+class ButtonMgr {
+public:
+    static void UpdateBinding(unsigned char keyInfoIndex, int clnt);
+};
+void ButtonMgr_UpdateBinding(int a, int b)
+{
+    ButtonMgr::UpdateBinding(static_cast<unsigned char>(a), b);
+}
 void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData)
 {
     (void)ent; (void)physData;
