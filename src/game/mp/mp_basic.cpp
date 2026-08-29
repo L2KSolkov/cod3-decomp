@@ -17485,16 +17485,16 @@ bool MPUtility::ReadPosition(bdReference<bdBitBuffer> buffer,
     return v2;
 }
 
-// ea: 0x... (writes 3 float32s with type tags)
+// ea: 0x0073AA30
 void MPUtility::WritePosition(bdReference<bdBitBuffer> buffer,
                               const float* const position)
 {
-    for (int i = 0; i < 3; ++i)
-    {
-        buffer.m_ptr->writeDataType(bdBitBuffer::BD_BB_FLOAT32_TYPE);
-        float v = position[i];
-        buffer.m_ptr->writeBits(&v, 0x20u);
-    }
+    buffer.m_ptr->writeRangedFloat32(position[0], gMPFloatPositionMin,
+                                     gMPFloatPositionMax, 1.0f);
+    buffer.m_ptr->writeRangedFloat32(position[1], gMPFloatPositionMin,
+                                     gMPFloatPositionMax, 1.0f);
+    buffer.m_ptr->writeRangedFloat32(position[2], gMPFloatPositionMin,
+                                     gMPFloatPositionMax, 1.0f);
     if (buffer.m_ptr != nullptr && buffer.m_ptr->m_refCount-- == 1)
         delete buffer.m_ptr;
 }
