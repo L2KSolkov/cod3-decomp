@@ -271,7 +271,9 @@ void ShotPerfTest::Update(float deltaT) {
             mResults[mCurShader].Update(deltaT);
             int mCurShader = this->mCurShader;
             if (mResults[mCurShader].sampleTime < 0.0f) {
-                if (mCurShader == kShaderSwitch_Count)
+                // Release compares the shader index against 0x23 (IDA
+                // disasm 0x7BFCDB), the final valid shader slot.
+                if (mCurShader == kShaderSwitch_cdFlag)
                     mFinished = true;
                 else
                     this->mCurShader = mCurShader + 1;
@@ -532,7 +534,10 @@ void ToggleShader(const char* iName) {
                 if (++v2 >= 0x24)
                     return;
             }
-            ShaderSwitching.as_u32 &= ~(1u << v2);
+            // Release performs a 64-bit shift and stores only the low dword;
+            // indices 32..35 therefore leave the 32-bit mask unchanged.
+            if (v2 < 32)
+                ShaderSwitching.as_u32 &= ~(1u << v2);
         } else {
             int v3 = 0;
             while (!AeStringSupport::StrCStrEqu(name, v1,
