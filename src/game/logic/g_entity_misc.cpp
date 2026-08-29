@@ -3803,8 +3803,19 @@ void DynamicDecalMgr_Update(void* self, float a)
 {
     static_cast<DynamicDecalMgr*>(self)->Update(a);
 }
-void Entity_Notify(Entity* e, unsigned int a) { (void)e; (void)a; }
-void Entity_Notify(void* e, unsigned int a) { (void)e; (void)a; }
+void Entity_Notify(Entity* e, unsigned int a)
+{
+    if (e != nullptr)
+    {
+        HashString h;
+        h.mHash = a;
+        e->Notify(h);
+    }
+}
+void Entity_Notify(void* e, unsigned int a)
+{
+    Entity_Notify(static_cast<Entity*>(e), a);
+}
 void EntityHandleDb_Compact(void* self)
 {
     if (self != nullptr)
