@@ -43487,3 +43487,20 @@ void nalEntropyDecoder::nalFloatDecoder::Decode(
     if (qty != 1)
         goto decode_delta;
 }
+
+static_assert(sizeof(SceneAnimInfo) == 0x48,
+              "SceneAnimInfo layout mismatch");
+static_assert(sizeof(nalClientSceneAnim) == 0x4,
+              "nalClientSceneAnim layout mismatch");
+static_assert(sizeof(nalInitList) == 0x8,
+              "nalInitList layout mismatch");
+static_assert(sizeof(XAnimTree) == 0x1C,
+              "XAnimTree layout mismatch");
+static_assert(sizeof(XSceneAnimParams) == 0x8,
+              "XSceneAnimParams layout mismatch");
+static_assert(sizeof(nalBasePoseBlender) == 0x8,
+              "nalBasePoseBlender layout mismatch");
+static_assert(sizeof(XAnimNotifyInfo) == 0xC,
+              "XAnimNotifyInfo layout mismatch");
+static_assert(sizeof(InteractMetaAnimData) == 0x2C,
+              "InteractMetaAnimData layout mismatch");
