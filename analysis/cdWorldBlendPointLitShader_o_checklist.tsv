@@ -7,11 +7,11 @@ index	status	map_line
 6	PORTED	0002:003db480 ?SetAddressModeW@nglDxTexCacheClass@@QAEXII@Z 00BCA980 f i cdWorldBlendPointLitShader.o
 7	PORTED	0002:003db4d0 ?nglDxSetTextureW@@YAXHI@Z 00BCA9D0 f i cdWorldBlendPointLitShader.o
 8	PORTED	0002:003db530 ?nglDxSetTextureUVW@@YAXHI@Z 00BCAA30 f i cdWorldBlendPointLitShader.o
-9	PORTED	0002:003db560 ?RegisterShader@cdWorldBlendPointLitRender@@YAXXZ 00BCAA60 f i cdWorldBlendPointLitShader.o
-10	PORTED	0002:003db590 ?RegisterVShader@cdWorldBlendPointLitRender@@YAXXZ 00BCAA90 f i cdWorldBlendPointLitShader.o
+9	VERIFIED	0002:003db560 ?RegisterShader@cdWorldBlendPointLitRender@@YAXXZ 00BCAA60 f i cdWorldBlendPointLitShader.o
+10	VERIFIED	0002:003db590 ?RegisterVShader@cdWorldBlendPointLitRender@@YAXXZ 00BCAA90 f i cdWorldBlendPointLitShader.o
 11	PORTED	0002:003db5a0 ?GetVShader@cdWorldBlendPointLitRender@@YAKI@Z 00BCAAA0 f i cdWorldBlendPointLitShader.o
-12	PORTED	0002:003db5b0 ?RegisterShader@cdWorldBlendPointLitProjectedRender@@YAXXZ 00BCAAB0 f i cdWorldBlendPointLitShader.o
-13	PORTED	0002:003db5e0 ?RegisterVShader@cdWorldBlendPointLitProjectedRender@@YAXXZ 00BCAAE0 f i cdWorldBlendPointLitShader.o
+12	VERIFIED	0002:003db5b0 ?RegisterShader@cdWorldBlendPointLitProjectedRender@@YAXXZ 00BCAAB0 f i cdWorldBlendPointLitShader.o
+13	VERIFIED	0002:003db5e0 ?RegisterVShader@cdWorldBlendPointLitProjectedRender@@YAXXZ 00BCAAE0 f i cdWorldBlendPointLitShader.o
 14	PORTED	0002:003db5f0 ?GetVShader@cdWorldBlendPointLitProjectedRender@@YAKI@Z 00BCAAF0 f i cdWorldBlendPointLitShader.o
 15	PORTED	0002:003db600 ?RegisterShader@cdWorldBlendPointLitPixel@@YAXXZ 00BCAB00 f i cdWorldBlendPointLitShader.o
 16	PORTED	0002:003db630 ?RegisterPShader@cdWorldBlendPointLitPixel@@YAXXZ 00BCAB30 f i cdWorldBlendPointLitShader.o

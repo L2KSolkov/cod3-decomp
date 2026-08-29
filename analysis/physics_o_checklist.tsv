@@ -576,18 +576,18 @@ index	status	map_line
 575	PORTED	0002:00319010 ?constructor@phys_gjk_cache_info@@QAEXABVphys_gjk_geom_id_pair_key@@_N@Z 00B08510 f i physics.o
 576	VERIFIED	0002:00319050 ??0phys_contact_manifold_process@@QAE@XZ 00B08550 f i physics.o
 577	VERIFIED	0002:003190d0 ??0phys_gjk_geom_cod_base@@QAE@XZ 00B085D0 f i physics.o
-578	PORTED	0002:003190e0 ?comp_aabb@phys_gjk_geom_cod_base@@UAEXABVMat43@math@@@Z 00B085E0 f i physics.o
+578	VERIFIED	0002:003190e0 ?comp_aabb@phys_gjk_geom_cod_base@@UAEXABVMat43@math@@@Z 00B085E0 f i physics.o
 579	VERIFIED	0002:003190f0 ?nullify_buffer@phys_collision_allocater@@QAEXXZ 00B085F0 f i physics.o
 580	VERIFIED	0002:00319180 ?allocate@phys_collision_allocater@@QAEPAXHH_NPBD@Z 00B08680 f i physics.o
 581	PORTED	0002:00319260 ?create@phys_gjk_geom_list@@SAPAV1@XZ 00B08760 f i physics.o
-582	PORTED	0002:00319280 ??0phys_gjk_geom_vert_list@@QAE@XZ 00B08780 f i physics.o
+582	VERIFIED	0002:00319280 ??0phys_gjk_geom_vert_list@@QAE@XZ 00B08780 f i physics.o
 583	PORTED	0002:00319290 ?get_center@phys_gjk_geom_vert_list@@UBE?BVDir3@math@@XZ 00B08790 f i physics.o
 584	PORTED	0002:003192f0 ?support@phys_gjk_geom_vert_list@@UBE?BVDir3@math@@ABV23@@Z 00B087F0 f i physics.o
 585	PORTED	0002:003193e0 ?get_feature@phys_gjk_geom_vert_list@@UBEXPAVphys_contact_manifold@@@Z 00B088E0 f i physics.o
 586	PORTED	0002:00319430 ?is_feature_point@phys_contact_manifold@@QBE?B_NABVDir3@math@@@Z 00B08930 f i physics.o
-587	PORTED	0002:00319500 ?add_mesh_point@phys_contact_manifold@@QAEXABVDir3@math@@@Z 00B08A00 f i physics.o
+587	VERIFIED	0002:00319500 ?add_mesh_point@phys_contact_manifold@@QAEXABVDir3@math@@@Z 00B08A00 f i physics.o
 588	PORTED	0002:003195c0 ?fast_allocate@phys_memory_heap@@QAEPAXHPBD@Z 00B08AC0 f i physics.o
-589	PORTED	0002:00319620 ?comp_aabb@phys_gjk_geom_vert_list@@UAEXABVMat43@math@@@Z 00B08B20 f i physics.o
+589	VERIFIED	0002:00319620 ?comp_aabb@phys_gjk_geom_vert_list@@UAEXABVMat43@math@@@Z 00B08B20 f i physics.o
 590	PORTED	0002:00319790 ?add_aabb@phys_gjk_geom_cod_base@@QAEXABVDir3@math@@@Z 00B08C90 f i physics.o
 591	PORTED	0002:003197e0 ?are_potentially_colliding@@YA?B_NABVDir3@math@@000@Z 00B08CE0 f i physics.o
 592	PORTED	0002:003198c0 ?reset@gjk_geom_database@@QAEXXZ 00B08DC0 f i physics.o
@@ -610,13 +610,13 @@ index	status	map_line
 609	PORTED	0002:0031a130 ?is_script_controlled@rb_vehicle@@QBE_NXZ 00B09630 f i physics.o
 610	PORTED	0002:0031a140 ?set_script_controlled@rb_vehicle@@QAEX_N@Z 00B09640 f i physics.o
 611	PORTED	0002:0031a180 ?is_tank@rb_vehicle@@QBE_NXZ 00B09680 f i physics.o
-612	PORTED	0002:0031a190 ??0phys_collision_allocater@@QAE@XZ 00B09690 f i physics.o
+612	VERIFIED	0002:0031a190 ??0phys_collision_allocater@@QAE@XZ 00B09690 f i physics.o
 613	PORTED	0002:0031a1f0 ??0phys_gjk_info@@QAE@XZ 00B096F0 f i physics.o
 614	VERIFIED	0002:0031a200 ??0collide_entities_callback@@QAE@XZ 00B09700 f i physics.o
 615	VERIFIED	0002:0031a210 ?GetPose@nalGenericInstance@nalGeneric@@QAEXHAAVnalGenericPose@2@H@Z 00B09710 f i physics.o
 616	VERIFIED	0002:0031a240 ?full_inverse@@YAXAAVMat43@math@@ABV12@@Z 00B09740 f i physics.o
 617	VERIFIED	0002:0031a430 ?calc_total_aabb@rigid_body_sphere_list@@QAEXXZ 00B09930 f i physics.o
-618	PORTED	0002:0031a580 ??A?$cdl_array@Ucdl_vinfo_t@@@@QAEAAUcdl_vinfo_t@@I@Z 00B09A80 f i physics.o
+618	VERIFIED	0002:0031a580 ??A?$cdl_array@Ucdl_vinfo_t@@@@QAEAAUcdl_vinfo_t@@I@Z 00B09A80 f i physics.o
 619	SKIPPED	0002:0031a5d0 ?Fixup@?$InplaceAssetBank@VDestructible@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00B09AD0 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 620	SKIPPED	0002:0031a650 ?AddBank@?$InplaceAssetBankSet@VDestructibleBank@@@@QAEXW4TPakId@@PAVDestructibleBank@@@Z 00B09B50 f i physics.o  SKIPPED: inline template/container helper; supplied by its template definition
 621	PORTED	0002:0031a6e0 ??1?$phys_static_array@PAVrigid_body@@$09@@QAE@XZ 00B09BE0 f i physics.o
@@ -695,7 +695,7 @@ index	status	map_line
 694	PORTED	0002:0031bde0 ?get_center@phys_gjk_geom_aabb@@UBE?BVDir3@math@@XZ 00B0B2E0 f i physics.o
 695	PORTED	0002:0031be10 ?support@phys_gjk_geom_aabb@@UBE?BVDir3@math@@ABV23@@Z 00B0B310 f i physics.o
 696	PORTED	0002:0031bfa0 ?get_feature@phys_gjk_geom_aabb@@UBEXPAVphys_contact_manifold@@@Z 00B0B4A0 f i physics.o
-697	PORTED	0002:0031c030 ?comp_aabb@phys_gjk_geom_aabb@@UAEXABVMat43@math@@@Z 00B0B530 f i physics.o
+697	VERIFIED	0002:0031c030 ?comp_aabb@phys_gjk_geom_aabb@@UAEXABVMat43@math@@@Z 00B0B530 f i physics.o
 698	VERIFIED	0002:0031c1c0 ?create@phys_gjk_geom_aabb@@SAPAV1@ABVDir3@math@@0@Z 00B0B6C0 f i physics.o
 699	VERIFIED	0002:0031c200 ?create@phys_gjk_geom_vert_list@@SAPAV1@HPAVDCGSet@@H@Z 00B0B700 f i physics.o
 700	VERIFIED	0002:0031c2e0 ??0rigid_body_sphere_list@@QAE@XZ 00B0B7E0 f i physics.o

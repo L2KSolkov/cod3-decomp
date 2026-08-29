@@ -21,8 +21,8 @@ index	status	map_line
 20	PORTED	0002:003c5cc0 ?GetLToS@nglMeshNode@@QBEABVMat44@math@@XZ 00BB51C0 f i cdScratchShader.o
 21	PORTED	0002:003c5cd0 ?GetID@nglShader@@QAEHXZ 00BB51D0 f i cdScratchShader.o
 22	VERIFIED	0002:003c5ce0 ?GetDist@nglShaderNode@@QAEMABVMat43@math@@@Z 00BB51E0 f i cdScratchShader.o
-23	PORTED	0002:003c5da0 ??1nglShaderNode@@UAE@XZ 00BB52A0 f i cdScratchShader.o
-24	PORTED	0002:003c5db0 ?RegisterVShader@cdScratchShaderVertex@@YAXXZ 00BB52B0 f i cdScratchShader.o
+23	VERIFIED	0002:003c5da0 ??1nglShaderNode@@UAE@XZ 00BB52A0 f i cdScratchShader.o
+24	VERIFIED	0002:003c5db0 ?RegisterVShader@cdScratchShaderVertex@@YAXXZ 00BB52B0 f i cdScratchShader.o
 25	PORTED	0002:003c5dd0 ?GetVShader@cdScratchShaderVertex@@YAKXZ 00BB52D0 f i cdScratchShader.o
 26	PORTED	0002:003c5de0 ?RegisterPShader@cdScratchShaderPixel@@YAXXZ 00BB52E0 f i cdScratchShader.o
 27	PORTED	0002:003c5e00 ?GetPShader@cdScratchShaderPixel@@YAPAKXZ 00BB5300 f i cdScratchShader.o
@@ -44,4 +44,4 @@ index	status	map_line
 43	PORTED	0002:003c60c0 ??0cdScratchShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdScratchMaterial@@@Z 00BB55C0 f i cdScratchShader.o
 44	SKIPPED	0002:003c60f0 ??_GcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 45	SKIPPED	0002:003c60f0 ??_EcdScratchShaderNode@@UAEPAXI@Z 00BB55F0 f i cdScratchShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-46	PORTED	0002:003c6120 ??1cdScratchShaderNode@@UAE@XZ 00BB5620 f i cdScratchShader.o
+46	VERIFIED	0002:003c6120 ??1cdScratchShaderNode@@UAE@XZ 00BB5620 f i cdScratchShader.o

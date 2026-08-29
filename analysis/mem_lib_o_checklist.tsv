@@ -4,7 +4,7 @@ index	status	map_line
 3	PORTED	0002:003bae40 ?alloc_size@mem_sentinel@@YAHHH@Z 00BAA340 f mem_lib.o
 4	PORTED	0002:003bae70 ?init@mem_sentinel@@YAPAXPAXHH@Z 00BAA370 f mem_lib.o
 5	VERIFIED	0002:003baed0 ?mem_enable_no_mem_break@@YAX_N@Z 00BAA3D0 f mem_lib.o
-6	VERIFIED	0002:003baee0 ?mem_break@@YAXXZ 00BAA3E0 f mem_lib.o
+6	PORTED	0002:003baee0 ?mem_break@@YAXXZ 00BAA3E0 f mem_lib.o
 7	VERIFIED	0002:003baef0 ?mem_heap_create@@YAXPAUmem_heap@@PAX10@Z 00BAA3F0 f mem_lib.o
 8	VERIFIED	0002:003baf60 ?mem_heap_create@@YAHPAX0PAUmem_heap@@@Z 00BAA460 f mem_lib.o
 9	VERIFIED	0002:003bafc0 ?mem_heap_destroy@@YAHPAUmem_heap@@@Z 00BAA4C0 f mem_lib.o
@@ -32,7 +32,7 @@ index	status	map_line
 31	VERIFIED	0002:003bb910 ?mem_heap_malloc@@YAPAXI@Z 00BAAE10 f mem_lib.o
 32	VERIFIED	0002:003bb930 ?mem_heap_malloc@@YAPAXHI@Z 00BAAE30 f mem_lib.o
 33	VERIFIED	0002:003bb940 ?mem_heap_malloc@@YAPAXPAUmem_heap@@HI@Z 00BAAE40 f mem_lib.o
-34	FIXED	0002:003bb990 ?mem_heap_malloc_ctx@@YAPAXHIPBD0H@Z 00BAAE90 f mem_lib.o	FIXED: added the IDA-canonical alignment-first overload while preserving the existing size-first callers
+34	VERIFIED	0002:003bb990 ?mem_heap_malloc_ctx@@YAPAXHIPBD0H@Z 00BAAE90 f mem_lib.o
 35	PORTED	0002:003bb9b0 ?mem_heap_calloc@@YAPAXHI@Z 00BAAEB0 f mem_lib.o
 36	PORTED	0002:003bb9f0 ?mem_heap_calloc@@YAPAXPAUmem_heap@@HI@Z 00BAAEF0 f mem_lib.o
 37	VERIFIED	0002:003bba50 ?mem_heap_realloc@@YAPAXPAXI@Z 00BAAF50 f mem_lib.o

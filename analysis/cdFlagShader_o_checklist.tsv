@@ -25,7 +25,7 @@ index	status	map_line
 24	VERIFIED	0002:003cb840 ??0cdFlagShader@@QAE@XZ 00BBAD40 f i cdFlagShader.o
 25	VERIFIED	0002:003cb870 ?GetName@cdFlagShader@@UAE?AVtlFixedString@@XZ 00BBAD70 f i cdFlagShader.o
 26	PORTED	0002:003cb890 ?RegisterShader@cdFlagVertex@@YAXXZ 00BBAD90 f i cdFlagShader.o
-27	PORTED	0002:003cb8b0 ?RegisterVShader@cdFlagVertex@@YAXXZ 00BBADB0 f i cdFlagShader.o
+27	VERIFIED	0002:003cb8b0 ?RegisterVShader@cdFlagVertex@@YAXXZ 00BBADB0 f i cdFlagShader.o
 28	PORTED	0002:003cb8d0 ?GetVShader@cdFlagVertex@@YAKXZ 00BBADD0 f i cdFlagShader.o
 29	PORTED	0002:003cb8e0 ?RegisterShader@cdFlagPixel@@YAXXZ 00BBADE0 f i cdFlagShader.o
 30	PORTED	0002:003cb900 ?RegisterPShader@cdFlagPixel@@YAXXZ 00BBAE00 f i cdFlagShader.o

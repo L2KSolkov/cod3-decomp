@@ -22,5 +22,5 @@ index	status	map_line
 21	VERIFIED	0002:00433960 ?tlPrintf@@YAXPBDZZ 00C22E60 f tl_system.o
 22	VERIFIED	0002:004339b0 ?tlReadFile@@YA_NPBDPAUtlFileBuf@@II@Z 00C22EB0 f tl_system.o
 23	VERIFIED	0002:00433af0 ?tlWarning@@YAXPBDZZ 00C22FF0 f tl_system.o
-24	PORTED	0002:00433b50 ??0tlMemAllocMutex@@QAE@XZ 00C23050 f i tl_system.o
-25	PORTED	0002:00433b60 ??1tlMemAllocMutex@@QAE@XZ 00C23060 f i tl_system.o
+24	VERIFIED	0002:00433b50 ??0tlMemAllocMutex@@QAE@XZ 00C23050 f i tl_system.o
+25	VERIFIED	0002:00433b60 ??1tlMemAllocMutex@@QAE@XZ 00C23060 f i tl_system.o

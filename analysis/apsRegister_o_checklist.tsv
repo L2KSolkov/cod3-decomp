@@ -1,6 +1,6 @@
 index	status	map_line
-1	PORTED	0002:003f08d0 ?Set@Packed@Dir3@math@@QAEXMMM@Z 00BDFDD0 f i apsRegister.o
-2	PORTED	0002:003f0900 ?Set@Packed@Vector4@math@@QAEXMMMM@Z 00BDFE00 f i apsRegister.o
+1	VERIFIED	0002:003f08d0 ?Set@Packed@Dir3@math@@QAEXMMM@Z 00BDFDD0 f i apsRegister.o
+2	VERIFIED	0002:003f0900 ?Set@Packed@Vector4@math@@QAEXMMMM@Z 00BDFE00 f i apsRegister.o
 3	VERIFIED	0002:003f0930 ??1apsVirtualBase@@UAE@XZ 00BDFE30 f i apsRegister.o
 4	VERIFIED	0002:003f0940 ?GetVtable@apsVirtualBase@@QBEIXZ 00BDFE40 f i apsRegister.o
 5	SKIPPED	0002:003f0950 ??_GapsVirtualBase@@UAEPAXI@Z 00BDFE50 f i apsRegister.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

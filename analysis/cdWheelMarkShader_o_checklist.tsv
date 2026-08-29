@@ -16,7 +16,7 @@ index	status	map_line
 15	VERIFIED	0002:003c9ac0 ??0cdWheelMarkShader@@QAE@XZ 00BB8FC0 f i cdWheelMarkShader.o
 16	VERIFIED	0002:003c9af0 ?GetName@cdWheelMarkShader@@UAE?AVtlFixedString@@XZ 00BB8FF0 f i cdWheelMarkShader.o
 17	PORTED	0002:003c9b10 ?RegisterShader@cdWheelMarkShaderVertex@@YAXXZ 00BB9010 f i cdWheelMarkShader.o
-18	PORTED	0002:003c9b30 ?RegisterVShader@cdWheelMarkShaderVertex@@YAXXZ 00BB9030 f i cdWheelMarkShader.o
+18	VERIFIED	0002:003c9b30 ?RegisterVShader@cdWheelMarkShaderVertex@@YAXXZ 00BB9030 f i cdWheelMarkShader.o
 19	PORTED	0002:003c9b50 ?GetVShader@cdWheelMarkShaderVertex@@YAKXZ 00BB9050 f i cdWheelMarkShader.o
 20	PORTED	0002:003c9b60 ?RegisterShader@cdWheelMarkShaderPixel@@YAXXZ 00BB9060 f i cdWheelMarkShader.o
 21	PORTED	0002:003c9b80 ?RegisterPShader@cdWheelMarkShaderPixel@@YAXXZ 00BB9080 f i cdWheelMarkShader.o
@@ -28,7 +28,7 @@ index	status	map_line
 27	PORTED	0002:003c9c70 ??0cdWheelMarkShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWheelMarkShaderMat@@@Z 00BB9170 f i cdWheelMarkShader.o
 28	SKIPPED	0002:003c9ca0 ??_EcdWheelMarkShaderNode@@UAEPAXI@Z 00BB91A0 f i cdWheelMarkShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 29	SKIPPED	0002:003c9ca0 ??_GcdWheelMarkShaderNode@@UAEPAXI@Z 00BB91A0 f i cdWheelMarkShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-30	PORTED	0002:003c9cd0 ??1cdWheelMarkShaderNode@@UAE@XZ 00BB91D0 f i cdWheelMarkShader.o
+30	VERIFIED	0002:003c9cd0 ??1cdWheelMarkShaderNode@@UAE@XZ 00BB91D0 f i cdWheelMarkShader.o
 31	SKIPPED	0002:003c9ce0 ??_GcdWheelMarkShader@@UAEPAXI@Z 00BB91E0 f i cdWheelMarkShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 32	SKIPPED	0002:003c9ce0 ??_EcdWheelMarkShader@@UAEPAXI@Z 00BB91E0 f i cdWheelMarkShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 33	VERIFIED	0002:003c9d10 ??1cdWheelMarkShader@@UAE@XZ 00BB9210 f i cdWheelMarkShader.o

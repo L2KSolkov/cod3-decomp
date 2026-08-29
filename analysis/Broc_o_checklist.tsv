@@ -53,7 +53,7 @@ index	status	map_line
 52	VERIFIED	0002:005284c0 ??HBroc@@YA?AVstring@0@ABV10@0@Z 00D179C0 f Broc.o
 53	VERIFIED	0002:005285c0 ??HBroc@@YA?AVstring@0@ABV10@PBD@Z 00D17AC0 f Broc.o
 54	VERIFIED	0002:00528710 ?string_hash@Broc@@YA?AUHashStr@@PBD@Z 00D17C10 f Broc.o
-55	PORTED	0002:00528750 ??0HashStr@@QAE@I@Z 00D17C50 f i Broc.o
+55	VERIFIED	0002:00528750 ??0HashStr@@QAE@I@Z 00D17C50 f i Broc.o
 56	VERIFIED	0002:00528780 ?string_hash@Broc@@YA?AUHashStr@@ABVstring@1@@Z 00D17C80 f Broc.o
 57	VERIFIED	0002:005287c0 ?strcmp@Broc@@YAHPBD0@Z 00D17CC0 f Broc.o
 58	VERIFIED	0002:00528860 ??8Broc@@YA_NUHashStr@@ABVstring@0@@Z 00D17D60 f Broc.o
@@ -91,7 +91,7 @@ index	status	map_line
 90	VERIFIED	0002:00529790 ??$Copy@Vstring@Broc@@@EEHelper@Broc@@YAII@Z 00D18C90 f Broc.o
 91	VERIFIED	0002:00529840 ?Initialize@EEDefault@Broc@@YAIPBD@Z 00D18D40 f Broc.o
 92	VERIFIED	0002:00529890 ?Copy@EEDefault@Broc@@YAII@Z 00D18D90 f Broc.o
-93	VERIFIED	0002:005298e0 ?Destruct@EEDefault@Broc@@YAXAAI@Z 00D18DE0 f Broc.o
+93	PORTED	0002:005298e0 ?Destruct@EEDefault@Broc@@YAXAAI@Z 00D18DE0 f Broc.o
 94	VERIFIED	0002:00529930 ?Equals@EEDefault@Broc@@YA_NIPBD@Z 00D18E30 f Broc.o
 95	PORTED	0002:00529980 ?GetExtendedEntity@ExtendedEntity@Broc@@SAPAV12@I@Z 00D18E80 f Broc.o
 96	PORTED	0002:00529ac0 ?CreateExtendedEntity@ExtendedEntity@Broc@@CAPAXQAPBDH@Z 00D18FC0 f Broc.o
@@ -120,10 +120,10 @@ index	status	map_line
 119	VERIFIED	0002:0052beb0 ??0vehiclenode@Broc@@QAE@H@Z 00D1B3B0 f i Broc.o
 120	PORTED	0002:0052bee0 ?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vpathnode@Broc@@@1@@Z 00D1B3E0 f Broc.o
 121	PORTED	0002:0052c0b0 ?GetAllVehicleNodes@Broc@@YAXAAV?$dyn_array@Vvehiclenode@Broc@@@1@@Z 00D1B5B0 f Broc.o
-122	FIXED	0002:0052c290 ?GetEntArray@Broc@@YAXABVstring@1@UHashStr@@AAV?$dyn_array@Ventity@Broc@@@1@I@Z 00D1B790 f Broc.o	FIXED: IDA-backed mGetEnt wrapper, capacity assertion, and entity construction; source 80f25ec7
+122	PORTED	0002:0052c290 ?GetEntArray@Broc@@YAXABVstring@1@UHashStr@@AAV?$dyn_array@Ventity@Broc@@@1@I@Z 00D1B790 f Broc.o
 123	PORTED	0002:0052c3b0 ?GetAllDronesWithinDistance@Broc@@YAXABUvector@1@MAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B8B0 f Broc.o
-124	FIXED	0002:0052c4d0 ?GetPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B9D0 f Broc.o	FIXED: IDA-backed mGetPlayerArray wrapper, capacity assertion, and entity construction; source 80f25ec7
-125	FIXED	0002:0052c5d0 ?GetLocalPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1BAD0 f Broc.o	FIXED: IDA-backed mGetLocalPlayerArray wrapper, capacity assertion, and entity construction; source 80f25ec7
+124	PORTED	0002:0052c4d0 ?GetPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1B9D0 f Broc.o
+125	PORTED	0002:0052c5d0 ?GetLocalPlayerArray@Broc@@YAXAAV?$dyn_array@Ventity@Broc@@@1@@Z 00D1BAD0 f Broc.o
 126	PORTED	0002:0052c6d0 ?size@?$dyn_array@Ventity@Broc@@@Broc@@QBEHXZ 00D1BBD0 f i Broc.o
 127	PORTED	0002:0052c6f0 ?Destroy@?$BrocDtor@Vstring@Broc@@@@UAEXPAX@Z 00D1BBF0 f i Broc.o
 128	PORTED	0002:0052c720 ??0?$ae_pair@PAXH@@QAE@ABQAXABH@Z 00D1BC20 f i Broc.o
@@ -159,4 +159,4 @@ index	status	map_line
 158	PORTED	0002:0052e280 ??$GetUninitialized@_N@@YA_NXZ 00D1D780 f i Broc.o
 159	VERIFIED	0002:0052e2a0 ??0BroAnim@@QAE@XZ 00D1D7A0 f i Broc.o
 160	PORTED	0002:0052e2d0 ?GetUninitialized@BroAnim@@QAEIXZ 00D1D7D0 f i Broc.o
-161	PORTED	0002:0052e2f0 ??0HashStr@@QAE@XZ 00D1D7F0 f i Broc.o
+161	VERIFIED	0002:0052e2f0 ??0HashStr@@QAE@XZ 00D1D7F0 f i Broc.o

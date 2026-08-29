@@ -114,10 +114,10 @@ index	status	map_line
 113	SKIPPED	0002:0043e420 ??$_Pop_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglOpaqueCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00U10@VnglOpaqueCompare@@PAH@Z 00C2D920 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 114	SKIPPED	0002:0043e460 ??$_Pop_heap@PAU?$pair@PAVnglRenderNode@@I@std@@HU12@VnglTransCompare@@@std@@YAXPAU?$pair@PAVnglRenderNode@@I@0@00U10@VnglTransCompare@@PAH@Z 00C2D960 f i ngl_scene.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 115	PORTED	0002:0043e4a0 ??0nglSceneParamSet@@QAE@XZ 00C2D9A0 f i ngl_scene.o
-116	PORTED	0002:0043e4d0 ??0nglRenderCallbackNode@@QAE@XZ 00C2D9D0 f i ngl_scene.o
-117	PORTED	0002:0043e4e0 ?Render@nglRenderCallbackNode@@UAEXXZ 00C2D9E0 f i ngl_scene.o
-118	PORTED	0002:0043e520 ?GetDesc@nglRenderCallbackNode@@UAEXPAD@Z 00C2DA20 f i ngl_scene.o
-119	PORTED	0002:0043e540 ?GetSortInfo@nglRenderCallbackNode@@UAEXAAUnglSortInfo@@@Z 00C2DA40 f i ngl_scene.o
+116	VERIFIED	0002:0043e4d0 ??0nglRenderCallbackNode@@QAE@XZ 00C2D9D0 f i ngl_scene.o
+117	VERIFIED	0002:0043e4e0 ?Render@nglRenderCallbackNode@@UAEXXZ 00C2D9E0 f i ngl_scene.o
+118	VERIFIED	0002:0043e520 ?GetDesc@nglRenderCallbackNode@@UAEXPAD@Z 00C2DA20 f i ngl_scene.o
+119	VERIFIED	0002:0043e540 ?GetSortInfo@nglRenderCallbackNode@@UAEXAAUnglSortInfo@@@Z 00C2DA40 f i ngl_scene.o
 120	SKIPPED	0002:0043e560 ??_EnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 121	SKIPPED	0002:0043e560 ??_GnglRenderCallbackNode@@UAEPAXI@Z 00C2DA60 f i ngl_scene.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 122	PORTED	0002:0043e590 ??0nglScene@@QAE@XZ 00C2DA90 f i ngl_scene.o

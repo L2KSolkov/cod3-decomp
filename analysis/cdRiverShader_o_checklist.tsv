@@ -6,7 +6,7 @@ index	status	map_line
 5	VERIFIED	0002:003d6a60 ??0cdRiverShader@@QAE@XZ 00BC5F60 f i cdRiverShader.o
 6	VERIFIED	0002:003d6aa0 ?GetName@cdRiverShader@@UAE?AVtlFixedString@@XZ 00BC5FA0 f i cdRiverShader.o
 7	PORTED	0002:003d6ac0 ?RegisterShader@cdRiverRender@@YAXXZ 00BC5FC0 f i cdRiverShader.o
-8	PORTED	0002:003d6ae0 ?RegisterVShader@cdRiverRender@@YAXXZ 00BC5FE0 f i cdRiverShader.o
+8	VERIFIED	0002:003d6ae0 ?RegisterVShader@cdRiverRender@@YAXXZ 00BC5FE0 f i cdRiverShader.o
 9	PORTED	0002:003d6b00 ?GetVShader@cdRiverRender@@YAKXZ 00BC6000 f i cdRiverShader.o
 10	PORTED	0002:003d6b10 ?RegisterShader@cdRiverPixel@@YAXXZ 00BC6010 f i cdRiverShader.o
 11	PORTED	0002:003d6b40 ?RegisterPShader@cdRiverPixel@@YAXXZ 00BC6040 f i cdRiverShader.o

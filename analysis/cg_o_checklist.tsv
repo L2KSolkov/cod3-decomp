@@ -1,8 +1,8 @@
 index	status	map_line
 1	PORTED	0002:00287920 ??ZDir3@math@@QAEABV01@ABVPosition3@1@@Z 00A76E20 f i cg.o
-2	PORTED	0002:00287960 ?QueueSound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@PBDV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N@Z 00A76E60 f i cg.o
-3	PORTED	0002:00287a00 ??4_objectiveInfo_t@@QAEAAU0@ABU0@@Z 00A76F00 f i cg.o
-4	PORTED	0002:00287a90 ??0refdef_s@@QAE@XZ 00A76F90 f i cg.o
+2	VERIFIED	0002:00287960 ?QueueSound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@PBDV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N@Z 00A76E60 f i cg.o
+3	VERIFIED	0002:00287a00 ??4_objectiveInfo_t@@QAEAAU0@ABU0@@Z 00A76F00 f i cg.o
+4	VERIFIED	0002:00287a90 ??0refdef_s@@QAE@XZ 00A76F90 f i cg.o
 5	VERIFIED	0002:00287aa0 ?SetDofEffect@GlobalEffect@@QAEXHMMMM@Z 00A76FA0 f i cg.o
 6	VERIFIED	0002:00287af0 ?SetShockedClient@GlobalEffect@@QAEXH@Z 00A76FF0 f i cg.o
 7	VERIFIED	0002:00287b00 ?GetPrevViewPos@Camera@@QAE?AVPosition3@math@@XZ 00A77000 f i cg.o
@@ -11,7 +11,7 @@ index	status	map_line
 10	VERIFIED	0002:00287cb0 ?CG_DrawTimer@@YAMM@Z 00A771B0 f cg.o
 11	VERIFIED	0002:00287da0 ?CG_PriorityCenterPrint@@YAXPBDMHH@Z 00A772A0 f cg.o
 12	VERIFIED	0002:00287f10 ?CG_CenterPrint@@YAXPBDHH@Z 00A77410 f cg.o
-13	PORTED	0002:00287f40 ?CG_GetWeapReticleZoom@@YAHPAM@Z 00A77440 f cg.o
+13	VERIFIED	0002:00287f40 ?CG_GetWeapReticleZoom@@YAHPAM@Z 00A77440 f cg.o
 14	PORTED	0002:00288600 ?CG_DrawFriendlyFire@@YAXXZ 00A77B00 f cg.o
 15	VERIFIED	0002:00288620 ?CG_Fade@@YAXHHHHHHH@Z 00A77B20 f cg.o
 16	VERIFIED	0002:00288680 ?CG_DrawVersion@@YAXXZ 00A77B80 f cg.o
@@ -28,8 +28,8 @@ index	status	map_line
 27	VERIFIED	0002:00288d50 ?CG_HorizontalPercentBar@@YAXMMMMM@Z 00A78250 f cg.o
 28	VERIFIED	0002:00288e20 ?CG_DrawSides@@YAXMMMMM@Z 00A78320 f cg.o
 29	VERIFIED	0002:00288ee0 ?CG_DrawTopBottom@@YAXMMMMM@Z 00A783E0 f cg.o
-30	PORTED	0002:00288fa0 ?CG_DrawPic@@YAXMMMMPAUnglTexture@@@Z 00A784A0 f cg.o
-31	PORTED	0002:00289020 ?CG_DrawCroppedPic@@YAXMMMMMMMMPAUnglTexture@@@Z 00A78520 f cg.o
+30	VERIFIED	0002:00288fa0 ?CG_DrawPic@@YAXMMMMPAUnglTexture@@@Z 00A784A0 f cg.o
+31	VERIFIED	0002:00289020 ?CG_DrawCroppedPic@@YAXMMMMMMMMPAUnglTexture@@@Z 00A78520 f cg.o
 32	VERIFIED	0002:002890a0 ?CG_DrawStringExt@@YAXMMPBDPBMHHMMHH@Z 00A785A0 f cg.o
 33	VERIFIED	0002:00289180 ?CG_DrawBigString@@YAXMMPBDM@Z 00A78680 f cg.o
 34	VERIFIED	0002:002891f0 ?CG_DrawBigStringColor@@YAXMMPBDQBM@Z 00A786F0 f cg.o
@@ -38,11 +38,11 @@ index	status	map_line
 37	VERIFIED	0002:00289300 ?CG_DrawStrlen@@YAHPBD@Z 00A78800 f cg.o
 38	VERIFIED	0002:00289340 ?CG_FadeColor@@YAPAMHHH@Z 00A78840 f cg.o
 39	VERIFIED	0002:002893b0 ?CG_GetNorthDirection@@YAMXZ 00A788B0 f cg.o
-40	PORTED	0002:002893d0 ?CG_UpdateCompassOrientation@@YAXXZ 00A788D0 f cg.o
+40	VERIFIED	0002:002893d0 ?CG_UpdateCompassOrientation@@YAXXZ 00A788D0 f cg.o
 41	VERIFIED	0002:00289680 ?CG_DebugBox@@YAXQBM00HH@Z 00A78B80 f cg.o
 42	VERIFIED	0002:00289790 ?CG_LockLightingOrigin@@YAXPAVEntity@@PAUrefEntity_t@@@Z 00A78C90 f cg.o
 43	VERIFIED	0002:00289910 ?CG_General@@YAXPAVEntity@@@Z 00A78E10 f cg.o
-44	PORTED	0002:00289a80 ?CG_EntityEffects@@YAXPAVEntity@@@Z 00A78F80 f cg.o
+44	VERIFIED	0002:00289a80 ?CG_EntityEffects@@YAXPAVEntity@@@Z 00A78F80 f cg.o
 45	VERIFIED	0002:00289cd0 ?CG_Missile@@YAXPAVEntity@@@Z 00A791D0 f cg.o
 46	VERIFIED	0002:00289e70 ?CG_Mover@@YAXPAVEntity@@@Z 00A79370 f cg.o
 47	VERIFIED	0002:00289ff0 ?CG_ScriptMover@@YAXPAVEntity@@@Z 00A794F0 f cg.o
@@ -61,8 +61,8 @@ index	status	map_line
 60	VERIFIED	0002:0028b300 ?CG_ClearHudElems@@YAXXZ 00A7A800 f cg.o
 61	VERIFIED	0002:0028b330 ?CG_InitLocalEntities@@YAXXZ 00A7A830 f cg.o
 62	VERIFIED	0002:0028b380 ?CG_AddFadeRGB@@YAXPAUlocalEntity_t@@@Z 00A7A880 f cg.o
-63	FIXED	0002:0028b3d0 ?CG_RegisterCvars@@YAXXZ 00A7A8D0 f cg.o
-64	PORTED	0002:0028b400 ?CG_UpdateCvars@@YAXXZ 00A7A900 f cg.o
+63	VERIFIED	0002:0028b3d0 ?CG_RegisterCvars@@YAXXZ 00A7A8D0 f cg.o
+64	VERIFIED	0002:0028b400 ?CG_UpdateCvars@@YAXXZ 00A7A900 f cg.o
 65	VERIFIED	0002:0028b480 ?CG_Printf@@YAXPBDZZ 00A7A980 f cg.o
 66	VERIFIED	0002:0028b4b0 ?CG_Error@@YAXPBDZZ 00A7A9B0 f cg.o
 67	VERIFIED	0002:0028b4f0 ?CG_ObjMessage@@YAXPBD@Z 00A7A9F0 f cg.o
@@ -83,8 +83,8 @@ index	status	map_line
 82	PORTED	0002:0028b900 ?CG_CheckAmmo@@YAXXZ 00A7AE00 f cg.o
 83	VERIFIED	0002:0028b9a0 ?CG_DrawScoreboard_GetTeamColor@@YAXHQAM@Z 00A7AEA0 f cg.o
 84	VERIFIED	0002:0028ba60 ?CountObjectiveChildren@@YAHPAU_objectiveInfo_t@@@Z 00A7AF60 f cg.o
-85	PORTED	0002:0028ba80 ?CG_DrawObjective@@YAMPBU_objectiveInfo_t@@MPAMAAM22222_N@Z 00A7AF80 f cg.o
-86	PORTED	0002:0028ba90 ?CG_DrawObjectives@@YAXMPAM@Z 00A7AF90 f cg.o
+85	VERIFIED	0002:0028ba80 ?CG_DrawObjective@@YAMPBU_objectiveInfo_t@@MPAMAAM22222_N@Z 00A7AF80 f cg.o
+86	VERIFIED	0002:0028ba90 ?CG_DrawObjectives@@YAXMPAM@Z 00A7AF90 f cg.o
 87	VERIFIED	0002:0028baa0 ?CG_DrawScoreboard@@YAHXZ 00A7AFA0 f cg.o
 88	VERIFIED	0002:0028bb10 ?CG_ParseServerinfo@@YAXXZ 00A7B010 f cg.o
 89	VERIFIED	0002:0028bbb0 ?CG_RegisterServerShaders@@YAXXZ 00A7B0B0 f cg.o
@@ -94,17 +94,17 @@ index	status	map_line
 93	VERIFIED	0002:0028bf80 ?CG_SaveShellShockCvars@@YAHPBD@Z 00A7B480 f cg.o
 94	VERIFIED	0002:0028c010 ?CG_SetShellShockParmsFromCvars@@YAXPAUshellshock_parms_t@@@Z 00A7B510 f cg.o
 95	VERIFIED	0002:0028c590 ?CG_ShellShockCamera@@YAXXZ 00A7BA90 f cg.o
-96	PORTED	0002:0028c760 ?CG_StartShellShock@@YAXPBUshellshock_parms_t@@HH@Z 00A7BC60 f cg.o
+96	VERIFIED	0002:0028c760 ?CG_StartShellShock@@YAXPBUshellshock_parms_t@@HH@Z 00A7BC60 f cg.o
 97	VERIFIED	0002:0028c860 ?cg_dllEntry@@YAXP6AHHZZ@Z 00A7BD60 f cg.o
 98	VERIFIED	0002:0028c870 ?trap_R_SetCullDist@@YAXM@Z 00A7BD70 f cg.o
 99	VERIFIED	0002:0028c880 ?trap_R_SetFog@@YAXHHHMMMM@Z 00A7BD80 f cg.o
 100	VERIFIED	0002:0028c890 ?trap_R_SaveScreen@@YAXXZ 00A7BD90 f cg.o
-101	PORTED	0002:0028c8a0 ?trap_R_DrawStretchPicGradient@@YAXMMMMMMMMPAUnglTexture@@PBMH@Z 00A7BDA0 f cg.o
-102	PORTED	0002:0028c8b0 ?trap_R_DrawStretchPicRotate@@YAXMMMMMMMMMPAUnglTexture@@@Z 00A7BDB0 f cg.o
-103	PORTED	0002:0028c8c0 ?trap_R_DrawQuadPic@@YAXPAY01$$CBM0PAUnglTexture@@@Z 00A7BDC0 f cg.o
-104	PORTED	0002:0028c8d0 ?trap_R_TrackStatistics@@YAXPAUtrStatistics_t@@@Z 00A7BDD0 f cg.o
-105	PORTED	0002:0028c8e0 ?trap_R_PickShader@@YAHABVPosition3@math@@0PAD11H@Z 00A7BDE0 f cg.o
-106	PORTED	0002:0028c8f0 ?CG_UI_Popup@@YAHPBD@Z 00A7BDF0 f cg.o
+101	VERIFIED	0002:0028c8a0 ?trap_R_DrawStretchPicGradient@@YAXMMMMMMMMPAUnglTexture@@PBMH@Z 00A7BDA0 f cg.o
+102	VERIFIED	0002:0028c8b0 ?trap_R_DrawStretchPicRotate@@YAXMMMMMMMMMPAUnglTexture@@@Z 00A7BDB0 f cg.o
+103	VERIFIED	0002:0028c8c0 ?trap_R_DrawQuadPic@@YAXPAY01$$CBM0PAUnglTexture@@@Z 00A7BDC0 f cg.o
+104	VERIFIED	0002:0028c8d0 ?trap_R_TrackStatistics@@YAXPAUtrStatistics_t@@@Z 00A7BDD0 f cg.o
+105	VERIFIED	0002:0028c8e0 ?trap_R_PickShader@@YAHABVPosition3@math@@0PAD11H@Z 00A7BDE0 f cg.o
+106	VERIFIED	0002:0028c8f0 ?CG_UI_Popup@@YAHPBD@Z 00A7BDF0 f cg.o
 107	VERIFIED	0002:0028c900 ?cg_Z_MallocInternal@@YAPAXH@Z 00A7BE00 f cg.o
 108	VERIFIED	0002:0028c910 ?cg_Z_FreeInternal@@YAXPAX@Z 00A7BE10 f cg.o
 109	PORTED	0002:0028c920 ?CG_FxTest@@YAXXZ 00A7BE20 f cg.o
@@ -154,9 +154,9 @@ index	status	map_line
 153	VERIFIED	0002:0028f970 ?CG_CalculateWeaponPosition_BobMovement@@YAXQAM@Z 00A7EE70 f cg.o
 154	VERIFIED	0002:0028fa50 ?CG_CalculateWeaponPosition_BobAngles@@YAXQAM@Z 00A7EF50 f cg.o
 155	VERIFIED	0002:0028fab0 ?CG_WeaponTrackValue@@YAMMMM@Z 00A7EFB0 f cg.o
-156	PORTED	0002:0028fb20 ?CG_CalculateWeaponPosition_Sway@@YAXXZ 00A7F020 f cg.o
+156	VERIFIED	0002:0028fb20 ?CG_CalculateWeaponPosition_Sway@@YAXXZ 00A7F020 f cg.o
 157	VERIFIED	0002:002900f0 ?CG_CalculateWeaponPosition_SwayMovement@@YAXQAM@Z 00A7F5F0 f cg.o
-158	PORTED	0002:00290140 ?CG_CalculateWeaponPosition_SwayAngles@@YAXQAM@Z 00A7F640 f cg.o
+158	VERIFIED	0002:00290140 ?CG_CalculateWeaponPosition_SwayAngles@@YAXQAM@Z 00A7F640 f cg.o
 159	VERIFIED	0002:00290190 ?CG_CalculateWeaponPosition_IdleAngles@@YAXQAM@Z 00A7F690 f cg.o
 160	VERIFIED	0002:00290340 ?CG_CalculateWeaponPosition_BasePosition_movement@@YAXQAM@Z 00A7F840 f cg.o
 161	VERIFIED	0002:00290ac0 ?CG_CalculateWeaponPosition_BasePosition_angles@@YAXQAM@Z 00A7FFC0 f cg.o
@@ -171,7 +171,7 @@ index	status	map_line
 170	VERIFIED	0002:00291e00 ?CG_CalculateWeaponAngles@@YAXQAM@Z 00A81300 f cg.o
 171	PORTED	0002:002921f0 ?CG_WeaponFlash@@YAXPAVEntity@@HABVPosition3@math@@HPAD@Z 00A816F0 f cg.o
 172	VERIFIED	0002:00292260 ?CG_OffsetLMG@@YAXM@Z 00A81760 f cg.o
-173	PORTED	0002:002925c0 ?CG_WeaponSelectable@@YAHH@Z 00A81AC0 f cg.o
+173	VERIFIED	0002:002925c0 ?CG_WeaponSelectable@@YAHH@Z 00A81AC0 f cg.o
 174	VERIFIED	0002:00292600 ?CG_AltWeapon_f@@YAXXZ 00A81B00 f cg.o
 175	PORTED	0002:00292710 ?CG_Weapon_f@@YAXXZ 00A81C10 f cg.o
 176	VERIFIED	0002:002927d0 ?CG_GetGrenadeCount@@YAHXZ 00A81CD0 f cg.o
@@ -190,24 +190,24 @@ index	status	map_line
 189	VERIFIED	0002:002939f0 ?CG_EjectWeaponBrass@@YAXPAVEntity@@H@Z 00A82EF0 f cg.o
 190	VERIFIED	0002:00293a80 ?CG_WeaponIKAddToFireQueue@@YAXPAVEntity@@H@Z 00A82F80 f cg.o
 191	PORTED	0002:00293b80 ?CG_HoldBreathInit@@YAXXZ 00A83080 f cg.o
-192	PORTED	0002:00293bc0 ?compare_controller_sort@View@@YA_NPBUcgs_t@@0@Z 00A830C0 f cg.o
+192	VERIFIED	0002:00293bc0 ?compare_controller_sort@View@@YA_NPBUcgs_t@@0@Z 00A830C0 f cg.o
 193	VERIFIED	0002:00293c10 ?IsSplitScreen@View@@YA_NXZ 00A83110 f cg.o
 194	VERIFIED	0002:00293c20 ?GetNumViewports@View@@YAHXZ 00A83120 f cg.o
 195	VERIFIED	0002:00293c30 ?UpdateViewports@View@@YAXXZ 00A83130 f cg.o
 196	PORTED	0002:00293c40 ?GetCurrentSetup@View@@YAABUSetup@1@XZ 00A83140 f cg.o
 197	PORTED	0002:00293c60 ?GetCurrentWindow@View@@YAABUWindow@1@H@Z 00A83160 f cg.o
 198	VERIFIED	0002:00293ca0 ?SetViewportClipping@View@@YAXH@Z 00A831A0 f cg.o
-199	PORTED	0002:00293d40 ?GetClientController@View@@YAHH@Z 00A83240 f cg.o
+199	VERIFIED	0002:00293d40 ?GetClientController@View@@YAHH@Z 00A83240 f cg.o
 200	VERIFIED	0002:00293db0 ?GetScalingForWindow@View@@YAMH@Z 00A832B0 f cg.o
 201	VERIFIED	0002:00293df0 ?GetXScalingForWindow@View@@YAMH_N@Z 00A832F0 f cg.o
-202	PORTED	0002:00293e60 ?GetYScalingForWindow@View@@YAMH_N@Z 00A83360 f cg.o
+202	VERIFIED	0002:00293e60 ?GetYScalingForWindow@View@@YAMH_N@Z 00A83360 f cg.o
 203	VERIFIED	0002:00293ea0 ?GetScalingForHUD@View@@YAMH@Z 00A833A0 f cg.o
 204	VERIFIED	0002:00293f20 ?GetXScalingForHUD@View@@YAMH@Z 00A83420 f cg.o
 205	VERIFIED	0002:00293fa0 ?GetYScalingForHUD@View@@YAMH@Z 00A834A0 f cg.o
-206	PORTED	0002:00294010 ?GetPreviousHUDXPos@View@@YAMMHHM@Z 00A83510 f cg.o
-207	PORTED	0002:00294100 ?GetCurrentHUDXPos@View@@YAMMHHM@Z 00A83600 f cg.o
-208	PORTED	0002:002941f0 ?GetCurrentHUDYPos@View@@YAMMHHM@Z 00A836F0 f cg.o
-209	PORTED	0002:002942c0 ?GetPreviousHUDYPos@View@@YAMMHHM@Z 00A837C0 f cg.o
+206	VERIFIED	0002:00294010 ?GetPreviousHUDXPos@View@@YAMMHHM@Z 00A83510 f cg.o
+207	VERIFIED	0002:00294100 ?GetCurrentHUDXPos@View@@YAMMHHM@Z 00A83600 f cg.o
+208	VERIFIED	0002:002941f0 ?GetCurrentHUDYPos@View@@YAMMHHM@Z 00A836F0 f cg.o
+209	VERIFIED	0002:002942c0 ?GetPreviousHUDYPos@View@@YAMMHHM@Z 00A837C0 f cg.o
 210	VERIFIED	0002:00294390 ?GetCurrentXPos@View@@YAMMH@Z 00A83890 f cg.o
 211	VERIFIED	0002:00294400 ?GetCurrentYPos@View@@YAMMH@Z 00A83900 f cg.o
 212	VERIFIED	0002:00294480 ?HelmetController@@YAXPAVEntity@@@Z 00A83980 f cg.o
@@ -221,7 +221,7 @@ index	status	map_line
 220	VERIFIED	0002:002957a0 ?CG_DrawBoldGameMessages@@YAXXZ 00A84CA0 f cg.o
 221	VERIFIED	0002:00295850 ?CG_DrawMiniConsole@@YAXXZ 00A84D50 f cg.o
 222	VERIFIED	0002:00295880 ?CG_DrawSubtitles@@YAXXZ 00A84D80 f cg.o
-223	PORTED	0002:002958b0 ?CG_DrawPerformanceWarnings@@YAXXZ 00A84DB0 f cg.o
+223	VERIFIED	0002:002958b0 ?CG_DrawPerformanceWarnings@@YAXXZ 00A84DB0 f cg.o
 224	VERIFIED	0002:00295be0 ?CG_StartShakeCamera@@YAXMHQBMMH@Z 00A850E0 f cg.o
 225	VERIFIED	0002:00295da0 ?CG_ShakeCamera@@YAXH@Z 00A852A0 f cg.o
 226	VERIFIED	0002:00295f90 ?CG_DrawGameScreenFade@@YAXXZ 00A85490 f cg.o
@@ -229,8 +229,8 @@ index	status	map_line
 228	VERIFIED	0002:002960d0 ?CheckAndRunOverHeatBlur@@YAXXZ 00A855D0 f cg.o
 229	VERIFIED	0002:00296760 ?CG_DrawViewportFrames@@YAXH@Z 00A85C60 f cg.o
 230	VERIFIED	0002:00296840 ?CG_FillRectGradient@@YAXMMMMPBM0H@Z 00A85D40 f cg.o
-231	PORTED	0002:002968e0 ?CG_NorthDirectionChanged@@YAXXZ 00A85DE0 f cg.o
-232	PORTED	0002:00296910 ?CG_UpdateCompPointerOrientation@@YAXXZ 00A85E10 f cg.o
+231	VERIFIED	0002:002968e0 ?CG_NorthDirectionChanged@@YAXXZ 00A85DE0 f cg.o
+232	VERIFIED	0002:00296910 ?CG_UpdateCompPointerOrientation@@YAXXZ 00A85E10 f cg.o
 233	VERIFIED	0002:00296c20 ?CG_Item@@YAXPAVEntity@@@Z 00A86120 f cg.o
 234	VERIFIED	0002:00296e10 ?CG_DObjGetLocalTagMatrix@@YAPBUDObjSkelMat@@PAVEntity@@PAVDObj@@I@Z 00A86310 f cg.o
 235	PORTED	0002:00296f30 ?CG_DObjGetWorldTagMatrix@@YAHPAVEntity@@PAVDObj@@IPAUDObjSkelMat@@@Z 00A86430 f cg.o
@@ -238,14 +238,14 @@ index	status	map_line
 237	VERIFIED	0002:00297990 ?CG_DrawInformation@@YAXXZ 00A86E90 f cg.o
 238	VERIFIED	0002:002979f0 ?CG_FreeLocalEntity@@YAXPAUlocalEntity_t@@@Z 00A86EF0 f cg.o
 239	VERIFIED	0002:00297a30 ?CG_AllocLocalEntity@@YAPAUlocalEntity_t@@XZ 00A86F30 f cg.o
-240	PORTED	0002:00297b40 ?CG_CrosshairPlayer@@YA?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A87040 f cg.o
+240	VERIFIED	0002:00297b40 ?CG_CrosshairPlayer@@YA?AV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A87040 f cg.o
 241	VERIFIED	0002:00297de0 ?CG_Shutdown@@YAXXZ 00A872E0 f cg.o
 242	PORTED	0002:00297e30 ?CG_Respawn@@YAXXZ 00A87330 f cg.o
 243	VERIFIED	0002:00297e80 ?CG_ClearObjective@@YAXPAU_objectiveInfo_t@@@Z 00A87380 f cg.o
 244	VERIFIED	0002:00297f10 ?CG_ParseCullDist@@YAXXZ 00A87410 f cg.o
 245	VERIFIED	0002:00297f40 ?CG_ParseFog@@YAXXZ 00A87440 f cg.o
 246	VERIFIED	0002:00298330 ?CG_PrintPerturbationPoints@@YAXXZ 00A87830 f cg.o
-247	PORTED	0002:002983c0 ?CG_DrawShellShockSavedScreenBlend@@YAHPBUshellshock_parms_t@@HH@Z 00A878C0 f cg.o
+247	VERIFIED	0002:002983c0 ?CG_DrawShellShockSavedScreenBlend@@YAHPBUshellshock_parms_t@@HH@Z 00A878C0 f cg.o
 248	VERIFIED	0002:00298430 ?CG_LoadShellShockCvars@@YAHPBD@Z 00A87930 f cg.o
 249	VERIFIED	0002:002986c0 ?trap_R_RegisterShader@@YAHPBDH@Z 00A87BC0 f cg.o
 250	VERIFIED	0002:00298fc0 ?UpdateFOV@Camera@@QAEMXZ 00A884C0 f cg.o
@@ -263,13 +263,13 @@ index	status	map_line
 262	VERIFIED	0002:0029a660 ?CG_OutOfAmmoChange@@YAXXZ 00A89B60 f cg.o
 263	PORTED	0002:0029aae0 ?CG_SpawnTracer@@YAXABVPosition3@math@@0H@Z 00A89FE0 f cg.o
 264	VERIFIED	0002:0029acd0 ?CG_WeaponUpdateLoopingSound@@YAXPAVEntity@@@Z 00A8A1D0 f cg.o
-265	PORTED	0002:0029ae40 ?CG_HoldBreathUpdate@@YAXXZ 00A8A340 f cg.o
+265	VERIFIED	0002:0029ae40 ?CG_HoldBreathUpdate@@YAXXZ 00A8A340 f cg.o
 266	VERIFIED	0002:0029b0b0 ?SetNumViewports@View@@YAXH@Z 00A8A5B0 f cg.o
 267	VERIFIED	0002:0029b100 ?UpdateNumViewports@View@@YAXXZ 00A8A600 f cg.o
 268	VERIFIED	0002:0029b160 ?CG_Actor@@YAXPAVEntity@@@Z 00A8A660 f cg.o
 269	VERIFIED	0002:0029c190 ?CG_ScreenFade@@YAXXZ 00A8B690 f cg.o
-270	PORTED	0002:0029c3c0 ?CG_DrawRotatedPic@@YAXMMMMMPAUnglTexture@@@Z 00A8B8C0 f cg.o
-271	PORTED	0002:0029c540 ?CG_DrawRotatedQuadPic@@YAXMMPAY01$$CBM0MPAUnglTexture@@@Z 00A8BA40 f cg.o
+270	VERIFIED	0002:0029c3c0 ?CG_DrawRotatedPic@@YAXMMMMMPAUnglTexture@@@Z 00A8B8C0 f cg.o
+271	VERIFIED	0002:0029c540 ?CG_DrawRotatedQuadPic@@YAXMMPAY01$$CBM0MPAUnglTexture@@@Z 00A8BA40 f cg.o
 272	VERIFIED	0002:0029c6e0 ?CG_DebugCircleEx@@YAXQBMM00HH@Z 00A8BBE0 f cg.o
 273	VERIFIED	0002:0029c860 ?CG_DebugCircle2Ex@@YAXQBMM00HH@Z 00A8BD60 f cg.o
 274	VERIFIED	0002:0029ca20 ?CG_DebugArc@@YAXQBMMMM0HH@Z 00A8BF20 f cg.o
@@ -293,9 +293,9 @@ index	status	map_line
 292	VERIFIED	0002:0029faa0 ?CG_Player@@YAXPAVEntity@@@Z 00A8EFA0 f cg.o
 293	VERIFIED	0002:002a0030 ?CG_DrawTurretCrossHair@@YAXXZ 00A8F530 f cg.o
 294	VERIFIED	0002:002a0370 ?GetPlayerTarget@@YAPAVEntity@@XZ 00A8F870 f cg.o
-295	PORTED	0002:002a07d0 ?CG_DrawCrosshair@@YAXXZ 00A8FCD0 f cg.o
-296	PORTED	0002:002a0f50 ?CG_Draw2D@@YAXXZ 00A90450 f cg.o
-297	PORTED	0002:002a12f0 ?CG_DrawActive@@YAXXZ 00A907F0 f cg.o
+295	VERIFIED	0002:002a07d0 ?CG_DrawCrosshair@@YAXXZ 00A8FCD0 f cg.o
+296	VERIFIED	0002:002a0f50 ?CG_Draw2D@@YAXXZ 00A90450 f cg.o
+297	VERIFIED	0002:002a12f0 ?CG_DrawActive@@YAXXZ 00A907F0 f cg.o
 298	VERIFIED	0002:002a1380 ?CG_mg42_DoControllers@@YAXPAVEntity@@_N@Z 00A90880 f cg.o
 299	PORTED	0002:002a1730 ?CG_AdjustPositionForMover@@YAXABVPosition3@math@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@HHAAV12@QAM@Z 00A90C30 f cg.o
 300	VERIFIED	0002:002a1900 ?CG_CalcEntityLerpPositions@@YAXPAVEntity@@@Z 00A90E00 f cg.o
@@ -307,7 +307,7 @@ index	status	map_line
 306	PORTED	0002:002a23d0 ?CG_Trace@@YAXPAUtrace_t@@ABVPosition3@math@@111ABUcollision_context_t@@@Z 00A918D0 f cg.o
 307	PORTED	0002:002a2480 ?CG_TraceCapsule@@YAXPAUtrace_t@@ABVPosition3@math@@111ABUcollision_context_t@@@Z 00A91980 f cg.o
 308	PORTED	0002:002a2530 ?CG_PointContents@@YAHABVPosition3@math@@ABUcollision_context_t@@@Z 00A91A30 f cg.o
-309	PORTED	0002:002a30b0 ?CG_PredictPlayerState@@YAXXZ 00A925B0 f cg.o
+309	VERIFIED	0002:002a30b0 ?CG_PredictPlayerState@@YAXXZ 00A925B0 f cg.o
 310	VERIFIED	0002:002a30c0 ?CG_ParseObjectiveChange@@YAXH@Z 00A925C0 f cg.o
 311	VERIFIED	0002:002a34d0 ?CG_ConfigStringModifiedInternal@@YAXH@Z 00A929D0 f cg.o
 312	VERIFIED	0002:002a3700 ?CG_MapInit@@YAXH@Z 00A92C00 f cg.o
@@ -315,7 +315,7 @@ index	status	map_line
 314	VERIFIED	0002:002a3fb0 ?CG_UpdateShellShock@@YAXPBUshellshock_parms_t@@HH@Z 00A934B0 f cg.o
 315	PORTED	0002:002a44d0 ?CG_CalcFov@@YAXXZ 00A939D0 f cg.o
 316	VERIFIED	0002:002a4bf0 ?CG_CalcGunnerViewPos@@YAX_NI@Z 00A940F0 f cg.o
-317	PORTED	0002:002a5680 ?CG_CalcPassengerViewPos@@YAXXZ 00A94B80 f cg.o
+317	VERIFIED	0002:002a5680 ?CG_CalcPassengerViewPos@@YAXXZ 00A94B80 f cg.o
 318	VERIFIED	0002:002a5a10 ?CalcCamMode@Camera@@AAE?AW4ECameraModes@@XZ 00A94F10 f cg.o
 319	VERIFIED	0002:002a5e40 ?UpdateTween@Camera@@AAEXAAVPosition3@math@@0@Z 00A95340 f cg.o
 320	VERIFIED	0002:002a6750 ?BeginVehicleCam@Camera@@AAEXXZ 00A95C50 f cg.o
@@ -363,24 +363,24 @@ index	status	map_line
 362	SKIPPED	0002:002bb620 ??_EnglRenderNode_Vtbl@@UAEPAXI@Z 00AAAB20 f i cg.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 363	VERIFIED	0002:002bb650 ??1nglRenderNode@@UAE@XZ 00AAAB50 f i cg.o
 364	VERIFIED	0002:002bb660 ??0nglRenderNode_Vtbl@@QAE@XZ 00AAAB60 f i cg.o
-365	PORTED	0002:002bb670 ?Inst@SoundMediaMgr@@SAPAV1@XZ 00AAAB70 f i cg.o
+365	VERIFIED	0002:002bb670 ?Inst@SoundMediaMgr@@SAPAV1@XZ 00AAAB70 f i cg.o
 366	VERIFIED	0002:002bb680 ?FastFloor@@YAHM@Z 00AAAB80 f i cg.o
 367	PORTED	0002:002bb690 ?InterpolateAnglesSmooth@@YAXAAVPosition3@math@@00M@Z 00AAAB90 f i cg.o
 368	PORTED	0002:002bb6a0 ?InterpolatePositionSmooth@@YAXAAVPosition3@math@@00M@Z 00AAABA0 f i cg.o
 369	PORTED	0002:002bb6b0 ?CanRunWeaponAnims@PlayerAnimMgr@@QBEHXZ 00AAABB0 f i cg.o
 370	VERIFIED	0002:002bb6c0 ?GetHandsAngles@InteractionController@@QBEAAY02$$CBMXZ 00AAABC0 f i cg.o
 371	VERIFIED	0002:002bb730 ?GetHandsOrigin@InteractionController@@QBEAAY02$$CBMXZ 00AAAC30 f i cg.o
-372	PORTED	0002:002bb7a0 ??0ADSMetaAnimPlayer@@QAE@XZ 00AAACA0 f i cg.o
+372	VERIFIED	0002:002bb7a0 ??0ADSMetaAnimPlayer@@QAE@XZ 00AAACA0 f i cg.o
 373	PORTED	0002:002bb7c0 ??0ADSMetaAnimInstance@@QAE@PAV?$nalAnimClass@VnalAnyPose@@@@0PAVnalBaseSkeleton@@AAM@Z 00AAACC0 f i cg.o
 374	SKIPPED	0002:002bb910 ??_GADSMetaAnimInstance@@UAEPAXI@Z 00AAAE10 f i cg.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 375	SKIPPED	0002:002bb910 ??_EADSMetaAnimInstance@@UAEPAXI@Z 00AAAE10 f i cg.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 376	VERIFIED	0002:002bb940 ??1ADSMetaAnimInstance@@UAE@XZ 00AAAE40 f i cg.o
-377	PORTED	0002:002bb9c0 ??$tl_min@MM@@YAMABM0@Z 00AAAEC0 f i cg.o
+377	VERIFIED	0002:002bb9c0 ??$tl_min@MM@@YAMABM0@Z 00AAAEC0 f i cg.o
 378	SKIPPED	0002:002bba00 ??$tl_max@MM@@YAMABM0@Z 00AAAF00 f i cg.o  SKIPPED: inline template/container helper; supplied by its template definition
 379	VERIFIED	0002:002bba40 ?GetBoneName@XModelParts@@QBEPBDI@Z 00AAAF40 f i cg.o
 380	VERIFIED	0002:002bbac0 ?SetLerpAngles@EntityState@@QAEXABVPosition3@math@@@Z 00AAAFC0 f i cg.o
-381	PORTED	0002:002bbbd0 ??0localEntity_t@@QAE@XZ 00AAB0D0 f i cg.o
-382	PORTED	0002:002bbc20 ??0shellshock_t@@QAE@XZ 00AAB120 f i cg.o
+381	VERIFIED	0002:002bbbd0 ??0localEntity_t@@QAE@XZ 00AAB0D0 f i cg.o
+382	VERIFIED	0002:002bbc20 ??0shellshock_t@@QAE@XZ 00AAB120 f i cg.o
 383	VERIFIED	0002:002bbc30 ?GetAnimTree@AnimBank@@QAEPAVAnimTree@@PBD@Z 00AAB130 f i cg.o
 384	VERIFIED	0002:002bbd00 ?GetAnimTime@AnimationPlayer@@QAEMPAVnalGenericAnim@nalGeneric@@@Z 00AAB200 f i cg.o
 385	VERIFIED	0002:002bbd60 ?IsPartialIdle@AnimationPlayer@@QAE_N_N@Z 00AAB260 f i cg.o
@@ -391,16 +391,16 @@ index	status	map_line
 390	VERIFIED	0002:002bbe30 ?GetSortInfo@nglRenderNode@@UAEXAAUnglSortInfo@@@Z 00AAB330 f i cg.o
 391	SKIPPED	0002:002bbe40 ??_EnglRenderNode@@UAEPAXI@Z 00AAB340 f i cg.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 392	SKIPPED	0002:002bbe40 ??_GnglRenderNode@@UAEPAXI@Z 00AAB340 f i cg.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-393	PORTED	0002:002bbe70 ??0cgsGlobal_t@@QAE@XZ 00AAB370 f i cg.o
-394	PORTED	0002:002bbea0 ??1Camera@@QAE@XZ 00AAB3A0 f i cg.o
+393	VERIFIED	0002:002bbe70 ??0cgsGlobal_t@@QAE@XZ 00AAB370 f i cg.o
+394	VERIFIED	0002:002bbea0 ??1Camera@@QAE@XZ 00AAB3A0 f i cg.o
 395	VERIFIED	0002:002bbeb0 ??0ADSMetaAnimData@@QAE@XZ 00AAB3B0 f i cg.o
 396	VERIFIED	0002:002bbef0 ?IsDelayCreate@ADSMetaAnimData@@UAEHXZ 00AAB3F0 f i cg.o
-397	PORTED	0002:002bbf00 ?VirtualGetPose@ADSMetaAnimInstance@@MAEXMMAAVnalBasePose@@ABV2@H@Z 00AAB400 f i cg.o
-398	PORTED	0002:002bc020 ??0_objectiveInfo_t@@QAE@XZ 00AAB520 f i cg.o
-399	PORTED	0002:002bc070 ??0cgs_t@@QAE@XZ 00AAB570 f i cg.o
+397	VERIFIED	0002:002bbf00 ?VirtualGetPose@ADSMetaAnimInstance@@MAEXMMAAVnalBasePose@@ABV2@H@Z 00AAB400 f i cg.o
+398	VERIFIED	0002:002bc020 ??0_objectiveInfo_t@@QAE@XZ 00AAB520 f i cg.o
+399	VERIFIED	0002:002bc070 ??0cgs_t@@QAE@XZ 00AAB570 f i cg.o
 400	VERIFIED	0002:002bc160 ??0GlobalEffect@@QAE@H@Z 00AAB660 f i cg.o
 401	VERIFIED	0002:002bc190 ?Render@GlobalEffect@@UAEXXZ 00AAB690 f i cg.o
 402	SKIPPED	0002:002bc1a0 ??_GGlobalEffect@@UAEPAXI@Z 00AAB6A0 f i cg.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 403	SKIPPED	0002:002bc1a0 ??_EGlobalEffect@@UAEPAXI@Z 00AAB6A0 f i cg.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-404	PORTED	0002:002bc1d0 ??0snapshot_t@@QAE@XZ 00AAB6D0 f i cg.o
-405	PORTED	0002:002bc1f0 ??0cg_t@@QAE@XZ 00AAB6F0 f i cg.o
+404	VERIFIED	0002:002bc1d0 ??0snapshot_t@@QAE@XZ 00AAB6D0 f i cg.o
+405	VERIFIED	0002:002bc1f0 ??0cg_t@@QAE@XZ 00AAB6F0 f i cg.o

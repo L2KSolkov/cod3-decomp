@@ -8,7 +8,7 @@ index	status	map_line
 7	VERIFIED	0002:003bf450 ?InitShaders@ShaderCommon@@YAXXZ 00BAE950 f ShaderCommon.o
 8	VERIFIED	0002:003bf500 ?RegisterShaders@ShaderCommon@@YAXXZ 00BAEA00 f ShaderCommon.o
 9	VERIFIED	0002:003bf510 ?SetupFrame@ShaderCommon@@YAXM@Z 00BAEA10 f ShaderCommon.o
-10	PORTED	0002:003bf540 ?SetupSceneCallback@ShaderCommon@@YAXPAX@Z 00BAEA40 f ShaderCommon.o
+10	VERIFIED	0002:003bf540 ?SetupSceneCallback@ShaderCommon@@YAXPAX@Z 00BAEA40 f ShaderCommon.o
 11	PORTED	0002:003bf550 ?ShaderGetTexture@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z 00BAEA50 f ShaderCommon.o
 12	PORTED	0002:003bf5a0 ?ShaderGetTextureNoDefault@ShaderCommon@@YAPAUnglTexture@@ABVtlFixedString@@@Z 00BAEAA0 f ShaderCommon.o
 13	PORTED	0002:003bf5d0 ?GetFarFogColor@ShaderCommon@@YA?AVVector4@math@@XZ 00BAEAD0 f ShaderCommon.o
@@ -22,7 +22,7 @@ index	status	map_line
 21	SKIPPED	0002:003bf840 ?GetShotPerfResults@ShaderCommon@@YAXPAXAAV?$ae_sized_array@V?$ae_fixed_string@$0CAA@G@@$0EA@@@@Z 00BAED40 f ShaderCommon.o  SKIPPED: inline template/container helper; supplied by its template definition
 22	VERIFIED	0002:003bf860 ??0ShaderInfo@ShotPerfTest@ShaderCommon@@QAE@XZ 00BAED60 f i ShaderCommon.o
 23	PORTED	0002:003bf8a0 ?Finalize@ShaderInfo@ShotPerfTest@ShaderCommon@@AAEXXZ 00BAEDA0 f i ShaderCommon.o
-24	PORTED	0002:003bf900 ?IsFinished@ShotPerfTest@ShaderCommon@@QBE_NXZ 00BAEE00 f i ShaderCommon.o
+24	VERIFIED	0002:003bf900 ?IsFinished@ShotPerfTest@ShaderCommon@@QBE_NXZ 00BAEE00 f i ShaderCommon.o
 25	SKIPPED	0002:003bf910 ?empty@?$ae_fixed_string@$0EA@E@@QBE_NXZ 00BAEE10 f i ShaderCommon.o  SKIPPED: inline template/container helper; supplied by its template definition
 26	SKIPPED	0002:003bf920 ??A?$ae_fixed_string@$0EA@E@@QAEAADH@Z 00BAEE20 f i ShaderCommon.o  SKIPPED: inline template/container helper; supplied by its template definition
 27	SKIPPED	0002:003bf990 ?to_lower@?$ae_fixed_string@$0EA@E@@QAEXXZ 00BAEE90 f i ShaderCommon.o  SKIPPED: inline template/container helper; supplied by its template definition

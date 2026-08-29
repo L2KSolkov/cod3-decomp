@@ -12,7 +12,7 @@ index	status	map_line
 11	PORTED	0002:003cfba0 ?gpuUnmapVertexBuffer@@YAXPAUD3DVertexBuffer@@@Z 00BBF0A0 f i cdHeatHazeShader.o
 12	PORTED	0002:003cfbb0 ?gpuSetZTest@@YAXW4gpuCmpMode@@@Z 00BBF0B0 f i cdHeatHazeShader.o
 13	PORTED	0002:003cfbf0 ?RegisterShader@cdHeatHazeRender@@YAXXZ 00BBF0F0 f i cdHeatHazeShader.o
-14	PORTED	0002:003cfc10 ?RegisterVShader@cdHeatHazeRender@@YAXXZ 00BBF110 f i cdHeatHazeShader.o
+14	VERIFIED	0002:003cfc10 ?RegisterVShader@cdHeatHazeRender@@YAXXZ 00BBF110 f i cdHeatHazeShader.o
 15	PORTED	0002:003cfc30 ?GetVShader@cdHeatHazeRender@@YAKXZ 00BBF130 f i cdHeatHazeShader.o
 16	PORTED	0002:003cfc40 ?RegisterShader@cdHeatHazePixel@@YAXXZ 00BBF140 f i cdHeatHazeShader.o
 17	PORTED	0002:003cfc60 ?RegisterPShader@cdHeatHazePixel@@YAXXZ 00BBF160 f i cdHeatHazeShader.o

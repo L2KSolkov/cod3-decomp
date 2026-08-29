@@ -7,7 +7,7 @@ index	status	map_line
 6	PORTED	0002:00405d80 ?SetNodeParams@apsBillboardRenderer@@QBE_NPAVapsRenderNode@@ABUapsRendererRenderInfo@@@Z 00BF5280 f apsBillboardRenderer.o
 7	PORTED	0002:00405f60 ??0apsBillboardRenderer@@QAE@ABVcArgs@0@@Z 00BF5460 f apsBillboardRenderer.o
 8	VERIFIED	0002:004060f0 ?Render@apsBillboardRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF55F0 f apsBillboardRenderer.o
-9	PORTED	0002:00406140 ?RegisterVShader@apsBillboardRender@@YAXXZ 00BF5640 f i apsBillboardRenderer.o
-10	PORTED	0002:00406160 ?RegisterPShader@apsBillboardRenderPixel@@YAXXZ 00BF5660 f i apsBillboardRenderer.o
-11	PORTED	0002:00406180 ?InitPShader@apsBillboardRenderPixel@@YAXXZ 00BF5680 f i apsBillboardRenderer.o
+9	VERIFIED	0002:00406140 ?RegisterVShader@apsBillboardRender@@YAXXZ 00BF5640 f i apsBillboardRenderer.o
+10	VERIFIED	0002:00406160 ?RegisterPShader@apsBillboardRenderPixel@@YAXXZ 00BF5660 f i apsBillboardRenderer.o
+11	VERIFIED	0002:00406180 ?InitPShader@apsBillboardRenderPixel@@YAXXZ 00BF5680 f i apsBillboardRenderer.o
 12	PORTED	0002:004061a0 ??$DefaultRender@VapsBillboardRenderer@@VapsBillboardNode@@@apsBillboardRenderer@@QAE?AW4eRenderResult@apsRenderer@@PAV0@ABUapsRendererRenderInfo@@@Z 00BF56A0 f i apsBillboardRenderer.o

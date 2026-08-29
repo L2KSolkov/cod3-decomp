@@ -20,14 +20,14 @@ index	status	map_line
 19	PORTED	0002:003cd1f0 ?nglDxSetupVShaderFog@@YA?AVVector4@math@@MMMM@Z 00BBC6F0 f i cdDynamicDecalShader.o
 20	VERIFIED	0002:003cd260 ??0cdDynamicDecalShader@@QAE@XZ 00BBC760 f i cdDynamicDecalShader.o
 21	VERIFIED	0002:003cd290 ?GetName@cdDynamicDecalShader@@UAE?AVtlFixedString@@XZ 00BBC790 f i cdDynamicDecalShader.o
-22	PORTED	0002:003cd2b0 ?RegisterShader@cdDynamicDecalRender@@YAXXZ 00BBC7B0 f i cdDynamicDecalShader.o
-23	PORTED	0002:003cd2e0 ?RegisterVShader@cdDynamicDecalRender@@YAXXZ 00BBC7E0 f i cdDynamicDecalShader.o
+22	VERIFIED	0002:003cd2b0 ?RegisterShader@cdDynamicDecalRender@@YAXXZ 00BBC7B0 f i cdDynamicDecalShader.o
+23	VERIFIED	0002:003cd2e0 ?RegisterVShader@cdDynamicDecalRender@@YAXXZ 00BBC7E0 f i cdDynamicDecalShader.o
 24	PORTED	0002:003cd2f0 ?GetVShader@cdDynamicDecalRender@@YAKI@Z 00BBC7F0 f i cdDynamicDecalShader.o
 25	PORTED	0002:003cd300 ?RegisterShader@cdDynamicDecalPixel@@YAXXZ 00BBC800 f i cdDynamicDecalShader.o
 26	PORTED	0002:003cd330 ?RegisterPShader@cdDynamicDecalPixel@@YAXXZ 00BBC830 f i cdDynamicDecalShader.o
 27	PORTED	0002:003cd340 ?GetPShader@cdDynamicDecalPixel@@YAPAKI@Z 00BBC840 f i cdDynamicDecalShader.o
 28	PORTED	0002:003cd350 ??0cdDynamicDecalParams@cdDynamicDecalRender@@QAE@XZ 00BBC850 f i cdDynamicDecalShader.o
-29	PORTED	0002:003cd360 ??0nglPointLightInfo@@QAE@XZ 00BBC860 f i cdDynamicDecalShader.o
+29	VERIFIED	0002:003cd360 ??0nglPointLightInfo@@QAE@XZ 00BBC860 f i cdDynamicDecalShader.o
 30	PORTED	0002:003cd370 ??$SetConstants@UcdDynamicDecalParams@cdDynamicDecalRender@@@cdDynamicDecalRender@@YAXABUcdDynamicDecalParams@0@@Z 00BBC870 f i cdDynamicDecalShader.o
 31	PORTED	0002:003cd390 ??0cdDynamicDecalShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDynamicDecalShaderMat@@@Z 00BBC890 f i cdDynamicDecalShader.o
 32	SKIPPED	0002:003cd3c0 ??_GcdDynamicDecalShaderNode@@UAEPAXI@Z 00BBC8C0 f i cdDynamicDecalShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

@@ -7,7 +7,7 @@ index	status	map_line
 6	PORTED	0002:003d3be0 ?AbsValue@math@@YA?AVPosition3@1@ABV21@@Z 00BC30E0 f i cdPrelitShader.o
 7	PORTED	0002:003d3c20 ?Floor@math@@YA?AVPosition3@1@ABV21@@Z 00BC3120 f i cdPrelitShader.o
 8	PORTED	0002:003d3c60 ?Fract@math@@YA?AVPosition3@1@ABV21@@Z 00BC3160 f i cdPrelitShader.o
-9	PORTED	0002:003d3ca0 ?RegisterVShader@cdPrelitRender@@YAXXZ 00BC31A0 f i cdPrelitShader.o
+9	VERIFIED	0002:003d3ca0 ?RegisterVShader@cdPrelitRender@@YAXXZ 00BC31A0 f i cdPrelitShader.o
 10	PORTED	0002:003d3cc0 ?GetVShader@cdPrelitRender@@YAKXZ 00BC31C0 f i cdPrelitShader.o
 11	PORTED	0002:003d3cd0 ?RegisterPShader@cdPrelitPixel@@YAXXZ 00BC31D0 f i cdPrelitShader.o
 12	PORTED	0002:003d3cf0 ?GetPShader@cdPrelitPixel@@YAPAKXZ 00BC31F0 f i cdPrelitShader.o

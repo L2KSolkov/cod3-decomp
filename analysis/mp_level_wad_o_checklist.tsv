@@ -1,24 +1,24 @@
 index	status	map_line
-1	PORTED	0002:00525110 ??0bint@@QAE@XZ 00D14610 f i mp_level_wad.o
-2	PORTED	0002:00525140 ??0bint@@QAE@H@Z 00D14640 f i mp_level_wad.o
-3	PORTED	0002:00525170 ??0bint@@QAE@M@Z 00D14670 f i mp_level_wad.o
+1	VERIFIED	0002:00525110 ??0bint@@QAE@XZ 00D14610 f i mp_level_wad.o
+2	VERIFIED	0002:00525140 ??0bint@@QAE@H@Z 00D14640 f i mp_level_wad.o
+3	VERIFIED	0002:00525170 ??0bint@@QAE@M@Z 00D14670 f i mp_level_wad.o
 4	PORTED	0002:005251a0 ??Bbint@@QBE?BHXZ 00D146A0 f i mp_level_wad.o
-5	PORTED	0002:005251c0 ??0bfloat@@QAE@XZ 00D146C0 f i mp_level_wad.o
-6	PORTED	0002:005251f0 ??0bfloat@@QAE@M@Z 00D146F0 f i mp_level_wad.o
+5	VERIFIED	0002:005251c0 ??0bfloat@@QAE@XZ 00D146C0 f i mp_level_wad.o
+6	VERIFIED	0002:005251f0 ??0bfloat@@QAE@M@Z 00D146F0 f i mp_level_wad.o
 7	PORTED	0002:00525220 ??Bbfloat@@QBE?BMXZ 00D14720 f i mp_level_wad.o
-8	PORTED	0002:00525240 ??0bbool@@QAE@XZ 00D14740 f i mp_level_wad.o
+8	VERIFIED	0002:00525240 ??0bbool@@QAE@XZ 00D14740 f i mp_level_wad.o
 9	PORTED	0002:00525270 ??BHashStr@@QBE?BIXZ 00D14770 f i mp_level_wad.o
 10	VERIFIED	0002:00525290 ??0vehiclenode@Broc@@QAE@XZ 00D14790 f i mp_level_wad.o
 11	PORTED	0002:005252c0 ?ee@entity@Broc@@QAEPBULocalFields@mp_level_wad@@XZ 00D147C0 f i mp_level_wad.o
-12	PORTED	0002:005252f0 ?LocalEE@entity@Broc@@QBEPAULocalFields@mp_level_wad@@XZ 00D147F0 f i mp_level_wad.o	PORTED: supplied by the IDA-matched GetEE-backed LocalFields implementation; IDA type is the 20-byte mp_util_wad alias
+12	PORTED	0002:005252f0 ?LocalEE@entity@Broc@@QBEPAULocalFields@mp_level_wad@@XZ 00D147F0 f i mp_level_wad.o
 13	VERIFIED	0002:00525320 ??2AeThreadFunctor@@SAPAXI@Z 00D14820 f i mp_level_wad.o
 14	VERIFIED	0002:00525350 ??3AeThreadFunctor@@SAXPAX@Z 00D14850 f i mp_level_wad.o
 15	VERIFIED	0002:00525380 ??1AeThreadFunctor@@UAE@XZ 00D14880 f i mp_level_wad.o
 16	SKIPPED	0002:005253b0 ??_EAeThreadFunctor@@UAEPAXI@Z 00D148B0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 17	SKIPPED	0002:005253b0 ??_GAeThreadFunctor@@UAEPAXI@Z 00D148B0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-18	FIXED	0002:00525400 ?thread_create@Broc@@YAI_NPBDH1PAVAeThreadFunctor@@@Z 00D14900 f i mp_level_wad.o	FIXED: IDA-backed AeThreadFunctor signature and mThreadCreateInternal forwarding; source 80f25ec7
+18	VERIFIED	0002:00525400 ?thread_create@Broc@@YAI_NPBDH1PAVAeThreadFunctor@@@Z 00D14900 f i mp_level_wad.o
 19	VERIFIED	0002:00525450 ?Destroy@BrocDtorBase@@UAEXPAX@Z 00D14950 f i mp_level_wad.o
-20	PORTED	0002:00525470 ?GetEE@entity@Broc@@QBEPBVExtendedEntity@2@XZ 00D14970 f i mp_level_wad.o	PORTED: added IDA 0x00925470 ExtendedEntity lookup with nullEnt fallback
+20	PORTED	0002:00525470 ?GetEE@entity@Broc@@QBEPBVExtendedEntity@2@XZ 00D14970 f i mp_level_wad.o
 21	SKIPPED	0002:005254c0 ??_GAnim@mp_anim_wad@@UAEPAXI@Z 00D149C0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 22	SKIPPED	0002:005254c0 ??_EAnim@mp_anim_wad@@UAEPAXI@Z 00D149C0 f i mp_level_wad.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 23	PORTED	0002:00525510 ??1Anim@mp_anim_wad@@UAE@XZ 00D14A10 f i mp_level_wad.o
@@ -63,22 +63,22 @@ index	status	map_line
 62	PORTED	0009:000001b0 ?SpawnScriptThread@mp_level_wad@@YAII_NVentity@Broc@@11MMMAAUvector@3@@Z 0107EDD0 f mp_level_wad.o
 63	VERIFIED	0009:00000ac0 ?ScriptThreadExists@mp_level_wad@@YA_NI@Z 0107F6E0 f mp_level_wad.o
 64	PORTED	0009:00000bd0 ?mp_level_wad_EEGetFunctions@EEHelper@Broc@@YAXIPAP6AIPBD@ZPAP6AII@ZPAP6A_NI0@ZPAP6AXAAI@Z@Z 0107F7F0 f mp_level_wad.o
-65	PORTED	0009:00005630 ?main@mp_level@@YAXXZ 01084250 f mp_level_wad.o
+65	VERIFIED	0009:00005630 ?main@mp_level@@YAXXZ 01084250 f mp_level_wad.o
 66	PORTED	0009:00005650 ?hack_ps2_InitScript@mp_level@@YAXAAUBrocExports@@@Z 01084270 f mp_level_wad.o
 67	VERIFIED	0009:00005730 ?AnimNamespaceVariableResolver@mp_level@@YAXHHHH@Z 01084350 f mp_level_wad.o
 68	VERIFIED	0009:00005770 ?BrocAnimInitialize@mp_level@@YAXXZ 01084390 f mp_level_wad.o
 69	VERIFIED	0009:00005790 ?BrocAnimCleanup@mp_level@@YAXXZ 010843B0 f mp_level_wad.o
 70	VERIFIED	0009:000057b0 ?BrocAnimResolver@mp_level@@YAIPBD0@Z 010843D0 f mp_level_wad.o
 71	VERIFIED	0009:00005840 ?BrocAnimDebug@mp_level@@YAXVentity@Broc@@@Z 01084460 f mp_level_wad.o
-72	PORTED	0009:00005860 ?MainThreadHook@mp_level@@YAXVentity@Broc@@@Z 01084480 f mp_level_wad.o
-73	PORTED	0009:00005880 ?Shutdown@mp_level@@YAXXZ 010844A0 f mp_level_wad.o
-74	PORTED	0009:00005a40 ?InternalMain@mp_level@@YAXXZ 01084660 f mp_level_wad.o
-75	PORTED	0009:00005ce0 ??0Level@mp_level_wad@@QAE@XZ 01084900 f i mp_level_wad.o
-76	PORTED	0009:00005d10 ??0Anim@mp_level_wad@@QAE@XZ 01084930 f i mp_level_wad.o
-77	PORTED	0009:00005d40 ??0Level@mp_util_wad@@QAE@XZ 01084960 f i mp_level_wad.o
-78	PORTED	0009:000064f0 ??0Anim@mp_util_wad@@QAE@XZ 01085110 f i mp_level_wad.o
-79	PORTED	0009:00006520 ??0Level@mp_anim_wad@@QAE@XZ 01085140 f i mp_level_wad.o
-80	PORTED	0009:00006560 ??0Anim@mp_anim_wad@@QAE@XZ 01085180 f i mp_level_wad.o
+72	VERIFIED	0009:00005860 ?MainThreadHook@mp_level@@YAXVentity@Broc@@@Z 01084480 f mp_level_wad.o
+73	VERIFIED	0009:00005880 ?Shutdown@mp_level@@YAXXZ 010844A0 f mp_level_wad.o
+74	VERIFIED	0009:00005a40 ?InternalMain@mp_level@@YAXXZ 01084660 f mp_level_wad.o
+75	VERIFIED	0009:00005ce0 ??0Level@mp_level_wad@@QAE@XZ 01084900 f i mp_level_wad.o
+76	VERIFIED	0009:00005d10 ??0Anim@mp_level_wad@@QAE@XZ 01084930 f i mp_level_wad.o
+77	VERIFIED	0009:00005d40 ??0Level@mp_util_wad@@QAE@XZ 01084960 f i mp_level_wad.o
+78	VERIFIED	0009:000064f0 ??0Anim@mp_util_wad@@QAE@XZ 01085110 f i mp_level_wad.o
+79	VERIFIED	0009:00006520 ??0Level@mp_anim_wad@@QAE@XZ 01085140 f i mp_level_wad.o
+80	VERIFIED	0009:00006560 ??0Anim@mp_anim_wad@@QAE@XZ 01085180 f i mp_level_wad.o
 81	VERIFIED	0009:000065a0 ?InitScript@mp_level@@YAP6AXXZPAPAUBrocAPI@@AAUBrocExports@@@Z 010851C0 f mp_level_wad.o
 82	VERIFIED	0009:00006700 ??0?$AeThreadFunctor1@Ventity@Broc@@@@QAE@P6AXVentity@Broc@@@ZABV12@@Z 01085320 f i mp_level_wad.o
 83	VERIFIED	0009:00006790 ?GetEnt@?$AeThreadFunctor1@Ventity@Broc@@@@UAEIXZ 010853B0 f i mp_level_wad.o
@@ -164,20 +164,20 @@ index	status	map_line
 163	SKIPPED	0009:00008050 ?max_size@?$allocator@Viterator@?$list@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@V?$allocator@U?$pair@$$CBUHashStr@@Vstring@Broc@@@std@@@2@@std@@@std@@QBEIXZ 01086C70 f i mp_level_wad.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 164	VERIFIED	0009:00008090 ??0?$dyn_array@Ventity@Broc@@@Broc@@QAE@XZ 01086CB0 f i mp_level_wad.o
 165	VERIFIED	0009:00008100 ??1?$dyn_array@Ventity@Broc@@@Broc@@QAE@XZ 01086D20 f i mp_level_wad.o
-166	PORTED	0009:00008140 ??0?$dyn_array@Vstring@Broc@@@Broc@@QAE@XZ 01086D60 f i mp_level_wad.o
-167	PORTED	0009:000081b0 ??1?$dyn_array@Vstring@Broc@@@Broc@@QAE@XZ 01086DD0 f i mp_level_wad.o
+166	VERIFIED	0009:00008140 ??0?$dyn_array@Vstring@Broc@@@Broc@@QAE@XZ 01086D60 f i mp_level_wad.o
+167	VERIFIED	0009:000081b0 ??1?$dyn_array@Vstring@Broc@@@Broc@@QAE@XZ 01086DD0 f i mp_level_wad.o
 168	PORTED	0009:000081f0 ??$Destruct@Vstring@Broc@@@EEHelper@Broc@@YAXAAI@Z 01086E10 f i mp_level_wad.o
-169	PORTED	0009:00008270 ??$Copy@M@EEHelper@Broc@@YAII@Z 01086E90 f i mp_level_wad.o
+169	VERIFIED	0009:00008270 ??$Copy@M@EEHelper@Broc@@YAII@Z 01086E90 f i mp_level_wad.o
 170	PORTED	0009:00008330 ??$Destruct@M@EEHelper@Broc@@YAXAAI@Z 01086F50 f i mp_level_wad.o
-171	PORTED	0009:00008380 ??$Copy@H@EEHelper@Broc@@YAII@Z 01086FA0 f i mp_level_wad.o
+171	VERIFIED	0009:00008380 ??$Copy@H@EEHelper@Broc@@YAII@Z 01086FA0 f i mp_level_wad.o
 172	PORTED	0009:00008440 ??$Destruct@H@EEHelper@Broc@@YAXAAI@Z 01087060 f i mp_level_wad.o
-173	PORTED	0009:00008490 ??$Copy@_N@EEHelper@Broc@@YAII@Z 010870B0 f i mp_level_wad.o
+173	VERIFIED	0009:00008490 ??$Copy@_N@EEHelper@Broc@@YAII@Z 010870B0 f i mp_level_wad.o
 174	PORTED	0009:00008550 ??$Destruct@_N@EEHelper@Broc@@YAXAAI@Z 01087170 f i mp_level_wad.o
-175	PORTED	0009:000085a0 ??$Copy@Ventity@Broc@@@EEHelper@Broc@@YAII@Z 010871C0 f i mp_level_wad.o
+175	VERIFIED	0009:000085a0 ??$Copy@Ventity@Broc@@@EEHelper@Broc@@YAII@Z 010871C0 f i mp_level_wad.o
 176	PORTED	0009:000086b0 ??$Destruct@Ventity@Broc@@@EEHelper@Broc@@YAXAAI@Z 010872D0 f i mp_level_wad.o
-177	PORTED	0009:00008700 ??$Copy@Uvector@Broc@@@EEHelper@Broc@@YAII@Z 01087320 f i mp_level_wad.o
+177	VERIFIED	0009:00008700 ??$Copy@Uvector@Broc@@@EEHelper@Broc@@YAII@Z 01087320 f i mp_level_wad.o
 178	PORTED	0009:000087d0 ??$Destruct@Uvector@Broc@@@EEHelper@Broc@@YAXAAI@Z 010873F0 f i mp_level_wad.o
-179	PORTED	0009:00008820 ??$Copy@UHashStr@@@EEHelper@Broc@@YAII@Z 01087440 f i mp_level_wad.o
+179	VERIFIED	0009:00008820 ??$Copy@UHashStr@@@EEHelper@Broc@@YAII@Z 01087440 f i mp_level_wad.o
 180	PORTED	0009:000088e0 ??$Destruct@UHashStr@@@EEHelper@Broc@@YAXAAI@Z 01087500 f i mp_level_wad.o
 181	PORTED	0009:00008930 ??$SetNodeField@W4TPathnodeHandle@Broc@@Vstring@2@V32@@mp_level@@YAXW4TPathnodeHandle@Broc@@IVstring@2@@Z 01087550 f i mp_level_wad.o
 182	PORTED	0009:000089d0 ??$GetNodeField@W4TPathnodeHandle@Broc@@Vstring@2@V32@@mp_level@@YA?AVstring@Broc@@W4TPathnodeHandle@2@I@Z 010875F0 f i mp_level_wad.o

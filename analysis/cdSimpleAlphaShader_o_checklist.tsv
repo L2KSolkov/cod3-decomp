@@ -12,7 +12,7 @@ index	status	map_line
 11	PORTED	0002:003c8d20 ?GetColorWrite@nglDxRenderState@@QAEIXZ 00BB8220 f i cdSimpleAlphaShader.o
 12	VERIFIED	0002:003c8d30 ??0cdSimpleAlphaShader@@QAE@XZ 00BB8230 f i cdSimpleAlphaShader.o
 13	VERIFIED	0002:003c8d60 ?GetName@cdSimpleAlphaShader@@UAE?AVtlFixedString@@XZ 00BB8260 f i cdSimpleAlphaShader.o
-14	PORTED	0002:003c8d80 ?RegisterVShader@cdSimpleAlphaRender@@YAXXZ 00BB8280 f i cdSimpleAlphaShader.o
+14	VERIFIED	0002:003c8d80 ?RegisterVShader@cdSimpleAlphaRender@@YAXXZ 00BB8280 f i cdSimpleAlphaShader.o
 15	PORTED	0002:003c8db0 ?GetVShader@cdSimpleAlphaRender@@YAKI@Z 00BB82B0 f i cdSimpleAlphaShader.o
 16	PORTED	0002:003c8dc0 ?RegisterPShader@cdSimpleAlphaPixel@@YAXXZ 00BB82C0 f i cdSimpleAlphaShader.o
 17	PORTED	0002:003c8df0 ?GetPShader@cdSimpleAlphaPixel@@YAPAKI@Z 00BB82F0 f i cdSimpleAlphaShader.o

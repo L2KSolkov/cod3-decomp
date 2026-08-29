@@ -7,7 +7,7 @@ index	status	map_line
 6	VERIFIED	0002:003d30c0 ??0cdCharShader@@QAE@XZ 00BC25C0 f i cdCharShader.o
 7	VERIFIED	0002:003d30f0 ?GetName@cdCharShader@@UAE?AVtlFixedString@@XZ 00BC25F0 f i cdCharShader.o
 8	PORTED	0002:003d3110 ?RegisterShader@cdCharShaderRender@@YAXXZ 00BC2610 f i cdCharShader.o
-9	PORTED	0002:003d3130 ?RegisterVShader@cdCharShaderRender@@YAXXZ 00BC2630 f i cdCharShader.o
+9	VERIFIED	0002:003d3130 ?RegisterVShader@cdCharShaderRender@@YAXXZ 00BC2630 f i cdCharShader.o
 10	PORTED	0002:003d3150 ?GetVShader@cdCharShaderRender@@YAKXZ 00BC2650 f i cdCharShader.o
 11	PORTED	0002:003d3160 ?RegisterShader@cdCharPixel@@YAXXZ 00BC2660 f i cdCharShader.o
 12	PORTED	0002:003d3180 ?RegisterPShader@cdCharPixel@@YAXXZ 00BC2680 f i cdCharShader.o

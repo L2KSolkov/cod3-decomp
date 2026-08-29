@@ -11,7 +11,7 @@ index	status	map_line
 10	VERIFIED	0002:003c6810 ?nglListAddNode@@YAXPAVnglRenderNode@@@Z 00BB5D10 f i cdDebugShader.o
 11	VERIFIED	0002:003c6890 ??0cdDebugShader@@QAE@XZ 00BB5D90 f i cdDebugShader.o
 12	VERIFIED	0002:003c68c0 ?GetName@cdDebugShader@@UAE?AVtlFixedString@@XZ 00BB5DC0 f i cdDebugShader.o
-13	PORTED	0002:003c68e0 ?RegisterVShader@cdDebugShaderRender@@YAXXZ 00BB5DE0 f i cdDebugShader.o
+13	VERIFIED	0002:003c68e0 ?RegisterVShader@cdDebugShaderRender@@YAXXZ 00BB5DE0 f i cdDebugShader.o
 14	PORTED	0002:003c6900 ?GetVShader@cdDebugShaderRender@@YAKXZ 00BB5E00 f i cdDebugShader.o
 15	PORTED	0002:003c6910 ?RegisterPShader@cdDebugPixel@@YAXXZ 00BB5E10 f i cdDebugShader.o
 16	PORTED	0002:003c6930 ?InitPShader@cdDebugPixel@@YAXXZ 00BB5E30 f i cdDebugShader.o
@@ -21,7 +21,7 @@ index	status	map_line
 20	PORTED	0002:003c69f0 ??0cdDebugShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdDebugShaderMat@@@Z 00BB5EF0 f i cdDebugShader.o
 21	SKIPPED	0002:003c6a20 ??_GcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 22	SKIPPED	0002:003c6a20 ??_EcdDebugShaderNode@@UAEPAXI@Z 00BB5F20 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-23	PORTED	0002:003c6a50 ??1cdDebugShaderNode@@UAE@XZ 00BB5F50 f i cdDebugShader.o
+23	VERIFIED	0002:003c6a50 ??1cdDebugShaderNode@@UAE@XZ 00BB5F50 f i cdDebugShader.o
 24	SKIPPED	0002:003c6a60 ??_EcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 25	SKIPPED	0002:003c6a60 ??_GcdDebugShader@@UAEPAXI@Z 00BB5F60 f i cdDebugShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 26	VERIFIED	0002:003c6a90 ??1cdDebugShader@@UAE@XZ 00BB5F90 f i cdDebugShader.o

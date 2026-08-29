@@ -240,10 +240,10 @@ index	status	map_line
 239	PORTED	0002:0026ee30 ?DestroyHeaps@PakFile@@AAEXXZ 00A5E330 f streamer.o
 240	VERIFIED	0002:0026f060 ??1PakHeapContext@@QAE@XZ 00A5E560 f streamer.o
 241	PORTED	0002:0026f0a0 ??0BankManager@@AAE@XZ 00A5E5A0 f streamer.o
-242	FIXED	0002:0026f230 ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z 00A5E730 f streamer.o  FIXED: matched IDA fractional-bank test in InternalAllocate; only fractional requests enter half-bank path
+242	VERIFIED	0002:0026f230 ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z 00A5E730 f streamer.o
 243	VERIFIED	0002:0026f390 ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z 00A5E890 f streamer.o
 244	VERIFIED	0002:0026f3c0 ?GetName@@YA?AVtlFixedString@@PBD@Z 00A5E8C0 f streamer.o
-245	FIXED	0002:0026f480 ?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z 00A5E980 f streamer.o	FIXED: matched IDA literal bank type 2 (MESHFILE); corrected mesh name copy path
+245	VERIFIED	0002:0026f480 ?RegisterMesh@@YAXPBDPAUMultiApk@@W4TPakId@@@Z 00A5E980 f streamer.o
 246	PORTED	0002:0026f4c0 ?DecodeSkeleton@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5E9C0 f streamer.o
 247	PORTED	0002:0026f590 ?DecodeAnim@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A5EA90 f streamer.o
 248	VERIFIED	0002:0026f670 ?GetMultiApkFcn@@YAP6AXPBDPAUMultiApk@@W4TPakId@@@Z0@Z 00A5EB70 f streamer.o
@@ -292,7 +292,7 @@ index	status	map_line
 291	PORTED	0002:00275980 ?DecodeFLI@PakManager@@QAEXPBDPAEHW4TPakId@@@Z 00A64E80 f streamer.o
 292	PORTED	0002:00275b20 ?DecodeFLI@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z 00A65020 f streamer.o
 293	VERIFIED	0002:00275b40 ?SetPriorities@StreamZoneManager@@QAEXXZ 00A65040 f streamer.o
-294	PORTED	0002:00275e10 ??1SceneManager@@UAE@XZ 00A65310 f streamer.o
+294	VERIFIED	0002:00275e10 ??1SceneManager@@UAE@XZ 00A65310 f streamer.o
 295	VERIFIED	0002:00275e20 ?DebugRender@SceneManager@@QAEXXZ 00A65320 f streamer.o
 296	VERIFIED	0002:00275ea0 ?RenderLightGlows@SceneManager@@QAEXXZ 00A653A0 f streamer.o
 297	PORTED	0002:00276b20 ?UnloadInstanceGroups@SceneManager@@AAEXW4TPakId@@@Z 00A66020 f streamer.o
@@ -318,7 +318,7 @@ index	status	map_line
 317	VERIFIED	0002:00277f40 ?AsyncLoadPakHeader@PakManager@@QAEPAVPakFile@@W4EPakType@@PBDVNumBanks@@@Z 00A67440 f streamer.o
 318	PORTED	0002:00278040 ?UpdateNormal@PakManager@@AAEXXZ 00A67540 f streamer.o
 319	VERIFIED	0002:00278250 ??0StreamZoneManager@@QAE@XZ 00A67750 f streamer.o
-320	PORTED	0002:002782f0 ??1StreamZoneManager@@UAE@XZ 00A677F0 f streamer.o
+320	VERIFIED	0002:002782f0 ??1StreamZoneManager@@UAE@XZ 00A677F0 f streamer.o
 321	PORTED	0002:00278350 ?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z 00A67850 f streamer.o
 322	VERIFIED	0002:002786a0 ??0SceneManager@@QAE@XZ 00A67BA0 f streamer.o
 323	PORTED	0002:002787e0 ?PostProcess@SceneManager@@AAEXW4TPakId@@@Z 00A67CE0 f streamer.o
@@ -691,7 +691,7 @@ index	status	map_line
 690	VERIFIED	0002:00286ca0 ?FindEntry@InstanceBankSet@@QAEPAIW4eInstanceBankType@@PBDI@Z 00A761A0 f i streamer.o
 691	SKIPPED	0002:00286d50 ??_G?$ae_vector@PAVapkFile@apk@@@@QAEPAXI@Z 00A76250 f i streamer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 692	PORTED	0002:00286da0 ??1InstanceListNode@@QAE@XZ 00A762A0 f i streamer.o
-693	PORTED	0002:00286e10 ?erase@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXH@Z 00A76310 f i streamer.o
+693	VERIFIED	0002:00286e10 ?erase@?$ae_sized_array@PAVae_heap_base@@$0CA@@@QAEXH@Z 00A76310 f i streamer.o
 694	VERIFIED	0002:00286e60 ?begin@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ 00A76360 f i streamer.o
 695	PORTED	0002:00286eb0 ?erase@?$reserved_dlist@VPakFile@@@@QAEXPAVPakFile@@@Z 00A763B0 f i streamer.o
 696	PORTED	0002:00286f50 ??0?$BitSet@$03@@QAE@XZ 00A76450 f i streamer.o

@@ -12,7 +12,7 @@ index	status	map_line
 11	PORTED	0002:003d7f70 ?SetContext@cdOceanShaderNode@@QAEXXZ 00BC7470 f cdOceanShader.o
 12	PORTED	0002:003d8d30 ?Render@cdOceanShaderNode@@UAEXXZ 00BC8230 f cdOceanShader.o
 13	PORTED	0002:003d9190 ?RegisterShader@cdOceanRender@@YAXXZ 00BC8690 f i cdOceanShader.o
-14	PORTED	0002:003d91b0 ?RegisterVShader@cdOceanRender@@YAXXZ 00BC86B0 f i cdOceanShader.o
+14	VERIFIED	0002:003d91b0 ?RegisterVShader@cdOceanRender@@YAXXZ 00BC86B0 f i cdOceanShader.o
 15	PORTED	0002:003d91d0 ?GetVShader@cdOceanRender@@YAKXZ 00BC86D0 f i cdOceanShader.o
 16	PORTED	0002:003d91e0 ?RegisterShader@cdOceanPixel@@YAXXZ 00BC86E0 f i cdOceanShader.o
 17	PORTED	0002:003d9210 ?RegisterPShader@cdOceanPixel@@YAXXZ 00BC8710 f i cdOceanShader.o

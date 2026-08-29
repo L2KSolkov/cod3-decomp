@@ -3,12 +3,12 @@ index	status	map_line
 2	VERIFIED	0002:003dd2f0 ?ToggleCDWorldBlendShader@@YAXXZ 00BCC7F0 f cdWorldBlendShader.o
 3	VERIFIED	0002:003dd310 ?Register@cdWorldBlendShader@@UAEXXZ 00BCC810 f cdWorldBlendShader.o
 4	VERIFIED	0002:003dd350 ?AddNode@cdWorldBlendShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BCC850 f cdWorldBlendShader.o
-5	PORTED	0002:003dd3e0 ?Render@cdWorldBlendShaderNode@@UAEXXZ 00BCC8E0 f cdWorldBlendShader.o
-6	PORTED	0002:003de1d0 ?RegisterShader@cdWorldBlendRender@@YAXXZ 00BCD6D0 f i cdWorldBlendShader.o
-7	PORTED	0002:003de200 ?RegisterVShader@cdWorldBlendRender@@YAXXZ 00BCD700 f i cdWorldBlendShader.o
+5	VERIFIED	0002:003dd3e0 ?Render@cdWorldBlendShaderNode@@UAEXXZ 00BCC8E0 f cdWorldBlendShader.o
+6	VERIFIED	0002:003de1d0 ?RegisterShader@cdWorldBlendRender@@YAXXZ 00BCD6D0 f i cdWorldBlendShader.o
+7	VERIFIED	0002:003de200 ?RegisterVShader@cdWorldBlendRender@@YAXXZ 00BCD700 f i cdWorldBlendShader.o
 8	PORTED	0002:003de210 ?GetVShader@cdWorldBlendRender@@YAKI@Z 00BCD710 f i cdWorldBlendShader.o
-9	PORTED	0002:003de220 ?RegisterShader@cdWorldBlendProjectedRender@@YAXXZ 00BCD720 f i cdWorldBlendShader.o
-10	PORTED	0002:003de250 ?RegisterVShader@cdWorldBlendProjectedRender@@YAXXZ 00BCD750 f i cdWorldBlendShader.o
+9	VERIFIED	0002:003de220 ?RegisterShader@cdWorldBlendProjectedRender@@YAXXZ 00BCD720 f i cdWorldBlendShader.o
+10	VERIFIED	0002:003de250 ?RegisterVShader@cdWorldBlendProjectedRender@@YAXXZ 00BCD750 f i cdWorldBlendShader.o
 11	PORTED	0002:003de260 ?GetVShader@cdWorldBlendProjectedRender@@YAKI@Z 00BCD760 f i cdWorldBlendShader.o
 12	PORTED	0002:003de270 ?RegisterShader@cdWorldBlendPixel@@YAXXZ 00BCD770 f i cdWorldBlendShader.o
 13	PORTED	0002:003de2a0 ?RegisterPShader@cdWorldBlendPixel@@YAXXZ 00BCD7A0 f i cdWorldBlendShader.o
@@ -26,7 +26,7 @@ index	status	map_line
 25	PORTED	0002:003de3f0 ??0cdWorldBlendShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldBlendShaderMat@@@Z 00BCD8F0 f i cdWorldBlendShader.o
 26	SKIPPED	0002:003de420 ??_EcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 27	SKIPPED	0002:003de420 ??_GcdWorldBlendShaderNode@@UAEPAXI@Z 00BCD920 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-28	PORTED	0002:003de450 ??1cdWorldBlendShaderNode@@UAE@XZ 00BCD950 f i cdWorldBlendShader.o
+28	VERIFIED	0002:003de450 ??1cdWorldBlendShaderNode@@UAE@XZ 00BCD950 f i cdWorldBlendShader.o
 29	SKIPPED	0002:003de460 ??_EcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 30	SKIPPED	0002:003de460 ??_GcdWorldBlendShader@@UAEPAXI@Z 00BCD960 f i cdWorldBlendShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 31	VERIFIED	0002:003de490 ??1cdWorldBlendShader@@UAE@XZ 00BCD990 f i cdWorldBlendShader.o

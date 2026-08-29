@@ -8,7 +8,7 @@ index	status	map_line
 7	VERIFIED	0002:003dec00 ??0cdWorldVertexLitShader@@QAE@XZ 00BCE100 f i cdWorldVertexLitShader.o
 8	VERIFIED	0002:003dec30 ?GetName@cdWorldVertexLitShader@@UAE?AVtlFixedString@@XZ 00BCE130 f i cdWorldVertexLitShader.o
 9	PORTED	0002:003dec50 ?RegisterShader@cdWorldVertexLitRender@@YAXXZ 00BCE150 f i cdWorldVertexLitShader.o
-10	PORTED	0002:003dec70 ?RegisterVShader@cdWorldVertexLitRender@@YAXXZ 00BCE170 f i cdWorldVertexLitShader.o
+10	VERIFIED	0002:003dec70 ?RegisterVShader@cdWorldVertexLitRender@@YAXXZ 00BCE170 f i cdWorldVertexLitShader.o
 11	PORTED	0002:003dec90 ?GetVShader@cdWorldVertexLitRender@@YAKXZ 00BCE190 f i cdWorldVertexLitShader.o
 12	PORTED	0002:003deca0 ?RegisterShader@cdWorldVertexLitPixel@@YAXXZ 00BCE1A0 f i cdWorldVertexLitShader.o
 13	PORTED	0002:003decc0 ?RegisterPShader@cdWorldVertexLitPixel@@YAXXZ 00BCE1C0 f i cdWorldVertexLitShader.o
@@ -20,7 +20,7 @@ index	status	map_line
 19	PORTED	0002:003ded50 ??0cdWorldVertexLitShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdWorldVertexLitShaderMat@@@Z 00BCE250 f i cdWorldVertexLitShader.o
 20	SKIPPED	0002:003ded80 ??_GcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 21	SKIPPED	0002:003ded80 ??_EcdWorldVertexLitShaderNode@@UAEPAXI@Z 00BCE280 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-22	PORTED	0002:003dedb0 ??1cdWorldVertexLitShaderNode@@UAE@XZ 00BCE2B0 f i cdWorldVertexLitShader.o
+22	VERIFIED	0002:003dedb0 ??1cdWorldVertexLitShaderNode@@UAE@XZ 00BCE2B0 f i cdWorldVertexLitShader.o
 23	SKIPPED	0002:003dedc0 ??_GcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 24	SKIPPED	0002:003dedc0 ??_EcdWorldVertexLitShader@@UAEPAXI@Z 00BCE2C0 f i cdWorldVertexLitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 25	VERIFIED	0002:003dedf0 ??1cdWorldVertexLitShader@@UAE@XZ 00BCE2F0 f i cdWorldVertexLitShader.o

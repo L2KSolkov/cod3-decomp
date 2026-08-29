@@ -4,11 +4,11 @@ index	status	map_line
 3	VERIFIED	0002:003dbb70 ?Register@cdWorldPointLitShader@@UAEXXZ 00BCB070 f cdWorldPointLitShader.o
 4	VERIFIED	0002:003dbbb0 ?AddNode@cdWorldPointLitShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BCB0B0 f cdWorldPointLitShader.o
 5	PORTED	0002:003dbc60 ?Render@cdWorldPointLitShaderNode@@UAEXXZ 00BCB160 f cdWorldPointLitShader.o
-6	PORTED	0002:003dcd00 ?RegisterShader@cdWorldPointLitRender@@YAXXZ 00BCC200 f i cdWorldPointLitShader.o
-7	PORTED	0002:003dcd30 ?RegisterVShader@cdWorldPointLitRender@@YAXXZ 00BCC230 f i cdWorldPointLitShader.o
+6	VERIFIED	0002:003dcd00 ?RegisterShader@cdWorldPointLitRender@@YAXXZ 00BCC200 f i cdWorldPointLitShader.o
+7	VERIFIED	0002:003dcd30 ?RegisterVShader@cdWorldPointLitRender@@YAXXZ 00BCC230 f i cdWorldPointLitShader.o
 8	PORTED	0002:003dcd40 ?GetVShader@cdWorldPointLitRender@@YAKI@Z 00BCC240 f i cdWorldPointLitShader.o
-9	PORTED	0002:003dcd50 ?RegisterShader@cdWorldPointLitProjectedRender@@YAXXZ 00BCC250 f i cdWorldPointLitShader.o
-10	PORTED	0002:003dcd80 ?RegisterVShader@cdWorldPointLitProjectedRender@@YAXXZ 00BCC280 f i cdWorldPointLitShader.o
+9	VERIFIED	0002:003dcd50 ?RegisterShader@cdWorldPointLitProjectedRender@@YAXXZ 00BCC250 f i cdWorldPointLitShader.o
+10	VERIFIED	0002:003dcd80 ?RegisterVShader@cdWorldPointLitProjectedRender@@YAXXZ 00BCC280 f i cdWorldPointLitShader.o
 11	PORTED	0002:003dcd90 ?GetVShader@cdWorldPointLitProjectedRender@@YAKI@Z 00BCC290 f i cdWorldPointLitShader.o
 12	PORTED	0002:003dcda0 ?RegisterShader@cdWorldPointLitPixel@@YAXXZ 00BCC2A0 f i cdWorldPointLitShader.o
 13	PORTED	0002:003dcdd0 ?RegisterPShader@cdWorldPointLitPixel@@YAXXZ 00BCC2D0 f i cdWorldPointLitShader.o

@@ -31,10 +31,10 @@ index	status	map_line
 30	VERIFIED	0002:003c2a30 ?GetName@cdGlowShader@@UAE?AVtlFixedString@@XZ 00BB1F30 f i cdGlowShader.o
 31	PORTED	0002:003c2a50 ?AddNode@cdGlowShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BB1F50 f i cdGlowShader.o
 32	PORTED	0002:003c2a60 ?RegisterShader@cdGlowRender4@@YAXXZ 00BB1F60 f i cdGlowShader.o
-33	PORTED	0002:003c2a80 ?RegisterVShader@cdGlowRender4@@YAXXZ 00BB1F80 f i cdGlowShader.o
+33	VERIFIED	0002:003c2a80 ?RegisterVShader@cdGlowRender4@@YAXXZ 00BB1F80 f i cdGlowShader.o
 34	PORTED	0002:003c2aa0 ?GetVShader@cdGlowRender4@@YAKXZ 00BB1FA0 f i cdGlowShader.o
 35	PORTED	0002:003c2ab0 ?RegisterShader@cdGlowRender1@@YAXXZ 00BB1FB0 f i cdGlowShader.o
-36	PORTED	0002:003c2ad0 ?RegisterVShader@cdGlowRender1@@YAXXZ 00BB1FD0 f i cdGlowShader.o
+36	VERIFIED	0002:003c2ad0 ?RegisterVShader@cdGlowRender1@@YAXXZ 00BB1FD0 f i cdGlowShader.o
 37	PORTED	0002:003c2af0 ?GetVShader@cdGlowRender1@@YAKXZ 00BB1FF0 f i cdGlowShader.o
 38	PORTED	0002:003c2b00 ?RegisterShader@cdGlowShrink@@YAXXZ 00BB2000 f i cdGlowShader.o
 39	PORTED	0002:003c2b20 ?RegisterPShader@cdGlowShrink@@YAXXZ 00BB2020 f i cdGlowShader.o

@@ -1,58 +1,58 @@
 index	status	map_line
-1	PORTED	0002:00468a60 ?tlIsStackPtr@@YA_NPAX@Z 00C57F60 f i nal_generic.o	PORTED: IDA 0x00868A60 checks tlStackBegin <= ptr < tlStackEnd
-2	PORTED	0002:00468a80 ?Mul@math@@YA?AVVector4@1@ABV21@M@Z 00C57F80 f i nal_generic.o	PORTED: IDA 0x00868A80 multiplies all Vector4 lanes by the scalar
+1	VERIFIED	0002:00468a60 ?tlIsStackPtr@@YA_NPAX@Z 00C57F60 f i nal_generic.o
+2	VERIFIED	0002:00468a80 ?Mul@math@@YA?AVVector4@1@ABV21@M@Z 00C57F80 f i nal_generic.o
 3	VERIFIED	0002:00468ac0 ?Scale@nalMatrix4x4@@QAEXABVDir3@math@@@Z 00C57FC0 f i nal_generic.o
 4	VERIFIED	0002:00468b50 ??0nalIKSpin@@QAE@XZ 00C58050 f i nal_generic.o
 5	VERIFIED	0002:00468b60 ??0nalIKSpin@@QAE@ABVQuaternion@math@@0F@Z 00C58060 f i nal_generic.o
 6	VERIFIED	0002:00468bc0 ?SetLOD@nalBasePose@@QAEXH@Z 00C580C0 f i nal_generic.o
-7	PORTED	0002:00468bd0 ??0nalBasePose@@IAE@PBVnalBaseSkeleton@@H@Z 00C580D0 f i nal_generic.o	PORTED: IDA 0x00868BD0 assigns Skeleton and LOD
-8	PORTED	0002:00468bf0 ?Construct@nalGenericPose@nalGeneric@@IAEXPBVnalBaseSkeleton@@PAX@Z 00C580F0 f i nal_generic.o	PORTED: IDA 0x00868BF0 assigns Skeleton and PoseData
-9	PORTED	0002:00468c10 ?GetPoseData@nalGenericPose@nalGeneric@@IBEPAXXZ 00C58110 f i nal_generic.o	PORTED: IDA 0x00868C10 returns PoseData
-10	PORTED	0002:00468c20 ?GetPoseSize@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58120 f i nal_generic.o	PORTED: IDA 0x00868C20 returns PoseSize
-11	PORTED	0002:00468c30 ?GetPoseAlignment@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58130 f i nal_generic.o	PORTED: IDA 0x00868C30 returns PoseAlignment
+7	PORTED	0002:00468bd0 ??0nalBasePose@@IAE@PBVnalBaseSkeleton@@H@Z 00C580D0 f i nal_generic.o
+8	PORTED	0002:00468bf0 ?Construct@nalGenericPose@nalGeneric@@IAEXPBVnalBaseSkeleton@@PAX@Z 00C580F0 f i nal_generic.o
+9	PORTED	0002:00468c10 ?GetPoseData@nalGenericPose@nalGeneric@@IBEPAXXZ 00C58110 f i nal_generic.o
+10	PORTED	0002:00468c20 ?GetPoseSize@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58120 f i nal_generic.o
+11	PORTED	0002:00468c30 ?GetPoseAlignment@nalGenericSkeleton@nalGeneric@@IBEHXZ 00C58130 f i nal_generic.o
 12	VERIFIED	0002:00468c40 ?GetBoneIndexForMatrixIndex@nalGenericSkeleton@nalGeneric@@QBEHH@Z 00C58140 f i nal_generic.o
 13	VERIFIED	0002:00468c70 ?GetBlockPtr@nalGenericAnim@nalGeneric@@QAEPAXH@Z 00C58170 f i nal_generic.o
 14	VERIFIED	0002:00468c80 ?GetBlockUnit@nalGenericAnim@nalGeneric@@QBEHXZ 00C58180 f i nal_generic.o
 15	VERIFIED	0002:00468c90 ??1nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAE@XZ 00C58190 f i nal_generic.o
-16	PORTED	0002:00468ca0 ??0nalComponentEnum@@QAE@PBUnalComponentInfo@nalGeneric@@PAPBXPBVnalGenericAnim@2@1@Z 00C581A0 f i nal_generic.o	PORTED: IDA 0x00868CA0 assigns Anim, ComponentInfo, CustomSkeletonData, and CustomAnimData
-17	PORTED	0002:00468cc0 ?Release@nalGenericSkeleton@nalGeneric@@MAEXXZ 00C581C0 f nal_generic.o	PORTED: IDA 0x00868CC0 is an intentional no-op virtual release
-18	PORTED	0002:00468d10 ?GetTrajectoryUpdate@nalGenericSkeleton@nalGeneric@@IBEXABVnalGenericPose@2@AAVnalPositionOrientation@@@Z 00C58210 f nal_generic.o	PORTED: IDA 0x00868D10 returns Identity for a negative offset or reads PoseData at TrajectoryOffset
-19	PORTED	0002:00468d50 ?GetHash@nalGenericInstance@nalGeneric@@KAIPBVnalGenericSkeleton@2@0@Z 00C58250 f nal_generic.o	PORTED: IDA 0x00868D50 hashes the two skeleton pointers modulo 0x43
+16	PORTED	0002:00468ca0 ??0nalComponentEnum@@QAE@PBUnalComponentInfo@nalGeneric@@PAPBXPBVnalGenericAnim@2@1@Z 00C581A0 f i nal_generic.o
+17	PORTED	0002:00468cc0 ?Release@nalGenericSkeleton@nalGeneric@@MAEXXZ 00C581C0 f nal_generic.o
+18	PORTED	0002:00468d10 ?GetTrajectoryUpdate@nalGenericSkeleton@nalGeneric@@IBEXABVnalGenericPose@2@AAVnalPositionOrientation@@@Z 00C58210 f nal_generic.o
+19	PORTED	0002:00468d50 ?GetHash@nalGenericInstance@nalGeneric@@KAIPBVnalGenericSkeleton@2@0@Z 00C58250 f nal_generic.o
 20	VERIFIED	0002:00468d70 ?nalGetDecompCacheSize@@YAHXZ 00C58270 f nal_generic.o
 21	VERIFIED	0002:00468d80 ??1nalGenericPose@nalGeneric@@QAE@XZ 00C58280 f nal_generic.o
-22	PORTED	0002:00468dd0 ?GetPoseSize@nalGenericPose@nalGeneric@@IBEHXZ 00C582D0 f nal_generic.o	PORTED: IDA 0x00868DD0 returns the generic skeleton PoseSize
-23	PORTED	0002:00468de0 ?GetPoseAlignment@nalGenericPose@nalGeneric@@IBEHXZ 00C582E0 f nal_generic.o	PORTED: IDA 0x00868DE0 returns the generic skeleton PoseAlignment
+22	PORTED	0002:00468dd0 ?GetPoseSize@nalGenericPose@nalGeneric@@IBEHXZ 00C582D0 f nal_generic.o
+23	PORTED	0002:00468de0 ?GetPoseAlignment@nalGenericPose@nalGeneric@@IBEHXZ 00C582E0 f nal_generic.o
 24	VERIFIED	0002:00468df0 ??4nalGenericPose@nalGeneric@@QAEXABV01@@Z 00C582F0 f nal_generic.o
 25	VERIFIED	0002:00468e50 ?Copy@nalGenericPose@nalGeneric@@QAEXABV12@H@Z 00C58350 f nal_generic.o
-26	PORTED	0002:00468eb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@IBE?BVnalPositionOrientation@@H@Z 00C583B0 f nal_generic.o	PORTED: IDA 0x00868EB0 reads flagged position/orientation data and composes parent transforms
-27	PORTED	0002:00468fb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z 00C584B0 f nal_generic.o	PORTED: IDA 0x00868FB0 delegates to the bone-index overload
-28	PORTED	0002:00468fd0 ?SetPositionOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVnalPositionOrientation@@@Z 00C584D0 f nal_generic.o	PORTED: IDA 0x00868FD0 honors position/orientation flags and validates the skeleton handle
-29	PORTED	0002:004690a0 ?SetPosition@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVDir3@math@@@Z 00C585A0 f nal_generic.o	PORTED: IDA 0x008690A0 validates the handle and writes position when flag 1 is clear
-30	PORTED	0002:00469140 ?SetOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVQuaternion@math@@@Z 00C58640 f nal_generic.o	PORTED: IDA 0x00869140 validates the handle and writes orientation when flag 2 is clear
-31	PORTED	0002:004691e0 ?SetPoseBoneOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVQuaternion@math@@@Z 00C586E0 f nal_generic.o	PORTED: IDA 0x008691E0 delegates to SetOrientation
-32	PORTED	0002:004691f0 ?GetPoseBoneOrientationInternal@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C586F0 f nal_generic.o	PORTED: IDA 0x008691F0 reads flagged orientation data from file or pose storage
-33	PORTED	0002:00469260 ?GetPoseBoneOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C58760 f nal_generic.o	PORTED: IDA 0x00869260 delegates to the bone-index overload
-34	PORTED	0002:00469280 ?Process@nalGenericSkeleton@nalGeneric@@MAEXXZ 00C58780 f nal_generic.o	PORTED: IDA 0x00869280 lays out skeleton buffers, resolves component encodings, and processes components
+26	PORTED	0002:00468eb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@IBE?BVnalPositionOrientation@@H@Z 00C583B0 f nal_generic.o
+27	PORTED	0002:00468fb0 ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z 00C584B0 f nal_generic.o
+28	PORTED	0002:00468fd0 ?SetPositionOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVnalPositionOrientation@@@Z 00C584D0 f nal_generic.o
+29	PORTED	0002:004690a0 ?SetPosition@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVDir3@math@@@Z 00C585A0 f nal_generic.o
+30	PORTED	0002:00469140 ?SetOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVQuaternion@math@@@Z 00C58640 f nal_generic.o
+31	PORTED	0002:004691e0 ?SetPoseBoneOrientation@nalGenericPose@nalGeneric@@QAEXABVnalGenericBoneHandle@2@ABVQuaternion@math@@@Z 00C586E0 f nal_generic.o
+32	PORTED	0002:004691f0 ?GetPoseBoneOrientationInternal@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C586F0 f nal_generic.o
+33	PORTED	0002:00469260 ?GetPoseBoneOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C58760 f nal_generic.o
+34	PORTED	0002:00469280 ?Process@nalGenericSkeleton@nalGeneric@@MAEXXZ 00C58780 f nal_generic.o
 35	PORTED	0002:00469500 ?GetBoneMatrices@nalGenericSkeleton@nalGeneric@@IBEXABVnalGenericPose@2@PAVnalMatrix4x4@@H@Z 00C58A00 f nal_generic.o
 36	PORTED	0002:0046ceb0 ?GetPose@nalGenericSkeleton@nalGeneric@@IBEXAAVnalGenericPose@2@PBVnalMatrix4x4@@PAV4@ABV32@H@Z 00C5C3B0 f nal_generic.o
-37	VERIFIED	0002:0046d970 ?Process@nalGenericAnim@nalGeneric@@UAEXXZ 00C5CE70 f nal_generic.o	VERIFIED: IDA vtable/base layout now represented by nalAnimClass<nalGenericPose>
+37	VERIFIED	0002:0046d970 ?Process@nalGenericAnim@nalGeneric@@UAEXXZ 00C5CE70 f nal_generic.o
 38	VERIFIED	0002:0046d9f0 ?Release@nalGenericAnim@nalGeneric@@UAEXXZ 00C5CEF0 f nal_generic.o
-39	FIXED	0002:0046db50 ??1nalGenericInstance@nalGeneric@@UAE@XZ 00C5D050 f nal_generic.o	FIXED: IDA 0x0086DB50 releases the offset-map reference and animation-component tracks; base/member destructors complete lifetime cleanup
-40	FIXED	0002:0046dc30 ?CacheBlock@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D130 f nal_generic.o	FIXED: IDA 0x0086DC30 allocates/increases cache LODs and decodes or skips each skeleton component
-41	FIXED	0002:0046de10 ?ConvertPoseData@nalGenericInstance@nalGeneric@@IAEXPAEPBVnalObject@nalAnimCache@@HPBEPBHH@Z 00C5D310 f nal_generic.o	FIXED: IDA 0x0086DE10 copies defaults when needed and converts each cached component through the reference vtable slots
-42	FIXED	0002:0046df80 ?TouchDecompCache@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D480 f nal_generic.o	FIXED: IDA 0x0086DF80 resolves the block cache entry, touches resident data, or calls CacheBlock
-43	FIXED	0002:0046dfc0 ?GetPose@nalGenericInstance@nalGeneric@@QAEXHAAVnalGenericPose@2@ABV32@H@Z 00C5D4C0 f nal_generic.o	FIXED: IDA 0x0086DFC0 validates skeletons, resolves/touches the cache block, converts pose data, and sets LOD; duplicate physics forwarding stub removed
-44	FIXED	0002:0046e070 ?Blend@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D570 f nal_generic.o	FIXED: IDA 0x0086E070 blends active components and copies lower-LOD defaults through component vtable slots; duplicate debug-thread stub removed
-45	FIXED	0002:0046e1b0 ?BlendIntra@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D6B0 f nal_generic.o	FIXED: IDA 0x0086E1B0 blends each active component and copies lower-LOD defaults through component vtable slots
+39	VERIFIED	0002:0046db50 ??1nalGenericInstance@nalGeneric@@UAE@XZ 00C5D050 f nal_generic.o
+40	PORTED	0002:0046dc30 ?CacheBlock@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D130 f nal_generic.o
+41	PORTED	0002:0046de10 ?ConvertPoseData@nalGenericInstance@nalGeneric@@IAEXPAEPBVnalObject@nalAnimCache@@HPBEPBHH@Z 00C5D310 f nal_generic.o
+42	PORTED	0002:0046df80 ?TouchDecompCache@nalGenericInstance@nalGeneric@@IAEXHH@Z 00C5D480 f nal_generic.o
+43	VERIFIED	0002:0046dfc0 ?GetPose@nalGenericInstance@nalGeneric@@QAEXHAAVnalGenericPose@2@ABV32@H@Z 00C5D4C0 f nal_generic.o
+44	VERIFIED	0002:0046e070 ?Blend@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D570 f nal_generic.o
+45	VERIFIED	0002:0046e1b0 ?BlendIntra@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D6B0 f nal_generic.o
 46	VERIFIED	0002:0046e2f0 ?BlendTorso@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z 00C5D7F0 f nal_generic.o
-47	FIXED	0002:0046e510 ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z 00C5DA10 f nal_generic.o	FIXED: IDA 0x0086E510 uses BlendValues with component BlendArray and copies lower-LOD defaults
-48	FIXED	0002:0046e660 ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z 00C5DB60 f nal_generic.o	FIXED: IDA 0x0086E660 initializes stack-or-heap pose storage and constructs each pose component; duplicate physics constructor stub removed
-49	FIXED	0002:0046e740 ??0nalGenericPose@nalGeneric@@QAE@ABV01@_N@Z 00C5DC40 f nal_generic.o	FIXED: IDA 0x0086E740 allocates/constructs the destination pose and conditionally copies pose bytes
-50	FIXED	0002:0046e880 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C5DD80 f nal_generic.o	FIXED: IDA 0x0086E880 resolves parent bone indices and composes model orientation recursively
-51	FIXED	0002:0046e9b0 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C5DEB0 f nal_generic.o	FIXED: IDA 0x0086E9B0 delegates through the bone handle index
-52	FIXED	0002:0046e9d0 ??0nalGenericInstance@nalGeneric@@QAE@PAVnalGenericAnim@1@PAVnalGenericSkeleton@1@@Z 00C5DED0 f nal_generic.o	FIXED: IDA 0x0086E9D0 initializes the base instance, pose, offset map, same-skeleton masks, and cross-skeleton track mapping
-53	FIXED	0002:0046ef30 ?TouchDecompCache@nalGenericInstance@nalGeneric@@QAEXMMHI@Z 00C5E430 f nal_generic.o	FIXED: IDA 0x0086EF30 wraps/clamps normalized times, updates PrevT, and touches required frame cache blocks
-54	FIXED	0002:0046f260 ?GetPose@nalGenericInstance@nalGeneric@@QAEXMMAAVnalGenericPose@2@ABV32@HI@Z 00C5E760 f nal_generic.o	FIXED: IDA 0x0086F260 frame wrapping, interpolation, trajectory cycling, cache pose update, and PrevPose tracking ported
+47	VERIFIED	0002:0046e510 ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z 00C5DA10 f nal_generic.o
+48	VERIFIED	0002:0046e660 ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z 00C5DB60 f nal_generic.o
+49	VERIFIED	0002:0046e740 ??0nalGenericPose@nalGeneric@@QAE@ABV01@_N@Z 00C5DC40 f nal_generic.o
+50	PORTED	0002:0046e880 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@IBE?BVQuaternion@math@@H@Z 00C5DD80 f nal_generic.o
+51	PORTED	0002:0046e9b0 ?GetBoneModelOrientation@nalGenericPose@nalGeneric@@QBE?BVQuaternion@math@@ABVnalGenericBoneHandle@2@@Z 00C5DEB0 f nal_generic.o
+52	VERIFIED	0002:0046e9d0 ??0nalGenericInstance@nalGeneric@@QAE@PAVnalGenericAnim@1@PAVnalGenericSkeleton@1@@Z 00C5DED0 f nal_generic.o
+53	VERIFIED	0002:0046ef30 ?TouchDecompCache@nalGenericInstance@nalGeneric@@QAEXMMHI@Z 00C5E430 f nal_generic.o
+54	VERIFIED	0002:0046f260 ?GetPose@nalGenericInstance@nalGeneric@@QAEXMMAAVnalGenericPose@2@ABV32@HI@Z 00C5E760 f nal_generic.o
 55	PORTED	0002:0046f920 ??0?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QAE@PBVnalGenericSkeleton@nalGeneric@@H@Z 00C5EE20 f i nal_generic.o
 56	PORTED	0002:0046f940 ??0nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QAE@PAV1@PBVnalGenericSkeleton@nalGeneric@@@Z 00C5EE40 f i nal_generic.o
 57	SKIPPED	0002:0046f9a0 ??_GnalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@UAEPAXI@Z 00C5EEA0 f i nal_generic.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

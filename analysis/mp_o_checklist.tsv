@@ -31,8 +31,8 @@ index	status	map_line
 30	VERIFIED	0002:0032b330 ?readChar8@bdBitBuffer@@QAE_NAAD@Z 00B1A830 f i mp.o
 31	PORTED	0002:0032b370 ?readString@bdBitBuffer@@QAE_NQADI@Z 00B1A870 f i mp.o
 32	PORTED	0002:0032b3e0 ??3bdInetAddr@@SAXPAX@Z 00B1A8E0 f i mp.o
-33	PORTED	0002:0032b3f0 ??2bdCommonAddr@@SAPAXI@Z 00B1A8F0 f i mp.o
-34	PORTED	0002:0032b400 ??3bdCommonAddr@@SAXPAX@Z 00B1A900 f i mp.o
+33	VERIFIED	0002:0032b3f0 ??2bdCommonAddr@@SAPAXI@Z 00B1A8F0 f i mp.o
+34	VERIFIED	0002:0032b400 ??3bdCommonAddr@@SAXPAX@Z 00B1A900 f i mp.o
 35	PORTED	0002:0032b410 ?floor@@YAMM@Z 00B1A910 f i mp.o
 36	VERIFIED	0002:0032b430 ?accept_input_from_all_controllers@controller@@QAEX_N@Z 00B1A930 f i mp.o
 37	PORTED	0002:0032b460 ??0MPEntityHandle@@QAE@H@Z 00B1A960 f i mp.o
@@ -40,8 +40,8 @@ index	status	map_line
 39	PORTED	0002:0032b570 ?GetPeerId@MPEntityHandle@@QBEGXZ 00B1AA70 f i mp.o
 40	PORTED	0002:0032b580 ?getUpdateTime@MultiplayerMgr@@QAE?AVsTime@knet@kuju@@XZ 00B1AA80 f i mp.o
 41	PORTED	0002:0032b5a0 ?SetPlayerUpdateQueued@MultiplayerMgr@@QAEXXZ 00B1AAA0 f i mp.o
-42	PORTED	0002:0032b5b0 ??2MPGameInfo@@SAPAXI@Z 00B1AAB0 f i mp.o
-43	PORTED	0002:0032b5c0 ??3MPGameInfo@@SAXPAX@Z 00B1AAC0 f i mp.o
+42	VERIFIED	0002:0032b5b0 ??2MPGameInfo@@SAPAXI@Z 00B1AAB0 f i mp.o
+43	VERIFIED	0002:0032b5c0 ??3MPGameInfo@@SAXPAX@Z 00B1AAC0 f i mp.o
 44	PORTED	0002:0032b5d0 ??0sAngle@kuju@@QAE@XZ 00B1AAD0 f i mp.o
 45	PORTED	0002:0032b5e0 ?degrees@sAngle@kuju@@QBEMXZ 00B1AAE0 f i mp.o
 46	PORTED	0002:0032b5f0 ?clamp@sAngle@kuju@@CAMM@Z 00B1AAF0 f i mp.o
@@ -280,8 +280,8 @@ index	status	map_line
 279	VERIFIED	0002:00330bc0 ?OnUp@MPOptionsScreenMenu@@UAEXH@Z 00B200C0 f mp.o
 280	VERIFIED	0002:00330c50 ?OnDown@MPOptionsScreenMenu@@UAEXH@Z 00B20150 f mp.o
 281	VERIFIED	0002:00330ce0 ?OnTriangle@MPOptionsScreenMenu@@UAEXH@Z 00B201E0 f mp.o
-282	VERIFIED	0002:00330d10 ?Select@MPOptionsScreenMenu@@UAEXH@Z 00B20210 f mp.o
-283	VERIFIED	0002:00330d20 ?OnCross@MPOptionsScreenMenu@@UAEXH@Z 00B20220 f mp.o
+282	PORTED	0002:00330d10 ?Select@MPOptionsScreenMenu@@UAEXH@Z 00B20210 f mp.o
+283	PORTED	0002:00330d20 ?OnCross@MPOptionsScreenMenu@@UAEXH@Z 00B20220 f mp.o
 284	VERIFIED	0002:00330d30 ?UpdateWidescreen@MPOptionsScreenMenu@@UAEX_N@Z 00B20230 f mp.o
 285	VERIFIED	0002:00330d70 ?Me@MPOptionsSoundMenu@@SAPAV1@XZ 00B20270 f mp.o
 286	VERIFIED	0002:00330d80 ??0MPOptionsSoundMenu@@QAE@PAVFEMenuSystem@@@Z 00B20280 f mp.o
@@ -342,7 +342,7 @@ index	status	map_line
 341	VERIFIED	0002:00333670 ?OnUp@MPProfileEditMenu@@UAEXH@Z 00B22B70 f mp.o
 342	VERIFIED	0002:003336f0 ?OnDown@MPProfileEditMenu@@UAEXH@Z 00B22BF0 f mp.o
 343	VERIFIED	0002:00333770 ?OnTriangle@MPProfileEditMenu@@UAEXH@Z 00B22C70 f mp.o
-344	VERIFIED	0002:003337a0 ?DialogResponseOk@MPProfileEditMenu@@SA_NH@Z 00B22CA0 f mp.o
+344	PORTED	0002:003337a0 ?DialogResponseOk@MPProfileEditMenu@@SA_NH@Z 00B22CA0 f mp.o
 345	VERIFIED	0002:003337b0 ?Select@MPProfileEditMenu@@UAEXH@Z 00B22CB0 f mp.o
 346	VERIFIED	0002:00333820 ?OnCross@MPProfileEditMenu@@UAEXH@Z 00B22D20 f mp.o
 347	VERIFIED	0002:00333890 ?ButtonHeldAction@MPProfileEditMenu@@UAEXXZ 00B22D90 f mp.o
@@ -361,12 +361,12 @@ index	status	map_line
 360	VERIFIED	0002:00333eb0 ?OnSelectionChange@MPProfileMainMenu@@AAEXXZ 00B233B0 f mp.o
 361	VERIFIED	0002:003341e0 ?OnUp@MPProfileMainMenu@@UAEXH@Z 00B236E0 f mp.o
 362	VERIFIED	0002:00334220 ?ButtonHeldAction@MPProfileMainMenu@@UAEXXZ 00B23720 f mp.o
-363	VERIFIED	0002:00334250 ?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NH@Z 00B23750 f mp.o
-364	VERIFIED	0002:00334270 ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z 00B23770 f mp.o
-365	VERIFIED	0002:00334280 ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z 00B23780 f mp.o
-366	VERIFIED	0002:00334290 ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z 00B23790 f mp.o
-367	VERIFIED	0002:003342b0 ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z 00B237B0 f mp.o
-368	VERIFIED	0002:003342d0 ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z 00B237D0 f mp.o
+363	PORTED	0002:00334250 ?DialogResponseProfileLoadOk@MPProfileMainMenu@@SA_NH@Z 00B23750 f mp.o
+364	PORTED	0002:00334270 ?DialogResponseProfileEdit@MPProfileMainMenu@@SA_NH@Z 00B23770 f mp.o
+365	PORTED	0002:00334280 ?DialogResponseDeleteCancel@MPProfileMainMenu@@SA_NH@Z 00B23780 f mp.o
+366	PORTED	0002:00334290 ?DialogResponseSaveSuccess@MPProfileMainMenu@@SA_NH@Z 00B23790 f mp.o
+367	PORTED	0002:003342b0 ?DialogResponseDeleteSuccess@MPProfileMainMenu@@SA_NH@Z 00B237B0 f mp.o
+368	PORTED	0002:003342d0 ?DialogResponseNoMemCard@MPProfileMainMenu@@SA_NH@Z 00B237D0 f mp.o
 369	VERIFIED	0002:003342e0 ??0cBezier@kuju@@QAE@XZ 00B237E0 f mp.o
 370	VERIFIED	0002:003342f0 ?reset@cBezier@kuju@@QAEXABVPosition3@math@@ABVDir3@4@01@Z 00B237F0 f mp.o
 371	VERIFIED	0002:003343a0 ?position@cBezier@kuju@@QBE?AVPosition3@math@@M@Z 00B238A0 f mp.o
@@ -410,7 +410,7 @@ index	status	map_line
 409	VERIFIED	0002:00335aa0 ?IsLocalPlayer@MPPeer@@QAE_NPAVEntity@@@Z 00B24FA0 f mp.o
 410	VERIFIED	0002:00335ab0 ?onSessionJoinRefused@MPPeer@@EAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B24FB0 f mp.o
 411	VERIFIED	0002:00335b80 ?UpdateQosProbe@MPPeer@@QAEXV?$bdReference@VbdCommonAddr@@@@_NM@Z 00B25080 f mp.o
-412	VERIFIED	0002:00335bf0 ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z 00B250F0 f mp.o
+412	PORTED	0002:00335bf0 ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z 00B250F0 f mp.o
 413	VERIFIED	0002:00335c40 ?onQoSProbeFail@MPPeer@@EAEXV?$bdReference@VbdCommonAddr@@@@@Z 00B25140 f mp.o
 414	VERIFIED	0002:00335cc0 ?FindActiveQosProbe@MPPeer@@QAEHV?$bdReference@VbdCommonAddr@@@@ABUXNKID@@ABUXNKEY@@@Z 00B251C0 f mp.o
 415	VERIFIED	0002:00335de0 ?onSessionDisconnect@MPPeer@@EAEXV?$bdReference@VbdConnection@@@@@Z 00B252E0 f mp.o
@@ -679,7 +679,7 @@ index	status	map_line
 678	VERIFIED	0002:0034ed40 ?ExitFrontend@MPUIInterface@@SAXH@Z 00B3E240 f mp.o
 679	VERIFIED	0002:0034ed90 ?Update@MPProfileMainMenu@@UAEXM@Z 00B3E290 f mp.o
 680	VERIFIED	0002:0034ef00 ?DialogDisplayProfileLoading@MPProfileMainMenu@@QAEXH@Z 00B3E400 f mp.o
-681	VERIFIED	0002:0034efd0 ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z 00B3E4D0 f mp.o
+681	PORTED	0002:0034efd0 ?DialogResponseDeleteConfirm@MPProfileMainMenu@@SA_NH@Z 00B3E4D0 f mp.o
 682	VERIFIED	0002:0034eff0 ??0cVoiceManager@kvoicemanager@kuju@@QAE@XZ 00B3E4F0 f mp.o
 683	VERIFIED	0002:0034f030 ?evaluatePlayers@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B3E530 f mp.o
 684	VERIFIED	0002:0034f120 ?handlePacket@cVoiceNetworkManager@knetuser@kuju@@UAEXV?$bdReference@VbdBitBuffer@@@@@Z 00B3E620 f mp.o
@@ -756,7 +756,7 @@ index	status	map_line
 755	VERIFIED	0002:00355c20 ?SetPhysicsInfo@MPVehicle@@QAEXABVPosition3@math@@ABVDir3@3@1@Z 00B45120 f mp.o
 756	VERIFIED	0002:00355d80 ?UpdateInterpolation@MPVehicle@@QAEXABVsTime@knet@kuju@@@Z 00B45280 f mp.o
 757	VERIFIED	0002:003565e0 ?DebugRender@MPVehicle@@QAEXXZ 00B45AE0 f mp.o
-758	VERIFIED	0002:00357750 ?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N@Z 00B46C50 f mp.o
+758	PORTED	0002:00357750 ?SendOthers@MPPlayerManager@@QAEXV?$bdReference@VbdMessage@@@@_N@Z 00B46C50 f mp.o
 759	VERIFIED	0002:003577c0 ?SendPlayerEnter@MPPlayerManager@@QAEXPAVMPPlayer@@@Z 00B46CC0 f mp.o
 760	VERIFIED	0002:003578d0 ?HandlePlayerState@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B46DD0 f mp.o
 761	VERIFIED	0002:00357a20 ?HandlePlayerStatePassenger@MPPlayerManager@@AAEXABVbdReceivedMessage@@@Z 00B46F20 f mp.o
@@ -777,7 +777,7 @@ index	status	map_line
 776	VERIFIED	0002:0035a890 ?DebugRender@MPPlayerManager@@QAEXXZ 00B49D90 f mp.o
 777	VERIFIED	0002:0035a8e0 ?NextRound@MPUIInterface@@SAXXZ 00B49DE0 f mp.o
 778	VERIFIED	0002:0035a980 ?LoadSelectedProfile@MPProfileMainMenu@@AAEX_N@Z 00B49E80 f mp.o
-779	VERIFIED	0002:0035a9e0 ?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z 00B49EE0 f mp.o
+779	PORTED	0002:0035a9e0 ?DialogResponseDelete@MPProfileMainMenu@@SA_NH@Z 00B49EE0 f mp.o
 780	VERIFIED	0002:0035aad0 ?dispatchVoiceData@cVoiceManager@kvoicemanager@kuju@@AAEXXZ 00B49FD0 f mp.o
 781	VERIFIED	0002:0035ac10 ?LevelLoaded@MultiplayerMgr@@QAEXXZ 00B4A110 f mp.o
 782	VERIFIED	0002:0035ac20 ?VehicleDamage@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@FHEF@Z 00B4A120 f mp.o

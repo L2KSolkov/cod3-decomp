@@ -1,12 +1,12 @@
 index	status	map_line
-1	PORTED	0002:003bd390 ?InPool@BlockPool@PoolAllocator@@QBE_NPAD@Z 00BAC890 f i PoolAllocator.o
-2	PORTED	0002:003bd3b0 ?GetEntrySize@BlockPool@PoolAllocator@@QBEIXZ 00BAC8B0 f i PoolAllocator.o
+1	VERIFIED	0002:003bd390 ?InPool@BlockPool@PoolAllocator@@QBE_NPAD@Z 00BAC890 f i PoolAllocator.o
+2	VERIFIED	0002:003bd3b0 ?GetEntrySize@BlockPool@PoolAllocator@@QBEIXZ 00BAC8B0 f i PoolAllocator.o
 3	VERIFIED	0002:003bd3c0 ?GetNumRemaining@BlockPool@PoolAllocator@@QBEIXZ 00BAC8C0 f i PoolAllocator.o
-4	PORTED	0002:003bd3d0 ?GetCapacity@BlockPool@PoolAllocator@@QBEIXZ 00BAC8D0 f i PoolAllocator.o
-5	PORTED	0002:003bd3e0 ?GetMemSize@BlockPool@PoolAllocator@@QBEHXZ 00BAC8E0 f i PoolAllocator.o
-6	PORTED	0002:003bd3f0 ?GetMemRemaining@BlockPool@PoolAllocator@@QBEHXZ 00BAC8F0 f i PoolAllocator.o
-7	PORTED	0002:003bd400 ?get_slist_node@Block@BlockPool@PoolAllocator@@QAEPAXXZ 00BAC900 f i PoolAllocator.o
-8	PORTED	0002:003bd410 ?get_slist_node_offset@Block@BlockPool@PoolAllocator@@SAIXZ 00BAC910 f i PoolAllocator.o
+4	VERIFIED	0002:003bd3d0 ?GetCapacity@BlockPool@PoolAllocator@@QBEIXZ 00BAC8D0 f i PoolAllocator.o
+5	VERIFIED	0002:003bd3e0 ?GetMemSize@BlockPool@PoolAllocator@@QBEHXZ 00BAC8E0 f i PoolAllocator.o
+6	VERIFIED	0002:003bd3f0 ?GetMemRemaining@BlockPool@PoolAllocator@@QBEHXZ 00BAC8F0 f i PoolAllocator.o
+7	VERIFIED	0002:003bd400 ?get_slist_node@Block@BlockPool@PoolAllocator@@QAEPAXXZ 00BAC900 f i PoolAllocator.o
+8	VERIFIED	0002:003bd410 ?get_slist_node_offset@Block@BlockPool@PoolAllocator@@SAIXZ 00BAC910 f i PoolAllocator.o
 9	VERIFIED	0002:003bd420 ??1BlockPool@PoolAllocator@@QAE@XZ 00BAC920 f PoolAllocator.o
 10	VERIFIED	0002:003bd440 ?ReportAllocations@BlockPool@PoolAllocator@@QBEXXZ 00BAC940 f PoolAllocator.o
 11	VERIFIED	0002:003bd470 ?IsEmpty@PoolAllocator@@QBE_NXZ 00BAC970 f PoolAllocator.o
@@ -53,7 +53,7 @@ index	status	map_line
 52	PORTED	0002:003be0f0 ??0const_iterator@?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@AAE@PBUPoolConfig@PoolAllocator@@@Z 00BAD5F0 f i PoolAllocator.o
 53	PORTED	0002:003be100 ??0iterator@?$ae_sized_array@PAVBlockPool@PoolAllocator@@$07@@AAE@PAPAVBlockPool@PoolAllocator@@@Z 00BAD600 f i PoolAllocator.o
 54	PORTED	0002:003be110 ??$ae_max@I@@YAIABI0@Z 00BAD610 f i PoolAllocator.o
-55	PORTED	0002:003be130 ?IsEmpty@BlockPool@PoolAllocator@@QBE_NXZ 00BAD630 f i PoolAllocator.o
+55	VERIFIED	0002:003be130 ?IsEmpty@BlockPool@PoolAllocator@@QBE_NXZ 00BAD630 f i PoolAllocator.o
 56	PORTED	0002:003be140 ?push@?$reserved_slist@UBlock@BlockPool@PoolAllocator@@@@QAEXPAUBlock@BlockPool@PoolAllocator@@@Z 00BAD640 f i PoolAllocator.o
 57	PORTED	0002:003be160 ?pop@?$reserved_slist@UBlock@BlockPool@PoolAllocator@@@@QAEPAUBlock@BlockPool@PoolAllocator@@XZ 00BAD660 f i PoolAllocator.o
 58	PORTED	0002:003be180 ?begin@?$ae_sized_array@PAVBlockPool@PoolAllocator@@$07@@QAE?AViterator@1@XZ 00BAD680 f i PoolAllocator.o

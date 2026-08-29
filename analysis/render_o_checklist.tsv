@@ -49,7 +49,7 @@ index	status	map_line
 48	VERIFIED	0002:002bdf90 ?DObjSkelExists@@YAHPAVDObj@@H@Z 00AAD490 f render.o
 49	VERIFIED	0002:002bdfb0 ?DObjSkelExistsConst@@YAHPAVDObj@@H@Z 00AAD4B0 f render.o
 50	VERIFIED	0002:002bdfd0 ?DObjGetNumModels@@YAHPAVDObj@@@Z 00AAD4D0 f render.o
-51	VERIFIED	0002:002bdfe0 ?DObjSetRotTransIndex@@YAHPAVDObj@@QAHH@Z 00AAD4E0 f render.o
+51	PORTED	0002:002bdfe0 ?DObjSetRotTransIndex@@YAHPAVDObj@@QAHH@Z 00AAD4E0 f render.o
 52	VERIFIED	0002:002bdff0 ?DObjSetControlRotTransIndex@@YAHPAVDObj@@QAHH@Z 00AAD4F0 f render.o
 53	VERIFIED	0002:002be150 ?DObjGetNumSurfaces@@YAHPAVDObj@@PAH@Z 00AAD650 f render.o
 54	VERIFIED	0002:002be160 ?DObjGetSurface@@YAPAVXSurface@@PAVDObj@@HHPAH@Z 00AAD660 f render.o
@@ -58,7 +58,7 @@ index	status	map_line
 57	VERIFIED	0002:002be190 ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z 00AAD690 f render.o
 58	VERIFIED	0002:002be1e0 ?DObjNumBones@@YAHPAVDObj@@@Z 00AAD6E0 f render.o
 59	VERIFIED	0002:002be320 ?GetMat@DObj@@QAEABVMat43@math@@H@Z 00AAD820 f render.o
-60	VERIFIED	0002:002be390 ?R_XModelDebugAxes@@YAXPAVtrRefEntity@@QAH@Z 00AAD890 f render.o
+60	PORTED	0002:002be390 ?R_XModelDebugAxes@@YAXPAVtrRefEntity@@QAH@Z 00AAD890 f render.o
 61	VERIFIED	0002:002be630 ?nglListAddMesh_GetScaledMatrix@@YAPAVMat43@math@@ABV12@PAVnglMeshParams@@@Z 00AADB30 f render.o
 62	VERIFIED	0002:002be890 ?render_view_model_arms@@YAXHAAVnglMeshParams@@ABVMat43@math@@AAV23@@Z 00AADD90 f render.o
 63	VERIFIED	0002:002bea90 ?render_view_model_weapon@@YAXHAAVnglMeshParams@@AAVMat43@math@@@Z 00AADF90 f render.o
@@ -286,7 +286,7 @@ index	status	map_line
 285	VERIFIED	0002:002c8fb0 ?AddPoint@WheelMark@@QAEXABVPosition3@math@@ABVDir3@3@MMIM@Z 00AB84B0 f render.o
 286	VERIFIED	0002:002c93f0 ?GetLightGrid@LightGridMgr@@QAEPAUTOC@LightGrid@@ABVPosition3@math@@PAH@Z 00AB88F0 f render.o
 287	VERIFIED	0002:002c9530 ?GetLightListForGrid@LightGridMgr@@AAEXABUTOC@LightGrid@@PAPBUGridPoint@3@PAMAAV?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@@Z 00AB8A30 f render.o
-288	FIXED	0002:002c9790 ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVLightGridData@@@Z 00AB8C90 f render.o  FIXED: aligned LightGridData class tag and 0x64-byte IDA layout; resolved the render symbol.
+288	VERIFIED	0002:002c9790 ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVLightGridData@@@Z 00AB8C90 f render.o
 289	VERIFIED	0002:002c9e20 ?SampleLightGrid@LightGridMgr@@QAEXABUTOC@LightGrid@@HABVPosition3@math@@PAVMat44@5@2@Z 00AB9320 f render.o
 290	VERIFIED	0002:002ca2a0 ?setup_color@@YAXABVColor@@AAUnglShaderParamSet@@@Z 00AB97A0 f render.o
 291	VERIFIED	0002:002ca350 ?RenderTexturedQuad2D@DebugRender@@SAXMMMMMABVColor@@PAUnglTexture@@@Z 00AB9850 f render.o
@@ -635,8 +635,8 @@ index	status	map_line
 634	VERIFIED	0002:002e8e20 ?empty@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QBE_NXZ 00AD8320 f i render.o
 635	VERIFIED	0002:002e8e40 ?push_back@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEXABV?$ae_pair@FF@@@Z 00AD8340 f i render.o
 636	VERIFIED	0002:002e8ee0 ?pop_back@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEAAV?$ae_pair@FF@@XZ 00AD83E0 f i render.o
-637	VERIFIED	0002:002e8f10 ??0?$ae_vector@PAVParticleEffect@@@@QAE@XZ 00AD8410 f i render.o
-638	VERIFIED	0002:002e8f20 ?size@?$ae_vector@PAVParticleEffect@@@@QBEHXZ 00AD8420 f i render.o
+637	PORTED	0002:002e8f10 ??0?$ae_vector@PAVParticleEffect@@@@QAE@XZ 00AD8410 f i render.o
+638	PORTED	0002:002e8f20 ?size@?$ae_vector@PAVParticleEffect@@@@QBEHXZ 00AD8420 f i render.o
 639	VERIFIED	0002:002e8f30 ??A?$ae_vector@PAVParticleEffect@@@@QAEAAPAVParticleEffect@@H@Z 00AD8430 f i render.o
 640	VERIFIED	0002:002e8fb0 ?erase@?$ae_vector@PAVParticleEffect@@@@QAEXPAPAVParticleEffect@@0@Z 00AD84B0 f i render.o
 641	VERIFIED	0002:002e9080 ??0?$ae_vector@PAVLightEffect@@@@QAE@XZ 00AD8580 f i render.o
@@ -650,17 +650,17 @@ index	status	map_line
 649	VERIFIED	0002:002e92e0 ?size@?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@QBEHXZ 00AD87E0 f i render.o
 650	VERIFIED	0002:002e92f0 ?expand@?$ae_sized_array@ULightIndex@LightGrid@@$0M@@@QAEAAULightIndex@LightGrid@@XZ 00AD87F0 f i render.o
 651	VERIFIED	0002:002e9360 ??0?$ae_vector@VDebugLine@@@@QAE@XZ 00AD8860 f i render.o
-652	VERIFIED	0002:002e9370 ?begin@?$ae_vector@VDebugLine@@@@QAEPAVDebugLine@@XZ 00AD8870 f i render.o
-653	VERIFIED	0002:002e9380 ?end@?$ae_vector@VDebugLine@@@@QAEPAVDebugLine@@XZ 00AD8880 f i render.o
+652	PORTED	0002:002e9370 ?begin@?$ae_vector@VDebugLine@@@@QAEPAVDebugLine@@XZ 00AD8870 f i render.o
+653	PORTED	0002:002e9380 ?end@?$ae_vector@VDebugLine@@@@QAEPAVDebugLine@@XZ 00AD8880 f i render.o
 654	VERIFIED	0002:002e9390 ??0?$ae_vector@VDebugSphere@@@@QAE@XZ 00AD8890 f i render.o
-655	VERIFIED	0002:002e93a0 ?begin@?$ae_vector@VDebugSphere@@@@QAEPAVDebugSphere@@XZ 00AD88A0 f i render.o
-656	VERIFIED	0002:002e93b0 ?end@?$ae_vector@VDebugSphere@@@@QAEPAVDebugSphere@@XZ 00AD88B0 f i render.o
+655	PORTED	0002:002e93a0 ?begin@?$ae_vector@VDebugSphere@@@@QAEPAVDebugSphere@@XZ 00AD88A0 f i render.o
+656	PORTED	0002:002e93b0 ?end@?$ae_vector@VDebugSphere@@@@QAEPAVDebugSphere@@XZ 00AD88B0 f i render.o
 657	VERIFIED	0002:002e93c0 ??0?$ae_vector@VDebugTri@@@@QAE@XZ 00AD88C0 f i render.o
-658	VERIFIED	0002:002e93d0 ?begin@?$ae_vector@VDebugTri@@@@QAEPAVDebugTri@@XZ 00AD88D0 f i render.o
-659	VERIFIED	0002:002e93e0 ?end@?$ae_vector@VDebugTri@@@@QAEPAVDebugTri@@XZ 00AD88E0 f i render.o
-660	VERIFIED	0002:002e93f0 ??0?$ae_vector@VDebugTexturedQuad2D@@@@QAE@XZ 00AD88F0 f i render.o
-661	VERIFIED	0002:002e9400 ?begin@?$ae_vector@VDebugTexturedQuad2D@@@@QAEPAVDebugTexturedQuad2D@@XZ 00AD8900 f i render.o
-662	VERIFIED	0002:002e9410 ?end@?$ae_vector@VDebugTexturedQuad2D@@@@QAEPAVDebugTexturedQuad2D@@XZ 00AD8910 f i render.o
+658	PORTED	0002:002e93d0 ?begin@?$ae_vector@VDebugTri@@@@QAEPAVDebugTri@@XZ 00AD88D0 f i render.o
+659	PORTED	0002:002e93e0 ?end@?$ae_vector@VDebugTri@@@@QAEPAVDebugTri@@XZ 00AD88E0 f i render.o
+660	PORTED	0002:002e93f0 ??0?$ae_vector@VDebugTexturedQuad2D@@@@QAE@XZ 00AD88F0 f i render.o
+661	PORTED	0002:002e9400 ?begin@?$ae_vector@VDebugTexturedQuad2D@@@@QAEPAVDebugTexturedQuad2D@@XZ 00AD8900 f i render.o
+662	PORTED	0002:002e9410 ?end@?$ae_vector@VDebugTexturedQuad2D@@@@QAEPAVDebugTexturedQuad2D@@XZ 00AD8910 f i render.o
 663	VERIFIED	0002:002e9420 ??Diterator@?$ae_sized_array@P6AXXZ$0CA@@@QBEAAP6AXXZXZ 00AD8920 f i render.o
 664	VERIFIED	0002:002e9430 ??Eiterator@?$ae_sized_array@P6AXXZ$0CA@@@QAEAAV01@XZ 00AD8930 f i render.o
 665	VERIFIED	0002:002e9440 ??9iterator@?$ae_sized_array@P6AXXZ$0CA@@@QBE_NV01@@Z 00AD8940 f i render.o
@@ -681,7 +681,7 @@ index	status	map_line
 680	VERIFIED	0002:002e9a00 ??0?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAE@XZ 00AD8F00 f i render.o
 681	VERIFIED	0002:002e9a20 ?add@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAEPAPAVtrRefEntity@@_NPBD@Z 00AD8F20 f i render.o
 682	VERIFIED	0002:002e9a70 ??A?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAEAAPAVtrRefEntity@@H@Z 00AD8F70 f i render.o
-683	VERIFIED	0002:002e9ad0 ?get_count@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QBE?BHXZ 00AD8FD0 f i render.o
+683	PORTED	0002:002e9ad0 ?get_count@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QBE?BHXZ 00AD8FD0 f i render.o
 684	VERIFIED	0002:002e9ae0 ??Eiterator@?$reserved_dlist@VtrRefEntity@@@@QAEAAV01@XZ 00AD8FE0 f i render.o
 685	SKIPPED	0002:002e9b00 ?size@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QBEIXZ 00AD9000 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 686	VERIFIED	0002:002e9b20 ?Instance@?$apsSingleton@VapsError@@@@SAAAVapsError@@XZ 00AD9020 f i render.o
@@ -720,18 +720,18 @@ index	status	map_line
 719	VERIFIED	0002:002ea1d0 ?GetKey@DbElement@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEHXZ 00AD96D0 f i render.o
 720	VERIFIED	0002:002ea1e0 ?Release@DbElement@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00AD96E0 f i render.o
 721	VERIFIED	0002:002ea1f0 ?set_size@?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@QAEXH@Z 00AD96F0 f i render.o
-722	VERIFIED	0002:002ea210 ?construct_array@?$ae_vector@PAVParticleEffect@@@@AAEPAPAVParticleEffect@@HH@Z 00AD9710 f i render.o
+722	PORTED	0002:002ea210 ?construct_array@?$ae_vector@PAVParticleEffect@@@@AAEPAPAVParticleEffect@@HH@Z 00AD9710 f i render.o
 723	VERIFIED	0002:002ea240 ?destroy_all@?$ae_vector@PAVParticleEffect@@@@AAEXXZ 00AD9740 f i render.o
 724	VERIFIED	0002:002ea270 ?construct_array@?$ae_vector@PAVLightEffect@@@@AAEPAPAVLightEffect@@HH@Z 00AD9770 f i render.o
 725	VERIFIED	0002:002ea2a0 ?destroy_all@?$ae_vector@PAVLightEffect@@@@AAEXXZ 00AD97A0 f i render.o
-726	VERIFIED	0002:002ea2d0 ?construct_array@?$ae_vector@VDebugLine@@@@AAEPAVDebugLine@@HH@Z 00AD97D0 f i render.o
+726	PORTED	0002:002ea2d0 ?construct_array@?$ae_vector@VDebugLine@@@@AAEPAVDebugLine@@HH@Z 00AD97D0 f i render.o
 727	VERIFIED	0002:002ea2f0 ?destroy_all@?$ae_vector@VDebugLine@@@@AAEXXZ 00AD97F0 f i render.o
-728	VERIFIED	0002:002ea320 ?construct_array@?$ae_vector@VDebugSphere@@@@AAEPAVDebugSphere@@HH@Z 00AD9820 f i render.o
+728	PORTED	0002:002ea320 ?construct_array@?$ae_vector@VDebugSphere@@@@AAEPAVDebugSphere@@HH@Z 00AD9820 f i render.o
 729	VERIFIED	0002:002ea340 ?destroy_all@?$ae_vector@VDebugSphere@@@@AAEXXZ 00AD9840 f i render.o
-730	VERIFIED	0002:002ea370 ?construct_array@?$ae_vector@VDebugTri@@@@AAEPAVDebugTri@@HH@Z 00AD9870 f i render.o
+730	PORTED	0002:002ea370 ?construct_array@?$ae_vector@VDebugTri@@@@AAEPAVDebugTri@@HH@Z 00AD9870 f i render.o
 731	VERIFIED	0002:002ea390 ?destroy_all@?$ae_vector@VDebugTri@@@@AAEXXZ 00AD9890 f i render.o
-732	VERIFIED	0002:002ea3c0 ?construct_array@?$ae_vector@VDebugTexturedQuad2D@@@@AAEPAVDebugTexturedQuad2D@@HH@Z 00AD98C0 f i render.o
-733	VERIFIED	0002:002ea3f0 ?destroy_all@?$ae_vector@VDebugTexturedQuad2D@@@@AAEXXZ 00AD98F0 f i render.o
+732	PORTED	0002:002ea3c0 ?construct_array@?$ae_vector@VDebugTexturedQuad2D@@@@AAEPAVDebugTexturedQuad2D@@HH@Z 00AD98C0 f i render.o
+733	PORTED	0002:002ea3f0 ?destroy_all@?$ae_vector@VDebugTexturedQuad2D@@@@AAEXXZ 00AD98F0 f i render.o
 734	VERIFIED	0002:002ea420 ??0iterator@?$ae_sized_array@P6AXXZ$0CA@@@AAE@PAP6AXXZ@Z 00AD9920 f i render.o
 735	SKIPPED	0002:002ea440 ?Deref@?$IVPointer@VXModelParts@@@@ABEPAVXModelParts@@XZ 00AD9940 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 736	VERIFIED	0002:002ea460 ?call_destructors@?$phys_static_array@PAVtrRefEntity@@$0EA@@@AAEXXZ 00AD9960 f i render.o
@@ -753,12 +753,12 @@ index	status	map_line
 752	VERIFIED	0002:002ea630 ?get_head@?$reserved_dlist@VtrRefEntity@@@@QAEPAUdlist_node@1@XZ 00AD9B30 f i render.o
 753	VERIFIED	0002:002ea640 ?empty@?$reserved_dlist@VtrRefEntity@@@@QBE_NXZ 00AD9B40 f i render.o
 754	VERIFIED	0002:002ea660 ?GetObject@DbElement@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVDObj@@XZ 00AD9B60 f i render.o
-755	VERIFIED	0002:002ea670 ?construct_array@?$ae_vector@PAVParticleEffect@@@@AAEPAPAVParticleEffect@@H@Z 00AD9B70 f i render.o
+755	PORTED	0002:002ea670 ?construct_array@?$ae_vector@PAVParticleEffect@@@@AAEPAPAVParticleEffect@@H@Z 00AD9B70 f i render.o
 756	VERIFIED	0002:002ea6a0 ?construct_array@?$ae_vector@PAVLightEffect@@@@AAEPAPAVLightEffect@@H@Z 00AD9BA0 f i render.o
-757	VERIFIED	0002:002ea6d0 ?construct_array@?$ae_vector@VDebugLine@@@@AAEPAVDebugLine@@H@Z 00AD9BD0 f i render.o
-758	VERIFIED	0002:002ea6f0 ?construct_array@?$ae_vector@VDebugSphere@@@@AAEPAVDebugSphere@@H@Z 00AD9BF0 f i render.o
-759	VERIFIED	0002:002ea710 ?construct_array@?$ae_vector@VDebugTri@@@@AAEPAVDebugTri@@H@Z 00AD9C10 f i render.o
-760	VERIFIED	0002:002ea730 ?construct_array@?$ae_vector@VDebugTexturedQuad2D@@@@AAEPAVDebugTexturedQuad2D@@H@Z 00AD9C30 f i render.o
+757	PORTED	0002:002ea6d0 ?construct_array@?$ae_vector@VDebugLine@@@@AAEPAVDebugLine@@H@Z 00AD9BD0 f i render.o
+758	PORTED	0002:002ea6f0 ?construct_array@?$ae_vector@VDebugSphere@@@@AAEPAVDebugSphere@@H@Z 00AD9BF0 f i render.o
+759	PORTED	0002:002ea710 ?construct_array@?$ae_vector@VDebugTri@@@@AAEPAVDebugTri@@H@Z 00AD9C10 f i render.o
+760	PORTED	0002:002ea730 ?construct_array@?$ae_vector@VDebugTexturedQuad2D@@@@AAEPAVDebugTexturedQuad2D@@H@Z 00AD9C30 f i render.o
 761	SKIPPED	0002:002ea760 ??0?$allocator@UDecalSet@DynamicDecalMgr@@@std@@QAE@ABV01@@Z 00AD9C60 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 762	SKIPPED	0002:002ea770 ?deallocate@?$allocator@UDecalSet@DynamicDecalMgr@@@std@@QAEXPAUDecalSet@DynamicDecalMgr@@I@Z 00AD9C70 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 763	SKIPPED	0002:002ea790 ??0?$allocator@UApsDebugSphere@ApsGameClient@@@std@@QAE@ABV01@@Z 00AD9C90 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -879,8 +879,8 @@ index	status	map_line
 878	VERIFIED	0002:002ecb20 ?push_back@?$ae_vector@VDebugSphere@@@@QAEXABVDebugSphere@@@Z 00ADC020 f i render.o
 879	VERIFIED	0002:002ecc90 ??1?$ae_vector@VDebugTri@@@@QAE@XZ 00ADC190 f i render.o
 880	VERIFIED	0002:002eccc0 ?push_back@?$ae_vector@VDebugTri@@@@QAEXABVDebugTri@@@Z 00ADC1C0 f i render.o
-881	VERIFIED	0002:002ece90 ??1?$ae_vector@VDebugTexturedQuad2D@@@@QAE@XZ 00ADC390 f i render.o
-882	VERIFIED	0002:002ecec0 ?push_back@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXABVDebugTexturedQuad2D@@@Z 00ADC3C0 f i render.o
+881	PORTED	0002:002ece90 ??1?$ae_vector@VDebugTexturedQuad2D@@@@QAE@XZ 00ADC390 f i render.o
+882	PORTED	0002:002ecec0 ?push_back@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXABVDebugTexturedQuad2D@@@Z 00ADC3C0 f i render.o
 883	SKIPPED	0002:002ed020 ??D?$IVPointer@VXModelParts@@@@QAEPAVXModelParts@@XZ 00ADC520 f i render.o  SKIPPED: inline template/container helper; supplied by its template definition
 884	VERIFIED	0002:002ed040 ??1?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAE@XZ 00ADC540 f i render.o
 885	VERIFIED	0002:002ed050 ?remove_all@?$phys_static_array@PAVtrRefEntity@@$0EA@@@QAEXXZ 00ADC550 f i render.o
@@ -897,7 +897,7 @@ index	status	map_line
 896	VERIFIED	0002:002ed2b0 ?resize@?$ae_vector@VDebugLine@@@@QAEXH@Z 00ADC7B0 f i render.o
 897	VERIFIED	0002:002ed3e0 ?resize@?$ae_vector@VDebugSphere@@@@QAEXH@Z 00ADC8E0 f i render.o
 898	VERIFIED	0002:002ed500 ?resize@?$ae_vector@VDebugTri@@@@QAEXH@Z 00ADCA00 f i render.o
-899	VERIFIED	0002:002ed650 ?resize@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXH@Z 00ADCB50 f i render.o
+899	PORTED	0002:002ed650 ?resize@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXH@Z 00ADCB50 f i render.o
 900	VERIFIED	0002:002ed760 ??0iterator@?$reserved_dlist@VtrRefEntity@@@@QAE@AAV1@@Z 00ADCC60 f i render.o
 901	SKIPPED	0002:002ed7b0 ??0?$_Vector_val@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@IAE@V?$allocator@UDecalSet@DynamicDecalMgr@@@1@@Z 00ADCCB0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 902	SKIPPED	0002:002ed7c0 ??0?$_Vector_val@UApsDebugSphere@ApsGameClient@@V?$allocator@UApsDebugSphere@ApsGameClient@@@std@@@std@@IAE@V?$allocator@UApsDebugSphere@ApsGameClient@@@1@@Z 00ADCCC0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -958,12 +958,12 @@ index	status	map_line
 957	VERIFIED	0002:002ee5b0 ?begin@?$reserved_dlist@VtrRefEntity@@@@QAE?AViterator@1@XZ 00ADDAB0 f i render.o
 958	VERIFIED	0002:002ee600 ?ReleaseHandle@?$HandleDb@VDObj@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00ADDB00 f i render.o
 959	VERIFIED	0002:002ee720 ??D?$DbLinkedHandle@VDObjHandleDb@@VDObj@@@@QBEPAVDObj@@XZ 00ADDC20 f i render.o
-960	VERIFIED	0002:002ee760 ?clear@?$ae_vector@PAVParticleEffect@@@@QAEXXZ 00ADDC60 f i render.o
+960	PORTED	0002:002ee760 ?clear@?$ae_vector@PAVParticleEffect@@@@QAEXXZ 00ADDC60 f i render.o
 961	VERIFIED	0002:002ee770 ?clear@?$ae_vector@PAVLightEffect@@@@QAEXXZ 00ADDC70 f i render.o
-962	VERIFIED	0002:002ee780 ?clear@?$ae_vector@VDebugLine@@@@QAEXXZ 00ADDC80 f i render.o
-963	VERIFIED	0002:002ee790 ?clear@?$ae_vector@VDebugSphere@@@@QAEXXZ 00ADDC90 f i render.o
-964	VERIFIED	0002:002ee7a0 ?clear@?$ae_vector@VDebugTri@@@@QAEXXZ 00ADDCA0 f i render.o
-965	VERIFIED	0002:002ee7b0 ?clear@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXXZ 00ADDCB0 f i render.o
+962	PORTED	0002:002ee780 ?clear@?$ae_vector@VDebugLine@@@@QAEXXZ 00ADDC80 f i render.o
+963	PORTED	0002:002ee790 ?clear@?$ae_vector@VDebugSphere@@@@QAEXXZ 00ADDC90 f i render.o
+964	PORTED	0002:002ee7a0 ?clear@?$ae_vector@VDebugTri@@@@QAEXXZ 00ADDCA0 f i render.o
+965	PORTED	0002:002ee7b0 ?clear@?$ae_vector@VDebugTexturedQuad2D@@@@QAEXXZ 00ADDCB0 f i render.o
 966	SKIPPED	0002:002ee7c0 ?begin@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QAE?AViterator@12@XZ 00ADDCC0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 967	SKIPPED	0002:002ee7e0 ?end@?$vector@UDecalSet@DynamicDecalMgr@@V?$allocator@UDecalSet@DynamicDecalMgr@@@std@@@std@@QAE?AViterator@12@XZ 00ADDCE0 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 968	SKIPPED	0002:002ee800 ?begin@?$vector@UApsDebugSphere@ApsGameClient@@V?$allocator@UApsDebugSphere@ApsGameClient@@@std@@@std@@QAE?AViterator@12@XZ 00ADDD00 f i render.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library

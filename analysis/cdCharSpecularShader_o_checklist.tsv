@@ -6,8 +6,8 @@ index	status	map_line
 5	PORTED	0002:003d2260 ?Render@cdCharSpecularShaderNode@@UAEXXZ 00BC1760 f cdCharSpecularShader.o
 6	VERIFIED	0002:003d26a0 ??0cdCharSpecularShader@@QAE@XZ 00BC1BA0 f i cdCharSpecularShader.o
 7	VERIFIED	0002:003d26d0 ?GetName@cdCharSpecularShader@@UAE?AVtlFixedString@@XZ 00BC1BD0 f i cdCharSpecularShader.o
-8	PORTED	0002:003d26f0 ?RegisterShader@cdCharSpecularShaderRender@@YAXXZ 00BC1BF0 f i cdCharSpecularShader.o
-9	PORTED	0002:003d2720 ?RegisterVShader@cdCharSpecularShaderRender@@YAXXZ 00BC1C20 f i cdCharSpecularShader.o
+8	VERIFIED	0002:003d26f0 ?RegisterShader@cdCharSpecularShaderRender@@YAXXZ 00BC1BF0 f i cdCharSpecularShader.o
+9	VERIFIED	0002:003d2720 ?RegisterVShader@cdCharSpecularShaderRender@@YAXXZ 00BC1C20 f i cdCharSpecularShader.o
 10	PORTED	0002:003d2730 ?GetVShader@cdCharSpecularShaderRender@@YAKI@Z 00BC1C30 f i cdCharSpecularShader.o
 11	PORTED	0002:003d2740 ?RegisterShader@cdCharSpecularPixel@@YAXXZ 00BC1C40 f i cdCharSpecularShader.o
 12	PORTED	0002:003d2760 ?RegisterPShader@cdCharSpecularPixel@@YAXXZ 00BC1C60 f i cdCharSpecularShader.o

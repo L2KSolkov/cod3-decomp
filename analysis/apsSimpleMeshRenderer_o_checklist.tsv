@@ -1,5 +1,5 @@
 index	status	map_line
-1	PORTED	0002:004025e0 ?Center@apsSphere@@QBEABUPacked@Dir3@math@@XZ 00BF1AE0 f i apsSimpleMeshRenderer.o
+1	VERIFIED	0002:004025e0 ?Center@apsSphere@@QBEABUPacked@Dir3@math@@XZ 00BF1AE0 f i apsSimpleMeshRenderer.o
 2	PORTED	0002:004025f0 ?Radius@apsSphere@@QBE?BMXZ 00BF1AF0 f i apsSimpleMeshRenderer.o
 3	PORTED	0002:00402630 ?GetDist@apsRenderNode@@QBEMPAUnglScene@@@Z 00BF1B30 f i apsSimpleMeshRenderer.o
 4	PORTED	0002:004026e0 ?SetFlags@apsRenderNode@@QAEXI@Z 00BF1BE0 f i apsSimpleMeshRenderer.o
@@ -13,9 +13,9 @@ index	status	map_line
 12	VERIFIED	0002:00402860 ??0apsSimpleMeshShader@@QAE@XZ 00BF1D60 f i apsSimpleMeshRenderer.o
 13	VERIFIED	0002:00402890 ?GetName@apsSimpleMeshShader@@UAE?AVtlFixedString@@XZ 00BF1D90 f i apsSimpleMeshRenderer.o
 14	VERIFIED	0002:004028b0 ?AddNode@apsSimpleMeshShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BF1DB0 f i apsSimpleMeshRenderer.o
-15	PORTED	0002:004028c0 ?RegisterVShader@apsSimpleMeshRender@@YAXXZ 00BF1DC0 f i apsSimpleMeshRenderer.o
-16	PORTED	0002:004028e0 ?RegisterPShader@apsSimpleMeshRenderPixel@@YAXXZ 00BF1DE0 f i apsSimpleMeshRenderer.o
-17	PORTED	0002:00402900 ?InitPShader@apsSimpleMeshRenderPixel@@YAXXZ 00BF1E00 f i apsSimpleMeshRenderer.o
+15	VERIFIED	0002:004028c0 ?RegisterVShader@apsSimpleMeshRender@@YAXXZ 00BF1DC0 f i apsSimpleMeshRenderer.o
+16	VERIFIED	0002:004028e0 ?RegisterPShader@apsSimpleMeshRenderPixel@@YAXXZ 00BF1DE0 f i apsSimpleMeshRenderer.o
+17	VERIFIED	0002:00402900 ?InitPShader@apsSimpleMeshRenderPixel@@YAXXZ 00BF1E00 f i apsSimpleMeshRenderer.o
 18	VERIFIED	0002:00402920 ?Init@apsSimpleMeshRenderer@@SAXXZ 00BF1E20 f apsSimpleMeshRenderer.o
 19	VERIFIED	0002:00402950 ?InitShader@apsSimpleMeshRenderer@@SAXXZ 00BF1E50 f apsSimpleMeshRenderer.o
 20	PORTED	0002:00402990 ??0apsSimpleMeshRenderer@@QAE@ABVcArgs@0@@Z 00BF1E90 f apsSimpleMeshRenderer.o
@@ -25,7 +25,7 @@ index	status	map_line
 24	SKIPPED	0002:00402b70 ??_GapsRenderNode@@UAEPAXI@Z 00BF2070 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 25	SKIPPED	0002:00402ba0 ??_EapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 26	SKIPPED	0002:00402ba0 ??_GapsSimpleMeshShader@@UAEPAXI@Z 00BF20A0 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-27	PORTED	0002:00402bd0 ??0apsSimpleMeshNode@@QAE@XZ 00BF20D0 f i apsSimpleMeshRenderer.o
+27	VERIFIED	0002:00402bd0 ??0apsSimpleMeshNode@@QAE@XZ 00BF20D0 f i apsSimpleMeshRenderer.o
 28	VERIFIED	0002:00402be0 ?GetDesc@apsSimpleMeshNode@@UAEXPAD@Z 00BF20E0 f i apsSimpleMeshRenderer.o
 29	SKIPPED	0002:00402c20 ??_GapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 30	SKIPPED	0002:00402c20 ??_EapsSimpleMeshNode@@UAEPAXI@Z 00BF2120 f i apsSimpleMeshRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

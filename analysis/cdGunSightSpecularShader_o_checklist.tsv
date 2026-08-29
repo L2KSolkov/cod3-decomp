@@ -7,7 +7,7 @@ index	status	map_line
 6	PORTED	0002:003cd910 ?Render@cdGunSightSpecularShaderNode@@UAEXXZ 00BBCE10 f cdGunSightSpecularShader.o
 7	VERIFIED	0002:003cdc80 ??0cdGunSightSpecularShader@@QAE@XZ 00BBD180 f i cdGunSightSpecularShader.o
 8	VERIFIED	0002:003cdcb0 ?GetName@cdGunSightSpecularShader@@UAE?AVtlFixedString@@XZ 00BBD1B0 f i cdGunSightSpecularShader.o
-9	PORTED	0002:003cdcd0 ?RegisterVShader@cdGunSightSpecularRender@@YAXXZ 00BBD1D0 f i cdGunSightSpecularShader.o
+9	VERIFIED	0002:003cdcd0 ?RegisterVShader@cdGunSightSpecularRender@@YAXXZ 00BBD1D0 f i cdGunSightSpecularShader.o
 10	PORTED	0002:003cdd00 ?GetVShader@cdGunSightSpecularRender@@YAKI@Z 00BBD200 f i cdGunSightSpecularShader.o
 11	PORTED	0002:003cdd10 ?RegisterPShader@cdGunSightSpecularPixel@@YAXXZ 00BBD210 f i cdGunSightSpecularShader.o
 12	PORTED	0002:003cdd30 ?GetPShader@cdGunSightSpecularPixel@@YAPAKXZ 00BBD230 f i cdGunSightSpecularShader.o

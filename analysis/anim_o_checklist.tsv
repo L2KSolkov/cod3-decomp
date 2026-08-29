@@ -719,7 +719,7 @@ index	status	map_line
 718	SKIPPED	0002:00161970 ??_ESceneAnimClient@@UAEPAXI@Z 00950E70 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 719	SKIPPED	0002:00161970 ??_GSceneAnimClient@@UAEPAXI@Z 00950E70 f i anim.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 720	VERIFIED	0002:001619a0 ??1SceneAnimClient@@UAE@XZ 00950EA0 f i anim.o
-721	PORTED	0002:001619b0 ?CreateInstance@SceneAnimClient@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAV3@@Z 00950EB0 f i anim.o
+721	VERIFIED	0002:001619b0 ?CreateInstance@SceneAnimClient@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAV3@@Z 00950EB0 f i anim.o
 722	VERIFIED	0002:00161fc0 ?begin@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@XZ 009514C0 f i anim.o
 723	VERIFIED	0002:00162010 ?erase@?$reserved_dlist@VSceneAnimInfo@@@@QAEXPAVSceneAnimInfo@@@Z 00951510 f i anim.o
 724	VERIFIED	0002:001620b0 ?erase@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@AAV21@@Z 009515B0 f i anim.o

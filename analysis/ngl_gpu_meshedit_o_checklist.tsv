@@ -11,5 +11,5 @@ index	status	map_line
 10	VERIFIED	0002:00443400 ?nglCopySection@@YAXPAUnglMeshSection@@0@Z 00C32900 f ngl_gpu_meshedit.o
 11	VERIFIED	0002:00443540 ?nglCopySection@@YAXPAUnglMesh@@H0H@Z 00C32A40 f ngl_gpu_meshedit.o
 12	VERIFIED	0002:00443570 ?nglCreateSectionCopy@@YAPAUnglMeshSection@@PAU1@@Z 00C32A70 f ngl_gpu_meshedit.o
-13	PORTED	0002:004435b0 ?gpuDestroyVertexBuffer@@YAXPAUD3DVertexBuffer@@@Z 00C32AB0 f i ngl_gpu_meshedit.o
-14	PORTED	0002:004435c0 ?gpuDestroyIndexBuffer@@YAXPAUD3DIndexBuffer@@@Z 00C32AC0 f i ngl_gpu_meshedit.o
+13	VERIFIED	0002:004435b0 ?gpuDestroyVertexBuffer@@YAXPAUD3DVertexBuffer@@@Z 00C32AB0 f i ngl_gpu_meshedit.o
+14	VERIFIED	0002:004435c0 ?gpuDestroyIndexBuffer@@YAXPAUD3DIndexBuffer@@@Z 00C32AC0 f i ngl_gpu_meshedit.o

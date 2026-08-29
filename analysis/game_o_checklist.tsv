@@ -1,29 +1,29 @@
 index	status	map_line
-1	PORTED	0002:00201cc0 ?get_normal@cdlPlane@@QBEABVDir3@math@@XZ 009F11C0 f i game.o  PORTED: restored exact IDA accessor returning the plane normal view
-2	PORTED	0002:00201cd0 ?get_sphere_radius@cdl_object_t@@QBEMXZ 009F11D0 f i game.o  PORTED: restored exact IDA sphere_radius accessor
-3	PORTED	0002:00201ce0 ?get_sflags@cdl_object_t@@QBEHXZ 009F11E0 f i game.o  PORTED: restored exact IDA sflags accessor
+1	VERIFIED	0002:00201cc0 ?get_normal@cdlPlane@@QBEABVDir3@math@@XZ 009F11C0 f i game.o
+2	VERIFIED	0002:00201cd0 ?get_sphere_radius@cdl_object_t@@QBEMXZ 009F11D0 f i game.o
+3	VERIFIED	0002:00201ce0 ?get_sflags@cdl_object_t@@QBEHXZ 009F11E0 f i game.o
 4	VERIFIED	0002:00201cf0 ??0subdivision_visitor@@QAE@XZ 009F11F0 f i game.o
-5	PORTED	0002:00201d00 ??0Color32@@QAE@EEEE@Z 009F1200 f i game.o  PORTED: restored exact IDA channel-ordering constructor
-6	PORTED	0002:00201d30 ?to_color@Color32@@QAE?AVColor@@XZ 009F1230 f i game.o  PORTED: restored exact IDA byte-to-float conversion
-7	VERIFIED	0002:00201da0 ?Inst@DCGBankManager@@SAPAV1@XZ 009F12A0 f i game.o  VERIFIED: existing source returns DCGBankManager::sInst exactly
-8	PORTED	0002:00201db0 ?Count@CGBankManager@@QBEHXZ 009F12B0 f i game.o  PORTED: restored exact IDA mCount accessor
-9	PORTED	0002:00201dc0 ?nullify_buffer@phys_memory_heap@@QAEXXZ 009F12C0 f i game.o  PORTED: restored exact IDA null-pointer reset
+5	VERIFIED	0002:00201d00 ??0Color32@@QAE@EEEE@Z 009F1200 f i game.o
+6	VERIFIED	0002:00201d30 ?to_color@Color32@@QAE?AVColor@@XZ 009F1230 f i game.o
+7	PORTED	0002:00201da0 ?Inst@DCGBankManager@@SAPAV1@XZ 009F12A0 f i game.o
+8	VERIFIED	0002:00201db0 ?Count@CGBankManager@@QBEHXZ 009F12B0 f i game.o
+9	PORTED	0002:00201dc0 ?nullify_buffer@phys_memory_heap@@QAEXXZ 009F12C0 f i game.o
 10	VERIFIED	0002:00201de0 ?set_buffer@phys_memory_heap@@QAEXQAXHH@Z 009F12E0 f i game.o
-11	PORTED	0002:00201f00 ??0proxy_obj_t@@QAE@EGE@Z 009F1400 f i game.o  PORTED: restored exact IDA field-ordering constructor
-12	SKIPPED	0002:00201f30 ?abs@@YAMM@Z 009F1430 f i game.o  SKIPPED: MSVC CRT supplies the exact float abs runtime helper
-13	PORTED	0002:00201f40 ?IsNode@BspNode@@QBE_NXZ 009F1440 f i game.o  PORTED: restored exact IDA contents == -1 query on the authoritative local type
-14	PORTED	0002:00201f50 ?Initialize@CachedLightGrid@@QAEXXZ 009F1450 f i game.o  PORTED: restored exact IDA lastPos FLT_MAX and moved initialization with IDA-sized types
-15	PORTED	0002:00201f80 ?ae_stricmp@@YAHPBD0@Z 009F1480 f i game.o  PORTED: restored exact null handling and unbounded ae_stricmpn sentinel behavior from IDA
-16	PORTED	0002:00201fb0 ?tlLockScratchpad@@YAXXZ 009F14B0 f i game.o  PORTED: restored exact IDA lock/assert state transition
-17	PORTED	0002:00202000 ?tlUnlockScratchpad@@YAXXZ 009F1500 f i game.o  PORTED: restored exact IDA unlock/assert state transition
-18	PORTED	0002:00202050 ?Set@Packed@Dir3@math@@QAEXABV23@@Z 009F1550 f i game.o  PORTED: restored exact IDA component extraction into packed storage
-19	PORTED	0002:002020e0 ??4Packed@Dir3@math@@QAEABU012@ABV12@@Z 009F15E0 f i game.o  PORTED: restored exact IDA packed assignment
-20	PORTED	0002:00202170 ?GetW@Position3@math@@QBEMXZ 009F1670 f i game.o  PORTED: restored exact IDA constant W accessor
-21	PORTED	0002:00202180 ??0Packed@Position3@math@@QAE@ABV12@@Z 009F1680 f i game.o  PORTED: restored exact IDA packed-position constructor
-22	PORTED	0002:00202210 ?get_bp_info@Entity@@QAEPAVbiped_phys_info@@XZ 009F1710 f i game.o  PORTED: restored exact IDA mBPInfo getter
+11	VERIFIED	0002:00201f00 ??0proxy_obj_t@@QAE@EGE@Z 009F1400 f i game.o
+12	PORTED	0002:00201f30 ?abs@@YAMM@Z 009F1430 f i game.o
+13	PORTED	0002:00201f40 ?IsNode@BspNode@@QBE_NXZ 009F1440 f i game.o
+14	VERIFIED	0002:00201f50 ?Initialize@CachedLightGrid@@QAEXXZ 009F1450 f i game.o
+15	VERIFIED	0002:00201f80 ?ae_stricmp@@YAHPBD0@Z 009F1480 f i game.o
+16	PORTED	0002:00201fb0 ?tlLockScratchpad@@YAXXZ 009F14B0 f i game.o
+17	PORTED	0002:00202000 ?tlUnlockScratchpad@@YAXXZ 009F1500 f i game.o
+18	VERIFIED	0002:00202050 ?Set@Packed@Dir3@math@@QAEXABV23@@Z 009F1550 f i game.o
+19	VERIFIED	0002:002020e0 ??4Packed@Dir3@math@@QAEABU012@ABV12@@Z 009F15E0 f i game.o
+20	VERIFIED	0002:00202170 ?GetW@Position3@math@@QBEMXZ 009F1670 f i game.o
+21	VERIFIED	0002:00202180 ??0Packed@Position3@math@@QAE@ABV12@@Z 009F1680 f i game.o
+22	VERIFIED	0002:00202210 ?get_bp_info@Entity@@QAEPAVbiped_phys_info@@XZ 009F1710 f i game.o
 23	VERIFIED	0002:00202220 ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z 009F1720 f i game.o
-24	PORTED	0002:002022c0 ??4Dir3@math@@QAEABV01@ABUPacked@01@@Z 009F17C0 f i game.o  PORTED: restored exact packed XYZ to SIMD assignment
-25	PORTED	0002:00202330 ??4Position3@math@@QAEABV01@ABVDir3@1@@Z 009F1830 f i game.o  PORTED: restored exact Dir3 SIMD assignment
+24	VERIFIED	0002:002022c0 ??4Dir3@math@@QAEABV01@ABUPacked@01@@Z 009F17C0 f i game.o
+25	VERIFIED	0002:00202330 ??4Position3@math@@QAEABV01@ABVDir3@1@@Z 009F1830 f i game.o
 26	VERIFIED	0002:00202350 ??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@PBDI@Z 009F1850 f game.o
 27	VERIFIED	0002:002023c0 ??0AnimNotifyTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@II@Z 009F18C0 f game.o
 28	VERIFIED	0002:002023f0 ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z 009F18F0 f game.o
@@ -687,107 +687,107 @@ index	status	map_line
 686	VERIFIED	0002:002466a0 ?ClearEntities@CurveManager@@QAEXXZ 00A35BA0 f game.o
 687	VERIFIED	0002:00246700 ?DebugRender@CGBankManager@@QAEXXZ 00A35C00 f game.o
 688	VERIFIED	0002:002492d0 ??0CGBankManager@@QAE@XZ 00A387D0 f game.o
-689	PORTED	0002:0025b030 ?AbsValue@math@@YA?AVDir3@1@ABV21@@Z 00A4A530 f i game.o  PORTED: restored exact sign-mask absolute-value SIMD helper
+689	VERIFIED	0002:0025b030 ?AbsValue@math@@YA?AVDir3@1@ABV21@@Z 00A4A530 f i game.o
 690	VERIFIED	0002:0025b070 ??0WbkEntry@AudioBankMgr@@QAE@XZ 00A4A570 f i game.o
-691	PORTED	0002:0025b0e0 ??8math@@YA_NABVDir3@0@0@Z 00A4A5E0 f i game.o  PORTED: restored exact XYZ Dir3 equality
-692	PORTED	0002:0025b1c0 ??Hmath@@YA?AVDir3@0@ABV10@M@Z 00A4A6C0 f i game.o  PORTED: restored exact Dir3 plus scalar SIMD helper
-693	PORTED	0002:0025b200 ??Hmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A700 f i game.o  PORTED: restored exact Position3 val34 plus Vector4 helper
-694	PORTED	0002:0025b250 ??Gmath@@YA?AVVector4@0@ABV10@0@@Z 00A4A750 f i game.o  PORTED: restored exact Vector4 subtraction
-695	PORTED	0002:0025b2b0 ??Gmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A7B0 f i game.o  PORTED: restored exact Position3 val34 minus Vector4 helper
-696	PORTED	0002:0025b330 ??Kmath@@YA?AVPosition3@0@ABV10@M@Z 00A4A830 f i game.o  PORTED: restored exact Position3 scalar division
+691	VERIFIED	0002:0025b0e0 ??8math@@YA_NABVDir3@0@0@Z 00A4A5E0 f i game.o
+692	VERIFIED	0002:0025b1c0 ??Hmath@@YA?AVDir3@0@ABV10@M@Z 00A4A6C0 f i game.o
+693	VERIFIED	0002:0025b200 ??Hmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A700 f i game.o
+694	VERIFIED	0002:0025b250 ??Gmath@@YA?AVVector4@0@ABV10@0@Z 00A4A750 f i game.o
+695	VERIFIED	0002:0025b2b0 ??Gmath@@YA?AVVector4@0@ABVPosition3@0@ABV10@@Z 00A4A7B0 f i game.o
+696	VERIFIED	0002:0025b330 ??Kmath@@YA?AVPosition3@0@ABV10@M@Z 00A4A830 f i game.o
 697	PORTED	0002:0025b370 ?IsStreamed@Sound@SoundDevice@@QBE_NXZ 00A4A870 f i game.o
 698	PORTED	0002:0025b390 ?GetWaveId@Sound@SoundDevice@@QAE?AW4nslWaveID@@XZ 00A4A890 f i game.o
-699	PORTED	0002:0025b3a0 ??Dmath@@YAMABVPosition3@0@0@Z 00A4A8A0 f i game.o  PORTED: restored exact Position3 dot product
-700	PORTED	0002:0025b400 ??ZDir3@math@@QAEABV01@ABV01@@Z 00A4A900 f i game.o  PORTED: restored exact Dir3 subtraction assignment
-701	PORTED	0002:0025b440 ??ZPosition3@math@@QAEABV01@ABVDir3@1@@Z 00A4A940 f i game.o  PORTED: restored exact Position3 minus Dir3 assignment
-702	PORTED	0002:0025b480 ?UnitNegDirX@math@@YA?AVDir3@1@XZ 00A4A980 f i game.o  PORTED: restored exact negative X unit vector
-703	PORTED	0002:0025b4c0 ?UnitNegDirY@math@@YA?AVDir3@1@XZ 00A4A9C0 f i game.o  PORTED: restored exact negative Y unit vector
-704	PORTED	0002:0025b500 ?UnitNegDirZ@math@@YA?AVDir3@1@XZ 00A4AA00 f i game.o  PORTED: restored exact negative Z unit vector
-705	PORTED	0002:0025b540 ?Compare_all_ge@math@@YA_NABVVector4@1@0@Z 00A4AA40 f i game.o  PORTED: restored exact SIMD all-ge comparison mask
-706	PORTED	0002:0025b590 ?Compare_all_gt@math@@YA_NABVVector4@1@0@Z 00A4AA90 f i game.o  PORTED: restored exact SIMD all-gt comparison mask
-707	PORTED	0002:0025b5e0 ?Compare_any_le@math@@YA_NABVPosition3@1@0@Z 00A4AAE0 f i game.o  PORTED: restored exact SIMD any-le comparison mask
-708	PORTED	0002:0025b630 ?Compare_any_ge@math@@YA_NABVPosition3@1@0@Z 00A4AB30 f i game.o  PORTED: restored exact SIMD any-ge comparison mask
-709	PORTED	0002:0025b680 ??0nglParamSet@@IAE@XZ 00A4AB80 f i game.o	PORTED: restored exact no-op constructor from IDA
-710	PORTED	0002:0025b690 ?ValidFlag@nglParamSet@@IAEAA_KXZ 00A4AB90 f i game.o	PORTED: restored exact Array-to-valid-flag view from IDA
-711	PORTED	0002:0025b6a0 ?GetSize@nglShaderParamSet@@SAIXZ 00A4ABA0 f i game.o	PORTED: restored exact static size formula from IDA
-712	PORTED	0002:0025b6b0 ?nglGetStripIndices@@YAHHH@Z 00A4ABB0 f i game.o	PORTED: restored exact strip index count formula from IDA
-713	PORTED	0002:0025b6d0 ??0SCheckpointGameVar@@QAE@III@Z 00A4ABD0 f i game.o	PORTED: restored exact three-field constructor from IDA
-714	PORTED	0002:0025b6f0 ?inc@cdl_profcounter@@QAEXXZ 00A4ABF0 f i game.o	PORTED: restored exact profiler counter increment from IDA
+699	VERIFIED	0002:0025b3a0 ??Dmath@@YAMABVPosition3@0@0@Z 00A4A8A0 f i game.o
+700	VERIFIED	0002:0025b400 ??ZDir3@math@@QAEABV01@ABV01@@Z 00A4A900 f i game.o
+701	VERIFIED	0002:0025b440 ??ZPosition3@math@@QAEABV01@ABVDir3@1@@Z 00A4A940 f i game.o
+702	VERIFIED	0002:0025b480 ?UnitNegDirX@math@@YA?AVDir3@1@XZ 00A4A980 f i game.o
+703	VERIFIED	0002:0025b4c0 ?UnitNegDirY@math@@YA?AVDir3@1@XZ 00A4A9C0 f i game.o
+704	VERIFIED	0002:0025b500 ?UnitNegDirZ@math@@YA?AVDir3@1@XZ 00A4AA00 f i game.o
+705	VERIFIED	0002:0025b540 ?Compare_all_ge@math@@YA_NABVVector4@1@0@Z 00A4AA40 f i game.o
+706	VERIFIED	0002:0025b590 ?Compare_all_gt@math@@YA_NABVVector4@1@0@Z 00A4AA90 f i game.o
+707	VERIFIED	0002:0025b5e0 ?Compare_any_le@math@@YA_NABVPosition3@1@0@Z 00A4AAE0 f i game.o
+708	VERIFIED	0002:0025b630 ?Compare_any_ge@math@@YA_NABVPosition3@1@0@Z 00A4AB30 f i game.o
+709	PORTED	0002:0025b680 ??0nglParamSet@@IAE@XZ 00A4AB80 f i game.o
+710	PORTED	0002:0025b690 ?ValidFlag@nglParamSet@@IAEAA_KXZ 00A4AB90 f i game.o
+711	VERIFIED	0002:0025b6a0 ?GetSize@nglShaderParamSet@@SAIXZ 00A4ABA0 f i game.o
+712	VERIFIED	0002:0025b6b0 ?nglGetStripIndices@@YAHHH@Z 00A4ABB0 f i game.o
+713	PORTED	0002:0025b6d0 ??0SCheckpointGameVar@@QAE@III@Z 00A4ABD0 f i game.o
+714	VERIFIED	0002:0025b6f0 ?inc@cdl_profcounter@@QAEXXZ 00A4ABF0 f i game.o
 715	PORTED	0002:0025b700 ?Select_lt@@YA?AVVector4@math@@ABVPosition3@2@000@Z 00A4AC00 f i game.o
 716	PORTED	0002:0025b860 ?Select_gt@@YA?AVVector4@math@@ABVPosition3@2@000@Z 00A4AD60 f i game.o
 717	PORTED	0002:0025b9c0 ?FloatIsNegative@@YAHM@Z 00A4AEC0 f i game.o
 718	PORTED	0002:0025b9e0 ?FloatSign@@YAHM@Z 00A4AEE0 f i game.o
 719	PORTED	0002:0025ba10 ?BoxOnPlaneSide@@YAHABVPosition3@math@@0ABVVector4@2@@Z 00A4AF10 f i game.o
-720	PORTED	0002:0025bce0 ?Inst@BinFileManager@@SAPAV1@XZ 00A4B1E0 f i game.o	PORTED: restored exact singleton accessor from IDA
+720	VERIFIED	0002:0025bce0 ?Inst@BinFileManager@@SAPAV1@XZ 00A4B1E0 f i game.o
 721	VERIFIED	0002:0025bcf0 ??0leafList_s@@QAE@XZ 00A4B1F0 f i game.o
 722	VERIFIED	0002:0025bd00 ??0areaParms_t@@QAE@XZ 00A4B200 f i game.o
-723	PORTED	0002:0025bd10 ??0sphere_clip_stack_entry@@QAE@XZ 00A4B210 f i game.o	PORTED: restored exact no-op constructor with IDA-confirmed 48-byte layout
+723	PORTED	0002:0025bd10 ??0sphere_clip_stack_entry@@QAE@XZ 00A4B210 f i game.o
 724	VERIFIED	0002:0025bd20 ??0sphere_t@@QAE@XZ 00A4B220 f i game.o
 725	VERIFIED	0002:0025bd30 ?collide_sphere_triangle@@YA_NABVPosition3@math@@M000ABVDir3@2@PAV12@PAV32@@Z 00A4B230 f i game.o
-726	PORTED	0002:0025c300 ?Init@CmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXXZ@Z 00A4B800 f i game.o	PORTED: restored exact command initializer and IDA-confirmed BaseCmdFuncInfo offsets
-727	PORTED	0002:0025c330 ?Init@InputCmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXHH@Z@Z 00A4B830 f i game.o	PORTED: restored exact input-command initializer and IDA-confirmed BaseCmdFuncInfo offsets
-728	PORTED	0002:0025c360 ?get_dlist_node@CurveEffectListElem@@QAEPAXXZ 00A4B860 f i game.o	PORTED: restored exact self dlist accessor from IDA
-729	PORTED	0002:0025c370 ?get_dlist_node_offset@CurveEffectListElem@@SAHXZ 00A4B870 f i game.o	PORTED: restored exact zero dlist offset from IDA
-730	PORTED	0002:0025c380 ??2CurveEffectListElem@@SAPAXI_NPBDH@Z 00A4B880 f i game.o	PORTED: restored exact PoolAllocator-backed operator new from IDA
-731	PORTED	0002:0025c3a0 ??3CurveEffectListElem@@SAXPAX_NPBDH@Z 00A4B8A0 f i game.o	PORTED: restored exact allocator delete overload from IDA
-732	PORTED	0002:0025c3c0 ??3CurveEffectListElem@@SAXPAX@Z 00A4B8C0 f i game.o	PORTED: restored exact allocator delete overload from IDA
-733	PORTED	0002:0025c3e0 ?get_dlist_node@Curve@@QAEPAXXZ 00A4B8E0 f i game.o	PORTED: restored exact self dlist accessor from IDA
-734	PORTED	0002:0025c3f0 ?get_dlist_node_offset@Curve@@SAHXZ 00A4B8F0 f i game.o	PORTED: restored exact zero dlist offset from IDA
-735	PORTED	0002:0025c400 ??2Curve@@SAPAXI_NPBDH@Z 00A4B900 f i game.o	PORTED: restored exact PoolAllocator-backed operator new from IDA
-736	PORTED	0002:0025c420 ??3Curve@@SAXPAX_NPBDH@Z 00A4B920 f i game.o	PORTED: restored exact allocator delete overload from IDA
-737	PORTED	0002:0025c440 ??3Curve@@SAXPAX@Z 00A4B940 f i game.o	PORTED: restored exact allocator delete overload from IDA
-738	PORTED	0002:0025c460 ?get_dlist_node@CurveEvalFunc@@QAEPAXXZ 00A4B960 f i game.o	PORTED: restored exact self dlist accessor from IDA
-739	PORTED	0002:0025c470 ?get_dlist_node_offset@CurveEvalFunc@@SAHXZ 00A4B970 f i game.o	PORTED: restored exact zero dlist offset from IDA
-740	PORTED	0002:0025c480 ??2CurveEvalFunc@@SAPAXI_NPBDH@Z 00A4B980 f i game.o	PORTED: restored exact PoolAllocator-backed operator new from IDA
-741	PORTED	0002:0025c4a0 ??3CurveEvalFunc@@SAXPAX_NPBDH@Z 00A4B9A0 f i game.o	PORTED: restored exact allocator delete overload from IDA
-742	PORTED	0002:0025c4c0 ?get_displaced_center_dist@rigid_body_constraint_wheel@@QBE?BMXZ 00A4B9C0 f i game.o	PORTED: restored exact wheel displacement getter from IDA
-743	PORTED	0002:0025c4d0 ??0debug_brush@@QAE@XZ 00A4B9D0 f i game.o	PORTED: restored exact no-op debug brush constructor from IDA
+726	VERIFIED	0002:0025c300 ?Init@CmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXXZ@Z 00A4B800 f i game.o
+727	VERIFIED	0002:0025c330 ?Init@InputCmdFuncInfo@@QAEXPAVBaseCmdFuncInfo@@PADP6AXHH@Z@Z 00A4B830 f i game.o
+728	PORTED	0002:0025c360 ?get_dlist_node@CurveEffectListElem@@QAEPAXXZ 00A4B860 f i game.o
+729	VERIFIED	0002:0025c370 ?get_dlist_node_offset@CurveEffectListElem@@SAHXZ 00A4B870 f i game.o
+730	VERIFIED	0002:0025c380 ??2CurveEffectListElem@@SAPAXI_NPBDH@Z 00A4B880 f i game.o
+731	VERIFIED	0002:0025c3a0 ??3CurveEffectListElem@@SAXPAX_NPBDH@Z 00A4B8A0 f i game.o
+732	VERIFIED	0002:0025c3c0 ??3CurveEffectListElem@@SAXPAX@Z 00A4B8C0 f i game.o
+733	PORTED	0002:0025c3e0 ?get_dlist_node@Curve@@QAEPAXXZ 00A4B8E0 f i game.o
+734	VERIFIED	0002:0025c3f0 ?get_dlist_node_offset@Curve@@SAHXZ 00A4B8F0 f i game.o
+735	VERIFIED	0002:0025c400 ??2Curve@@SAPAXI_NPBDH@Z 00A4B900 f i game.o
+736	VERIFIED	0002:0025c420 ??3Curve@@SAXPAX_NPBDH@Z 00A4B920 f i game.o
+737	VERIFIED	0002:0025c440 ??3Curve@@SAXPAX@Z 00A4B940 f i game.o
+738	PORTED	0002:0025c460 ?get_dlist_node@CurveEvalFunc@@QAEPAXXZ 00A4B960 f i game.o
+739	VERIFIED	0002:0025c470 ?get_dlist_node_offset@CurveEvalFunc@@SAHXZ 00A4B970 f i game.o
+740	VERIFIED	0002:0025c480 ??2CurveEvalFunc@@SAPAXI_NPBDH@Z 00A4B980 f i game.o
+741	VERIFIED	0002:0025c4a0 ??3CurveEvalFunc@@SAXPAX_NPBDH@Z 00A4B9A0 f i game.o
+742	PORTED	0002:0025c4c0 ?get_displaced_center_dist@rigid_body_constraint_wheel@@QBE?BMXZ 00A4B9C0 f i game.o
+743	VERIFIED	0002:0025c4d0 ??0debug_brush@@QAE@XZ 00A4B9D0 f i game.o
 744	VERIFIED	0002:0025c4e0 ??0debug_brush@@QAE@ABVcdlBrush@@ABVMat43@math@@ABVColor@@@Z 00A4B9E0 f i game.o
-745	PORTED	0002:0025c5b0 ?SetEntity@DObj@@QAEXPAVEntity@@@Z 00A4BAB0 f i game.o	PORTED: restored exact DObj entity pointer setter from IDA
-746	PORTED	0002:0025c5d0 ?get_bp_sys@biped_phys_info@@QAEPAVbiped_system@@XZ 00A4BAD0 f i game.o	PORTED: restored exact biped system accessor from IDA
+745	VERIFIED	0002:0025c5b0 ?SetEntity@DObj@@QAEXPAVEntity@@@Z 00A4BAB0 f i game.o
+746	PORTED	0002:0025c5d0 ?get_bp_sys@biped_phys_info@@QAEPAVbiped_system@@XZ 00A4BAD0 f i game.o
 747	PORTED	0002:0025c5e0 ??0__unnamed@Entity@@QAE@XZ 00A4BAE0 f i game.o
 748	VERIFIED	0002:0025c600 ??1AttachModelInfo@@QAE@XZ 00A4BB00 f i game.o
 749	SKIPPED	0002:0025c610 ??_GDObj@@QAEPAXI@Z 00A4BB10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-750	PORTED	0002:0025c640 ?load_inplace@?$cdl_array@E@@QAEXPADAAH@Z 00A4BB40 f i game.o	PORTED: restored exact 16-byte alignment and byte-count advance from IDA
-751	PORTED	0002:0025c680 ??0?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4BB80 f i game.o	PORTED: restored exact zero/null array constructor from IDA
-752	PORTED	0002:0025c6a0 ??A?$cdl_array@UcdlPlane@@@@QAEAAUcdlPlane@@I@Z 00A4BBA0 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
-753	PORTED	0002:0025c6f0 ?load_inplace@?$cdl_array@UcdlPlane@@@@QAEXPADAAH@Z 00A4BBF0 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
-754	PORTED	0002:0025c730 ??A?$cdl_array@Ucdl_object_t@@@@QAEAAUcdl_object_t@@I@Z 00A4BC30 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
-755	PORTED	0002:0025c780 ?load_inplace@?$cdl_array@Ucdl_object_t@@@@QAEXPADAAH@Z 00A4BC80 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
-756	PORTED	0002:0025c7d0 ??0?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4BCD0 f i game.o	PORTED: restored exact zero/null array constructor from IDA
-757	PORTED	0002:0025c7f0 ?load_inplace@?$cdl_array@Ucdl_brush_t@@@@QAEXPADAAH@Z 00A4BCF0 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
-758	PORTED	0002:0025c830 ??0?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4BD30 f i game.o	PORTED: restored exact zero/null array constructor from IDA
-759	PORTED	0002:0025c850 ?load_inplace@?$cdl_array@Ucdl_vinfo_t@@@@QAEXPADAAH@Z 00A4BD50 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
-760	PORTED	0002:0025c890 ??0?$cdl_array@Uvi4@@@@QAE@XZ 00A4BD90 f i game.o	PORTED: restored exact zero/null array constructor from IDA
-761	PORTED	0002:0025c8b0 ?load_inplace@?$cdl_array@Uvi4@@@@QAEXPADAAH@Z 00A4BDB0 f i game.o	PORTED: restored exact 16-byte alignment and element-stride advance from IDA
-762	PORTED	0002:0025c8f0 ?size@?$cdl_array@VDCGSet@@@@QBEIXZ 00A4BDF0 f i game.o	PORTED: instantiated exact DCGSet count accessor using IDA-confirmed 112-byte type
-763	PORTED	0002:0025c900 ??A?$cdl_array@VDCGSet@@@@QBEABVDCGSet@@I@Z 00A4BE00 f i game.o	PORTED: instantiated exact const DCGSet indexer and assertion contract
-764	PORTED	0002:0025c950 ??A?$cdl_array@VDCGSet@@@@QAEAAVDCGSet@@I@Z 00A4BE50 f i game.o	PORTED: instantiated exact mutable DCGSet indexer and assertion contract
-765	PORTED	0002:0025c9a0 ?load_inplace@?$cdl_array@VDCGSet@@@@QAEXPADAAH@Z 00A4BEA0 f i game.o	PORTED: instantiated exact aligned DCGSet loader with sizeof stride
-766	PORTED	0002:0025c9e0 ?load_inplace@?$cdl_array@Ucdl_patch_t@@@@QAEXPADAAH@Z 00A4BEE0 f i game.o	PORTED: restored exact aligned cdl_patch_t loader with sizeof stride
+750	PORTED	0002:0025c640 ?load_inplace@?$cdl_array@E@@QAEXPADAAH@Z 00A4BB40 f i game.o
+751	VERIFIED	0002:0025c680 ??0?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4BB80 f i game.o
+752	VERIFIED	0002:0025c6a0 ??A?$cdl_array@UcdlPlane@@@@QAEAAUcdlPlane@@I@Z 00A4BBA0 f i game.o
+753	PORTED	0002:0025c6f0 ?load_inplace@?$cdl_array@UcdlPlane@@@@QAEXPADAAH@Z 00A4BBF0 f i game.o
+754	VERIFIED	0002:0025c730 ??A?$cdl_array@Ucdl_object_t@@@@QAEAAUcdl_object_t@@I@Z 00A4BC30 f i game.o
+755	PORTED	0002:0025c780 ?load_inplace@?$cdl_array@Ucdl_object_t@@@@QAEXPADAAH@Z 00A4BC80 f i game.o
+756	VERIFIED	0002:0025c7d0 ??0?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4BCD0 f i game.o
+757	PORTED	0002:0025c7f0 ?load_inplace@?$cdl_array@Ucdl_brush_t@@@@QAEXPADAAH@Z 00A4BCF0 f i game.o
+758	VERIFIED	0002:0025c830 ??0?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4BD30 f i game.o
+759	PORTED	0002:0025c850 ?load_inplace@?$cdl_array@Ucdl_vinfo_t@@@@QAEXPADAAH@Z 00A4BD50 f i game.o
+760	VERIFIED	0002:0025c890 ??0?$cdl_array@Uvi4@@@@QAE@XZ 00A4BD90 f i game.o
+761	PORTED	0002:0025c8b0 ?load_inplace@?$cdl_array@Uvi4@@@@QAEXPADAAH@Z 00A4BDB0 f i game.o
+762	VERIFIED	0002:0025c8f0 ?size@?$cdl_array@VDCGSet@@@@QBEIXZ 00A4BDF0 f i game.o
+763	VERIFIED	0002:0025c900 ??A?$cdl_array@VDCGSet@@@@QBEABVDCGSet@@I@Z 00A4BE00 f i game.o
+764	VERIFIED	0002:0025c950 ??A?$cdl_array@VDCGSet@@@@QAEAAVDCGSet@@I@Z 00A4BE50 f i game.o
+765	PORTED	0002:0025c9a0 ?load_inplace@?$cdl_array@VDCGSet@@@@QAEXPADAAH@Z 00A4BEA0 f i game.o
+766	PORTED	0002:0025c9e0 ?load_inplace@?$cdl_array@Ucdl_patch_t@@@@QAEXPADAAH@Z 00A4BEE0 f i game.o
 767	SKIPPED	0002:0025ca20 ??A?$ae_array@PAVDCGBank@@$0GD@@@QAEAAPAVDCGBank@@H@Z 00A4BF20 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 768	SKIPPED	0002:0025caa0 ??A?$InplaceVector@VInplaceString@@@@QBEABVInplaceString@@I@Z 00A4BFA0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-769	PORTED	0002:0025cb20 ?add_fast@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEPAUproxy_obj_t@@XZ 00A4C020 f i game.o	PORTED: restored exact capacity assertion and slot append from IDA
-770	PORTED	0002:0025cb80 ?remove_all_ndc@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEXXZ 00A4C080 f i game.o	PORTED: restored exact allocation-count reset from IDA
-771	PORTED	0002:0025cb90 ??A?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEAAUproxy_obj_t@@H@Z 00A4C090 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
-772	PORTED	0002:0025cbf0 ?get_available_slots@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QBE?BHXZ 00A4C0F0 f i game.o	PORTED: restored exact capacity-minus-count accessor from IDA
-773	PORTED	0002:0025cc10 ?add_fast@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEPAUbounded_proxy_obj_t@@XZ 00A4C110 f i game.o	PORTED: restored exact capacity assertion and slot append from IDA
-774	PORTED	0002:0025cc70 ?remove_all_ndc@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEXXZ 00A4C170 f i game.o	PORTED: restored exact allocation-count reset from IDA
-775	PORTED	0002:0025cc80 ??A?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEAAUbounded_proxy_obj_t@@H@Z 00A4C180 f i game.o	PORTED: restored exact mutable bounds-checked indexer from IDA
-776	PORTED	0002:0025cce0 ?get_available_slots@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBE?BHXZ 00A4C1E0 f i game.o	PORTED: restored exact capacity-minus-count accessor from IDA
-777	PORTED	0002:0025cd00 ??0?$phys_static_array@H$0BAA@@@QAE@XZ 00A4C200 f i game.o	PORTED: instantiated exact integer-array constructor
-778	PORTED	0002:0025cd20 ?add_fast@?$phys_static_array@H$0BAA@@@QAEPAHXZ 00A4C220 f i game.o	PORTED: instantiated exact integer-array append helper
-779	PORTED	0002:0025cd80 ?remove_all_ndc@?$phys_static_array@H$0BAA@@@QAEXXZ 00A4C280 f i game.o	PORTED: instantiated exact integer-array reset helper
-780	PORTED	0002:0025cd90 ??A?$phys_static_array@H$0BAA@@@QAEAAHH@Z 00A4C290 f i game.o	PORTED: instantiated exact integer-array mutable indexer
-781	PORTED	0002:0025cdf0 ?get_available_slots@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C2F0 f i game.o	PORTED: instantiated exact integer-array capacity accessor
-782	PORTED	0002:0025ce10 ?get_count@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C310 f i game.o	PORTED: existing exact count accessor verified against IDA
-783	PORTED	0002:0025ce20 ??0?$phys_static_array@H$0IA@@@QAE@XZ 00A4C320 f i game.o	PORTED: instantiated exact integer-array constructor
-784	PORTED	0002:0025ce40 ?add_fast@?$phys_static_array@H$0IA@@@QAEPAHXZ 00A4C340 f i game.o	PORTED: instantiated exact integer-array append helper
-785	PORTED	0002:0025cea0 ?remove_all_ndc@?$phys_static_array@H$0IA@@@QAEXXZ 00A4C3A0 f i game.o	PORTED: instantiated exact integer-array reset helper
-786	PORTED	0002:0025ceb0 ??A?$phys_static_array@H$0IA@@@QAEAAHH@Z 00A4C3B0 f i game.o	PORTED: instantiated exact integer-array mutable indexer
-787	PORTED	0002:0025cf10 ??A?$phys_static_array@H$0IA@@@QBEABHH@Z 00A4C410 f i game.o	PORTED: existing exact const integer-array indexer verified against IDA
-788	PORTED	0002:0025cf70 ?get_available_slots@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C470 f i game.o	PORTED: instantiated exact integer-array capacity accessor
-789	PORTED	0002:0025cf90 ?get_count@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C490 f i game.o	PORTED: existing exact count accessor verified against IDA
+769	VERIFIED	0002:0025cb20 ?add_fast@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEPAUproxy_obj_t@@XZ 00A4C020 f i game.o
+770	VERIFIED	0002:0025cb80 ?remove_all_ndc@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEXXZ 00A4C080 f i game.o
+771	VERIFIED	0002:0025cb90 ??A?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAEAAUproxy_obj_t@@H@Z 00A4C090 f i game.o
+772	PORTED	0002:0025cbf0 ?get_available_slots@?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QBE?BHXZ 00A4C0F0 f i game.o
+773	VERIFIED	0002:0025cc10 ?add_fast@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEPAUbounded_proxy_obj_t@@XZ 00A4C110 f i game.o
+774	VERIFIED	0002:0025cc70 ?remove_all_ndc@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEXXZ 00A4C170 f i game.o
+775	VERIFIED	0002:0025cc80 ??A?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QAEAAUbounded_proxy_obj_t@@H@Z 00A4C180 f i game.o
+776	PORTED	0002:0025cce0 ?get_available_slots@?$phys_static_array@Ubounded_proxy_obj_t@@$0IA@@@QBE?BHXZ 00A4C1E0 f i game.o
+777	VERIFIED	0002:0025cd00 ??0?$phys_static_array@H$0BAA@@@QAE@XZ 00A4C200 f i game.o
+778	VERIFIED	0002:0025cd20 ?add_fast@?$phys_static_array@H$0BAA@@@QAEPAHXZ 00A4C220 f i game.o
+779	VERIFIED	0002:0025cd80 ?remove_all_ndc@?$phys_static_array@H$0BAA@@@QAEXXZ 00A4C280 f i game.o
+780	VERIFIED	0002:0025cd90 ??A?$phys_static_array@H$0BAA@@@QAEAAHH@Z 00A4C290 f i game.o
+781	PORTED	0002:0025cdf0 ?get_available_slots@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C2F0 f i game.o
+782	VERIFIED	0002:0025ce10 ?get_count@?$phys_static_array@H$0BAA@@@QBE?BHXZ 00A4C310 f i game.o
+783	VERIFIED	0002:0025ce20 ??0?$phys_static_array@H$0IA@@@QAE@XZ 00A4C320 f i game.o
+784	VERIFIED	0002:0025ce40 ?add_fast@?$phys_static_array@H$0IA@@@QAEPAHXZ 00A4C340 f i game.o
+785	VERIFIED	0002:0025cea0 ?remove_all_ndc@?$phys_static_array@H$0IA@@@QAEXXZ 00A4C3A0 f i game.o
+786	VERIFIED	0002:0025ceb0 ??A?$phys_static_array@H$0IA@@@QAEAAHH@Z 00A4C3B0 f i game.o
+787	VERIFIED	0002:0025cf10 ??A?$phys_static_array@H$0IA@@@QBEABHH@Z 00A4C410 f i game.o
+788	PORTED	0002:0025cf70 ?get_available_slots@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C470 f i game.o
+789	VERIFIED	0002:0025cf90 ?get_count@?$phys_static_array@H$0IA@@@QBE?BHXZ 00A4C490 f i game.o
 790	SKIPPED	0002:0025cfa0 ?size@?$InplaceVector@E@@QBEIXZ 00A4C4A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 791	SKIPPED	0002:0025cfb0 ??0?$IVPointer@VXModel@@@@QAE@W4TPakId@@PAVXModel@@@Z 00A4C4B0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 792	SKIPPED	0002:0025cfd0 ?size@?$InplaceVector@VBspNode@@@@QBEIXZ 00A4C4D0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -797,92 +797,92 @@ index	status	map_line
 796	SKIPPED	0002:0025d0f0 ?size@?$InplaceVector@VBspArea@@@@QBEIXZ 00A4C5F0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 797	SKIPPED	0002:0025d100 ??A?$InplaceVector@VBspArea@@@@QAEAAVBspArea@@I@Z 00A4C600 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 798	SKIPPED	0002:0025d180 ??A?$InplaceVector@H@@QAEAAHI@Z 00A4C680 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-799	PORTED	0002:0025d200 ??0dlist_node@?$reserved_dlist@VtrRefEntity@@@@QAE@PAU01@0@Z 00A4C700 f i game.o	IDA: stores next at +0 and prev at +4; existing dlist_node ctor matches.
-800	VERIFIED	0002:0025d220 ??0?$ae_vector@I@@QAE@XZ 00A4C720 f i game.o	IDA: zeroes mElements, mCapacity, and mSize; existing generic ctor matches.
-801	PORTED	0002:0025d230 ?begin@?$ae_vector@I@@QAEPAIXZ 00A4C730 f i game.o	IDA: returns mElements directly; existing generic begin matches.
-802	PORTED	0002:0025d240 ?end@?$ae_vector@I@@QAEPAIXZ 00A4C740 f i game.o	IDA: returns &mElements[mSize]; existing generic end matches.
-803	VERIFIED	0002:0025d250 ??0?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A4C750 f i game.o	IDA: zeroes the three ae_vector fields; existing generic ctor matches.
-804	PORTED	0002:0025d260 ??A?$ae_vector@P6AXVentity@Broc@@@Z@@QAEAAP6AXVentity@Broc@@@ZH@Z 00A4C760 f i game.o	IDA: mutable index checks lines 167 and returns element address; existing generic operator[] matches.
-805	PORTED	0002:0025d2e0 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEABUWbkEntry@AudioBankMgr@@H@Z 00A4C7E0 f i game.o	IDA: const index checks line 148 and uses 0x6c stride; WbkEntry storage/access matches.
-806	PORTED	0002:0025d360 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@H@Z 00A4C860 f i game.o	IDA: mutable index checks line 154 and uses 0x6c stride; WbkEntry storage/access matches.
-807	PORTED	0002:0025d3e0 ?size@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEHXZ 00A4C8E0 f i game.o	IDA: returns m_size; AudioBankMgr implementation matches.
+799	PORTED	0002:0025d200 ??0dlist_node@?$reserved_dlist@VtrRefEntity@@@@QAE@PAU01@0@Z 00A4C700 f i game.o
+800	VERIFIED	0002:0025d220 ??0?$ae_vector@I@@QAE@XZ 00A4C720 f i game.o
+801	PORTED	0002:0025d230 ?begin@?$ae_vector@I@@QAEPAIXZ 00A4C730 f i game.o
+802	PORTED	0002:0025d240 ?end@?$ae_vector@I@@QAEPAIXZ 00A4C740 f i game.o
+803	VERIFIED	0002:0025d250 ??0?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A4C750 f i game.o
+804	PORTED	0002:0025d260 ??A?$ae_vector@P6AXVentity@Broc@@@Z@@QAEAAP6AXVentity@Broc@@@ZH@Z 00A4C760 f i game.o
+805	PORTED	0002:0025d2e0 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEABUWbkEntry@AudioBankMgr@@H@Z 00A4C7E0 f i game.o
+806	PORTED	0002:0025d360 ??A?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@H@Z 00A4C860 f i game.o
+807	PORTED	0002:0025d3e0 ?size@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QBEHXZ 00A4C8E0 f i game.o
 808	VERIFIED	0002:0025d3f0 ??0?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@QAE@VHandle@@@Z 00A4C8F0 f i game.o
 809	SKIPPED	0002:0025d410 ??A?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEAAV?$ae_fixed_string@$0IA@E@@H@Z 00A4C910 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 810	SKIPPED	0002:0025d490 ?size@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QBEHXZ 00A4C990 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 811	SKIPPED	0002:0025d4a0 ?push_back@?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAEXABV?$ae_fixed_string@$0IA@E@@@Z 00A4C9A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 812	SKIPPED	0002:0025d540 ??1?$InplaceAssetBankSet@VGdbFileBank@@@@UAE@XZ 00A4CA40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 813	SKIPPED	0002:0025d550 ?OnBankUnloaded@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXAAVGdbFileBank@@@Z 00A4CA50 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-814	PORTED	0002:0025d560 ??0?$ae_sized_array@G$0BAA@@@QAE@XZ 00A4CA60 f i game.o	IDA: zeroes m_size; generic ae_sized_array ctor matches.
-815	PORTED	0002:0025d570 ?push_back@?$ae_sized_array@G$0BAA@@@QAEXABG@Z 00A4CA70 f i game.o	IDA: line 174 capacity assert, copies one ushort, increments m_size; generic push_back matches.
-816	PORTED	0002:0025d610 ??0?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4CB10 f i game.o	IDA: zeroes mElements, mCapacity, and mSize; CheckpointVector storage matches.
-817	PORTED	0002:0025d620 ?size@?$ae_vector@USCheckpointGameVar@@@@QBEHXZ 00A4CB20 f i game.o	IDA: returns mSize; existing vector accessor matches.
-818	PORTED	0002:0025d630 ??A?$ae_vector@USCheckpointGameVar@@@@QAEAAUSCheckpointGameVar@@H@Z 00A4CB30 f i game.o	IDA: mutable index checks line 167 and returns element address; existing accessor matches.
-819	PORTED	0002:0025d6b0 ?begin@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBB0 f i game.o	IDA: returns mElements directly; existing accessor matches.
-820	PORTED	0002:0025d6c0 ?end@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBC0 f i game.o	IDA: returns &mElements[mSize]; existing accessor matches.
-821	PORTED	0002:0025d6d0 ?erase@?$ae_vector@USCheckpointGameVar@@@@QAEXPAUSCheckpointGameVar@@0@Z 00A4CBD0 f i game.o	IDA: line 286 empty check, copies 3 fields per element, then subtracts erased span; current implementation is equivalent for the 12-byte type.
-822	PORTED	0002:0025d7d0 ??Diterator@?$ae_sized_array@G$0BAA@@@QBEAAGXZ 00A4CCD0 f i game.o	IDA: dereferences m_ptr; existing iterator matches.
-823	PORTED	0002:0025d7e0 ??Eiterator@?$ae_sized_array@G$0BAA@@@QAEAAV01@XZ 00A4CCE0 f i game.o	IDA: increments m_ptr and returns this; existing iterator matches.
-824	PORTED	0002:0025d7f0 ??9iterator@?$ae_sized_array@G$0BAA@@@QBE_NV01@@Z 00A4CCF0 f i game.o	IDA: compares m_ptr against rhs.m_ptr; existing iterator matches.
-825	PORTED	0002:0025d810 ??0dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAU01@0@Z 00A4CD10 f i game.o	IDA: stores next at +0 and prev at +4; generic reserved_dlist node ctor matches.
-826	PORTED	0002:0025d830 ??0dlist_node@?$reserved_dlist@VCurve@@@@QAE@PAU01@0@Z 00A4CD30 f i game.o	IDA: stores next at +0 and prev at +4; generic reserved_dlist node ctor matches.
-827	PORTED	0002:0025d850 ??0dlist_node@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAU01@0@Z 00A4CD50 f i game.o	IDA: stores next at +0 and prev at +4; generic reserved_dlist node ctor matches.
-828	PORTED	0002:0025d870 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAEAAV01@XZ 00A4CD70 f i game.o	IDA: prefix ++ advances node/next only when next is non-null; current iterator matches.
-829	PORTED	0002:0025d890 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AV01@H@Z 00A4CD90 f i game.o	IDA: postfix ++ snapshots old node/next, advances when non-null, returns snapshot; current iterator matches.
-830	PORTED	0002:0025d8c0 ??Eiterator@?$reserved_dlist@VCurve@@@@QAEAAV01@XZ 00A4CDC0 f i game.o	IDA: prefix ++ advances node/next only when next is non-null; current iterator matches.
-831	PORTED	0002:0025d8e0 ??Eiterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AV01@H@Z 00A4CDE0 f i game.o	IDA: postfix ++ snapshots old node/next, advances when non-null, returns snapshot; current iterator matches.
-832	VERIFIED	0002:0025d910 ??0?$ae_vector@Udebug_brush@@@@QAE@XZ 00A4CE10 f i game.o	IDA: zeroes mElements, mCapacity, and mSize; existing generic ctor matches.
-833	PORTED	0002:0025d920 ?size@?$ae_vector@Udebug_brush@@@@QBEHXZ 00A4CE20 f i game.o	IDA: returns mSize; existing vector accessor matches.
-834	PORTED	0002:0025d930 ??A?$ae_vector@Udebug_brush@@@@QAEAAUdebug_brush@@H@Z 00A4CE30 f i game.o	IDA: mutable index checks line 167 and returns element address; existing accessor matches.
-835	VERIFIED	0002:0025d9b0 ??A?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEAAVPosition3@math@@H@Z 00A4CEB0 f i game.o	IDA: unsigned-index check uses line 154 and 0x10-byte Position3 stride; generic ae_sized_array operator[] matches.
-836	PORTED	0002:0025da30 ?size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QBEHXZ 00A4CF30 f i game.o	IDA: returns m_size; generic ae_sized_array size accessor matches.
-837	VERIFIED	0002:0025da40 ?push_back@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXABVPosition3@math@@@Z 00A4CF40 f i game.o	IDA: line 174 capacity check, copies Position3, increments m_size; generic push_back matches.
-838	PORTED	0002:0025daf0 ??0?$nglMeshIterator@Ucddebug_vertex@@G@@QAE@PAUnglMeshSection@@@Z 00A4CFF0 f i game.o	IDA: stores section, locks indices/vertices, sets both vertex pointers and cur_index=0; existing iterator ctor matches.
-839	PORTED	0002:0025db30 ?BeginStrip@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXH@Z 00A4D030 f i game.o	IDA: when cur_index>0 emits restart pair (cur_index-1, cur_index); existing BeginStrip matches.
-840	PORTED	0002:0025db70 ?WritePosition@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXMMM@Z 00A4D070 f i game.o	IDA: writes x/y/z to the current vertex position fields; existing WritePosition matches.
-841	PORTED	0002:0025dbb0 ??E?$nglMeshIterator@Ucddebug_vertex@@G@@QAEABV0@XZ 00A4D0B0 f i game.o	IDA: writes current index, advances index and vertex, increments cur_index; existing prefix ++ matches.
-842	PORTED	0002:0025dbe0 ?WriteFlush@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXXZ 00A4D0E0 f i game.o	IDA: calls section index and vertex unlock helpers; existing WriteFlush matches.
+814	PORTED	0002:0025d560 ??0?$ae_sized_array@G$0BAA@@@QAE@XZ 00A4CA60 f i game.o
+815	PORTED	0002:0025d570 ?push_back@?$ae_sized_array@G$0BAA@@@QAEXABG@Z 00A4CA70 f i game.o
+816	PORTED	0002:0025d610 ??0?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4CB10 f i game.o
+817	PORTED	0002:0025d620 ?size@?$ae_vector@USCheckpointGameVar@@@@QBEHXZ 00A4CB20 f i game.o
+818	PORTED	0002:0025d630 ??A?$ae_vector@USCheckpointGameVar@@@@QAEAAUSCheckpointGameVar@@H@Z 00A4CB30 f i game.o
+819	PORTED	0002:0025d6b0 ?begin@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBB0 f i game.o
+820	PORTED	0002:0025d6c0 ?end@?$ae_vector@USCheckpointGameVar@@@@QAEPAUSCheckpointGameVar@@XZ 00A4CBC0 f i game.o
+821	PORTED	0002:0025d6d0 ?erase@?$ae_vector@USCheckpointGameVar@@@@QAEXPAUSCheckpointGameVar@@0@Z 00A4CBD0 f i game.o
+822	PORTED	0002:0025d7d0 ??Diterator@?$ae_sized_array@G$0BAA@@@QBEAAGXZ 00A4CCD0 f i game.o
+823	PORTED	0002:0025d7e0 ??Eiterator@?$ae_sized_array@G$0BAA@@@QAEAAV01@XZ 00A4CCE0 f i game.o
+824	PORTED	0002:0025d7f0 ??9iterator@?$ae_sized_array@G$0BAA@@@QBE_NV01@@Z 00A4CCF0 f i game.o
+825	PORTED	0002:0025d810 ??0dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAU01@0@Z 00A4CD10 f i game.o
+826	PORTED	0002:0025d830 ??0dlist_node@?$reserved_dlist@VCurve@@@@QAE@PAU01@0@Z 00A4CD30 f i game.o
+827	PORTED	0002:0025d850 ??0dlist_node@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAU01@0@Z 00A4CD50 f i game.o
+828	PORTED	0002:0025d870 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAEAAV01@XZ 00A4CD70 f i game.o
+829	PORTED	0002:0025d890 ??Eiterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AV01@H@Z 00A4CD90 f i game.o
+830	PORTED	0002:0025d8c0 ??Eiterator@?$reserved_dlist@VCurve@@@@QAEAAV01@XZ 00A4CDC0 f i game.o
+831	PORTED	0002:0025d8e0 ??Eiterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AV01@H@Z 00A4CDE0 f i game.o
+832	VERIFIED	0002:0025d910 ??0?$ae_vector@Udebug_brush@@@@QAE@XZ 00A4CE10 f i game.o
+833	PORTED	0002:0025d920 ?size@?$ae_vector@Udebug_brush@@@@QBEHXZ 00A4CE20 f i game.o
+834	PORTED	0002:0025d930 ??A?$ae_vector@Udebug_brush@@@@QAEAAUdebug_brush@@H@Z 00A4CE30 f i game.o
+835	VERIFIED	0002:0025d9b0 ??A?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEAAVPosition3@math@@H@Z 00A4CEB0 f i game.o
+836	PORTED	0002:0025da30 ?size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QBEHXZ 00A4CF30 f i game.o
+837	VERIFIED	0002:0025da40 ?push_back@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXABVPosition3@math@@@Z 00A4CF40 f i game.o
+838	PORTED	0002:0025daf0 ??0?$nglMeshIterator@Ucddebug_vertex@@G@@QAE@PAUnglMeshSection@@@Z 00A4CFF0 f i game.o
+839	PORTED	0002:0025db30 ?BeginStrip@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXH@Z 00A4D030 f i game.o
+840	PORTED	0002:0025db70 ?WritePosition@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXMMM@Z 00A4D070 f i game.o
+841	PORTED	0002:0025dbb0 ??E?$nglMeshIterator@Ucddebug_vertex@@G@@QAEABV0@XZ 00A4D0B0 f i game.o
+842	PORTED	0002:0025dbe0 ?WriteFlush@?$nglMeshIterator@Ucddebug_vertex@@G@@QAEXXZ 00A4D0E0 f i game.o
 843	SKIPPED	0002:0025dc00 ??0?$pair@HH@std@@QAE@ABH0@Z 00A4D100 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 844	SKIPPED	0002:0025dc20 ?size@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBEIXZ 00A4D120 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-845	PORTED	0002:0025dc40 ??0?$cdl_array@M@@QAE@XZ 00A4D140 f i game.o	IDA: zero-initializes count and element pointer; shared cdl_array ctor matches.
-846	PORTED	0002:0025dc60 ??0?$cdl_array@H@@QAE@XZ 00A4D160 f i game.o	IDA: zero-initializes count and element pointer; shared cdl_array ctor matches.
-847	PORTED	0002:0025dc80 ??A?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00A4D180 f i game.o	IDA: mutable index checks line 154 and returns the fixed-array element; generic accessor matches.
-848	PORTED	0002:0025dd00 ?size@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QBEHXZ 00A4D200 f i game.o	IDA: returns m_size; generic ae_sized_array size accessor matches.
-849	VERIFIED	0002:0025dd10 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00A4D210 f i game.o	IDA: line 174 capacity check, copies handle, increments m_size; generic push_back matches.
-850	PORTED	0002:0025dda0 ?pop_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A4D2A0 f i game.o	IDA: decrements m_size and returns the last element; existing generic pop_back matches.
-851	PORTED	0002:0025ddd0 ??0?$cFreeList@VEntity@@@@QAE@XZ 00A4D2D0 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
-852	PORTED	0002:0025dde0 ??1?$cFreeList@VEntity@@@@QAE@XZ 00A4D2E0 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-853	FIXED	0002:0025de40 ?Alloc@?$cFreeList@VEntity@@@@QAEPAVEntity@@XZ 00A4D340 f i game.o	IDA: existing simplified allocator lacked the mFree invariant and assert paths; fixed to match lines 49/61 and head/count updates.
-854	PORTED	0002:0025df20 ??0?$cFreeList@VDObj@@@@QAE@XZ 00A4D420 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
-855	PORTED	0002:0025df30 ??1?$cFreeList@VDObj@@@@QAE@XZ 00A4D430 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-856	PORTED	0002:0025df90 ??0?$cFreeList@UDSkel@@@@QAE@XZ 00A4D490 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
-857	PORTED	0002:0025dfa0 ??1?$cFreeList@UDSkel@@@@QAE@XZ 00A4D4A0 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-858	PORTED	0002:0025e000 ??0?$cFreeList@UDSkelMax@@@@QAE@XZ 00A4D500 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
-859	PORTED	0002:0025e010 ??1?$cFreeList@UDSkelMax@@@@QAE@XZ 00A4D510 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-860	PORTED	0002:0025e070 ??0?$cFreeList@UDSkel4@@@@QAE@XZ 00A4D570 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
-861	PORTED	0002:0025e080 ??1?$cFreeList@UDSkel4@@@@QAE@XZ 00A4D580 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-862	PORTED	0002:0025e0e0 ??0?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5E0 f i game.o	IDA: zeroes mpFree, mUsed, and mFree; restored in the shared template ctor.
-863	PORTED	0002:0025e0f0 ??1?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5F0 f i game.o	IDA: asserts mUsed == 0 at FreeList.h:16 with defaultFileName; restored in shared template dtor.
-864	FIXED	0002:0025e150 ?Alloc@?$cFreeList@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ 00A4D650 f i game.o	IDA: existing simplified allocator lacked the mFree invariant and assert paths; fixed to match lines 49/61 and head/count updates.
-865	VERIFIED	0002:0025e230 ?Free@?$cFreeList@VtrRefEntity@@@@QAEXPAVtrRefEntity@@@Z 00A4D730 f i game.o	IDA: links the freed node at its first-member next pointer and updates mUsed/mFree; existing shared Free matches.
+845	VERIFIED	0002:0025dc40 ??0?$cdl_array@M@@QAE@XZ 00A4D140 f i game.o
+846	VERIFIED	0002:0025dc60 ??0?$cdl_array@H@@QAE@XZ 00A4D160 f i game.o
+847	PORTED	0002:0025dc80 ??A?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@H@Z 00A4D180 f i game.o
+848	PORTED	0002:0025dd00 ?size@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QBEHXZ 00A4D200 f i game.o
+849	VERIFIED	0002:0025dd10 ?push_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEXABV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z 00A4D210 f i game.o
+850	PORTED	0002:0025dda0 ?pop_back@?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAEAAV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@XZ 00A4D2A0 f i game.o
+851	VERIFIED	0002:0025ddd0 ??0?$cFreeList@VEntity@@@@QAE@XZ 00A4D2D0 f i game.o
+852	VERIFIED	0002:0025dde0 ??1?$cFreeList@VEntity@@@@QAE@XZ 00A4D2E0 f i game.o
+853	VERIFIED	0002:0025de40 ?Alloc@?$cFreeList@VEntity@@@@QAEPAVEntity@@XZ 00A4D340 f i game.o
+854	VERIFIED	0002:0025df20 ??0?$cFreeList@VDObj@@@@QAE@XZ 00A4D420 f i game.o
+855	VERIFIED	0002:0025df30 ??1?$cFreeList@VDObj@@@@QAE@XZ 00A4D430 f i game.o
+856	VERIFIED	0002:0025df90 ??0?$cFreeList@UDSkel@@@@QAE@XZ 00A4D490 f i game.o
+857	VERIFIED	0002:0025dfa0 ??1?$cFreeList@UDSkel@@@@QAE@XZ 00A4D4A0 f i game.o
+858	VERIFIED	0002:0025e000 ??0?$cFreeList@UDSkelMax@@@@QAE@XZ 00A4D500 f i game.o
+859	VERIFIED	0002:0025e010 ??1?$cFreeList@UDSkelMax@@@@QAE@XZ 00A4D510 f i game.o
+860	VERIFIED	0002:0025e070 ??0?$cFreeList@UDSkel4@@@@QAE@XZ 00A4D570 f i game.o
+861	VERIFIED	0002:0025e080 ??1?$cFreeList@UDSkel4@@@@QAE@XZ 00A4D580 f i game.o
+862	VERIFIED	0002:0025e0e0 ??0?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5E0 f i game.o
+863	VERIFIED	0002:0025e0f0 ??1?$cFreeList@VtrRefEntity@@@@QAE@XZ 00A4D5F0 f i game.o
+864	VERIFIED	0002:0025e150 ?Alloc@?$cFreeList@VtrRefEntity@@@@QAEPAVtrRefEntity@@XZ 00A4D650 f i game.o
+865	VERIFIED	0002:0025e230 ?Free@?$cFreeList@VtrRefEntity@@@@QAEXPAVtrRefEntity@@@Z 00A4D730 f i game.o
 866	VERIFIED	0002:0025e250 ??A?$ae_sized_array@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAEAAV?$ae_sized_array@W4EPadAliasButton@@$0BA@@@H@Z 00A4D750 f i game.o
 867	VERIFIED	0002:0025e2d0 ??A?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAEAAW4EPadAliasButton@@H@Z 00A4D7D0 f i game.o
 868	VERIFIED	0002:0025e350 ??A?$ae_sized_array@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAEAAV?$ae_sized_array@W4EPadAliasStick@@$01@@H@Z 00A4D850 f i game.o
 869	VERIFIED	0002:0025e3d0 ??A?$ae_sized_array@W4EPadAliasStick@@$01@@QAEAAW4EPadAliasStick@@H@Z 00A4D8D0 f i game.o
-870	PORTED	0002:0025e450 ??0?$ae_sized_array_base@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4D950 f i game.o	IDA: initializes all 16 WbkEntry slots: name/state words zero, pakFile=-1, fileID=invalid, bankId=-1; specialized constructor restored.
-871	FIXED	0002:0025e4d0 ??4WbkEntry@AudioBankMgr@@QAEAAU01@ABU01@@Z 00A4D9D0 f i game.o	IDA: existing implicit assignment did not guarantee the reference 27-word copy; explicit 27-word assignment restored.
+870	PORTED	0002:0025e450 ??0?$ae_sized_array_base@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4D950 f i game.o
+871	VERIFIED	0002:0025e4d0 ??4WbkEntry@AudioBankMgr@@QAEAAU01@ABU01@@Z 00A4D9D0 f i game.o
 872	SKIPPED	0002:0025e5b0 ??_E?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 873	SKIPPED	0002:0025e5b0 ??_G?$InplaceAssetBankSet@VGdbFileBank@@@@UAEPAXI@Z 00A4DAB0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 874	VERIFIED	0002:0025e5e0 ??4debug_brush@@QAEAAU0@ABU0@@Z 00A4DAE0 f i game.o
-875	PORTED	0002:0025e6b0 ??0?$ae_sized_array_base@VPosition3@math@@$0BAA@@@QAE@XZ 00A4DBB0 f i game.o
-876	PORTED	0002:0025e6c0 ?done@?$cdl_array@UcdlPlane@@@@QAEXXZ 00A4DBC0 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
-877	PORTED	0002:0025e6f0 ?done@?$cdl_array@Ucdl_object_t@@@@QAEXXZ 00A4DBF0 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
-878	PORTED	0002:0025e720 ?done@?$cdl_array@Ucdl_brush_t@@@@QAEXXZ 00A4DC20 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
-879	PORTED	0002:0025e750 ?done@?$cdl_array@Ucdl_vinfo_t@@@@QAEXXZ 00A4DC50 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
-880	PORTED	0002:0025e780 ?done@?$cdl_array@Uvi4@@@@QAEXXZ 00A4DC80 f i game.o	IDA: frees m_elements when non-null, then clears pointer and count; shared cdl_array done restored.
-881	PORTED	0002:0025e7b0 ?call_destructors@?$phys_static_array@H$0BAA@@@AAEXXZ 00A4DCB0 f i game.o	IDA: empty body for phys_static_array<int,256>; existing generic no-op matches.
-882	PORTED	0002:0025e7c0 ?call_destructors@?$phys_static_array@H$0IA@@@AAEXXZ 00A4DCC0 f i game.o	IDA: empty body for phys_static_array<int,128>; existing generic no-op matches.
-883	PORTED	0002:0025e7d0 ?construct_array@?$ae_vector@I@@AAEPAIHH@Z 00A4DCD0 f i game.o	IDA: allocates 4*iCapacity bytes with tlMemAlloc(size,8,0); existing generic construct_array matches.
-884	VERIFIED	0002:0025e800 ?destroy_all@?$ae_vector@I@@AAEXXZ 00A4DD00 f i game.o	IDA: frees non-null mElements and clears pointer/capacity; existing generic destroy_all matches.
+875	VERIFIED	0002:0025e6b0 ??0?$ae_sized_array_base@VPosition3@math@@$0BAA@@@QAE@XZ 00A4DBB0 f i game.o
+876	VERIFIED	0002:0025e6c0 ?done@?$cdl_array@UcdlPlane@@@@QAEXXZ 00A4DBC0 f i game.o
+877	VERIFIED	0002:0025e6f0 ?done@?$cdl_array@Ucdl_object_t@@@@QAEXXZ 00A4DBF0 f i game.o
+878	VERIFIED	0002:0025e720 ?done@?$cdl_array@Ucdl_brush_t@@@@QAEXXZ 00A4DC20 f i game.o
+879	VERIFIED	0002:0025e750 ?done@?$cdl_array@Ucdl_vinfo_t@@@@QAEXXZ 00A4DC50 f i game.o
+880	VERIFIED	0002:0025e780 ?done@?$cdl_array@Uvi4@@@@QAEXXZ 00A4DC80 f i game.o
+881	VERIFIED	0002:0025e7b0 ?call_destructors@?$phys_static_array@H$0BAA@@@AAEXXZ 00A4DCB0 f i game.o
+882	VERIFIED	0002:0025e7c0 ?call_destructors@?$phys_static_array@H$0IA@@@AAEXXZ 00A4DCC0 f i game.o
+883	PORTED	0002:0025e7d0 ?construct_array@?$ae_vector@I@@AAEPAIHH@Z 00A4DCD0 f i game.o
+884	VERIFIED	0002:0025e800 ?destroy_all@?$ae_vector@I@@AAEXXZ 00A4DD00 f i game.o
 885	PORTED	0002:0025e830 ?construct_array@?$ae_vector@P6AXVentity@Broc@@@Z@@AAEPAP6AXVentity@Broc@@@ZHH@Z 00A4DD30 f i game.o
 886	PORTED	0002:0025e860 ?pop_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A4DD60 f i game.o
 887	PORTED	0002:0025e890 ??0DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A4DD90 f i game.o
@@ -890,51 +890,51 @@ index	status	map_line
 889	PORTED	0002:0025e8c0 ?Release@DbElement@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A4DDC0 f i game.o
 890	SKIPPED	0002:0025e8d0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QAEAAPAVGdbFileBank@@H@Z 00A4DDD0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 891	PORTED	0002:0025e950 ?set_size@?$ae_sized_array@G$0BAA@@@QAEXH@Z 00A4DE50 f i game.o
-892	FIXED	0002:0025e970 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@HH@Z 00A4DE70 f i game.o	IDA: existing helper zeroed the unused tail; fixed to zero exactly the first iSize elements as in the reference loop.
+892	PORTED	0002:0025e970 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@HH@Z 00A4DE70 f i game.o
 893	PORTED	0002:0025e9d0 ?destroy_all@?$ae_vector@USCheckpointGameVar@@@@AAEXXZ 00A4DED0 f i game.o
-894	PORTED	0002:0025ea00 ??0iterator@?$ae_sized_array@G$0BAA@@@AAE@PAG@Z 00A4DF00 f i game.o	IDA: stores the supplied ushort pointer in m_ptr; existing iterator ctor matches.
-895	PORTED	0002:0025ea20 ?node_to_object@?$reserved_dlist@VCurveEffectListElem@@@@SAPAVCurveEffectListElem@@PAUdlist_node@1@@Z 00A4DF20 f i game.o	IDA: returns the node address as the containing object; generic conversion matches.
-896	PORTED	0002:0025ea30 ?clear@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF30 f i game.o	IDA: resets size and restores head/end/tail sentinel links; generic clear matches.
-897	PORTED	0002:0025ea50 ?validate@?$reserved_dlist@VCurveEffectListElem@@@@QBEXXZ 00A4DF50 f i game.o	IDA: empty body; generic validate matches.
-898	PORTED	0002:0025ea60 ?pop@dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF60 f i game.o	IDA: relinks next.prev and prev.next; generic node pop matches.
-899	PORTED	0002:0025ea80 ?node_to_object@?$reserved_dlist@VCurve@@@@SAPAVCurve@@PAUdlist_node@1@@Z 00A4DF80 f i game.o	IDA: returns the node address as the containing object; generic conversion matches.
-900	PORTED	0002:0025ea90 ?clear@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DF90 f i game.o	IDA: resets size and restores head/end/tail sentinel links; generic clear matches.
-901	PORTED	0002:0025eab0 ?validate@?$reserved_dlist@VCurve@@@@QBEXXZ 00A4DFB0 f i game.o	IDA: empty body; generic validate matches.
-902	PORTED	0002:0025eac0 ?pop@dlist_node@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DFC0 f i game.o	IDA: relinks next.prev and prev.next; generic node pop matches.
-903	PORTED	0002:0025eae0 ?node_to_object@?$reserved_dlist@VCurveEvalFunc@@@@SAPAVCurveEvalFunc@@PAUdlist_node@1@@Z 00A4DFE0 f i game.o	IDA: returns the node address as the containing object; generic conversion matches.
-904	PORTED	0002:0025eaf0 ?clear@?$reserved_dlist@VCurveEvalFunc@@@@QAEXXZ 00A4DFF0 f i game.o	IDA: resets size and restores head/end/tail sentinel links; generic clear matches.
-905	PORTED	0002:0025eb10 ?validate@?$reserved_dlist@VCurveEvalFunc@@@@QBEXXZ 00A4E010 f i game.o	IDA: empty body; generic validate matches.
-906	PORTED	0002:0025eb20 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAUdlist_node@1@0@Z 00A4E020 f i game.o	IDA: stores cur in m_node and next in m_next; generic iterator ctor matches.
-907	PORTED	0002:0025eb40 ?compare@iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV12@@Z 00A4E040 f i game.o	IDA: compares rhs.m_next against this->m_next; generic compare matches.
-908	PORTED	0002:0025eb60 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAUdlist_node@1@0@Z 00A4E060 f i game.o	IDA: stores cur in m_node and next in m_next; generic iterator ctor matches.
-909	PORTED	0002:0025eb80 ?compare@iterator@?$reserved_dlist@VCurve@@@@QBE_NABV12@@Z 00A4E080 f i game.o	IDA: compares rhs.m_next against this->m_next; generic compare matches.
-910	PORTED	0002:0025eba0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAUdlist_node@1@0@Z 00A4E0A0 f i game.o	IDA: stores cur in m_node and next in m_next; generic iterator ctor matches.
-911	PORTED	0002:0025ebc0 ?compare@iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV12@@Z 00A4E0C0 f i game.o	IDA: compares rhs.m_next against this->m_next; generic compare matches.
+894	PORTED	0002:0025ea00 ??0iterator@?$ae_sized_array@G$0BAA@@@AAE@PAG@Z 00A4DF00 f i game.o
+895	PORTED	0002:0025ea20 ?node_to_object@?$reserved_dlist@VCurveEffectListElem@@@@SAPAVCurveEffectListElem@@PAUdlist_node@1@@Z 00A4DF20 f i game.o
+896	PORTED	0002:0025ea30 ?clear@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF30 f i game.o
+897	PORTED	0002:0025ea50 ?validate@?$reserved_dlist@VCurveEffectListElem@@@@QBEXXZ 00A4DF50 f i game.o
+898	PORTED	0002:0025ea60 ?pop@dlist_node@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A4DF60 f i game.o
+899	PORTED	0002:0025ea80 ?node_to_object@?$reserved_dlist@VCurve@@@@SAPAVCurve@@PAUdlist_node@1@@Z 00A4DF80 f i game.o
+900	PORTED	0002:0025ea90 ?clear@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DF90 f i game.o
+901	PORTED	0002:0025eab0 ?validate@?$reserved_dlist@VCurve@@@@QBEXXZ 00A4DFB0 f i game.o
+902	PORTED	0002:0025eac0 ?pop@dlist_node@?$reserved_dlist@VCurve@@@@QAEXXZ 00A4DFC0 f i game.o
+903	PORTED	0002:0025eae0 ?node_to_object@?$reserved_dlist@VCurveEvalFunc@@@@SAPAVCurveEvalFunc@@PAUdlist_node@1@@Z 00A4DFE0 f i game.o
+904	PORTED	0002:0025eaf0 ?clear@?$reserved_dlist@VCurveEvalFunc@@@@QAEXXZ 00A4DFF0 f i game.o
+905	PORTED	0002:0025eb10 ?validate@?$reserved_dlist@VCurveEvalFunc@@@@QBEXXZ 00A4E010 f i game.o
+906	PORTED	0002:0025eb20 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@PAUdlist_node@1@0@Z 00A4E020 f i game.o
+907	PORTED	0002:0025eb40 ?compare@iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV12@@Z 00A4E040 f i game.o
+908	PORTED	0002:0025eb60 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAUdlist_node@1@0@Z 00A4E060 f i game.o
+909	PORTED	0002:0025eb80 ?compare@iterator@?$reserved_dlist@VCurve@@@@QBE_NABV12@@Z 00A4E080 f i game.o
+910	PORTED	0002:0025eba0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAUdlist_node@1@0@Z 00A4E0A0 f i game.o
+911	PORTED	0002:0025ebc0 ?compare@iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV12@@Z 00A4E0C0 f i game.o
 912	SKIPPED	0002:0025ebe0 ?Deref@?$IVPointer@VGdbFileSet@@@@ABEPAVGdbFileSet@@XZ 00A4E0E0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 913	PORTED	0002:0025ec00 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@HH@Z 00A4E100 f i game.o
 914	PORTED	0002:0025ec30 ?set_size@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXH@Z 00A4E130 f i game.o
 915	SKIPPED	0002:0025ec50 ??0?$pair@HH@std@@QAE@XZ 00A4E150 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 916	SKIPPED	0002:0025ec70 ??0?$allocator@U?$pair@HH@std@@@std@@QAE@XZ 00A4E170 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-917	PORTED	0002:0025ec80 ?done@?$cdl_array@M@@QAEXXZ 00A4E180 f i game.o	IDA: frees non-null m_elements, then clears pointer and count; scalar cdl_array instantiation now emitted.
-918	PORTED	0002:0025ecb0 ?size@?$cdl_array@M@@QBEIXZ 00A4E1B0 f i game.o	IDA: returns m_count; scalar cdl_array instantiation now emitted.
-919	PORTED	0002:0025ecc0 ?done@?$cdl_array@H@@QAEXXZ 00A4E1C0 f i game.o	IDA: frees non-null m_elements, then clears pointer and count; scalar cdl_array instantiation now emitted.
-920	PORTED	0002:0025ecf0 ?size@?$cdl_array@H@@QBEIXZ 00A4E1F0 f i game.o	IDA: returns m_count; scalar cdl_array instantiation now emitted.
-921	FIXED	0002:0025ed00 ??0?$ae_sized_array_base@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A4E200 f i game.o	IDA type shows m_elements pointer at +0 and raw m_elementdata at +4; fixed the prior inline-array base and constructor to point into storage.
+917	VERIFIED	0002:0025ec80 ?done@?$cdl_array@M@@QAEXXZ 00A4E180 f i game.o
+918	VERIFIED	0002:0025ecb0 ?size@?$cdl_array@M@@QBEIXZ 00A4E1B0 f i game.o
+919	VERIFIED	0002:0025ecc0 ?done@?$cdl_array@H@@QAEXXZ 00A4E1C0 f i game.o
+920	VERIFIED	0002:0025ecf0 ?size@?$cdl_array@H@@QBEIXZ 00A4E1F0 f i game.o
+921	VERIFIED	0002:0025ed00 ??0?$ae_sized_array_base@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A4E200 f i game.o
 922	VERIFIED	0002:0025ed10 ??0?$ae_sized_array@W4EPadAliasButton@@$0BA@@@QAE@XZ 00A4E210 f i game.o
 923	VERIFIED	0002:0025ed20 ??0?$ae_sized_array@W4EPadAliasStick@@$01@@QAE@XZ 00A4E220 f i game.o
-924	PORTED	0002:0025ed30 ?begin@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEPAP6AXVentity@Broc@@@ZXZ 00A4E230 f i game.o	IDA: returns the vector mElements pointer unchanged.
-925	PORTED	0002:0025ed40 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@H@Z 00A4E240 f i game.o	IDA: allocates 12*iNumber bytes and zeroes every element; exact one-argument overload restored.
-926	PORTED	0002:0025ed90 ?get_head@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAUdlist_node@1@XZ 00A4E290 f i game.o	IDA: returns the list head node pointer.
-927	PORTED	0002:0025eda0 ?empty@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NXZ 00A4E2A0 f i game.o	IDA: compares m_head against the embedded end sentinel.
-928	PORTED	0002:0025edc0 ?get_head@?$reserved_dlist@VCurve@@@@QAEPAUdlist_node@1@XZ 00A4E2C0 f i game.o	IDA: returns the list head node pointer.
-929	PORTED	0002:0025edd0 ?empty@?$reserved_dlist@VCurve@@@@QBE_NXZ 00A4E2D0 f i game.o	IDA: compares m_head against the embedded end sentinel.
-930	PORTED	0002:0025edf0 ?get_head@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAUdlist_node@1@XZ 00A4E2F0 f i game.o	IDA: returns the list head node pointer.
-931	PORTED	0002:0025ee00 ?empty@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NXZ 00A4E300 f i game.o	IDA: compares m_head against the embedded end sentinel.
-932	PORTED	0002:0025ee20 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAVCurve@@@Z 00A4E320 f i game.o	IDA: stores the supplied Curve pointer as the iterator node.
-933	PORTED	0002:0025ee40 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAVCurveEffectListElem@@@Z 00A4E340 f i game.o	IDA: stores the supplied CurveEffectListElem pointer as the iterator node.
-934	PORTED	0002:0025ee60 ?begin@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E360 f i game.o	IDA: returns the debug_brush vector mElements pointer unchanged.
-935	PORTED	0002:0025ee70 ?end@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E370 f i game.o	IDA: returns mElements plus mSize using debug_brush element stride.
-936	PORTED	0002:0025ee90 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@H@Z 00A4E390 f i game.o	IDA: allocates 96*iNumber bytes with tlMemAlloc and returns the allocation.
+924	PORTED	0002:0025ed30 ?begin@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEPAP6AXVentity@Broc@@@ZXZ 00A4E230 f i game.o
+925	PORTED	0002:0025ed40 ?construct_array@?$ae_vector@USCheckpointGameVar@@@@AAEPAUSCheckpointGameVar@@H@Z 00A4E240 f i game.o
+926	PORTED	0002:0025ed90 ?get_head@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAUdlist_node@1@XZ 00A4E290 f i game.o
+927	PORTED	0002:0025eda0 ?empty@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NXZ 00A4E2A0 f i game.o
+928	PORTED	0002:0025edc0 ?get_head@?$reserved_dlist@VCurve@@@@QAEPAUdlist_node@1@XZ 00A4E2C0 f i game.o
+929	PORTED	0002:0025edd0 ?empty@?$reserved_dlist@VCurve@@@@QBE_NXZ 00A4E2D0 f i game.o
+930	PORTED	0002:0025edf0 ?get_head@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAUdlist_node@1@XZ 00A4E2F0 f i game.o
+931	PORTED	0002:0025ee00 ?empty@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NXZ 00A4E300 f i game.o
+932	PORTED	0002:0025ee20 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@PAVCurve@@@Z 00A4E320 f i game.o
+933	PORTED	0002:0025ee40 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@PAVCurveEffectListElem@@@Z 00A4E340 f i game.o
+934	PORTED	0002:0025ee60 ?begin@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E360 f i game.o
+935	PORTED	0002:0025ee70 ?end@?$ae_vector@Udebug_brush@@@@QAEPAUdebug_brush@@XZ 00A4E370 f i game.o
+936	PORTED	0002:0025ee90 ?construct_array@?$ae_vector@Udebug_brush@@@@AAEPAUdebug_brush@@H@Z 00A4E390 f i game.o
 937	SKIPPED	0002:0025eec0 ??0?$allocator@U?$pair@HH@std@@@std@@QAE@ABV01@@Z 00A4E3C0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 938	SKIPPED	0002:0025eed0 ?deallocate@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@I@Z 00A4E3D0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 939	SKIPPED	0002:0025eef0 ??Yiterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEAAV012@H@Z 00A4E3F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -943,15 +943,15 @@ index	status	map_line
 942	SKIPPED	0002:0025ef40 ?max_size@?$allocator@U?$pair@HH@std@@@std@@QBEIXZ 00A4E440 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 943	SKIPPED	0002:0025ef50 ??0const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@PAU?$pair@HH@2@@Z 00A4E450 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 944	SKIPPED	0002:0025ef70 ??8const_iterator@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QBE_NABV012@@Z 00A4E470 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-945	PORTED	0002:0025ef90 ??$tl_align@I@@YAIII@Z 00A4E490 f i game.o	IDA: returns ~(a - 1) & (p + a - 1); explicit specialization restored in g_accessors.cpp.
-946	PORTED	0002:0025efb0 ??$tl_align@PAD@@YAPADPADI@Z 00A4E4B0 f i game.o	IDA: aligns p + a - 1 down with ~(a - 1); explicit char* specialization restored in g_accessors.cpp.
+945	VERIFIED	0002:0025ef90 ??$tl_align@I@@YAIII@Z 00A4E490 f i game.o
+946	VERIFIED	0002:0025efb0 ??$tl_align@PAD@@YAPADPADI@Z 00A4E4B0 f i game.o
 947	SKIPPED	0002:0025efd0 ??$tl_max@IH@@YAIABIABH@Z 00A4E4D0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 948	SKIPPED	0002:0025eff0 ??$fill@PAU?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@0ABU10@@Z 00A4E4F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 949	SKIPPED	0002:0025f020 ??$_Allocate@U?$pair@HH@std@@@std@@YAPAU?$pair@HH@0@IPAU10@@Z 00A4E520 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 950	SKIPPED	0002:0025f040 ?length@?$ae_fixed_string@$0EAA@G@@QBEHXZ 00A4E540 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 951	SKIPPED	0002:0025f050 ?IsUsed@?$InplaceTree@VInplaceString@@PBV?$InplaceVector@TValue@GdbFileSet@@@@@@ABE_NI@Z 00A4E550 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 952	SKIPPED	0002:0025f0f0 ??A?$ae_array@PAVGdbFileBank@@$0GD@@@QBEABQAVGdbFileBank@@H@Z 00A4E5F0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-953	VERIFIED	0002:0025f170 ??Eiterator@?$reserved_dlist@VCurve@@@@QAE?AV01@H@Z 00A4E670 f i game.o	IDA: saves m_node/m_next, advances only when m_next is non-null, and returns the saved iterator.
+953	PORTED	0002:0025f170 ??Eiterator@?$reserved_dlist@VCurve@@@@QAE?AV01@H@Z 00A4E670 f i game.o
 954	SKIPPED	0002:0025f1a0 ??0?$IVPointer@VGdbFileSet@@@@QAE@W4TPakId@@PAVGdbFileSet@@@Z 00A4E6A0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 955	SKIPPED	0002:0025f1c0 ??0?$IVPointer@VGdbFileSet@@@@QAE@XZ 00A4E6C0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 956	PORTED	0002:0025f1e0 ??R?$DelFunctor@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A4E6E0 f i game.o
@@ -962,111 +962,111 @@ index	status	map_line
 961	SKIPPED	0002:0025f2e0 ??$_Copy_backward_opt@PAU?$pair@HH@std@@PAU12@@std@@YAPAU?$pair@HH@0@PAU10@00U_Nonscalar_ptr_iterator_tag@0@@Z 00A4E7E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 962	SKIPPED	0002:0025f320 ??$_Construct@U?$pair@HH@std@@U12@@std@@YAXPAU?$pair@HH@0@ABU10@@Z 00A4E820 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 963	SKIPPED	0002:0025f340 ??$_Destroy@U?$pair@HH@std@@@std@@YAXPAU?$pair@HH@0@@Z 00A4E840 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-964	PORTED	0002:0025f350 ?intersect_aabb_centered_aabb@@YA_NABVPosition3@math@@000@Z 00A4E850 f i game.o	IDA: compares the centered AABB separation against dims on xyz; SIMD body restored in g_accessors.cpp.
-965	PORTED	0002:0025f3b0 ?inside_point_aabb@@YA_NABVPosition3@math@@00@Z 00A4E8B0 f i game.o	IDA: tests max(bmin-p, p-bmax) < zero on xyz; SIMD body restored in g_accessors.cpp.
-966	PORTED	0002:0025f420 ?point_in_triangle@@YA_NABVPosition3@math@@000ABVDir3@2@@Z 00A4E920 f i game.o	IDA: computes the three oriented edge cross products against n and accepts all nonnegative signs; body restored in g_accessors.cpp.
-967	PORTED	0002:0025f5f0 ??0cdlPlane@@QAE@XZ 00A4EAF0 f i game.o	IDA: empty constructor returns this unchanged; explicit constructor restored.
-968	PORTED	0002:0025f600 ??0cdlPlane@@QAE@ABVDir3@math@@M@Z 00A4EB00 f i game.o	IDA: copies n.xyz and offset into the four plane dwords; constructor restored.
-969	PORTED	0002:0025f630 ?get_offset@cdlPlane@@QBEMXZ 00A4EB30 f i game.o	IDA: returns plane data dword 3 as double; accessor restored.
-970	PORTED	0002:0025f680 ??0cdl_object_t@@QAE@XZ 00A4EB80 f i game.o	IDA: empty constructor returns this unchanged; explicit constructor restored.
-971	PORTED	0002:0025f690 ?get_min@cdl_object_t@@QBE?AVPosition3@math@@XZ 00A4EB90 f i game.o	IDA: returns center minus box_radius using xyz packed floats; accessor restored.
+964	VERIFIED	0002:0025f350 ?intersect_aabb_centered_aabb@@YA_NABVPosition3@math@@000@Z 00A4E850 f i game.o
+965	VERIFIED	0002:0025f3b0 ?inside_point_aabb@@YA_NABVPosition3@math@@00@Z 00A4E8B0 f i game.o
+966	VERIFIED	0002:0025f420 ?point_in_triangle@@YA_NABVPosition3@math@@000ABVDir3@2@@Z 00A4E920 f i game.o
+967	VERIFIED	0002:0025f5f0 ??0cdlPlane@@QAE@XZ 00A4EAF0 f i game.o
+968	VERIFIED	0002:0025f600 ??0cdlPlane@@QAE@ABVDir3@math@@M@Z 00A4EB00 f i game.o
+969	PORTED	0002:0025f630 ?get_offset@cdlPlane@@QBEMXZ 00A4EB30 f i game.o
+970	VERIFIED	0002:0025f680 ??0cdl_object_t@@QAE@XZ 00A4EB80 f i game.o
+971	VERIFIED	0002:0025f690 ?get_min@cdl_object_t@@QBE?AVPosition3@math@@XZ 00A4EB90 f i game.o
 972	PORTED	0002:0025f730 ?load_inplace@DCGSet@@QAEXPADAAH@Z 00A4EC30 f i game.o
 973	PORTED	0002:0025f820 ?load_inplace@DCGBank@@QAEXPADAAH@Z 00A4ED20 f i game.o
 974	PORTED	0002:0025f8e0 ?get_set@DCGBank@@QBEPBVDCGSet@@H@Z 00A4EDE0 f i game.o
 975	PORTED	0002:0025f990 ?load_inplace@CGBank@@QAEXPADAAH@Z 00A4EE90 f i game.o
 976	VERIFIED	0002:0025fb40 ?get_type@CGBank@@QBEHI@Z 00A4F040 f i game.o
-977	PORTED	0002:0025fbe0 ?PHYS_ALIGN@@YA?BIPADH@Z 00A4F0E0 f i game.o	IDA: aligns p + a - 1 down with ~(a - 1); char* implementation restored in g_accessors.cpp.
-978	FIXED	0002:0025fc00 ??0phys_memory_heap@@QAE@XZ 00A4F100 f i game.o	IDA: constructor zeroes all four buffer pointers; corrected the prior implicit uninitialized construction.
-979	FIXED	0002:0025fc20 ?allocate_no_error@phys_memory_heap@@QAEPAXHH@Z 00A4F120 f i game.o	IDA: allocation and bounds logic matched; corrected the assertion description to defaultFileName.
-980	VERIFIED	0002:0025fc90 ?allocate@phys_memory_heap@@QAEPAXHHPBD@Z 00A4F190 f i game.o	IDA: delegates to allocate_no_error and asserts on null with the supplied error message.
-981	PORTED	0002:0025fcf0 ??0bounded_proxy_obj_t@@QAE@ABVPosition3@math@@0HEGE@Z 00A4F1F0 f i game.o	IDA: copies oi/bi/ti, min.xyz, max.xyz, and cflags in the recorded order; constructor restored.
-982	PORTED	0002:0025fe00 ?clear@proximity_data_t@@QAEXXZ 00A4F300 f i game.o	IDA: resets boxes, brushes, and polies allocation counts to zero; clear restored.
+977	PORTED	0002:0025fbe0 ?PHYS_ALIGN@@YA?BIPADH@Z 00A4F0E0 f i game.o
+978	VERIFIED	0002:0025fc00 ??0phys_memory_heap@@QAE@XZ 00A4F100 f i game.o
+979	PORTED	0002:0025fc20 ?allocate_no_error@phys_memory_heap@@QAEPAXHH@Z 00A4F120 f i game.o
+980	PORTED	0002:0025fc90 ?allocate@phys_memory_heap@@QAEPAXHHPBD@Z 00A4F190 f i game.o
+981	VERIFIED	0002:0025fcf0 ??0bounded_proxy_obj_t@@QAE@ABVPosition3@math@@0HEGE@Z 00A4F1F0 f i game.o
+982	VERIFIED	0002:0025fe00 ?clear@proximity_data_t@@QAEXXZ 00A4F300 f i game.o
 983	VERIFIED	0002:0025fe20 ??0cmgr_mem_ctx_t@@QAE@XZ 00A4F320 f i game.o
 984	VERIFIED	0002:0025fef0 ??1cmgr_mem_ctx_t@@QAE@XZ 00A4F3F0 f i game.o
-985	PORTED	0002:0025ff70 ?GetDist@BspPlane@@QBEMXZ 00A4F470 f i game.o	IDA: returns mPlane.w as double; accessor restored in g_cm_load.cpp.
-986	VERIFIED	0002:0025ffc0 ?ToCPlane@BspPlane@@QBEXAAUcplane_s@@@Z 00A4F4C0 f i game.o	IDA: existing body copies xyz/dist, sets type 3, and derives signbits exactly.
-987	PORTED	0002:002600a0 ??0LightGridData@@QAE@XZ 00A4F5A0 f i game.o	IDA: empty constructor returns this unchanged; explicit constructor restored.
+985	PORTED	0002:0025ff70 ?GetDist@BspPlane@@QBEMXZ 00A4F470 f i game.o
+986	PORTED	0002:0025ffc0 ?ToCPlane@BspPlane@@QBEXAAUcplane_s@@@Z 00A4F4C0 f i game.o
+987	VERIFIED	0002:002600a0 ??0LightGridData@@QAE@XZ 00A4F5A0 f i game.o
 988	SKIPPED	0002:002600b0 ??_EAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 989	SKIPPED	0002:002600b0 ??_GAnimNotifyTask@@UAEPAXI@Z 00A4F5B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 990	VERIFIED	0002:002600e0 ??1AnimNotifyTask@@UAE@XZ 00A4F5E0 f i game.o
-991	PORTED	0002:002600f0 ?AnyBanksLoaded@AudioBankMgr@@QBE_NXZ 00A4F5F0 f i game.o	IDA: returns mAvailableWbks.m_size > 0; explicit query restored in g_entity_misc.cpp.
+991	VERIFIED	0002:002600f0 ?AnyBanksLoaded@AudioBankMgr@@QBE_NXZ 00A4F5F0 f i game.o
 992	VERIFIED	0002:00260100 ??0CrossFadeInfo@SoundDevice@@QAE@XZ 00A4F600 f i game.o
-993	PORTED	0002:00260120 ?Clear@nglParamSet@@QAEXXZ 00A4F620 f i game.o	IDA: clears Array[0] and Array[1]; explicit method restored in ngl_dx_core.cpp.
+993	VERIFIED	0002:00260120 ?Clear@nglParamSet@@QAEXXZ 00A4F620 f i game.o
 994	VERIFIED	0002:00260140 ?nglListAlloc@@YAPAXII@Z 00A4F640 f i game.o
 995	VERIFIED	0002:002601d0 ??0pml_t@@QAE@XZ 00A4F6D0 f i game.o
 996	VERIFIED	0002:002601e0 ??0locTraceWork_t@@QAE@XZ 00A4F6E0 f i game.o
 997	VERIFIED	0002:002601f0 ??0traceWork_t@@QAE@XZ 00A4F6F0 f i game.o
-998	PORTED	0002:00260210 ??0CurveEffectListElem@@QAE@XZ 00A4F710 f i game.o	IDA: zeros both list links, mOwner, and mSound while leaving mInUse untouched; constructor restored in g_cmd.cpp.
-999	PORTED	0002:00260230 ??0CurveEvalFunc@@QAE@XZ 00A4F730 f i game.o	IDA: zeros both list links; constructor restored in g_cmd.cpp.
+998	VERIFIED	0002:00260210 ??0CurveEffectListElem@@QAE@XZ 00A4F710 f i game.o
+999	VERIFIED	0002:00260230 ??0CurveEvalFunc@@QAE@XZ 00A4F730 f i game.o
 1000	SKIPPED	0002:00260250 ??_ECGBankManager@@UAEPAXI@Z 00A4F750 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1001	SKIPPED	0002:00260250 ??_GCGBankManager@@UAEPAXI@Z 00A4F750 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1002	VERIFIED	0002:00260280 ??0AttachModelInfo@@QAE@XZ 00A4F780 f i game.o
 1003	SKIPPED	0002:002602b0 ??_GEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1004	SKIPPED	0002:002602b0 ??_EEntityManager@@UAEPAXI@Z 00A4F7B0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1005	PORTED	0002:002602e0 ??A?$cdl_array@E@@QAEAAEI@Z 00A4F7E0 f i game.o	IDA: bounds-checks index with cdl_mem.h line 91 and returns m_elements[index]; generic body matches.
-1006	PORTED	0002:00260330 ??1?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4F830 f i game.o	IDA: frees m_elements when non-null, then nulls it and clears m_count; generic done body matches.
+1005	VERIFIED	0002:002602e0 ??A?$cdl_array@E@@QAEAAEI@Z 00A4F7E0 f i game.o
+1006	VERIFIED	0002:00260330 ??1?$cdl_array@UcdlPlane@@@@QAE@XZ 00A4F830 f i game.o
 1007	VERIFIED	0002:00260360 ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z 00A4F860 f i game.o
-1008	PORTED	0002:002603f0 ??1?$cdl_array@Ucdl_object_t@@@@QAE@XZ 00A4F8F0 f i game.o	IDA: same cdl_array teardown sequence as the plane specialization; generic done body matches.
-1009	PORTED	0002:00260420 ??1?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4F920 f i game.o	IDA: same cdl_array teardown sequence; generic done body matches.
-1010	PORTED	0002:00260450 ??A?$cdl_array@Ucdl_brush_t@@@@QAEAAUcdl_brush_t@@I@Z 00A4F950 f i game.o	IDA: bounds-checks with cdl_mem.h line 91 and returns m_elements[index]; generic mutable operator[] matches.
-1011	PORTED	0002:002604a0 ??1?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4F9A0 f i game.o	IDA: same cdl_array teardown sequence; generic done body matches.
-1012	PORTED	0002:002604d0 ??1?$cdl_array@Uvi4@@@@QAE@XZ 00A4F9D0 f i game.o	IDA: same cdl_array teardown sequence; generic done body matches.
-1013	PORTED	0002:00260500 ??A?$cdl_array@Ucdl_patch_t@@@@QAEAAUcdl_patch_t@@I@Z 00A4FA00 f i game.o	IDA: bounds-checks with cdl_mem.h line 91 and returns m_elements[index]; generic mutable operator[] matches.
-1014	PORTED	0002:00260550 ??1?$phys_static_array@H$0BAA@@@QAE@XZ 00A4FA50 f i game.o
-1015	PORTED	0002:00260560 ??1?$phys_static_array@H$0IA@@@QAE@XZ 00A4FA60 f i game.o
+1008	VERIFIED	0002:002603f0 ??1?$cdl_array@Ucdl_object_t@@@@QAE@XZ 00A4F8F0 f i game.o
+1009	VERIFIED	0002:00260420 ??1?$cdl_array@Ucdl_brush_t@@@@QAE@XZ 00A4F920 f i game.o
+1010	VERIFIED	0002:00260450 ??A?$cdl_array@Ucdl_brush_t@@@@QAEAAUcdl_brush_t@@I@Z 00A4F950 f i game.o
+1011	VERIFIED	0002:002604a0 ??1?$cdl_array@Ucdl_vinfo_t@@@@QAE@XZ 00A4F9A0 f i game.o
+1012	VERIFIED	0002:002604d0 ??1?$cdl_array@Uvi4@@@@QAE@XZ 00A4F9D0 f i game.o
+1013	VERIFIED	0002:00260500 ??A?$cdl_array@Ucdl_patch_t@@@@QAEAAUcdl_patch_t@@I@Z 00A4FA00 f i game.o
+1014	VERIFIED	0002:00260550 ??1?$phys_static_array@H$0BAA@@@QAE@XZ 00A4FA50 f i game.o
+1015	VERIFIED	0002:00260560 ??1?$phys_static_array@H$0IA@@@QAE@XZ 00A4FA60 f i game.o
 1016	VERIFIED	0002:00260570 ??1?$ae_vector@I@@QAE@XZ 00A4FA70 f i game.o
-1017	PORTED	0002:002605a0 ?push_back@?$ae_vector@I@@QAEXABI@Z 00A4FAA0 f i game.o	IDA: grows capacity by +1 up to size 3, then +4, allocates with align 8, copies, frees old storage, and appends the element; generic ae_vector body matches.
-1018	PORTED	0002:00260650 ??0?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4FB50 f i game.o	IDA: invokes the WbkEntry base constructor and sets m_size to zero; specialization matches.
-1019	PORTED	0002:00260670 ?push_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXABUWbkEntry@AudioBankMgr@@@Z 00A4FB70 f i game.o	IDA: asserts m_size < 16, increments size, and assigns the WbkEntry; generic push_back plus explicit assignment matches.
+1017	VERIFIED	0002:002605a0 ?push_back@?$ae_vector@I@@QAEXABI@Z 00A4FAA0 f i game.o
+1018	PORTED	0002:00260650 ??0?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAE@XZ 00A4FB50 f i game.o
+1019	PORTED	0002:00260670 ?push_back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXABUWbkEntry@AudioBankMgr@@@Z 00A4FB70 f i game.o
 1020	PORTED	0002:00260710 ?BindObjectToHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@PAVSound@SoundDevice@@@Z 00A4FC10 f i game.o
 1021	SKIPPED	0002:002607b0 ??0?$ae_fixed_string@$0EAA@G@@QAE@PBD@Z 00A4FCB0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1022	SKIPPED	0002:002607f0 ?Fixup@?$InplaceAssetBank@VGdbFileSet@@V?$InplaceTree@VInplaceString@@I@@@@QAEXXZ 00A4FCF0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1023	SKIPPED	0002:00260870 ??0?$InplaceAssetBankSet@VGdbFileBank@@@@QAE@XZ 00A4FD70 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1024	SKIPPED	0002:00260940 ?AddBank@?$InplaceAssetBankSet@VGdbFileBank@@@@QAEXW4TPakId@@PAVGdbFileBank@@@Z 00A4FE40 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1025	SKIPPED	0002:002609d0 ?UnloadBank@?$InplaceAssetBankSet@VGdbFileBank@@@@MAEXW4TPakId@@@Z 00A4FED0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-1026	VERIFIED	0002:00260a30 ?clear@?$ae_sized_array@G$0BAA@@@QAEXXZ 00A4FF30 f i game.o  VERIFIED: IDA 0x00660A30 sets m_size to zero; ae_sized_array::clear matches.
-1027	VERIFIED	0002:00260a40 ?begin@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF40 f i game.o  VERIFIED: IDA 0x00660A40 returns the element buffer; generic begin matches.
-1028	VERIFIED	0002:00260a50 ?end@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF50 f i game.o  VERIFIED: IDA 0x00660A50 returns m_elements + m_size; generic end matches.
-1029	VERIFIED	0002:00260a70 ??1?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4FF70 f i game.o  VERIFIED: IDA 0x00660A70 frees, nulls, and clears capacity; CheckpointVector cleanup matches.
-1030	VERIFIED	0002:00260aa0 ?push_back@?$ae_vector@USCheckpointGameVar@@@@QAEXABUSCheckpointGameVar@@@Z 00A4FFA0 f i game.o  VERIFIED: IDA 0x00660AA0 growth, zero-init, copy, free, append, and size increment match CheckpointVectorPushBack.
-1031	VERIFIED	0002:00260ba0 ??0?$reserved_dlist@VCurveEffectListElem@@@@QAE@XZ 00A500A0 f i game.o  VERIFIED: IDA 0x00660BA0 matches the generic reserved_dlist constructor.
-1032	PORTED	0002:00260bc0 ?push_front@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A500C0 f i game.o  PORTED: IDA 0x00660BC0 restored as the shared reserved_dlist<T>::push_front template in core_systems.h.
-1033	VERIFIED	0002:00260bf0 ?end@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A500F0 f i game.o  VERIFIED: IDA 0x00660BF0 matches the generic sentinel iterator end.
-1034	VERIFIED	0002:00260c10 ??0?$reserved_dlist@VCurve@@@@QAE@XZ 00A50110 f i game.o  VERIFIED: IDA 0x00660C10 matches the generic reserved_dlist constructor.
-1035	PORTED	0002:00260c30 ?push_front@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A50130 f i game.o  PORTED: IDA 0x00660C30 restored as the shared reserved_dlist<T>::push_front template in core_systems.h.
-1036	VERIFIED	0002:00260c60 ?end@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A50160 f i game.o  VERIFIED: IDA 0x00660C60 matches the generic sentinel iterator end.
-1037	VERIFIED	0002:00260c80 ??0?$reserved_dlist@VCurveEvalFunc@@@@QAE@XZ 00A50180 f i game.o  VERIFIED: IDA 0x00660C80 matches the generic reserved_dlist constructor.
-1038	PORTED	0002:00260ca0 ?push_front@?$reserved_dlist@VCurveEvalFunc@@@@QAEXPAVCurveEvalFunc@@@Z 00A501A0 f i game.o  PORTED: IDA 0x00660CA0 restored as the shared reserved_dlist<T>::push_front template in core_systems.h.
-1039	VERIFIED	0002:00260cd0 ?end@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A501D0 f i game.o  VERIFIED: IDA 0x00660CD0 matches the generic sentinel iterator end.
-1040	VERIFIED	0002:00260cf0 ??Citerator@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAVCurveEvalFunc@@XZ 00A501F0 f i game.o  VERIFIED: IDA 0x00660CF0 returns the iterator node; generic operator-> matches.
-1041	VERIFIED	0002:00260d00 ??9iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV01@@Z 00A50200 f i game.o  VERIFIED: IDA 0x00660D00 compares iterator m_next values; generic operator!= matches.
-1042	VERIFIED	0002:00260d30 ??Diterator@?$reserved_dlist@VCurve@@@@QAEPAVCurve@@XZ 00A50230 f i game.o  VERIFIED: IDA 0x00660D30 returns the iterator node; generic operator* matches.
-1043	VERIFIED	0002:00260d40 ??9iterator@?$reserved_dlist@VCurve@@@@QBE_NABV01@@Z 00A50240 f i game.o  VERIFIED: IDA 0x00660D40 compares iterator m_next values; generic operator!= matches.
-1044	VERIFIED	0002:00260d70 ??Diterator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50270 f i game.o  VERIFIED: IDA 0x00660D70 returns the iterator node; generic operator* matches.
-1045	VERIFIED	0002:00260d80 ??Citerator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50280 f i game.o  VERIFIED: IDA 0x00660D80 returns the iterator node; generic operator-> matches.
-1046	VERIFIED	0002:00260d90 ??9iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV01@@Z 00A50290 f i game.o  VERIFIED: IDA 0x00660D90 compares iterator m_next values; generic operator!= matches.
+1026	PORTED	0002:00260a30 ?clear@?$ae_sized_array@G$0BAA@@@QAEXXZ 00A4FF30 f i game.o
+1027	PORTED	0002:00260a40 ?begin@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF40 f i game.o
+1028	PORTED	0002:00260a50 ?end@?$ae_sized_array@G$0BAA@@@QAE?AViterator@1@XZ 00A4FF50 f i game.o
+1029	PORTED	0002:00260a70 ??1?$ae_vector@USCheckpointGameVar@@@@QAE@XZ 00A4FF70 f i game.o
+1030	PORTED	0002:00260aa0 ?push_back@?$ae_vector@USCheckpointGameVar@@@@QAEXABUSCheckpointGameVar@@@Z 00A4FFA0 f i game.o
+1031	PORTED	0002:00260ba0 ??0?$reserved_dlist@VCurveEffectListElem@@@@QAE@XZ 00A500A0 f i game.o
+1032	PORTED	0002:00260bc0 ?push_front@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A500C0 f i game.o
+1033	PORTED	0002:00260bf0 ?end@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A500F0 f i game.o
+1034	PORTED	0002:00260c10 ??0?$reserved_dlist@VCurve@@@@QAE@XZ 00A50110 f i game.o
+1035	PORTED	0002:00260c30 ?push_front@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A50130 f i game.o
+1036	PORTED	0002:00260c60 ?end@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A50160 f i game.o
+1037	PORTED	0002:00260c80 ??0?$reserved_dlist@VCurveEvalFunc@@@@QAE@XZ 00A50180 f i game.o
+1038	PORTED	0002:00260ca0 ?push_front@?$reserved_dlist@VCurveEvalFunc@@@@QAEXPAVCurveEvalFunc@@@Z 00A501A0 f i game.o
+1039	PORTED	0002:00260cd0 ?end@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A501D0 f i game.o
+1040	PORTED	0002:00260cf0 ??Citerator@?$reserved_dlist@VCurveEvalFunc@@@@QAEPAVCurveEvalFunc@@XZ 00A501F0 f i game.o
+1041	PORTED	0002:00260d00 ??9iterator@?$reserved_dlist@VCurveEvalFunc@@@@QBE_NABV01@@Z 00A50200 f i game.o
+1042	PORTED	0002:00260d30 ??Diterator@?$reserved_dlist@VCurve@@@@QAEPAVCurve@@XZ 00A50230 f i game.o
+1043	PORTED	0002:00260d40 ??9iterator@?$reserved_dlist@VCurve@@@@QBE_NABV01@@Z 00A50240 f i game.o
+1044	PORTED	0002:00260d70 ??Diterator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50270 f i game.o
+1045	PORTED	0002:00260d80 ??Citerator@?$reserved_dlist@VCurveEffectListElem@@@@QAEPAVCurveEffectListElem@@XZ 00A50280 f i game.o
+1046	PORTED	0002:00260d90 ??9iterator@?$reserved_dlist@VCurveEffectListElem@@@@QBE_NABV01@@Z 00A50290 f i game.o
 1047	SKIPPED	0002:00260dc0 ??C?$IVPointer@VGdbFileSet@@@@QAEPAVGdbFileSet@@XZ 00A502C0 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1048	VERIFIED	0002:00260de0 ??0?$ae_sized_array@VPosition3@math@@$0BAA@@@QAE@XZ 00A502E0 f i game.o
-1049	VERIFIED	0002:00260df0 ?clear@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXXZ 00A502F0 f i game.o  VERIFIED: IDA 0x00660DF0 clears m_size; ae_sized_array::clear matches.
-1050	PORTED	0002:00260e00 ??1?$cdl_array@M@@QAE@XZ 00A50300 f i game.o  PORTED: IDA 0x00660E00 frees m_elements when non-null, then nulls it and clears m_count; restored in the shared cdl_array<T> destructor.
-1051	PORTED	0002:00260e30 ?resize@?$cdl_array@M@@QAEXI@Z 00A50330 f i game.o  PORTED: IDA 0x00660E30 frees/reset state, allocates sizeof(T)*n with align 4, and asserts on pool overflow; restored in cdl_array<T>::resize.
-1052	VERIFIED	0002:00260ec0 ??A?$cdl_array@M@@QAEAAMI@Z 00A503C0 f i game.o  VERIFIED: IDA 0x00660EC0 checks index against m_count with the cdl_mem assertion and returns m_elements[index].
-1053	PORTED	0002:00260f10 ??1?$cdl_array@H@@QAE@XZ 00A50410 f i game.o  PORTED: IDA 0x00660F10 uses the same cleanup body as cdl_array<float>; shared destructor matches.
-1054	PORTED	0002:00260f40 ?resize@?$cdl_array@H@@QAEXI@Z 00A50440 f i game.o  PORTED: IDA 0x00660F40 uses the same resize body as cdl_array<float>; shared resize matches.
-1055	VERIFIED	0002:00260fd0 ??A?$cdl_array@H@@QAEAAHI@Z 00A504D0 f i game.o  VERIFIED: IDA 0x00660FD0 uses the same checked indexing body as cdl_array<float>; shared operator[] matches.
+1049	PORTED	0002:00260df0 ?clear@?$ae_sized_array@VPosition3@math@@$0BAA@@@QAEXXZ 00A502F0 f i game.o
+1050	VERIFIED	0002:00260e00 ??1?$cdl_array@M@@QAE@XZ 00A50300 f i game.o
+1051	VERIFIED	0002:00260e30 ?resize@?$cdl_array@M@@QAEXI@Z 00A50330 f i game.o
+1052	VERIFIED	0002:00260ec0 ??A?$cdl_array@M@@QAEAAMI@Z 00A503C0 f i game.o
+1053	VERIFIED	0002:00260f10 ??1?$cdl_array@H@@QAE@XZ 00A50410 f i game.o
+1054	VERIFIED	0002:00260f40 ?resize@?$cdl_array@H@@QAEXI@Z 00A50440 f i game.o
+1055	VERIFIED	0002:00260fd0 ??A?$cdl_array@H@@QAEAAHI@Z 00A504D0 f i game.o
 1056	VERIFIED	0002:00261020 ??0?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@QAE@XZ 00A50520 f i game.o
 1057	SKIPPED	0002:00261040 ??0?$ae_sized_array_base@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A50540 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-1058	PORTED	0002:00261070 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A50570 f i game.o
-1059	PORTED	0002:00261090 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A50590 f i game.o
-1060	PORTED	0002:002610b0 ?resize@?$cdl_array@Ucdl_object_t@@@@QAEXI@Z 00A505B0 f i game.o  PORTED: IDA 0x006610B0 uses the shared cdl_array<T>::resize body; cdl_object_t storage now follows the verified allocation/assert path.
+1058	VERIFIED	0002:00261070 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A50570 f i game.o
+1059	VERIFIED	0002:00261090 ??0?$ae_sized_array_base@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A50590 f i game.o
+1060	VERIFIED	0002:002610b0 ?resize@?$cdl_array@Ucdl_object_t@@@@QAEXI@Z 00A505B0 f i game.o
 1061	VERIFIED	0002:00261140 ?destroy_all@?$ae_vector@P6AXVentity@Broc@@@Z@@AAEXXZ 00A50640 f i game.o
-1062	VERIFIED	0002:00261170 ?back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A50670 f i game.o  VERIFIED: IDA 0x00661170 selects max(m_size - 1, 0) and returns the corresponding 0x6C-byte WbkEntry; ae_sized_array::back matches.
-1063	FIXED	0002:00261190 ?resize@?$ae_vector@USCheckpointGameVar@@@@QAEXH@Z 00A50690 f i game.o  FIXED: IDA 0x00661190 zeroes the complete newly allocated checkpoint array before copying old entries; resize now calls the one-argument zeroing constructor.
-1064	VERIFIED	0002:00261290 ?find@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@PAVCurveEffectListElem@@@Z 00A50790 f i game.o  VERIFIED: IDA 0x00661290 matches the generic intrusive-list find traversal and sentinel return.
-1065	VERIFIED	0002:002612e0 ?find@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@PAVCurve@@@Z 00A507E0 f i game.o  VERIFIED: IDA 0x006612E0 matches the generic intrusive-list find traversal and sentinel return.
-1066	PORTED	0002:00261330 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@AAV1@@Z 00A50830 f i game.o  PORTED: IDA 0x00661330 restored as the shared iterator(reserved_dlist*) constructor in core_systems.h.
-1067	PORTED	0002:00261380 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@AAV1@@Z 00A50880 f i game.o  PORTED: IDA 0x00661380 restored as the shared iterator(reserved_dlist*) constructor in core_systems.h.
-1068	PORTED	0002:002613d0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@AAV1@@Z 00A508D0 f i game.o  PORTED: IDA 0x006613D0 restored as the shared iterator(reserved_dlist*) constructor in core_systems.h.
+1062	PORTED	0002:00261170 ?back@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEAAUWbkEntry@AudioBankMgr@@XZ 00A50670 f i game.o
+1063	PORTED	0002:00261190 ?resize@?$ae_vector@USCheckpointGameVar@@@@QAEXH@Z 00A50690 f i game.o
+1064	PORTED	0002:00261290 ?find@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@PAVCurveEffectListElem@@@Z 00A50790 f i game.o
+1065	PORTED	0002:002612e0 ?find@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@PAVCurve@@@Z 00A507E0 f i game.o
+1066	PORTED	0002:00261330 ??0iterator@?$reserved_dlist@VCurveEvalFunc@@@@QAE@AAV1@@Z 00A50830 f i game.o
+1067	PORTED	0002:00261380 ??0iterator@?$reserved_dlist@VCurve@@@@QAE@AAV1@@Z 00A50880 f i game.o
+1068	PORTED	0002:002613d0 ??0iterator@?$reserved_dlist@VCurveEffectListElem@@@@QAE@AAV1@@Z 00A508D0 f i game.o
 1069	SKIPPED	0002:00261420 ??C?$IVPointer@VGdbFileSet@@@@QBEPBVGdbFileSet@@XZ 00A50920 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1070	VERIFIED	0002:00261440 ?destroy_all@?$ae_vector@Udebug_brush@@@@AAEXXZ 00A50940 f i game.o
 1071	SKIPPED	0002:00261470 ??0?$_Vector_val@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAE@V?$allocator@U?$pair@HH@std@@@1@@Z 00A50970 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1087,37 +1087,37 @@ index	status	map_line
 1086	SKIPPED	0002:00261820 ?destroy@?$allocator@U?$pair@HH@std@@@std@@QAEXPAU?$pair@HH@2@@Z 00A50D20 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1087	SKIPPED	0002:00261830 ??$_Uninit_copy@PAU?$pair@HH@std@@PAU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAPAU?$pair@HH@0@PAU10@00AAV?$allocator@U?$pair@HH@std@@@0@U_Nonscalar_ptr_iterator_tag@0@@Z 00A50D30 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1088	VERIFIED	0002:00261870 ??1rtree_visitor_t@@QAE@XZ 00A50D70 f i game.o
-1089	PORTED	0002:00261880 ??0CachedLightGrid@@QAE@XZ 00A50D80 f i game.o  PORTED: IDA 0x00661880 initializes all lastPos components to FLT_MAX and sets moved=true; constructor restored in g_accessors.cpp.
-1090	FIXED	0002:002618b0 ??0trRefEntity@@QAE@H@Z 00A50DB0 f i game.o  FIXED: IDA 0x006618B0 preserves the visibility byte while clearing bit 1 at offset +0xFB; constructor now mirrors that write after refEntity zero-init.
-1091	PORTED	0002:00261990 ?AddNotify@EntityNotifySet@@QAEXPAVEntityNotify@@@Z 00A50E90 f i game.o  PORTED: IDA 0x00661990 restored the exact intrusive-list append overload in g_entity_misc.cpp.
-1092	PORTED	0002:002619c0 ??0AnimationDebug@Entity@@QAE@HHPBD@Z 00A50EC0 f i game.o  PORTED: IDA 0x006619C0 restored as Entity::AnimationDebug::AnimationDebug with exact pointer/int assignments and CStrToAeStr length handling.
+1089	VERIFIED	0002:00261880 ??0CachedLightGrid@@QAE@XZ 00A50D80 f i game.o
+1090	VERIFIED	0002:002618b0 ??0trRefEntity@@QAE@H@Z 00A50DB0 f i game.o
+1091	VERIFIED	0002:00261990 ?AddNotify@EntityNotifySet@@QAEXPAVEntityNotify@@@Z 00A50E90 f i game.o
+1092	VERIFIED	0002:002619c0 ??0AnimationDebug@Entity@@QAE@HHPBD@Z 00A50EC0 f i game.o
 1093	SKIPPED	0002:00261a10 ??_GAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1094	SKIPPED	0002:00261a10 ??_EAudioBankMgr@@UAEPAXI@Z 00A50F10 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-1095	PORTED	0002:00261a40 ??0nglShaderParamSet@@QAE@XZ 00A50F40 f i game.o  PORTED: IDA 0x00661A40 allocates GetSize() bytes aligned to 8, stores Array, and clears the first two words; constructor restored in ngl_dx_core.cpp.
+1095	VERIFIED	0002:00261a40 ??0nglShaderParamSet@@QAE@XZ 00A50F40 f i game.o
 1096	SKIPPED	0002:00261a80 ??_EGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1097	SKIPPED	0002:00261a80 ??_GGdbFileManager@@EAEPAXI@Z 00A50F80 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1098	VERIFIED	0002:00261ab0 ??1TempDCGSet@DCGBankManager@@QAE@XZ 00A50FB0 f i game.o
-1099	PORTED	0002:00261ba0 ?Clear@PadAliasMgr@@QAEXXZ 00A510A0 f i game.o  PORTED: IDA 0x00661BA0 clears all three PadAliasMgr contexts; manager overload restored in g_cmd.cpp.
-1100	PORTED	0002:00261bd0 ?Clear@PadAliasMgr@@QAEXH@Z 00A510D0 f i game.o  PORTED: IDA 0x00661BD0 clears the supplied controller alias in all three contexts; manager overload restored in g_cmd.cpp.
-1101	PORTED	0002:00261c10 ??0?$cdl_array@Ucdl_object_t@@@@QAE@I@Z 00A51110 f i game.o  PORTED: IDA 0x00661C10 initializes count/elements and delegates to cdl_array<T>::resize; count constructor restored.
-1102	VERIFIED	0002:00261c40 ??1?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A51140 f i game.o  VERIFIED: IDA 0x00661C40 matches generic ae_vector cleanup for function-pointer elements.
-1103	VERIFIED	0002:00261c70 ?push_back@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEXABQ6AXVentity@Broc@@@Z@Z 00A51170 f i game.o  VERIFIED: IDA 0x00661C70 matches generic ae_vector growth, copy, free, append, and size increment.
-1104	VERIFIED	0002:00261d20 ?erase@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXH@Z 00A51220 f i game.o  VERIFIED: IDA 0x00661D20 matches ae_sized_array::erase, including last-element assignment and guarded size decrement.
-1105	FIXED	0002:00261d80 ?ReleaseHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00A51280 f i game.o  FIXED: IDA 0x00661D80 now records HandleDb.h lines 170/175 and emits the invalid-handle warning/assert paths for invalid index or generation.
+1099	VERIFIED	0002:00261ba0 ?Clear@PadAliasMgr@@QAEXXZ 00A510A0 f i game.o
+1100	VERIFIED	0002:00261bd0 ?Clear@PadAliasMgr@@QAEXH@Z 00A510D0 f i game.o
+1101	VERIFIED	0002:00261c10 ??0?$cdl_array@Ucdl_object_t@@@@QAE@I@Z 00A51110 f i game.o
+1102	VERIFIED	0002:00261c40 ??1?$ae_vector@P6AXVentity@Broc@@@Z@@QAE@XZ 00A51140 f i game.o
+1103	VERIFIED	0002:00261c70 ?push_back@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEXABQ6AXVentity@Broc@@@Z@Z 00A51170 f i game.o
+1104	PORTED	0002:00261d20 ?erase@?$ae_sized_array@UWbkEntry@AudioBankMgr@@$0BA@@@QAEXH@Z 00A51220 f i game.o
+1105	PORTED	0002:00261d80 ?ReleaseHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXVHandle@@@Z 00A51280 f i game.o
 1106	SKIPPED	0002:00261e90 ??0?$ae_sized_array@V?$ae_fixed_string@$0IA@E@@$0EA@@@QAE@XZ 00A51390 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
-1107	VERIFIED	0002:00261ec0 ?clear@?$ae_vector@USCheckpointGameVar@@@@QAEXXZ 00A513C0 f i game.o  VERIFIED: IDA 0x00661EC0 delegates to ae_vector<CheckpointGameVar>::resize(0), matching the generic clear helper.
-1108	VERIFIED	0002:00261ed0 ?begin@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A513D0 f i game.o  VERIFIED: IDA 0x00661ED0 matches reserved_dlist<T>::begin, including sentinel-empty handling.
-1109	VERIFIED	0002:00261f20 ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A51420 f i game.o  VERIFIED: IDA 0x00661F20 matches the generic intrusive-list erase and assert path.
-1110	VERIFIED	0002:00261fc0 ?begin@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A514C0 f i game.o  VERIFIED: IDA 0x00661FC0 matches reserved_dlist<T>::begin, including sentinel-empty handling.
-1111	VERIFIED	0002:00262010 ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A51510 f i game.o  VERIFIED: IDA 0x00662010 matches the generic intrusive-list erase and assert path.
-1112	VERIFIED	0002:002620b0 ?begin@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A515B0 f i game.o  VERIFIED: IDA 0x006620B0 matches reserved_dlist<T>::begin, including sentinel-empty handling.
+1107	PORTED	0002:00261ec0 ?clear@?$ae_vector@USCheckpointGameVar@@@@QAEXXZ 00A513C0 f i game.o
+1108	PORTED	0002:00261ed0 ?begin@?$reserved_dlist@VCurveEffectListElem@@@@QAE?AViterator@1@XZ 00A513D0 f i game.o
+1109	PORTED	0002:00261f20 ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z 00A51420 f i game.o
+1110	PORTED	0002:00261fc0 ?begin@?$reserved_dlist@VCurve@@@@QAE?AViterator@1@XZ 00A514C0 f i game.o
+1111	PORTED	0002:00262010 ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z 00A51510 f i game.o
+1112	PORTED	0002:002620b0 ?begin@?$reserved_dlist@VCurveEvalFunc@@@@QAE?AViterator@1@XZ 00A515B0 f i game.o
 1113	SKIPPED	0002:00262100 ??B?$IVPointer@VGdbFileSet@@@@QBE_NXZ 00A51600 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
 1114	VERIFIED	0002:00262120 ??1?$ae_vector@Udebug_brush@@@@QAE@XZ 00A51620 f i game.o
-1115	VERIFIED	0002:00262150 ?push_back@?$ae_vector@Udebug_brush@@@@QAEXABUdebug_brush@@@Z 00A51650 f i game.o  VERIFIED: IDA 0x00662150 matches generic ae_vector growth, element assignment, free, append, and size increment.
+1115	PORTED	0002:00262150 ?push_back@?$ae_vector@Udebug_brush@@@@QAEXABUdebug_brush@@@Z 00A51650 f i game.o
 1116	VERIFIED	0002:00262230 ??0?$ae_sized_array@V?$ae_sized_array@W4EPadAliasButton@@$0BA@@@$03@@QAE@XZ 00A51730 f i game.o
 1117	VERIFIED	0002:00262260 ??0?$ae_sized_array@V?$ae_sized_array@W4EPadAliasStick@@$01@@$03@@QAE@XZ 00A51760 f i game.o
-1118	PORTED	0002:00262280 ?Dump@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A51780 f i game.o  PORTED: IDA 0x00662280 restored callback enumeration, handle-db diagnostics, and exact HandleDb.h assert metadata in g_entity_misc.cpp.
-1119	VERIFIED	0002:00262360 ?resize@?$ae_vector@Udebug_brush@@@@QAEXH@Z 00A51860 f i game.o  VERIFIED: IDA 0x00662360 matches generic ae_vector resize allocation, copy, free, and size handling.
+1118	PORTED	0002:00262280 ?Dump@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAEXXZ 00A51780 f i game.o
+1119	PORTED	0002:00262360 ?resize@?$ae_vector@Udebug_brush@@@@QAEXH@Z 00A51860 f i game.o
 1120	SKIPPED	0002:00262420 ?begin@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51920 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1121	SKIPPED	0002:00262440 ?end@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@XZ 00A51940 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1122	SKIPPED	0002:00262460 ??$Find@PBDV?$IVPointer@VGdbFileSet@@@@@?$InplaceAssetBankSet@VGdbFileBank@@@@QBE?AV?$IVPointer@VGdbFileSet@@@@W4TPakId@@PBDV?$AeType@V?$IVPointer@VGdbFileSet@@@@@@PAW42@@Z 00A51960 f i game.o  SKIPPED: inline template/container helper; supplied by its template definition
@@ -1128,27 +1128,27 @@ index	status	map_line
 1127	SKIPPED	0002:002626c0 ??_GDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1128	SKIPPED	0002:002626c0 ??_EDCGBankManager@@UAEPAXI@Z 00A51BC0 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1129	VERIFIED	0002:002626f0 ??0Context@PadAliasMgr@@QAE@XZ 00A51BF0 f i game.o
-1130	PORTED	0002:00262750 ??0?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A51C50 f i game.o  PORTED: IDA 0x00662750 restored free-bit initialization, 512 element keys, null objects, and the debug callback field.
-1131	PORTED	0002:002627b0 ?AllocateHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ 00A51CB0 f i game.o  PORTED: IDA 0x006627B0 restored lowest-free allocation, exact bounds assert metadata, exhaustion dump, and keyed handle construction.
-1132	PORTED	0002:00262890 ?delete_all@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A51D90 f i game.o  PORTED: IDA 0x00662890 restored intrusive curve-effect traversal, allocator release, sentinel reset, and size reset.
-1133	VERIFIED	0002:002628f0 ?clear@?$ae_vector@Udebug_brush@@@@QAEXXZ 00A51DF0 f i game.o  VERIFIED: IDA 0x006628F0 delegates to ae_vector<debug_brush>::resize(0), matching the generic clear helper.
+1130	PORTED	0002:00262750 ??0?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE@XZ 00A51C50 f i game.o
+1131	PORTED	0002:002627b0 ?AllocateHandle@?$HandleDb@VSound@SoundDevice@@$0CAA@V?$SizedHandle@$0M@$0BE@@@@@QAE?AV?$SizedHandle@$0M@$0BE@@@XZ 00A51CB0 f i game.o
+1132	PORTED	0002:00262890 ?delete_all@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ 00A51D90 f i game.o
+1133	PORTED	0002:002628f0 ?clear@?$ae_vector@Udebug_brush@@@@QAEXXZ 00A51DF0 f i game.o
 1134	SKIPPED	0002:00262900 ??A?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEAAU?$pair@HH@1@I@Z 00A51E00 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1135	FIXED	0002:00262920 ??$PakDelete@Uproximity_data_t@@@@YAXW4TPakId@@PAUproximity_data_t@@_N@Z 00A51E20 f i game.o  FIXED: IDA 0x00662920 calls proximity_data_t::~proximity_data_t before PakManager::MemFree; the destructor call was missing.
+1135	PORTED	0002:00262920 ??$PakDelete@Uproximity_data_t@@@@YAXW4TPakId@@PAUproximity_data_t@@_N@Z 00A51E20 f i game.o
 1136	SKIPPED	0002:00262960 ??$_Destroy_range@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@0AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51E60 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1137	SKIPPED	0002:00262970 ??$_Ucopy@PAU?$pair@HH@std@@@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@1@PAU21@00@Z 00A51E70 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1138	SKIPPED	0002:002629a0 ??$_Uninitialized_fill_n@PAU?$pair@HH@std@@IU12@V?$allocator@U?$pair@HH@std@@@2@@std@@YAXPAU?$pair@HH@0@IABU10@AAV?$allocator@U?$pair@HH@std@@@0@@Z 00A51EA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1139	VERIFIED	0002:002629d0 ?SingletonDebugRender@SoundDevice@@SAXXZ 00A51ED0 f i game.o
-1140	PORTED	0002:002629e0 ?Release@Sound@SoundDevice@@QAEXXZ 00A51EE0 f i game.o  PORTED: IDA 0x006629E0 delegates directly to Sound::Stop; declaration and implementation restored.
-1141	PORTED	0002:002629f0 ??0SoundHandleDb@SoundDevice@@QAE@XZ 00A51EF0 f i game.o  PORTED: IDA 0x006629F0 now delegates to the restored SoundHandleDb/HandleDb constructor.
+1140	VERIFIED	0002:002629e0 ?Release@Sound@SoundDevice@@QAEXXZ 00A51EE0 f i game.o
+1141	VERIFIED	0002:002629f0 ??0SoundHandleDb@SoundDevice@@QAE@XZ 00A51EF0 f i game.o
 1142	VERIFIED	0002:00262a00 ??1Curve@@QAE@XZ 00A51F00 f i game.o
 1143	SKIPPED	0002:00262a60 ??_GCurve@@QAEPAXI@Z 00A51F60 f i game.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 1144	SKIPPED	0002:00262a90 ?_Destroy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXPAU?$pair@HH@2@0@Z 00A51F90 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1145	SKIPPED	0002:00262aa0 ?_Ufill@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEPAU?$pair@HH@2@PAU32@IABU32@@Z 00A51FA0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1146	PORTED	0002:00262ad0 ??R?$DelFunctor@VCurve@@@@QAEXPAVCurve@@@Z 00A51FD0 f i game.o  PORTED: IDA 0x00662AD0 behavior restored in the curve deleter helper: Curve::~Curve followed by Curve::sAllocator->Release.
+1146	VERIFIED	0002:00262ad0 ??R?$DelFunctor@VCurve@@@@QAEXPAVCurve@@@Z 00A51FD0 f i game.o
 1147	SKIPPED	0002:00262b00 ?_Tidy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAEXXZ 00A52000 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1148	SKIPPED	0002:00262b40 ?erase@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE?AViterator@12@V312@0@Z 00A52040 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1149	PORTED	0002:00262ba0 ??$safe_for_each@Viterator@?$reserved_dlist@VCurve@@@@V?$DelFunctor@VCurve@@@@@@YAXViterator@?$reserved_dlist@VCurve@@@@0V?$DelFunctor@VCurve@@@@@Z 00A520A0 f i game.o  PORTED: IDA 0x00662BA0 traversal and safe deletion behavior restored in the curve list helper.
-1150	PORTED	0002:00262c80 ?delete_all@?$reserved_dlist@VCurve@@@@QAEXXZ 00A52180 f i game.o  PORTED: IDA 0x00662C80 sentinel handling, curve cleanup, allocator release, and list reset restored.
+1149	PORTED	0002:00262ba0 ??$safe_for_each@Viterator@?$reserved_dlist@VCurve@@@@V?$DelFunctor@VCurve@@@@@@YAXViterator@?$reserved_dlist@VCurve@@@@0V?$DelFunctor@VCurve@@@@@Z 00A520A0 f i game.o
+1150	PORTED	0002:00262c80 ?delete_all@?$reserved_dlist@VCurve@@@@QAEXXZ 00A52180 f i game.o
 1151	SKIPPED	0002:00262ce0 ??1?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@XZ 00A521E0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1152	SKIPPED	0002:00262d20 ?_Xlen@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IBEXXZ 00A52220 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1153	SKIPPED	0002:00262da0 ?_Buy@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@IAE_NI@Z 00A522A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
@@ -1156,4 +1156,4 @@ index	status	map_line
 1155	SKIPPED	0002:002630f0 ??0?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAE@XZ 00A525F0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1156	SKIPPED	0002:00263110 ?resize@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEXIU?$pair@HH@2@@Z 00A52610 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
 1157	SKIPPED	0002:002631a0 ?resize@?$vector@U?$pair@HH@std@@V?$allocator@U?$pair@HH@std@@@2@@std@@QAEXI@Z 00A526A0 f i game.o  SKIPPED: STL/compiler helper; supplied by the toolchain/library
-1158	PORTED	0002:002631c0 ?SingletonDebugRender@CGBankManager@@SAXXZ 00A526C0 f i game.o  PORTED: IDA 0x006631C0 loads CGBankManager::sInst and tail-calls DebugRender; static thunk restored.
+1158	VERIFIED	0002:002631c0 ?SingletonDebugRender@CGBankManager@@SAXXZ 00A526C0 f i game.o

@@ -4,7 +4,7 @@ index	status	map_line
 3	VERIFIED	0002:003d41a0 ?Register@cdAirplaneMetalShader@@UAEXXZ 00BC36A0 f cdAirplaneMetalShader.o
 4	VERIFIED	0002:003d41e0 ?AddNode@cdAirplaneMetalShader@@UAEXPAVnglMeshNode@@PAUnglMeshSection@@PAUnglMaterial@@@Z 00BC36E0 f cdAirplaneMetalShader.o
 5	PORTED	0002:003d4250 ?Render@cdAirplaneMetalShaderNode@@UAEXXZ 00BC3750 f cdAirplaneMetalShader.o
-6	PORTED	0002:003d4960 ?RegisterVShader@cdAirplaneMetalRender@@YAXXZ 00BC3E60 f i cdAirplaneMetalShader.o
+6	VERIFIED	0002:003d4960 ?RegisterVShader@cdAirplaneMetalRender@@YAXXZ 00BC3E60 f i cdAirplaneMetalShader.o
 7	PORTED	0002:003d4980 ?GetVShader@cdAirplaneMetalRender@@YAKXZ 00BC3E80 f i cdAirplaneMetalShader.o
 8	PORTED	0002:003d4990 ?RegisterPShader@cdAirplaneMetalPixel@@YAXXZ 00BC3E90 f i cdAirplaneMetalShader.o
 9	PORTED	0002:003d49b0 ?GetPShader@cdAirplaneMetalPixel@@YAPAKXZ 00BC3EB0 f i cdAirplaneMetalShader.o

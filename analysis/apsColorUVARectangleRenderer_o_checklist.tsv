@@ -5,15 +5,15 @@ index	status	map_line
 4	PORTED	0002:00404c90 ??0apsColorUVARectangleRenderer@@QAE@ABVcArgs@0@@Z 00BF4190 f apsColorUVARectangleRenderer.o
 5	VERIFIED	0002:00404cd0 ?Init@apsColorUVARectangleRenderer@@SAXXZ 00BF41D0 f apsColorUVARectangleRenderer.o
 6	VERIFIED	0002:00404d00 ?Render@apsColorUVARectangleRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z 00BF4200 f apsColorUVARectangleRenderer.o
-7	PORTED	0002:00404d20 ?RegisterVShader@apsColorUVARectangleRender@@YAXXZ 00BF4220 f i apsColorUVARectangleRenderer.o
-8	PORTED	0002:00404d40 ?RegisterPShader@apsColorUVARectangleRenderPixel@@YAXXZ 00BF4240 f i apsColorUVARectangleRenderer.o
-9	PORTED	0002:00404d60 ?InitPShader@apsColorUVARectangleRenderPixel@@YAXXZ 00BF4260 f i apsColorUVARectangleRenderer.o
-10	PORTED	0002:00404d80 ??1apsUVANode@@UAE@XZ 00BF4280 f i apsColorUVARectangleRenderer.o
-11	PORTED	0002:00404d90 ??0apsUVANode@@QAE@XZ 00BF4290 f i apsColorUVARectangleRenderer.o
+7	VERIFIED	0002:00404d20 ?RegisterVShader@apsColorUVARectangleRender@@YAXXZ 00BF4220 f i apsColorUVARectangleRenderer.o
+8	VERIFIED	0002:00404d40 ?RegisterPShader@apsColorUVARectangleRenderPixel@@YAXXZ 00BF4240 f i apsColorUVARectangleRenderer.o
+9	VERIFIED	0002:00404d60 ?InitPShader@apsColorUVARectangleRenderPixel@@YAXXZ 00BF4260 f i apsColorUVARectangleRenderer.o
+10	VERIFIED	0002:00404d80 ??1apsUVANode@@UAE@XZ 00BF4280 f i apsColorUVARectangleRenderer.o
+11	VERIFIED	0002:00404d90 ??0apsUVANode@@QAE@XZ 00BF4290 f i apsColorUVARectangleRenderer.o
 12	VERIFIED	0002:00404da0 ?GetDesc@apsUVANode@@UAEXPAD@Z 00BF42A0 f i apsColorUVARectangleRenderer.o
 13	SKIPPED	0002:00404dd0 ??_EapsUVANode@@UAEPAXI@Z 00BF42D0 f i apsColorUVARectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 14	SKIPPED	0002:00404dd0 ??_GapsUVANode@@UAEPAXI@Z 00BF42D0 f i apsColorUVARectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-15	PORTED	0002:00404e00 ??0apsColorUVARectangleNode@@QAE@XZ 00BF4300 f i apsColorUVARectangleRenderer.o
+15	VERIFIED	0002:00404e00 ??0apsColorUVARectangleNode@@QAE@XZ 00BF4300 f i apsColorUVARectangleRenderer.o
 16	VERIFIED	0002:00404e10 ?GetDesc@apsColorUVARectangleNode@@UAEXPAD@Z 00BF4310 f i apsColorUVARectangleRenderer.o
 17	SKIPPED	0002:00404e30 ??_EapsColorUVARectangleNode@@UAEPAXI@Z 00BF4330 f i apsColorUVARectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	SKIPPED	0002:00404e30 ??_GapsColorUVARectangleNode@@UAEPAXI@Z 00BF4330 f i apsColorUVARectangleRenderer.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler

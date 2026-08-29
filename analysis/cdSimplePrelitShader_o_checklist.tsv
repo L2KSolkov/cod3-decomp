@@ -7,14 +7,14 @@ index	status	map_line
 6	VERIFIED	0002:003d5a80 ?Render@cdSimplePrelitShaderNode@@UAEXXZ 00BC4F80 f cdSimplePrelitShader.o
 7	VERIFIED	0002:003d5d60 ??0cdSimplePrelitShader@@QAE@XZ 00BC5260 f i cdSimplePrelitShader.o
 8	VERIFIED	0002:003d5d90 ?GetName@cdSimplePrelitShader@@UAE?AVtlFixedString@@XZ 00BC5290 f i cdSimplePrelitShader.o
-9	PORTED	0002:003d5db0 ?RegisterVShader@cdSimplePrelitRender@@YAXXZ 00BC52B0 f i cdSimplePrelitShader.o
+9	VERIFIED	0002:003d5db0 ?RegisterVShader@cdSimplePrelitRender@@YAXXZ 00BC52B0 f i cdSimplePrelitShader.o
 10	PORTED	0002:003d5dd0 ?GetVShader@cdSimplePrelitRender@@YAKXZ 00BC52D0 f i cdSimplePrelitShader.o
 11	PORTED	0002:003d5de0 ?RegisterPShader@cdSimplePrelitPixel@@YAXXZ 00BC52E0 f i cdSimplePrelitShader.o
 12	PORTED	0002:003d5e00 ?GetPShader@cdSimplePrelitPixel@@YAPAKXZ 00BC5300 f i cdSimplePrelitShader.o
 13	PORTED	0002:003d5e10 ??0cdSimplePrelitShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdSimplePrelitShaderMat@@@Z 00BC5310 f i cdSimplePrelitShader.o
 14	SKIPPED	0002:003d5e40 ??_GcdSimplePrelitShaderNode@@UAEPAXI@Z 00BC5340 f i cdSimplePrelitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 15	SKIPPED	0002:003d5e40 ??_EcdSimplePrelitShaderNode@@UAEPAXI@Z 00BC5340 f i cdSimplePrelitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
-16	PORTED	0002:003d5e70 ??1cdSimplePrelitShaderNode@@UAE@XZ 00BC5370 f i cdSimplePrelitShader.o
+16	VERIFIED	0002:003d5e70 ??1cdSimplePrelitShaderNode@@UAE@XZ 00BC5370 f i cdSimplePrelitShader.o
 17	SKIPPED	0002:003d5e80 ??_GcdSimplePrelitShader@@UAEPAXI@Z 00BC5380 f i cdSimplePrelitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 18	SKIPPED	0002:003d5e80 ??_EcdSimplePrelitShader@@UAEPAXI@Z 00BC5380 f i cdSimplePrelitShader.o  SKIPPED: compiler-generated deleting destructor; supplied by the compiler
 19	VERIFIED	0002:003d5eb0 ??1cdSimplePrelitShader@@UAE@XZ 00BC53B0 f i cdSimplePrelitShader.o
