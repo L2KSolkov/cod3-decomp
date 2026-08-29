@@ -3457,7 +3457,7 @@ bool ScriptEventHandler::AddEvent(HashString h, const char* callback)
 }
 
 // ============================================================================
-// TaskSys::LookupHandler - ea: 0x4FF990
+// Legacy helper view for TaskSys::LookupHandler.
 // ============================================================================
 struct TaskSysImpl {
     TaskHandler* mTaskHandlers[32];  // +0x00 ae_sized_array<TaskHandler*,32>

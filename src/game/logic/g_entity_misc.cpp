@@ -3002,6 +3002,18 @@ Task* TaskSys::GetTaskForEntity(
     return nullptr;
 }
 
+// ea: 0x004FF990
+TaskHandler* TaskSys::LookupHandler(FourCC id) const
+{
+    for (int i = 0; i < mTaskHandlersSize; ++i)
+    {
+        TaskHandler* handler = reinterpret_cast<TaskHandler*>(mTaskHandlers[i]);
+        if (handler != nullptr && handler->mTaskId.mVal == id.mVal)
+            return handler;
+    }
+    return nullptr;
+}
+
 struct TaskHandlerImpl;
 Task* HandleDb_GetTask(void* self, Handle h)
 {
@@ -3015,14 +3027,8 @@ Task* TaskHandler_GetTaskForEntity(TaskHandlerImpl* self,
 }
 TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id)
 {
-    for (int i = 0; i < TaskSys::sInst.mTaskHandlersSize; ++i)
-    {
-        TaskHandler* handler = reinterpret_cast<TaskHandler*>(
-            TaskSys::sInst.mTaskHandlers[i]);
-        if (handler != nullptr && handler->mTaskId.mVal == id)
-            return reinterpret_cast<TaskHandlerImpl*>(handler);
-    }
-    return nullptr;
+    TaskHandler* handler = TaskSys::sInst.LookupHandler(FourCC((int)id));
+    return reinterpret_cast<TaskHandlerImpl*>(handler);
 }
 void HandleDb_AllocateTaskHandle(void* self, Task** t) { (void)self; (void)t; }
 void HandleDb_BindTaskObject(void* self, Handle h, Task* t)
