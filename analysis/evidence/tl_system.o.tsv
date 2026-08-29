@@ -33,6 +33,8 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008337B0	?tlPrint@@YAXPBD@Z	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8337B0 + src/core/tl_system.cpp	Source no longer routes tlPrint through DebugPrint callback.
 0x008337C0	?tlStackRangeInit@@YAXXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8337C0	Release aligns stack page, asserts protection, and walks 64K pages.
 0x008337C0	?tlStackRangeInit@@YAXXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA disasm 0x8337C0 + src/core/tl_system.cpp	Source matches stack bounds and mapped void ABI.
+0x008337C0	?tlStackRangeInit@@YAXXZ	V3	PASS	tl-stack-host-fix-20260829	2026-08-29	IDA disasm 0x8337C0;src/core/tl_system.cpp:413-451	Source retains release 64K stack probing while falling back to the committed Windows stack page when the reserved base is PAGE_NOACCESS.
+0x008337C0	?tlStackRangeInit@@YAXXZ	V4	PASS	tl-stack-host-fix-20260829	2026-08-29	c3_bin/codmp_xboxr.xbe.c:1576103-1576122	Release performs the same stack protection assertion and 64K walk; the host fallback only compensates for Windows reserve/commit layout.
 0x00833830	?tlScratchPadInit@@YAPAXXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833830	Release refcount, 0x4000 allocation, counter, and failure path reviewed.
 0x00833830	?tlScratchPadInit@@YAPAXXZ	V4	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x833830 + src/core/tl_system.cpp	Source preserves shared pointer/refcount and corrected MemAlloc callback.
 0x008338B0	?tlScratchPadReset@@YAXXZ	V3	PASS	tl-system-20260827	2026-08-27	IDA decompile 0x8338B0	Release underflow assertion, refcount, counter, free, and nulling reviewed.

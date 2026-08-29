@@ -1942,8 +1942,8 @@ void MPOptionsPreferencesMenu::SetPanelFile(PanelFile* pf)
         Broc::string s(kOnOffToggleStrings[t]);
         v63->AddOption(s);
     }
-    this->entries[0]->SetValue(4);
-    this->entries[4]->SetValue(0);
+    *reinterpret_cast<short*>(reinterpret_cast<char*>(this->entries[0]) + 8) = 4;
+    *reinterpret_cast<short*>(reinterpret_cast<char*>(this->entries[4]) + 10) = 0;
 }
 
 // ea: 0x00760230

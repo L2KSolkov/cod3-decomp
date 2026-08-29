@@ -425,6 +425,21 @@ void tlStackRangeInit() {  // ea: 0x8337C0
     auto protect = [](void*) -> unsigned { return 4; };
 #endif
     unsigned result = protect(tlStackBegin);
+#ifdef _WIN32
+    // Windows reserves thread stacks in 64K regions but commits pages on
+    // demand.  The 64K-aligned base can therefore be PAGE_NOACCESS even while
+    // the current stack page is writable, which is not an invalid TL stack.
+    // Fall back to the committed page containing our local when that occurs.
+    if ((result & 4) == 0) {
+        MEMORY_BASIC_INFORMATION localMbi;
+        if (VirtualQuery(const_cast<const unsigned*>(&local), &localMbi,
+                         sizeof(localMbi))
+            && (localMbi.Protect & 4) != 0) {
+            tlStackBegin = localMbi.BaseAddress;
+            result = (unsigned)localMbi.Protect;
+        }
+    }
+#endif
     if ((result & 4) == 0 &&
         _tlAssert("source/tl_system.cpp", 817,
                   "XQueryMemoryProtect(tlStackBegin) & PAGE_READWRITE",

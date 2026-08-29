@@ -4424,6 +4424,18 @@ void SceneManager::UpdateEffects(float delta_t)
             SceneEffect* effect = &p_mSceneEffects->mList[i];
             if (effect->mState == 5)
                 continue;
+            // Scene data may contain an unused effect record with no script.
+            // Treat it as an inactive effect instead of passing a null id into
+            // PostEffectEventScriptCall, which asserts by contract.
+            if (effect->mScriptId == nullptr || effect->mScriptId[0] == '\0')
+            {
+                if (effect->mEffectHandle != 0)
+                    EffectEventSys::sInst->StopEffect(
+                        Handle{effect->mEffectHandle}, true);
+                effect->mState = 5;
+                effect->mEffectHandle = 0;
+                continue;
+            }
             ActiveEffectSet* fxset =
                 EffectEventSys::sInst->GetActiveEffectSet(
                     Handle{effect->mEffectHandle});
