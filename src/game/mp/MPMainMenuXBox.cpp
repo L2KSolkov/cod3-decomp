@@ -219,11 +219,19 @@ JoinGameMenu* JoinGameMenu::Me()
 // ea: 0x7785C0
 void JoinGameMenu::OnActivate()
 {
+    const int lockedPort = controller::inst()->locked_port;
+    SaveGameData& save = gSaveGameData[lockedPort];
+    if (*reinterpret_cast<unsigned int*>(save.savedInvite + 0x68 + 4) == 0)
+    {
+        ASSERT(
+            "gSaveGameData[controller::inst()->get_locked_port()].mStubData.savedInvite.InviteAcceptTime.dwHighDateTime",
+            "c:\\cod\\code\\game\\mp/ui/JoinGameMenu.cpp", 19);
+    }
     MPLiveEngine* Handle = MPLiveEngine::GetHandle();
     Handle->DoWork();
     if (Handle->internalState == kNotSignedIn)
     {
-        LiveWrapper::theWrapper->SignInFromInvite(&gSaveGameData[0].savedInvite,
+        LiveWrapper::theWrapper->SignInFromInvite(&save.savedInvite,
                                       0x40140);
         mSignedInFromInvite = true;
     }
@@ -261,7 +269,7 @@ void JoinGameMenu::Update(float time_inc)
                   MPUIInterface::GameListingGet(numGames);
                   if (numGames == 0)
                 {
-                    ClearSavedInviteTime(&gSaveGameData[0]);
+                    ClearSavedInviteTime(&gSaveGameData[controller::inst()->locked_port]);
                     mJoiningGame = false;
                     OverlayMenu::Me(0)->SetState(OverlayMenu::JOIN_FAILED);
                     OverlayMenu::Me(0)->mAcceptMenu = 10;
@@ -281,10 +289,11 @@ void JoinGameMenu::Update(float time_inc)
                         controller* v11 = controller::inst();
                         v11->locked_port = (int)PortToLock;
                         v11->is_locked = true;
+                        gSaveGameData[PortToLock].mControllerPort = (int)PortToLock;
                         Handle->actualPort = PortToLock;
                     }
                     mJoiningGame = false;
-                    ClearSavedInviteTime(&gSaveGameData[0]);
+                    ClearSavedInviteTime(&gSaveGameData[controller::inst()->locked_port]);
                     MPUIInterface::mGameConnectionType =
                         MPUIInterface::kGameConnectionTypeOnline;
                     OverlayMenu::Me(0)->SetState(OverlayMenu::JOINING_START);
@@ -299,8 +308,8 @@ void JoinGameMenu::Update(float time_inc)
         {
             Handle->DoWork();
             if (!mSignedInFromInvite)
-                Handle->JoinGame(
-                    reinterpret_cast<XONLINE_FRIEND*>(gSaveGameData[0].savedInvite));
+                Handle->JoinGame(reinterpret_cast<XONLINE_FRIEND*>(
+                    gSaveGameData[controller::inst()->locked_port].savedInvite));
             Handle->DoWork();
             OverlayMenu::Me(0)->SetState(OverlayMenu::SIGNING_IN);
             OverlayMenu::Me(0)->mAcceptMenu = 10;
