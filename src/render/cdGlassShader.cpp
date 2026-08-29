@@ -30,6 +30,36 @@ namespace cdGlassSolidColorPixel {
     unsigned int const* PShaderTable[2] = {};
 }
 
+// ea: 0x7D0810
+void cdGlassRender::RegisterVShader() {
+    for (int index = 0; index < 4; ++index)
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS) + index,
+                             VShaderTable[0][index]);
+}
+
+// ea: 0x7D0840
+unsigned int cdGlassRender::GetVShader(unsigned int param0,
+                                       unsigned int param1) {
+    const unsigned int* shaders = reinterpret_cast<const unsigned int*>(VS);
+    return shaders[2 * param0 + param1];
+}
+
+// ea: 0x7D0860
+void cdGlassPixel::RegisterPShader() {
+    for (int index = 0; index < 2; ++index)
+        nglDxRegisterPShader(&PS[index], PShaderTable[index]);
+}
+
+// ea: 0x7D0890
+unsigned int* cdGlassPixel::GetPShader(unsigned int index) {
+    return reinterpret_cast<unsigned int*>(PS[index]);
+}
+
+// ea: 0x7D08A0
+void cdGlassSolidColorPixel::RegisterPShader() {
+    nglDxRegisterPShader(PS, PShaderTable[0]);
+}
+
 // ============================================================================
 // InitCDGlassShader — allocate the shader and link into the init list.
 // ea: 0x7CFF90
@@ -61,19 +91,22 @@ void ToggleCDGlassShader() {
 
 tlFixedString cdGlassShader::GetName() { return tlFixedString("cdGlass"); }
 
+// ea: 0x7D0910
+void cdGlassShader::BindMaterial(nglMaterial* material) {
+    cdGlassShaderMat* glass = reinterpret_cast<cdGlassShaderMat*>(material);
+    if (glass->mEnvironment != nullptr && glass->mEnvironment != nglDefaultTex)
+        glass->mFlags |= 2;
+}
+
 // ============================================================================
 // cdGlassShader::Register — register the glass vertex/pixel shaders.
 // ea: 0x7D0000
 // ============================================================================
 void cdGlassShader::Register() {
     nglShader::Register();
-    for (int v0 = 0, i = 4; i != 0; --i, ++v0) {
-        nglDxRegisterVShaderSafe((unsigned int*)&cdGlassRender::VS[0][v0], cdGlassRender::VShaderTable[0], v0);
-    }
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShaderSafe((unsigned int**)&cdGlassPixel::PS[v0], cdGlassPixel::PShaderTable, v0);
-    }
-    nglDxRegisterPShaderSafe((unsigned int**)cdGlassSolidColorPixel::PS, cdGlassSolidColorPixel::PShaderTable, 0);
+    cdGlassRender::RegisterVShader();
+    cdGlassPixel::RegisterPShader();
+    cdGlassSolidColorPixel::RegisterPShader();
 }
 
 // ============================================================================
