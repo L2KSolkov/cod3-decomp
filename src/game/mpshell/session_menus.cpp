@@ -8522,7 +8522,8 @@ AARPersonalStats::AARPersonalStats(FEMenuSystem* s)
     m_bShowScrollArrowRight = false;
     m_bHighlightScrollArrowLeft = false;
     m_bHighlightScrollArrowRight = false;
-    m_ePanelToSwitchTo = 0;
+    m_ePanelToSwitchTo = -1;
+    default_color_scheme = 5;
     for (int i = 0; i < 12; ++i)
         m_pBackgroundArt[i] = nullptr;
     for (int i = 0; i < 7; ++i)
