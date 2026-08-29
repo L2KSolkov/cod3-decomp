@@ -10248,8 +10248,7 @@ void AARPersonalStats::SetPanelHelpBar()
                             0.0f, 0, 0, col);
     }
     helpbar1 = v12;
-    if (v12 != nullptr)
-        v12->SetNumLines(1);
+    v12->SetNumLines(1);
     helpbar1->SetText("MPGAME_HELP_LOSERS_AAR_SCOREBOARD");
 }
 
