@@ -11126,8 +11126,7 @@ void PauseMenu::SetPanelFileMain(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = helpbarCopy;
-    if (helpbarCopy != nullptr)
-        helpbarCopy->SetNumLines(1);
+    helpbarCopy->SetNumLines(1);
     helpbar1->SetText("MPGAME_PAUSE_HELPBAR");
     for (int i = 0; i < 3; ++i)
     {
