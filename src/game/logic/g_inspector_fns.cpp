@@ -74,11 +74,9 @@ void FN_ControlConfigD()
 }
 
 // ea: 0x4F4230
-bool FN_ControlInvertAim()
+void FN_ControlInvertAim()
 {
-    bool result = !gSaveGameData[0].mStubData.mInvertAim;
     gSaveGameData[0].mStubData.mInvertAim = !gSaveGameData[0].mStubData.mInvertAim;
-    return result;
 }
 
 // ea: 0x4F4240
@@ -165,11 +163,9 @@ void FN_PakRender()
 }
 
 // ea: 0x4F4360
-bool FN_NGLStatDisplay()
+void FN_NGLStatDisplay()
 {
-    bool result = nglDebug.ShowPerfInfo != 1;
     nglDebug.ShowPerfInfo = nglDebug.ShowPerfInfo != 1;
-    return result;
 }
 
 // ea: 0x4F4370

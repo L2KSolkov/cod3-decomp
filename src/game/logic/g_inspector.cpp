@@ -805,7 +805,7 @@ extern void* ZoomOut();              // ?ZoomOut@@YAPAXXZ (game.o)
 extern void FN_SelectGodMode();      // game2.o
 extern void FN_NoClip();             // game2.o
 extern void FN_PakRender();          // game2.o
-extern bool FN_NGLStatDisplay();     // game2.o
+extern void FN_NGLStatDisplay();     // game2.o
 extern void FN_ControlConfigA();     // game2.o
 extern void FN_ControlConfigB();
 extern void FN_ControlConfigC();
@@ -814,7 +814,7 @@ extern void FN_ControlSticksDefault();
 extern void FN_ControlSticksSouthPaw();
 extern void FN_ControlSticksLegacy();
 extern void FN_ControlSticksLegacySouthPaw();
-extern bool FN_ControlInvertAim();
+extern void FN_ControlInvertAim();
 extern void FN_ApplyEasyDifficultyChanges();
 extern void FN_ApplyMediumDifficultyChanges();
 extern void FN_ApplyHardDifficultyChanges();
