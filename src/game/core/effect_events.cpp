@@ -450,10 +450,12 @@ int FX_RegisterEffect(const char* name)
     return static_cast<int>(reinterpret_cast<uintptr_t>(effectTemplate));
 }
 extern bool IsInSceneAnim();
-// ?FX_GetBoneIndex@@YAHPBVDObj@@I@Z (render.o; DObj bone lookup not ported)
+extern int DObjGetBoneIndex(const DObj* dobj, unsigned int bone_name_hash);
+// ?FX_GetBoneIndex@@YAHPBVDObj@@I@Z (render.o bridge)
 int FX_GetBoneIndex(void* dobj, unsigned int bone_name_hash)
 {
-    (void)dobj; (void)bone_name_hash;
+    if (dobj != nullptr)
+        return DObjGetBoneIndex((const DObj*)dobj, bone_name_hash);
     return -1;
 }
 extern PoolAllocator* gCommonPoolAllocator;  // 0x00F00A18
