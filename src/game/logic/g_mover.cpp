@@ -16,6 +16,13 @@ extern bool apsGetPoolInfo(int nPool, int& size, int& capacity, int& used,
 #include <math.h>
 #include <stdio.h>
 
+extern "C" int __fpclass(float);
+
+static bool IS_NAN(float x)
+{
+    return (__fpclass(x) & 0x297) != 0;
+}
+
 static bool s_rdirInit = false;
 static math::Position3 rdir;
 static bool sS129 = false;
@@ -239,6 +246,18 @@ int G_TryPushingEntity(Entity* check, Entity* pusher,
         if (check->s.mGroundEntity.mHandle.mVal
             != pusher->mHandle.mHandle.mVal)
             check->s.mGroundEntity.mHandle.mVal = 0;
+        if (IS_NAN(check->r.currentOrigin.v.m128_f32[0])
+            || IS_NAN(check->r.currentOrigin.v.m128_f32[1])
+            || IS_NAN(check->r.currentOrigin.v.m128_f32[2]))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_mover.cpp";
+            AeAssert::gCurrentLine = 203;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((check->r.currentOrigin)[0]) && !IS_NAN((check->r.currentOrigin)[1]) && !IS_NAN((check->r.currentOrigin)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
         check->r.currentOrigin.v.m128_f32[0] = x;
         check->r.currentOrigin.v.m128_f32[1] = y;
         check->r.currentOrigin.v.m128_f32[2] = z;
@@ -294,6 +313,18 @@ int G_TryPushingEntity(Entity* check, Entity* pusher,
             if (check->s.mGroundEntity.mHandle.mVal
                 != pusher->mHandle.mHandle.mVal)
                 check->s.mGroundEntity.mHandle.mVal = 0;
+            if (IS_NAN(check->r.currentOrigin.v.m128_f32[0])
+                || IS_NAN(check->r.currentOrigin.v.m128_f32[1])
+                || IS_NAN(check->r.currentOrigin.v.m128_f32[2]))
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_mover.cpp";
+                AeAssert::gCurrentLine = 248;
+                AeAssert::gCurrentExpr =
+                    "!IS_NAN((check->r.currentOrigin)[0]) && !IS_NAN((check->r.currentOrigin)[1]) && !IS_NAN((check->r.currentOrigin)[2])";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                    __debugbreak();
+            }
             check->r.currentOrigin.v.m128_f32[0] = x;
             check->r.currentOrigin.v.m128_f32[1] = y;
             check->r.currentOrigin.v.m128_f32[2] = z;
@@ -1267,12 +1298,6 @@ void G_Activate(Entity* ent, Entity* activator)
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-
-extern "C" int __fpclass(float);
-
-static bool IS_NAN(float x) {
-    return (__fpclass(x) & 0x297) != 0;
-}
 
 // g.o data (BSS, verified via refs)
 pushed_t pushed[256];                            // 0xEAC948
