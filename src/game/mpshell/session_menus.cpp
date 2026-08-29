@@ -8869,6 +8869,8 @@ void PauseMenu::SetPanelFile(PanelFile* pf)
         SetPanelFileSplitScreen(pf);
     else if (_stricmp(mName, "MP_PM_mainmenu.PANEL") == 0)
         SetPanelFileMain(pf);
+    else if (_stricmp(mName, "MP_SS_PM_background.PANEL") == 0)
+        FESplitScreenMenu::mBackground = pf;
 }
 
 // ea: 0x007A4100
