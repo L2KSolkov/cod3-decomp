@@ -34,6 +34,7 @@ unsigned int cdSimpleAlphaAlphaParamID = 0xFFFFFFFF; // ?cdSimpleAlphaAlphaParam
 unsigned int cdFlagRandomSeedID = 0xFFFFFFFF;      // ?cdFlagRandomSeedID@@3IA @ 0x10DE098
 extern unsigned int nglLightContextParamID;        // ngl_lighting.cpp
 extern unsigned int cdWheelMarkShaderDataID;       // cdWheelMarkShader.cpp
+struct cdWheelMarkShaderStruct;
 
 // ============================================================================
 // Color / math::Packed accessors
@@ -72,24 +73,45 @@ struct nglLightContextParamType {
 };
 struct TextureMatrixParamType {
 public:
+    math::Mat44* Value;             // +0x00
     static unsigned int GetID();  // ?GetID@TextureMatrixParamType@@SAIXZ @ 0x6E7F20
 };
 struct isRotatingTextureParamType {
 public:
+    int Value;                      // +0x00
     static unsigned int GetID();  // ?GetID@isRotatingTextureParamType@@SAIXZ @ 0x6E7F30
 };
 struct cdSimpleAlphaAlphaParamType {
 public:
+    float Value;                    // +0x00
     static unsigned int GetID();  // ?GetID@cdSimpleAlphaAlphaParamType@@SAIXZ @ 0x6E7F40
 };
 struct cdWheelMarkShaderDataType {
 public:
+    cdWheelMarkShaderStruct* Value; // +0x00
     static unsigned int GetID();  // ?GetID@cdWheelMarkShaderDataType@@SAIXZ @ 0x6E84D0
 };
 struct cdFlagRandomSeedType {
 public:
+    unsigned int Value;             // +0x00
     static unsigned int GetID();  // ?GetID@cdFlagRandomSeedType@@SAIXZ @ 0x6E85A0
 };
+
+// IDA confirms each parameter wrapper carries its value at offset zero.
+static_assert(sizeof(nglTintParamType) == 0x4,
+              "nglTintParamType layout mismatch");
+static_assert(sizeof(nglTextureFrameParamType) == 0x4,
+              "nglTextureFrameParamType layout mismatch");
+static_assert(sizeof(TextureMatrixParamType) == 0x4,
+              "TextureMatrixParamType layout mismatch");
+static_assert(sizeof(isRotatingTextureParamType) == 0x4,
+              "isRotatingTextureParamType layout mismatch");
+static_assert(sizeof(cdSimpleAlphaAlphaParamType) == 0x4,
+              "cdSimpleAlphaAlphaParamType layout mismatch");
+static_assert(sizeof(cdWheelMarkShaderDataType) == 0x4,
+              "cdWheelMarkShaderDataType layout mismatch");
+static_assert(sizeof(cdFlagRandomSeedType) == 0x4,
+              "cdFlagRandomSeedType layout mismatch");
 
 unsigned int nglTintParamType::GetID() { return nglTintParamID; }
 unsigned int nglTextureFrameParamType::GetID() { return nglTextureFrameParamID; }
