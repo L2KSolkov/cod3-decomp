@@ -8876,11 +8876,15 @@ void InGameOverlay::Update(float time_inc)
     FEMenu::Update(time_inc);
     movie_manager::frame_advance();
     MPUIInterface::Step();
-    if (m_State >= (eState)3 && m_State <= (eState)9
-        && m_IsAARTimerEnabled)
+    if (m_State >= OVERLAY_AAR_SIGNIN_SIGNOUT
+        && m_State <= OVERLAY_AAR_TOGGLE_VOICE
+        && !m_IsAARTimerEnabled)
     {
-        m_IsAARTimerEnabled =
-            AARXBoxLiveIngameOptions::Me()->SetTimerText();
+        OnTriangle(0);
+    }
+    if (!g_controllerConnected[LocalClient::ClientToPort(mVersion)])
+    {
+        OnTriangle(0);
     }
 }
 
@@ -8891,11 +8895,15 @@ void AAROverlay::Update(float time_inc)
     FEMenu::Update(time_inc);
     movie_manager::frame_advance();
     MPUIInterface::Step();
-    if (m_State >= (eState)3 && m_State <= (eState)9
-        && m_IsAARTimerEnabled)
+    if (m_State >= OVERLAY_AAR_SIGNIN_SIGNOUT
+        && m_State <= OVERLAY_AAR_TOGGLE_VOICE
+        && !m_IsAARTimerEnabled)
     {
-        m_IsAARTimerEnabled =
-            AARXBoxLiveIngameOptions::Me()->SetTimerText();
+        OnTriangle(0);
+    }
+    if (!g_controllerConnected[LocalClient::ClientToPort(mVersion)])
+    {
+        OnTriangle(0);
     }
 }
 
