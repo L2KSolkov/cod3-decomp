@@ -25,6 +25,7 @@
 #undef D3DDevice_SetVertexShaderInputDirect
 
 #include <stdarg.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -4058,7 +4059,29 @@ void ngliUnloadSection(nglMeshSection* s) { (void)s; }
 void nullsub_16(const char* a, const char* b) { (void)a; (void)b; }
 void nullsub_34(const char* a, const char* b) { (void)a; (void)b; }
 void nullsub_35() {}
-void orthonormalize(math::Mat43* m) { (void)m; }
+static float PhysDot3(const math::Dir3& a, const math::Dir3& b)
+{
+    const __m128 product = _mm_mul_ps(a.v, b.v);
+    return product.m128_f32[0] + product.m128_f32[1] + product.m128_f32[2];
+}
+void orthonormalize(math::Mat43* m)
+{
+    const float xLength = sqrtf(PhysDot3(m->x, m->x));
+    const math::Dir3 x(_mm_div_ps(m->x.v, _mm_set1_ps(xLength)));
+    const float projection = PhysDot3(m->y, x);
+    const __m128 yOrthogonal = _mm_sub_ps(
+        m->y.v, _mm_mul_ps(x.v, _mm_set1_ps(projection)));
+    const math::Dir3 y(yOrthogonal);
+    const float yLength = sqrtf(PhysDot3(y, y));
+    const math::Dir3 normalizedY(_mm_div_ps(y.v, _mm_set1_ps(yLength)));
+    m->x = x;
+    m->y = normalizedY;
+    m->z.v = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(x.v, x.v, 9),
+                   _mm_shuffle_ps(normalizedY.v, normalizedY.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(x.v, x.v, 18),
+                   _mm_shuffle_ps(normalizedY.v, normalizedY.v, 9)));
+}
 void PathNodeMgr_CleanUpManager(void* self) { (void)self; }
 void PathNodeMgr_ConnectPathsForEntity(void* self, Entity* e)
 {
@@ -4071,9 +4094,44 @@ void PathNodeMgr_DissociateSentient(void* self, sentient_s* s)
 void PathNodeMgr_InitPaths(void* self) { (void)self; }
 void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& a, const math::Dir3& b)
 {
-    (void)a; (void)b;
+    if (fabsf(PhysDot3(a, b)) >= 0.001f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 346,
+                     "fabsf(d) < 0.001f", defaultFileName))
+        __debugbreak();
 }
-void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m) { (void)m; }
+void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m)
+{
+    const float nx = sqrtf(PhysDot3(m->x, m->x));
+    const float ny = sqrtf(PhysDot3(m->y, m->y));
+    const float nz = sqrtf(PhysDot3(m->z, m->z));
+    const float dxy = PhysDot3(m->x, m->y);
+    const float dxz = PhysDot3(m->x, m->z);
+    const float dyz = PhysDot3(m->y, m->z);
+    if (fabsf(nx - 1.0f) >= 0.001f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 356,
+                     "fabsf(nx - 1.0f) < 0.001f", defaultFileName))
+        __debugbreak();
+    if (fabsf(ny - 1.0f) >= 0.001f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 357,
+                     "fabsf(ny - 1.0f) < 0.001f", defaultFileName))
+        __debugbreak();
+    if (fabsf(nz - 1.0f) >= 0.001f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 358,
+                     "fabsf(nz - 1.0f) < 0.001f", defaultFileName))
+        __debugbreak();
+    if (fabsf(dxy) >= 0.001f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 359,
+                     "fabsf(dxy) < 0.001f", defaultFileName))
+        __debugbreak();
+    if (fabsf(dxz) >= 0.001f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 360,
+                     "fabsf(dxz) < 0.001f", defaultFileName))
+        __debugbreak();
+    if (fabsf(dyz) >= 0.001f
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 361,
+                     "fabsf(dyz) < 0.001f", defaultFileName))
+        __debugbreak();
+}
 extern void PHYS_ASSERT_UNIT(const math::Dir3& v);
 void PHYS_ASSERT_UNIT(const math::Dir3* a)
 {
