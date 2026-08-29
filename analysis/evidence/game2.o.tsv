@@ -173,3 +173,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x004EABB0	?c_str@tlFixedString@@QBEPBDXZ	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EABB0	Release tlFixedString::c_str matches the out-of-line source definition.
 0x004EABC0	?get_dlist_node_offset@AeThread@@SAHXZ	V3	PASS	ida-manual-game2-accessors-20260828	2026-08-28	src/game/logic/g_debugthread.cpp:100-103	Direct IDA comparison confirms the static accessor returns the release value 0.
 0x004EABC0	?get_dlist_node_offset@AeThread@@SAHXZ	V4	PASS	ida-manual-game2-accessors-20260828	2026-08-28	IDA:0x004EABC0	Release AeThread::get_dlist_node_offset matches source.
+0x004EBE30	?InGameMenusActive@FEManager@@QAE_NH@Z	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/sv/sv_misc.cpp:71-76	Direct C3 comparison confirms the source loads mIGMS[client], null-checks it, and calls IsSystemActive.
+0x004EBE30	?InGameMenusActive@FEManager@@QAE_NH@Z	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004EBE30	Release FEManager::InGameMenusActive matches source.
+0x004EBEC0	?RecalibrateInput@@YAHH@Z	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/cl/cl_input.cpp:66-78	Direct C3 comparison confirms threshold load, signed absolute-value dead-zone mapping, and zero below threshold.
+0x004EBEC0	?RecalibrateInput@@YAHH@Z	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004EBEC0	Release RecalibrateInput matches source.
+0x004EBF20	?EventAllKeysReleased@@YAXH@Z	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/cl/cl_input.cpp:103-119	Direct C3 comparison confirms button clearing and the exact queued key-up event sequence.
+0x004EBF20	?EventAllKeysReleased@@YAXH@Z	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004EBF20	Release EventAllKeysReleased matches source.
+0x004EBFF0	??1TestFPS@@QAE@XZ	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/logic/g_testfps.cpp:448-458	Direct C3 comparison confirms conditional fclose and mFile nulling.
+0x004EBFF0	??1TestFPS@@QAE@XZ	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004EBFF0	Release TestFPS destructor matches source.
+0x004EC020	?GetPath@TestFPS@@AAEXPAD@Z	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/logic/g_testfps.cpp:461-467	Direct C3 comparison confirms the exact stats path format and sv_mapname lookup.
+0x004EC020	?GetPath@TestFPS@@AAEXPAD@Z	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004EC020	Release TestFPS::GetPath matches source.
+0x004EC050	?ResetKeys@InspectorManager@@AAEXXZ	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/logic/g_inspector.cpp:443-465	Direct C3 comparison confirms all seventeen key and debounce fields are cleared.
+0x004EC050	?ResetKeys@InspectorManager@@AAEXXZ	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004EC050	Release InspectorManager::ResetKeys matches source.
+0x004EC090	?ReadKeys@InspectorManager@@AAEXXZ	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/logic/g_inspector.cpp:468-518	Direct C3 comparison confirms the frame gate, controller reads, active/inactive inspector toggle behavior, and reset path.
+0x004EC090	?ReadKeys@InspectorManager@@AAEXXZ	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004EC090	Release InspectorManager::ReadKeys matches source.
+0x004F59A0	?EndOfSpline@SplineMgr@@SA_NQBM@Z	V3	PASS	ida-manual-game2-leaves-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:3253-3259	Direct C3 comparison confirms the three-component -1.0f sentinel test.
+0x004F59A0	?EndOfSpline@SplineMgr@@SA_NQBM@Z	V4	PASS	ida-manual-game2-leaves-20260828	2026-08-28	IDA:0x004F59A0	Release SplineMgr::EndOfSpline matches source.
