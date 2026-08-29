@@ -3753,7 +3753,65 @@ void DObjGetHierarchyBits(DObj* obj, int a, int* const b)
     }
     BrocSys::ConvertHashToString((int)obj->duplicateParts);
 }
-void DObjUpdateChildren(DObj* obj, int a) { (void)obj; (void)a; }
+extern void XModelUpdateChildren(IVPointer<XModel> model, DObjSkelMat* mat,
+                                 int boneIndex);
+void DObjUpdateChildren(DObj* obj, int boneIndex)
+{
+    if (obj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 758;
+        AeAssert::gCurrentExpr = "obj";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return;
+    }
+
+    DSkel* skel = static_cast<DSkel*>(obj->skel);
+    if (skel == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.cpp";
+        AeAssert::gCurrentLine = 760;
+        AeAssert::gCurrentExpr = "skel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return;
+    }
+
+    int startModel = 0;
+    int boneCount = 0;
+    for (; startModel < obj->numModels; ++startModel)
+    {
+        IVPointer<XModel>& model = obj->models[startModel];
+        ValidatePakId(static_cast<TPakId>(model.mPakId));
+        XModelLod** lod = model.mValue->lod;
+        int lodIndex = 0;
+        while (lod[lodIndex] == nullptr)
+            ++lodIndex;
+        XModelParts* parts = lod[lodIndex]->xmodelParts;
+        const int modelBoneCount =
+            parts != nullptr ? parts->mHierarchy.mSize : 0;
+        if (boneIndex < boneCount + modelBoneCount)
+            break;
+        boneCount += modelBoneCount;
+    }
+
+    for (int i = startModel; i < obj->numModels; ++i)
+    {
+        DObjSkelMat* parentMat = nullptr;
+        const unsigned char parentIndex = obj->modelParents[i];
+        if (parentIndex != 0xFF)
+            parentMat = &skel->mat[parentIndex];
+        DObjSkelMat* modelMat = &skel->mat[obj->matOffset[i]];
+        if (i == startModel)
+            XModelUpdateChildren(obj->models[i], modelMat,
+                                 boneIndex - boneCount);
+        else
+            XModelGetBasePose(obj->models[i], modelMat, parentMat);
+    }
+}
 extern float gZoomRatio;
 // ea: 0x006CE750
 void DObjUpdateLod(Entity* e)
