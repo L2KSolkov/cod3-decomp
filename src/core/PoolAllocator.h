@@ -60,7 +60,10 @@ public:
         struct Block {
             unsigned short  mPoolId;     // +0x00 — pool identifier
             unsigned short  mFlag;       // +0x02 — flags
-            reserved_slist<Block>::slist_node mLink;  // +0x04 — free list node (intrusive)
+            reserved_slist<Block>::slist_node m_slist_node;  // +0x04 — free list node (intrusive)
+
+            void* get_slist_node();                              // ea: 0x7BD400
+            static unsigned int get_slist_node_offset();         // ea: 0x7BD410
         };
 
         unsigned int    mEntrySize;      // +0x00
@@ -75,8 +78,14 @@ public:
         unsigned int    mDebug;          // +0x24 (unused in release)
         reserved_slist<Block> mBlockList;   // +0x28
 
-        unsigned int    GetCapacity() const { return mCapacity; }
-        unsigned int    GetNumRemaining() const { return mNumRemaining; }
+        bool InPool(char* ptr) const;                 // ea: 0x7BD390
+        unsigned int GetEntrySize() const;            // ea: 0x7BD3B0
+        unsigned int GetNumRemaining() const;         // ea: 0x7BD3C0
+        unsigned int GetCapacity() const;             // ea: 0x7BD3D0
+        int GetMemSize() const;                        // ea: 0x7BD3E0
+        int GetMemRemaining() const;                   // ea: 0x7BD3F0
+        bool IsEmpty() const;                          // ea: 0x7BE130
+        void ReportAllocations() const;                // ea: 0x7BD440
 
         // Pop a free block from the free list. Returns nullptr if empty.
         Block* Pop();
@@ -94,7 +103,6 @@ public:
 
         ~BlockPool();
 
-        void ReportAllocations() const;
     };
 
     // ================================================================
@@ -127,7 +135,7 @@ public:
     void ReportTotals(ae_sized_array<ae_fixed_string<64, unsigned char>, 8>* strList);
 
     // Check if pool has remaining capacity
-    bool IsEmpty() const { return mPoolArray.m_size == 0; }
+    bool IsEmpty() const;                            // ea: 0x7BD470
     int  GetMemSize() const;
     int  GetMemRemaining() const;
     int  GetLargestBlockSize() const;

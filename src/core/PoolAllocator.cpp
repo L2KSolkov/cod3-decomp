@@ -37,6 +37,71 @@ namespace AeAssert {
 // Tech library logging
 extern void tlPrintf(const char* fmt, ...);
 
+// ea: 0x7BD390
+bool PoolAllocator::BlockPool::InPool(char* ptr) const
+{
+    return ptr >= mBlockPtr && ptr <= mBlockEnd;
+}
+
+// ea: 0x7BD3B0
+unsigned int PoolAllocator::BlockPool::GetEntrySize() const
+{
+    return mEntrySize;
+}
+
+// ea: 0x7BD3C0
+unsigned int PoolAllocator::BlockPool::GetNumRemaining() const
+{
+    return mNumRemaining;
+}
+
+// ea: 0x7BD3D0
+unsigned int PoolAllocator::BlockPool::GetCapacity() const
+{
+    return mCapacity;
+}
+
+// ea: 0x7BD3E0
+int PoolAllocator::BlockPool::GetMemSize() const
+{
+    return mEntrySize * mCapacity;
+}
+
+// ea: 0x7BD3F0
+int PoolAllocator::BlockPool::GetMemRemaining() const
+{
+    return mEntrySize * mNumRemaining;
+}
+
+// ea: 0x7BD400
+void*
+PoolAllocator::BlockPool::Block::get_slist_node()
+{
+    return &m_slist_node;
+}
+
+// ea: 0x7BD410
+unsigned int PoolAllocator::BlockPool::Block::get_slist_node_offset()
+{
+    return 4;
+}
+
+// ea: 0x7BD470
+bool PoolAllocator::IsEmpty() const
+{
+    for (int i = 0; i < mPoolArray.m_size; ++i) {
+        if (mPoolArray.m_elements[i]->mBlockList.m_head != nullptr)
+            return false;
+    }
+    return true;
+}
+
+// ea: 0x7BE130
+bool PoolAllocator::BlockPool::IsEmpty() const
+{
+    return mBlockList.m_head == nullptr;
+}
+
 // ============================================================================
 // PoolAllocator::BlockPool::BlockPool
 // ea: 0x7BD510
@@ -90,7 +155,7 @@ PoolAllocator::BlockPool::BlockPool(
         Block* block = (Block*)cur;
         block->mPoolId = (unsigned short)mId;
         block->mFlag = 0;
-        // block->mLink has m_next at offset 4; clear it
+        // block->m_slist_node has m_next at offset 4; clear it
         *(unsigned int*)(cur + 4) = 0;
 
         reserved_slist<Block>::slist_node* node = (reserved_slist<Block>::slist_node*)(cur + 4);
@@ -437,6 +502,7 @@ void PoolAllocator::ReportAllocations() {
     }
 }
 
+// ea: 0x7BD440
 void PoolAllocator::BlockPool::ReportAllocations() const {
     tlPrintf("\tSize %d, Capacity %d, Used %d, Max %d\n",
              mEntrySize,
