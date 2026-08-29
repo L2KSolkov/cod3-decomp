@@ -299,3 +299,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005186E0	?Unload@SplineEntry@SplineMgr@@QAEXXZ	V4	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	IDA:0x005186E0	Release nested SplineMgr::SplineEntry::Unload matches source and ABI-equivalent symbol.
 0x00518700	?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ	V3	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2767-2771	Direct C3 comparison confirms IsUsed tests pak ID against the invalid sentinel.
 0x00518700	?IsUsed@SplineEntry@SplineMgr@@QBE_NXZ	V4	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	IDA:0x00518700	Release nested SplineMgr::SplineEntry::IsUsed matches source and ABI-equivalent symbol.
+0x005186B0	?Inst@SplineMgr@@SAPAV1@XZ	V3	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:2734-2752	Direct C3 comparison confirms the static singleton pointer return.
+0x005186B0	?Inst@SplineMgr@@SAPAV1@XZ	V4	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	IDA:0x005186B0	Release SplineMgr::Inst matches source.
+0x004F60A0	??0AnimIK@@QAE@XZ	V3	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:833-839	Direct C3 comparison confirms initialized flag and pose/skeleton pointers are cleared.
+0x004F60A0	??0AnimIK@@QAE@XZ	V4	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	IDA:0x004F60A0	Release AnimIK constructor matches source.
+0x004F6090	?FiniDefaultPak@@YAXXZ	V3	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	src/game/logic/g_game2_misc.cpp:1546-1553	Direct C3 comparison confirms the default pak buffer is released.
+0x004F6090	?FiniDefaultPak@@YAXXZ	V4	PASS	ida-manual-game2-spline-entry-20260828	2026-08-28	IDA:0x004F6090	Release FiniDefaultPak matches source.
