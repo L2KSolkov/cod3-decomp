@@ -3762,6 +3762,9 @@ void stat_StatDamageEvent(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
         }
         else
         {
+            if (reinterpret_cast<uintptr_t>(pSelf->team.mBlock)
+                == static_cast<uintptr_t>(-12))
+                return;
             const char* team = pSelf->team.mBlock != nullptr
                 ? (const char*)(pSelf->team.mBlock + 1) : defaultFileName;
             if (_stricmp(team, "axis") != 0)
