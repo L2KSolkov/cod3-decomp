@@ -2950,6 +2950,13 @@ public:
     static void CreateInst();
     static void DeleteInst();
     static PlayerAnimMgr* Inst();  // ?Inst@PlayerAnimMgr@@SAPAV1@XZ (g.o 0x4A9E60)
+    void Update(float deltaT);     // anim.o 0x53DFC0
+};
+
+class AnimQueue {
+public:
+    static void ClearMatrixQueue();   // anim.o 0x53ED00
+    static void ExecuteMatrixQueue(); // anim.o 0x5459C0
 };
 
 // cspField_t - config-string parse field (12 bytes) - verified against IDA

@@ -3272,8 +3272,14 @@ void AnimNoteHandler_ParseNoteTracks(void* self, void* a)
 {
     (void)self; (void)a;
 }
-void AnimQueue_ClearMatrixQueue() {}
-void AnimQueue_ExecuteMatrixQueue() {}
+void AnimQueue_ClearMatrixQueue()
+{
+    AnimQueue::ClearMatrixQueue();
+}
+void AnimQueue_ExecuteMatrixQueue()
+{
+    AnimQueue::ExecuteMatrixQueue();
+}
 void ApplyPhysics(Entity* e, const math::Position3* a, const math::Dir3* b,
                   float c, bool d, EHitLocation e2)
 {
@@ -4103,7 +4109,12 @@ void Player_ActivateHoldCmd(Entity* ent)
         ent->client->mUseHoldEntity.mHandle.mVal = 0;
     }
 }
-void PlayerAnimMgr_Update(float a) { (void)a; }
+void PlayerAnimMgr_Update(float a)
+{
+    PlayerAnimMgr* manager = PlayerAnimMgr::Inst();
+    if (manager != nullptr)
+        manager->Update(a);
+}
 void PrintPakNames() {}
 void R_InitDebug() {}
 void R_ShutdownDebug() {}
