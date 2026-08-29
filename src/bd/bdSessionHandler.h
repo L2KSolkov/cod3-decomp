@@ -20,6 +20,8 @@ public:
     virtual ~bdSessionInterceptor();                           // @0x8B5C70
     virtual bool onSessionConnectRequest(bdReference<bdBitBuffer> buffer, bdBitBuffer* const result) = 0;
 };
+static_assert(sizeof(bdSessionInterceptor) == 0x4,
+              "bdSessionInterceptor size mismatch");
 
 // ============================================================================
 // bdSessionHandler — default handler; accepts every connect request.
@@ -31,5 +33,7 @@ public:
     virtual bool onSessionConnectRequest(bdReference<bdBitBuffer> buffer,
                                          bdBitBuffer* const result); // @0x8B5CE0
 };
+static_assert(sizeof(bdSessionHandler) == 0x4,
+              "bdSessionHandler size mismatch");
 
 #endif // COD3_BD_BDSSESSIONHANDLER_H

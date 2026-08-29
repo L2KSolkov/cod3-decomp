@@ -22,6 +22,8 @@ public:
     virtual void onDiscoveryFinished();
     virtual void onRequest();
 };
+static_assert(sizeof(bdDiscoveryListener) == 0x4,
+              "bdDiscoveryListener size mismatch");
 
 // ============================================================================
 // bdDiscoveryServer - advertises a game on the LAN (28 bytes).

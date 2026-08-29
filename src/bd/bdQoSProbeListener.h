@@ -18,4 +18,7 @@ public:
     virtual void onQoSProbeFail(bdReference<bdCommonAddr> addr) = 0; // slot +8
 };
 
+static_assert(sizeof(bdQoSProbeListener) == 0x4,
+              "bdQoSProbeListener size mismatch");
+
 #endif // COD3_BD_BDQOSPROBELISTENER_H

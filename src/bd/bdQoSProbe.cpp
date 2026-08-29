@@ -66,6 +66,7 @@ struct XNQOS {
     uint32_t cxnqosPending;       // +0x04
     XNQOSINFO axnqosinfo[1];      // +0x08
 };
+static_assert(sizeof(XNQOS) == 0x20, "XNQOS size mismatch");
 
 enum {
     XNET_XNQOSINFO_COMPLETE = 1,

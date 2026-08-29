@@ -17,9 +17,11 @@
 struct XNKID {
     unsigned char ab[8];
 };
+static_assert(sizeof(XNKID) == 0x8, "XNKID size mismatch");
 struct XNKEY {
     unsigned char ab[16];
 };
+static_assert(sizeof(XNKEY) == 0x10, "XNKEY size mismatch");
 
 class bdGameInfoFactory;
 

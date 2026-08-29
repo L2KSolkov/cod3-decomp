@@ -25,6 +25,7 @@ struct bdMessageProxy {
     bdMessageProxy(const char* file, const char* func, unsigned int line, const char* flags);
     void log(const char* channel, const char* format, ...) const;
 };
+static_assert(sizeof(bdMessageProxy) == 0x10, "bdMessageProxy size mismatch");
 
 // bdString / bdStringData (bdCore types, verified against IDA)
 struct bdStringData {
@@ -107,6 +108,7 @@ public:
     static void quit();
     static bool m_initialized;
 };
+static_assert(sizeof(bdCore) == 0x1, "bdCore size mismatch");
 
 // bdLogSubscriber / bdLogImpl - Demonware logging hub types (bdCore).
 class bdLogSubscriber {
@@ -117,6 +119,7 @@ public:
                          const char* function, unsigned int line,
                          const char* message);
 };
+static_assert(sizeof(bdLogSubscriber) == 0x4, "bdLogSubscriber size mismatch");
 
 class bdLogChannel;
 
@@ -1452,6 +1455,8 @@ public:
     virtual void onDisconnect(bdReference<bdConnection> connection);
     virtual void onReconnect(const bdReference<bdConnection>& connection);
 };
+static_assert(sizeof(bdConnectionListener) == 0x4,
+              "bdConnectionListener size mismatch");
 
 class bdConnection : public bdReferencable {
 public:

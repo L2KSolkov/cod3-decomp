@@ -30,4 +30,7 @@ public:
     virtual void onSessionRoleUpdate(bdSession::bdSessionRole role);
 };
 
+static_assert(sizeof(bdSessionListener) == 0x4,
+              "bdSessionListener size mismatch");
+
 #endif // COD3_BD_BDSESSIONLISTENER_H
