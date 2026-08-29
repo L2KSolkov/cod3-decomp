@@ -14417,8 +14417,7 @@ void SessionListMenu::SetPanelFile(PanelFile* pf)
                                         0.0f, 0, 0, col);
                 }
                 helpbar1 = v11;
-                if (v11 != nullptr)
-                    v11->SetNumLines(1);
+                v11->SetNumLines(1);
                 helpbar1->SetText(
                     "MPFRONTEND_XENON_MAIN_HELP_BAR_ALLCAPS");
             }
@@ -15433,8 +15432,7 @@ void OverlayMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar2 = v10;
-    if (v10 != nullptr)
-        v10->SetNumLines(3);
+    v10->SetNumLines(3);
     for (int j = 0; j < 2; ++j)
     {
         if (m_pOptionText.m_elements[j] != nullptr)
@@ -15479,8 +15477,7 @@ void OverlayMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = v18;
-    if (v18 != nullptr)
-        v18->SetNumLines(1);
+    v18->SetNumLines(1);
     helpbar1->SetText("MPFRONTEND_HELP_CANCEL");
     helpbar1->SetX(helpbar1->GetX());
     if (m_pOptionLines.m_elements[0] != nullptr)
