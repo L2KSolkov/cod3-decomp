@@ -30988,7 +30988,8 @@ extern int sNumInteractionInfos;
 extern void* sInteractStateInfos[64];
 extern int sNumInteractStateInfos;
 
-// ea: 0x0054C1A0 (per-type alloc sizes verified vs disasm)
+// Per-type allocation sizes for InteractionController::CreateState are
+// verified against the release disassembly below.
 static void InteractStatePlayAnims_New(InteractState* mem, TPakId curPakId,
                                        void* info,
                                        InteractionController* controller);
@@ -31153,6 +31154,7 @@ static void InteractStateRowboat_New(InteractState* mem, TPakId curPakId,
         curPakId, (const InteractStateInfo*)info, controller);
 }
 
+// ea: 0x0054C1A0
 InteractState* InteractionController::CreateState(const char* stateName,
                                                   TPakId curPakId)
 {

@@ -16,7 +16,7 @@ ae_fixed_string.o	9	0	0	0	0	9	0
 ae_heap.o	12	12	0	0	0	0	0
 afmv_dx_idct.o	3	0	0	0	0	3	0
 afmv_dx_rgb.o	2	0	0	0	0	2	0
-anim.o	741	229	9	311	0	192	0
+anim.o	741	228	9	311	0	193	0
 apk.o	24	0	0	23	0	1	0
 apsAction.o	19	13	1	5	0	0	0
 apsActionList.o	26	18	1	7	0	0	0
@@ -197,7 +197,7 @@ mem_lib_platform.o	11	11	0	0	0	0	0
 mp.o	1142	382	5	639	0	116	0
 mp_actors.o	436	64	0	145	0	227	0
 mp_anim_wad.o	430	194	144	0	0	92	0
-mp_level_wad.o	1062	1041	2	14	0	5	0
+mp_level_wad.o	1062	1040	3	14	0	5	0
 mp_shell.o	835	173	0	595	0	67	0
 mp_util_wad.o	1283	621	268	46	0	348	0
 mp_xbox.o	77	20	12	38	0	7	0

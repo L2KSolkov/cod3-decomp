@@ -37,7 +37,7 @@ struct HashStr {
     HashStr() : mVal(sUndefined) {}
     HashStr(unsigned int v) : mVal(v) {}
     // ea: 0x00925270
-    operator unsigned int() const { return mVal; }
+    operator unsigned int() const;
     bool IsDefined() const { return mVal != sUndefined; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");

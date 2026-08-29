@@ -6762,6 +6762,11 @@ float bfloat::sUndefined = 0.0f;
 int bint::sUndefined = 0;
 bool bbool::sUndefined = false;
 
+// ea: 0x00925270
+HashStr::operator unsigned int() const {
+    return mVal;
+}
+
 // operator*(bint, int) - ea: 0x93D8E0
 bint operator*(bint lhs, int rhs) {
     return bint(lhs.mVal * rhs);
