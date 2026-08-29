@@ -8398,7 +8398,7 @@ void PlayLanMenu::OnCross(int c)
         if (v2 == 2)
             system->MakeActiveAndReturn(30, 9);
         else
-            system->MakeActiveAndReturn(31, 9);
+            ASSERT("0", "c:\\cod\\code\\game\\mp/ui/PlayLanMenu.cpp", 188);
     }
     else
     {
