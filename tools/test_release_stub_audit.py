@@ -39,6 +39,10 @@ def main() -> int:
                 "TaskFunctor1<XAnimUpdateTask,float>::"
                 "TaskFunctor1<XAnimUpdateTask,float>"
             )
+            assert audit.trivial_return("{ return nullptr; }")
+            assert audit.trivial_return("{ return 0; }")
+            assert audit.trivial_return("{ return 1; }")
+            assert not audit.trivial_return("{ return value; }")
     finally:
         audit.RELEASE_C = original
     print("release_stub_audit invariants: PASS")

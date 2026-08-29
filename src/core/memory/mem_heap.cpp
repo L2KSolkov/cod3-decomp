@@ -572,8 +572,26 @@ void InitQuickPool() {
 // mem_alt_sbrk — alternative sbrk for Xbox memory layout
 // ea: 0x7BB1D0
 void* mem_alt_sbrk(long increment) {
-    // Xbox: uses MmAllocateContiguousMemory. No-op with system malloc.
-    return nullptr;
+    // dlmalloc asks for the previous break and advances the current heap's
+    // left cursor.  The host allocator normally bypasses this path, but the
+    // function is still part of the exported memory ABI and must preserve
+    // the release semantics for callers that use it directly.
+    mem_heap* heap = s_current_heap;
+    if (heap == nullptr || heap->start == nullptr || heap->end == nullptr)
+        return reinterpret_cast<void*>(static_cast<uintptr_t>(-1));
+
+    const uintptr_t start = reinterpret_cast<uintptr_t>(heap->start);
+    const uintptr_t end = reinterpret_cast<uintptr_t>(heap->end);
+    const uintptr_t current = reinterpret_cast<uintptr_t>(heap->cur_left);
+    const intptr_t delta = static_cast<intptr_t>(increment);
+    if (current < start || current > end)
+        return reinterpret_cast<void*>(static_cast<uintptr_t>(-1));
+    if ((delta > 0 && static_cast<uintptr_t>(delta) > end - current)
+        || (delta < 0 && static_cast<uintptr_t>(-delta) > current - start))
+        return reinterpret_cast<void*>(static_cast<uintptr_t>(-1));
+
+    heap->cur_left = reinterpret_cast<void*>(current + delta);
+    return reinterpret_cast<void*>(current);
 }
 
 // mem_get_current_av — get the current dlmalloc state
@@ -640,7 +658,29 @@ void* mem_heap_malloc_ctx(int alignment, unsigned size, const char* file,
 // mem_heap_free_check_reserve — check if freeing from reserve heap
 // ea: 0x7BBB00
 bool mem_heap_free_check_reserve(mem_heap* heap, void* ptr) {
-    return false; // No reserve heap with system malloc
+    if (ptr == nullptr)
+        return false;
+
+    // A reserve chain is searched exactly as in the release allocator: the
+    // pointer is owned by the first heap whose arena contains it.  Guard
+    // against malformed cyclic chains so a bad host-side setup cannot hang
+    // the process while handling an allocation failure.
+    std::unordered_map<mem_heap*, bool> visited;
+    for (mem_heap* current = heap; current != nullptr;
+         current = current->reserve) {
+        if (visited.find(current) != visited.end())
+            return false;
+        visited.emplace(current, true);
+        const uintptr_t address = reinterpret_cast<uintptr_t>(ptr);
+        const uintptr_t start = reinterpret_cast<uintptr_t>(current->start);
+        const uintptr_t end = reinterpret_cast<uintptr_t>(current->end);
+        if (current->start != nullptr && current->end != nullptr
+            && start <= address && address < end) {
+            mem_heap_free_private(current, ptr);
+            return true;
+        }
+    }
+    return false;
 }
 
 // debug_malloc / debug_free — debug alloc/free with sentinel guards

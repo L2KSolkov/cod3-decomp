@@ -142,8 +142,11 @@ def main() -> int:
         if marker is None:
             continue
         source_class = verify_ledger.body_class(marker.body)
-        if source_class not in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"}:
+        source_trivial = trivial_return(marker.body)
+        if source_class not in {"NO_BODY", "EMPTY_BODY", "CAST_ONLY"} and not source_trivial:
             continue
+        if source_trivial:
+            source_class = "TRIVIAL_RETURN"
         if source_class == "NO_BODY":
             rows.append({
                 "ida_ea": f"0x{marker.address:08X}",
@@ -164,7 +167,11 @@ def main() -> int:
         else:
             release_name, release_body = release_entry
             release_class = verify_ledger.body_class(release_body)
-            if release_class == "REAL_BODY" and implicit_cleanup(release_name, release_body):
+            release_trivial = trivial_return(release_body)
+            if release_trivial:
+                release_class = "TRIVIAL_RETURN"
+                result = "RELEASE_ALSO_TRIVIAL"
+            elif release_class == "REAL_BODY" and implicit_cleanup(release_name, release_body):
                 # The release compiler emits reference-count teardown for
                 # by-value bdReference callback parameters, and emits base /
                 # member teardown in virtual destructors.  An empty source
@@ -206,6 +213,15 @@ def main() -> int:
 def is_constructor(name: str) -> bool:
     parts = [part for part in name.split("::") if part]
     return len(parts) >= 2 and parts[-1] == parts[-2]
+
+
+def trivial_return(body: str) -> bool:
+    """Return whether a function body consists only of a constant return."""
+    if not body:
+        return False
+    inner = body[1:-1] if body.startswith("{") and body.endswith("}") else body
+    inner = re.sub(r"//[^\n]*|/\*.*?\*/", "", inner, flags=re.S).strip()
+    return bool(re.fullmatch(r"return\s+(?:nullptr|NULL|0|1|false|true)\s*;", inner))
 
 
 def implicit_cleanup(name: str, body: str) -> bool:
