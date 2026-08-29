@@ -4312,7 +4312,15 @@ void list_constraint_solver_process(
 {
     (void)self; (void)sys; (void)a;
 }
-void LiveWrapper_ClearRemotePlayers(void* self) { (void)self; }
+class LiveWrapper {
+public:
+    void ClearRemotePlayers();
+};
+void LiveWrapper_ClearRemotePlayers(void* self)
+{
+    if (self != nullptr)
+        static_cast<LiveWrapper*>(self)->ClearRemotePlayers();
+}
 void MemoryUnitManager_Service()
 {
     (void)MemoryUnitManager::Service();
