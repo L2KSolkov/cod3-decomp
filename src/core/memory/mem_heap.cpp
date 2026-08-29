@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cstdint>
+#include <cstddef>
 #include <mutex>
 #include <unordered_map>
 
@@ -78,6 +79,19 @@ struct mem_heap {
     int          total_allocs;    // +0x494
     int          total_frees;     // +0x498
 };
+
+static_assert(sizeof(malloc_state) == 0x474, "malloc_state layout mismatch");
+static_assert(offsetof(mem_heap, start) == 0x474, "mem_heap::start offset mismatch");
+static_assert(offsetof(mem_heap, end) == 0x478, "mem_heap::end offset mismatch");
+static_assert(offsetof(mem_heap, cur_left) == 0x47C, "mem_heap::cur_left offset mismatch");
+static_assert(offsetof(mem_heap, cur_right) == 0x480, "mem_heap::cur_right offset mismatch");
+static_assert(offsetof(mem_heap, size) == 0x484, "mem_heap::size offset mismatch");
+static_assert(offsetof(mem_heap, used_byte) == 0x488, "mem_heap::used_byte offset mismatch");
+static_assert(offsetof(mem_heap, high_used_byte) == 0x48C, "mem_heap::high_used_byte offset mismatch");
+static_assert(offsetof(mem_heap, reserve) == 0x490, "mem_heap::reserve offset mismatch");
+static_assert(offsetof(mem_heap, total_allocs) == 0x494, "mem_heap::total_allocs offset mismatch");
+static_assert(offsetof(mem_heap, total_frees) == 0x498, "mem_heap::total_frees offset mismatch");
+static_assert(sizeof(mem_heap) == 0x49C, "mem_heap layout mismatch");
 
 // ============================================================================
 // Globals
