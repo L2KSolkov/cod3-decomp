@@ -10,6 +10,7 @@
 #include "game/logic/g_local.h"
 #include "game/logic/g_camerashake.h"
 #include "game/logic/g_inspector.h"
+#include "game/platform_xbox/MemoryUnitManager.h"
 #include "core/mem_heap.h"
 #include "core/tlFixedString.h"
 #include "input/controller.h"
@@ -3986,7 +3987,10 @@ void list_constraint_solver_process(
     (void)self; (void)sys; (void)a;
 }
 void LiveWrapper_ClearRemotePlayers(void* self) { (void)self; }
-void MemoryUnitManager_Service() {}
+void MemoryUnitManager_Service()
+{
+    (void)MemoryUnitManager::Service();
+}
 // ea: 0x005BBC20
 void MemPrint(const char* Format, ...)
 {
