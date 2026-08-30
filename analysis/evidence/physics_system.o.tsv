@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0087EA30	?solver_memory_buffer_set@physics_system@@QAEXPAXH@Z	V3	PASS	ida-manual-physics-system-20260830	2026-08-30	src/physics/pulse_sum.h:941-944	Forwards buffer start, size, and alignment 1 to the constraint solver memory allocator.
+0x0087EA30	?solver_memory_buffer_set@physics_system@@QAEXPAXH@Z	V4	PASS	ida-manual-physics-system-20260830	2026-08-30	IDA:0x0087EA30;src/physics/pulse_sum.h:941-944	Release/source match the solver allocator target, buffer/size arguments, and alignment constant.
+0x0087EA50	?solver_memory_buffer_nullify@physics_system@@QAEXXZ	V3	PASS	ida-manual-physics-system-20260830	2026-08-30	src/physics/pulse_sum.h:946-951	Clears all four solver memory allocator pointers.
+0x0087EA50	?solver_memory_buffer_nullify@physics_system@@QAEXXZ	V4	PASS	ida-manual-physics-system-20260830	2026-08-30	IDA:0x0087EA50;src/physics/pulse_sum.h:946-951	Release/source match clearing m_buffer_start, m_buffer_end, m_buffer_cur, and m_user_start to null.
