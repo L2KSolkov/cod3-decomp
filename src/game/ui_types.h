@@ -812,6 +812,7 @@ public:
         xy_initial.y += offset.y;
         xy_initial.z += offset.z;
     }
+    // ea: 0x005ADB40
     virtual void SetTextNoLocalize(const char* s) { text = s; } // +0x90
     void SetInitialXY(Broc::vector pos);                  // shell.o 0x5AD880
     virtual void SetPos(float x, float y)                // +0x94
@@ -992,10 +993,12 @@ public:
     {
         text->SetPos(x, y);
     }
+    // ea: 0x005AE600
     virtual void SetTextNoLocalize(char* txt)   // slot 20 0x5AE600
     {
         text->SetTextNoLocalize(txt);
     }
+    // ea: 0x005B1D80
     virtual void SetTextNoLocalize(Broc::string str)  // slot 21 0x5B1D80
     {
         text->SetTextNoLocalize(str.mBlock != nullptr
