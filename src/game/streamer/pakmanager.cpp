@@ -10485,6 +10485,7 @@ void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
         return mem_heap_malloc(16, size);
     return result;
 }
+// ea: 0x6667D0
 void PakManager::ResetPriorities(bool user_distances_also)
 {
     PakInfoBank* bank = mPakInfoBank;
