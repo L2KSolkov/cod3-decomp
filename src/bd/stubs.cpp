@@ -743,6 +743,7 @@ bool bdBitBuffer::readRangedUInt32(unsigned int& value, unsigned int min,
     return true;
 }
 
+// ea: 0x89B8D0
 bool bdBitBuffer::readRangedFloat32(float& value, float min, float max,
                                     float scale)
 {
