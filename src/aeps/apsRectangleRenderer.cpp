@@ -8,27 +8,6 @@
 // ============================================================================
 #include "apsRectangleRenderer.h"
 
-// APS shader static data definitions (aeps_xboxr:apsRectangleRendererVertex.o).
-// The reference has one-element shader storage and table objects.  The
-// microcode payload is not present in the Win32 sources, so the table entries
-// remain null-equivalent placeholders while preserving the reference layout.
-static unsigned long apsRectangleRenderShader[1] = {};
-static unsigned long apsRectangleRenderPixelShader[1] = {};
-static unsigned long* apsRectangleRenderPixelPS[1] = {};
-static const unsigned long* apsRectangleRenderVShaderTable[1] = {
-    apsRectangleRenderShader
-};
-static const unsigned long* apsRectangleRenderPShaderTable[1] = {
-    apsRectangleRenderPixelShader
-};
-
-unsigned long* apsRectangleRender::VS = apsRectangleRenderShader;
-const unsigned long** apsRectangleRender::VShaderTable =
-    apsRectangleRenderVShaderTable;
-unsigned long** apsRectangleRenderPixel::PS = apsRectangleRenderPixelPS;
-const unsigned long** apsRectangleRenderPixel::PShaderTable =
-    apsRectangleRenderPShaderTable;
-
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
