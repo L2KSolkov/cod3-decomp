@@ -57,7 +57,7 @@ bool bdInetAddr::deserialize(const void* buffer, unsigned int bufferSize,
 // ============================================================================
 bdInetAddr bdInetAddr::Loopback() {
     bdInetAddr result;
-    result.m_addr.inUn.m_iaddr = 0x7F000001;
+    result.m_addr.inUn.m_iaddr = 0x0100007F;
     return result;
 }
 

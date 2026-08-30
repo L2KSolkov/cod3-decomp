@@ -256,7 +256,7 @@ bool bdAddressMapImpl::addrToCommonAddr(const bdReference<bdAddrHandle>& addrHan
 bool bdAddressMapImpl::unregisterAddr(bdReference<bdAddrHandle>& addrHandle) {
     struct in_addr ina;
     ina.s_addr = addrHandle.m_ptr->m_addr.inUn.m_iaddr;
-    return ina.s_addr == 0x7F000001
+    return ina.s_addr == 0x0100007F
         || XNetGetConnectStatus(ina) == 3
         || XNetUnregisterInAddr(ina) == 0;
 }
