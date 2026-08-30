@@ -1906,8 +1906,9 @@ void stat_support_Initialize()
 }
 
 // ea: 0x4FE8D0
-bool stat_SetMissionToTrack(const char* mission_name)
+bool stat_SetMissionToTrack(const char* mission_name, bool restartFromDeath)
 {
+    (void)restartFromDeath;
     gMissionData = nullptr;
     _xmission_data* v1 = gXMissionData;
     if (mission_name == nullptr)
