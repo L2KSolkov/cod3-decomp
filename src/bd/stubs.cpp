@@ -925,6 +925,7 @@ bool bdBitBuffer::testBool()
     return false;
 }
 
+// ea: 0x0089E500
 bool bdByteBuffer::read(void* data, unsigned int size)
 {
     const unsigned int available = (unsigned int)((m_data + m_size) - m_readPtr);
