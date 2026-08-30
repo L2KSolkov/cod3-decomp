@@ -2015,8 +2015,10 @@ public:
     bool IsValid(TPakId id) const;
     // - ea: 0x663630
     TPakId GetLevelPakId() const;
+private:
     // - ea: 0x663640
     PakInfoNode* UnConst(const PakInfoNode* pak) const;
+public:
     // - ea: 0x6656B0
     NumBanks GetNumBanks(const PakInfoNode* pdt) const;
     // - ea: 0x6657D0
