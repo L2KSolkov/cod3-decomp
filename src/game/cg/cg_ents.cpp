@@ -206,6 +206,8 @@ int CG_GetGrenadeCount()
         return 0;
     do
     {
+        if (currCl >= 16)
+            CG_ASSERT("idx<16", "c:\\cod\\code\\game\\EntityManager.h", 19);
         if (Com_BitCheck(((Entity*)EntityManager::sInst->mPlayers[currCl])->client->ps
                              .weapons,
                          v0) != 0
@@ -232,6 +234,8 @@ int CG_GetSmokeGrenadeCount()
         return 0;
     do
     {
+        if (currCl >= 16)
+            CG_ASSERT("idx<16", "c:\\cod\\code\\game\\EntityManager.h", 19);
         if (Com_BitCheck(((Entity*)EntityManager::sInst->mPlayers[currCl])->client->ps
                              .weapons,
                          v0) != 0
@@ -258,6 +262,8 @@ int CG_GetSpecialGrenadeCount()
         return 0;
     do
     {
+        if (currCl >= 16)
+            CG_ASSERT("idx<16", "c:\\cod\\code\\game\\EntityManager.h", 19);
         if (Com_BitCheck(((Entity*)EntityManager::sInst->mPlayers[currCl])->client->ps
                              .weapons,
                          v0) != 0

@@ -861,7 +861,7 @@ bool CG_WeaponSlot_f(int iSlot)
     Entity* p = EntityManager::sInst->GetPlayer( currCl);
     bool result = BG_AllowPlayerWeaponAtVehiclePos(p->client->ps.vehType,
                                                    client->ps.vehPos);
-    if ((client->ps.eFlags & 0x106000) == 0 || result)
+    if ((client->ps.eFlags & 0x100000) == 0 || result)
     {
         Entity* Player =
             EntityManager::sInst->GetPlayer( currCl);
