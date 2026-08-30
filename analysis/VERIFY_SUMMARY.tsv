@@ -191,7 +191,7 @@ inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
 inftrees.o	1	1	0	0	0	0	0
 jobqueue.o	26	6	0	14	0	6	0
-jobqueue_legacy.o	11	8	0	1	0	2	0
+jobqueue_legacy.o	11	8	0	0	0	3	0
 mem_lib.o	47	31	2	12	0	2	0
 mem_lib_platform.o	11	11	0	0	0	0	0
 mp.o	1142	375	12	355	0	400	0
