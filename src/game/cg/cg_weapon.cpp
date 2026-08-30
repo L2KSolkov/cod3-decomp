@@ -1780,12 +1780,14 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
     DObj* v5 = (DObj*)dword_F6A2A0[802 * currCl];
     weaponFileInfo_t* InfoForWeapon =
         (weaponFileInfo_t*)BG_GetInfoForWeapon(ps->weapon);
-    weaponFileInfoFull* pWeap = (weaponFileInfoFull*)InfoForWeapon;
+    auto weaponField = [&](size_t offset) {
+        return *(int*)((char*)InfoForWeapon + offset);
+    };
     int weaponstate = ps->weaponstate;
     int bInAds = 0;
     float a1 = 0.1f;
     if (weaponstate == 5
-            && ps->weaponTime - *(int*)((char*)InfoForWeapon + 0x3C4) > 0
+        && ps->weaponTime - weaponField(0x864) > 0
         || weaponstate == 14
         || EntityManager::sInst->GetPlayer( currCl)
                    ->client->ps.fWeaponPosFrac
@@ -1798,15 +1800,14 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
         bInAds = 1;
     }
     int playingADSAnim = 0;
-    if (((weaponFileInfoFull*)InfoForWeapon)->weapClass != 10 /* WEAPCLASS_LMG */)
+    if (weaponField(0xB0) != 10 /* WEAPCLASS_LMG */)
         playingADSAnim = ADSMetaAnimPlayer_Update(
             (char*)sADSMetaAnimPlayer + 8 * currCl, Tree, weapon);
-    weaponFileInfoFull* v8 = (weaponFileInfoFull*)InfoForWeapon;
     unsigned int v9 = ps->weapAnim & 0xFFFFFDFF;
-    if ((pWeap->bAnimateCamReload != 0
+    if ((weaponField(0x72C) != 0
          && (v9 == 11 || v9 == 12 || v9 == 13 || v9 == 14))
-        || (pWeap->bAnimateCamMelee != 0 && v9 == 8)
-        || (pWeap->bAnimateCamFire != 0 && (v9 == 2 || v9 == 3)))
+        || (weaponField(0x730) != 0 && v9 == 8)
+        || (weaponField(0x734) != 0 && (v9 == 2 || v9 == 3)))
     {
         void* cam = (char*)gCamera + 0x1F0 * currCl;
         if ((*(unsigned short*)((char*)cam + 0x140) & 1) == 0)
@@ -1818,7 +1819,6 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
         if ((*(unsigned short*)((char*)cam + 0x140) & 1) != 0)
             Camera_StopAnimating(cam, 0.0f);
     }
-    v8 = (weaponFileInfoFull*)InfoForWeapon;
     int v10 = dword_F6A2A8[802 * currCl];
     if (ps->weapAnim != v10)
     {
@@ -1833,7 +1833,7 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
                 float fadeInTimea = 0.0f;
                 if (v11 == 4 || v11 == 7)
                     fadeInTimea = 0.1f;
-                int weapClass = ((weaponFileInfoFull*)InfoForWeapon)->weapClass;
+                int weapClass = weaponField(0xB0);
                 if ((weapClass == 10 /* LMG */
                      || weapClass == 17 /* SPOTTER */)
                     && (ps->pm_flags & 0x20) != 0)
@@ -1861,7 +1861,7 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
             }
             return;
         case 2u:
-            if (v8->bADSPositionInfo != 0 || v8->slot != 8 /* WEAPSLOT_PISTOL */)
+            if (weaponField(0x6F8) != 0 || weaponField(0xB4) != 8 /* WEAPSLOT_PISTOL */)
             {
                 CG_StartWeaponAnim(ps->weapon, v5, 4, 0.1f, 0.0f, 1);
             }
