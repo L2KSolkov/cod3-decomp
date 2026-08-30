@@ -276,7 +276,7 @@ nvl_base.o	23	23	0	0	0	0	0
 nvl_xbox.o	11	11	0	0	0	0	0
 phys_collision.o	24	14	6	3	0	1	0
 phys_constraint_solver_multithreaded.o	184	137	37	7	0	3	0
-phys_contact_manifold.o	26	18	7	1	0	0	0
+phys_contact_manifold.o	26	18	7	0	0	1	0
 phys_gjk.o	37	37	0	0	0	0	0
 phys_util.o	11	11	0	0	0	0	0
 physics.o	747	468	25	242	0	12	0
