@@ -142,6 +142,8 @@ extern float XAnimGetLength(AnimTree* anims, unsigned int animIndex);
 enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
+extern cvar_t* cl_languagewarnings;
+extern cvar_t* cl_languagewarningsaserrors;
 struct nglTexture;
 extern nglTexture* GetTextureData(const char* name, int image_type,
                                   const char* fromPak);
@@ -1512,18 +1514,23 @@ void CG_RegisterWeapon(int weaponNum)
         v1->registered = 1;
         v1->item = &((char*)bg_itemlist)[52 * weaponNum];
         CG_RegisterItemVisuals(weaponNum);
-        const char* szGunXModel = (const char*)&((char*)InfoForWeapon)[0x140];
-        const char* szHandXModel = (const char*)&((char*)InfoForWeapon)[0x100];
-        const char* szInternalName = (const char*)&((char*)InfoForWeapon)[0x40];
-        const char* szDisplayName = (const char*)&((char*)InfoForWeapon)[0xC0];
-        const char* szWorldModel = (const char*)&((char*)InfoForWeapon)[0x180];
-        const char* szPickupModel = (const char*)&((char*)InfoForWeapon)[0x1C0];
-        if (szGunXModel[0] != 0)
+        const char* szGunXModel = *(const char**)((char*)InfoForWeapon + 0x14);
+        const char* szHandXModel = *(const char**)((char*)InfoForWeapon + 0x18);
+        const char* szInternalName = *(const char**)((char*)InfoForWeapon + 0x08);
+        const char* szDisplayName = *(const char**)((char*)InfoForWeapon + 0x0C);
+        const char* szWorldModel = *(const char**)((char*)InfoForWeapon + 0x598);
+        const char* szPickupModel = *(const char**)((char*)InfoForWeapon + 0x59C);
+        const int weaponType = *(const int*)((char*)InfoForWeapon + 0xAC);
+        if (szGunXModel[0] != 0 || weaponType == 6 /* WEAPTYPE_INTERACT */)
         {
             if (!szHandXModel[0])
-                Com_Error((errorParm_t)2 /* ERR_DROP */, "%s", szDisplayName);
+                Com_Error((errorParm_t)2,
+                          "CG_RegisterWeapon: No hand model specified for [%s]",
+                          szDisplayName);
             if (!szInternalName[0])
-                Com_Error((errorParm_t)2, "%s", szDisplayName);
+                Com_Error((errorParm_t)2,
+                          "CG_RegisterWeapon: No internal name specified for [%s]",
+                          szDisplayName);
             void* Bank = AnimBankManager_GetBank(AnimBankManager_sInst,
                                                  PAK_ID_MIN);
             void* AnimTree =
@@ -1542,22 +1549,52 @@ void CG_RegisterWeapon(int weaponNum)
                 unsigned int hash = v7->hash;
                 v7->lastAttempt = 0;
                 void* Anim = cdGetAnimCompat(hash);
+                if (Anim == nullptr
+                    || *(void**)Anim != (void*)0x10E6D08)
+                    Anim = nullptr;
                 v7->anim = Anim;
             }
             for (int i = 0; i < 25; ++i)
                 v1->viewModelAnimRates[i] = 1.0f;
-            v1->viewModelAnimRates[5] = 0.0f;
-            v1->viewModelAnimRates[8] = 0.0f;
-            v1->viewModelAnimRates[9] = 0.0f;
-            v1->viewModelAnimRates[10] = 0.0f;
-            v1->viewModelAnimRates[11] = 0.0f;
-            v1->viewModelAnimRates[12] = 0.0f;
-            v1->viewModelAnimRates[13] = 0.0f;
-            v1->viewModelAnimRates[14] = 0.0f;
-            v1->viewModelAnimRates[15] = 0.0f;
-            v1->viewModelAnimRates[16] = 0.0f;
-            XAnimIsLooped((struct AnimTree*)AnimTree, 0x17);
-            XAnimIsLooped((struct AnimTree*)AnimTree, 0x18);
+            const int holdFireTime = *(const int*)((char*)InfoForWeapon + 0x604);
+            const int meleeTime = *(const int*)((char*)InfoForWeapon + 0x608);
+            const int reloadTime = *(const int*)((char*)InfoForWeapon + 0x60C);
+            const int reloadEmptyTime = *(const int*)((char*)InfoForWeapon + 0x610);
+            const int reloadStartTime = *(const int*)((char*)InfoForWeapon + 0x618);
+            const int reloadEndTime = *(const int*)((char*)InfoForWeapon + 0x620);
+            const int raiseTime = *(const int*)((char*)InfoForWeapon + 0x628);
+            const int dropTime = *(const int*)((char*)InfoForWeapon + 0x624);
+            const int altRaiseTime = *(const int*)((char*)InfoForWeapon + 0x630);
+            const int altDropTime = *(const int*)((char*)InfoForWeapon + 0x62C);
+            const int animTimes[10] = {holdFireTime, meleeTime, reloadTime,
+                                       reloadEmptyTime, reloadStartTime,
+                                       reloadEndTime, raiseTime, dropTime,
+                                       altRaiseTime, altDropTime};
+            const unsigned int animIndices[10] = {5, 8, 9, 10, 11,
+                                                  12, 13, 14, 15, 16};
+            for (int i = 0; i < 10; ++i)
+            {
+                v1->viewModelAnimRates[animIndices[i]] =
+                    animTimes[i] > 0
+                        ? XAnimGetLength((struct AnimTree*)AnimTree,
+                                         animIndices[i])
+                              * 1000.0f / animTimes[i]
+                        : 0.0f;
+            }
+            const char* adsAnim23 =
+                *(const char**)((char*)InfoForWeapon + 0x44 + 23 * sizeof(char*));
+            if (adsAnim23 != nullptr && adsAnim23[0] != '\0'
+                && XAnimIsLooped((struct AnimTree*)AnimTree, 0x17) != 0)
+                Com_Error((errorParm_t)2,
+                          "CG_RegisterWeapon: ADS anim [%s] cannot be looping",
+                          adsAnim23);
+            const char* adsAnim24 =
+                *(const char**)((char*)InfoForWeapon + 0x44 + 24 * sizeof(char*));
+            if (adsAnim24 != nullptr && adsAnim24[0] != '\0'
+                && XAnimIsLooped((struct AnimTree*)AnimTree, 0x18) != 0)
+                Com_Error((errorParm_t)2,
+                          "CG_RegisterWeapon: ADS anim [%s] cannot be looping",
+                          adsAnim24);
         }
         if (szWorldModel[0])
         {
@@ -1594,21 +1631,21 @@ void CG_RegisterWeapon(int weaponNum)
             *(const char**)((char*)bg_itemlist + 52 * weaponNum + 24), 0,
             "mp_frontEnd");
         const char* szReticleCenter =
-            (const char*)&((char*)InfoForWeapon)[0x2A0];
+            *(const char**)((char*)InfoForWeapon + 0x4D8);
         if (szReticleCenter[0])
             v1->hReticleCenter = GetTextureData(szReticleCenter, 0,
                                                 "mp_frontEnd");
         const char* szReticleSide =
-            (const char*)&((char*)InfoForWeapon)[0x2E0];
+            *(const char**)((char*)InfoForWeapon + 0x4DC);
         if (szReticleSide[0])
             v1->hReticleSide = GetTextureData(szReticleSide, 0, "mp_frontEnd");
         const char* szOverlayShader =
-            (const char*)&((char*)InfoForWeapon)[0x320];
+            *(const char**)((char*)InfoForWeapon + 0x650);
         if (szOverlayShader[0])
             v1->hADSOverlay = GetTextureData(szOverlayShader, 0,
                                              "mp_frontEnd");
         const char* szProjectileModel =
-            (const char*)&((char*)InfoForWeapon)[0x200];
+            *(const char**)((char*)InfoForWeapon + 0x78C);
         if (szProjectileModel[0])
         {
             int v28 = CurPakId();
@@ -1632,16 +1669,70 @@ void CG_RegisterWeapon(int weaponNum)
                     __debugbreak();
             }
         }
-        const char* szHudIcon = (const char*)&((char*)InfoForWeapon)[0x3A0];
+        const char* szHudIcon =
+            *(const char**)((char*)InfoForWeapon + 0x5A0);
         if (szHudIcon[0])
             v1->hHudIcon = GetTextureData(szHudIcon, 0, "mp_frontEnd");
-        const char* szAmmoIcon = (const char*)&((char*)InfoForWeapon)[0x3E0];
+        const char* szAmmoIcon =
+            *(const char**)((char*)InfoForWeapon + 0x5A8);
         if (szAmmoIcon[0])
             v1->hAmmoIcon = GetTextureData(szAmmoIcon, 0, "mp_frontEnd");
-        v1->pszTranslatedDisplayName =
-            SEH_StringEd_GetString(szDisplayName);
+        v1->pszTranslatedDisplayName = SEH_StringEd_GetString(szDisplayName);
         if (!v1->pszTranslatedDisplayName)
+        {
+            if (cl_languagewarnings != nullptr
+                && cl_languagewarnings->integer != 0)
+            {
+                if (cl_languagewarningsaserrors != nullptr
+                    && cl_languagewarningsaserrors->integer != 0)
+                    Com_Error((errorParm_t)7,
+                              "Weapon %s: Could not translate display name \"%s\"",
+                              szInternalName, szDisplayName);
+                else
+                    Com_Printf("^3WARNING: Weapon %s: Could not translate display name \"%s\"\n",
+                               szInternalName, szDisplayName);
+            }
             v1->pszTranslatedDisplayName = szDisplayName;
+        }
+        const char* szModeName =
+            *(const char**)((char*)InfoForWeapon + 0xA8);
+        v1->pszTranslatedModename = SEH_StringEd_GetString(szModeName);
+        if (!v1->pszTranslatedModename)
+        {
+            if (cl_languagewarnings != nullptr
+                && cl_languagewarnings->integer != 0)
+            {
+                if (cl_languagewarningsaserrors != nullptr
+                    && cl_languagewarningsaserrors->integer != 0)
+                    Com_Error((errorParm_t)7,
+                              "Weapon %s: Could not translate mode name \"%s\"",
+                              szInternalName, szModeName);
+                else
+                    Com_Printf("^3WARNING: Weapon %s: Could not translate mode name \"%s\"\n",
+                               szInternalName, szModeName);
+            }
+            v1->pszTranslatedModename = szModeName;
+        }
+        const char* szOverlayName =
+            *(const char**)((char*)InfoForWeapon + 0x10);
+        v1->pszTranslatedAIOverlayDescription =
+            SEH_StringEd_GetString(szOverlayName);
+        if (!v1->pszTranslatedAIOverlayDescription)
+        {
+            if (cl_languagewarnings != nullptr
+                && cl_languagewarnings->integer != 0)
+            {
+                if (cl_languagewarningsaserrors != nullptr
+                    && cl_languagewarningsaserrors->integer != 0)
+                    Com_Error((errorParm_t)7,
+                              "Weapon %s: Could not translate AI overlay description \"%s\"",
+                              szInternalName, szOverlayName);
+                else
+                    Com_Printf("^3WARNING: Weapon %s: Could not translate AI overlay description \"%s\"\n",
+                               szInternalName, szOverlayName);
+            }
+            v1->pszTranslatedAIOverlayDescription = szOverlayName;
+        }
     }
 LABEL_25:
     return;
@@ -2025,6 +2116,33 @@ extern void FixupGunModelParts(XModelParts* xmp);
 extern void* XModelParts_GetAnimDef(void* parts);
 extern int XAnimEntry_Create(XAnimEntry* self);
 
+// Release weapon-file records are pointer-based (0x44 szXAnims array).
+// Keep this local view separate from the smaller shared declaration.
+struct CgWeaponFileInfoView {
+    int index;
+    unsigned int internalNameHash;
+    char* szInternalName;
+    char* szDisplayName;
+    char* szOverlayName;
+    char* szGunXModel;
+    char* szHandXModel;
+    char* szAttachModel1;
+    char* szAttachModel2;
+    char* szAttachModel3;
+    char* szAttachModel4;
+    char* szAttachModel5;
+    char* szAttachTag1;
+    char* szAttachTag2;
+    char* szAttachTag3;
+    char* szAttachTag4;
+    char* szAttachTag5;
+    char* szXAnims[25];
+    char* szModeName;
+    int type;
+};
+static_assert(offsetof(CgWeaponFileInfoView, szXAnims) == 0x44,
+              "weapon file animation array offset mismatch");
+
 // ea: 0x006A92E0
 bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
 {
@@ -2038,16 +2156,18 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
         CG_ASSERT("weaponNum <= BG_GetNumWeapons()",
                   "c:\\cod\\code\\game\\cg_weapons.cpp", 920);
     weaponInfo_s* weaponInfo = &((weaponInfo_s*)cg_weapons)[weaponNum];
-    weaponFileInfo_t* InfoForWeapon =
-        (weaponFileInfo_t*)BG_GetInfoForWeapon(weaponNum);
+    CgWeaponFileInfoView* InfoForWeapon =
+        (CgWeaponFileInfoView*)BG_GetInfoForWeapon(weaponNum);
     DObjModel dobjModels[7];
     memset(dobjModels, 0, sizeof(dobjModels));
     if (InfoForWeapon == nullptr
-        || (((const char*)&((char*)InfoForWeapon)[0x140])[0] == 0))
+        || ((InfoForWeapon->szGunXModel == nullptr
+             || InfoForWeapon->szGunXModel[0] == '\0')
+            && InfoForWeapon->type != 6 /* WEAPTYPE_INTERACT */))
         goto LABEL_90;
-    const char* szHandXModel = (const char*)&((char*)InfoForWeapon)[0x100];
-    const char* szGunXModel = (const char*)&((char*)InfoForWeapon)[0x140];
-    const char* szInternalName = (const char*)&((char*)InfoForWeapon)[0x40];
+    const char* szHandXModel = InfoForWeapon->szHandXModel;
+    const char* szGunXModel = InfoForWeapon->szGunXModel;
+    const char* szInternalName = InfoForWeapon->szInternalName;
     if (szHandXModel == nullptr || szHandXModel[0] == 0)
     {
         CG_ASSERT("0", "c:\\cod\\code\\game\\cg_weapons.cpp", 935);
@@ -2108,7 +2228,10 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
         v28->lastAttempt = 0;
         if (v28->hash == entries[1].hash && (i == 17 || i == 18 || i == 19))
             v28->hash = entries[3].hash;
-        v28->anim = cdGetAnimCompat(v28->hash);
+        void* Anim = cdGetAnimCompat(v28->hash);
+        if (Anim == nullptr || *(void**)Anim != (void*)0x10E6D08)
+            Anim = nullptr;
+        v28->anim = Anim;
     }
     void* Tree = nullptr;
     if (v57)
@@ -2129,7 +2252,10 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
             XAnimEntry* v37 = &entriesW[i];
             unsigned int hash = v37->hash;
             v37->lastAttempt = 0;
-            v37->anim = cdGetAnimCompat(hash);
+            void* Anim = cdGetAnimCompat(hash);
+            if (Anim == nullptr || *(void**)Anim != (void*)0x10E6D08)
+                Anim = nullptr;
+            v37->anim = Anim;
         }
         Tree = XAnimCreateTree(nullptr, v35);
         if (Tree == nullptr)
