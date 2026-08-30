@@ -429,6 +429,13 @@ char* CG_Argv(int arg)
 // ea: 0x0068BC40
 void CG_LocalSound()
 {
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile =
+        "c:\\cod\\code\\game\\cg_servercmds.cpp";
+    AeAssert::gCurrentLine = 438;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("ma dead code"))
+        __debugbreak();
     const int argc = Cmd_Argc();
     if (argc == 2)
     {
@@ -756,16 +763,35 @@ void CG_RegisterGraphics()
     SCR_UpdateScreen();
     CG_RegisterItems();
     SCR_UpdateScreen();
+    SCR_UpdateScreen();
 
     IVPointerRaw result = {};
-    for (unsigned int index = 34; index < 0x400; ++index) {
-        const char* configString = CL_GetConfigString(index);
-        if (configString == nullptr || *configString == '\0')
+    const char* configString = nullptr;
+    for (unsigned int index = 34;; ++index) {
+        if (index >= 0x400)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\cg_main.cpp";
+            AeAssert::gCurrentLine = 1215;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("CG_ConfigString: bad index: %i",
+                                     index))
+                __debugbreak();
+        }
+        else
+        {
+            configString = CL_GetConfigString(index);
+        }
+        if (*configString == '\0')
             break;
-        IVPointerRaw* model = static_cast<IVPointerRaw*>(RE_RegisterModel(
-            &result, configString, static_cast<int>(CurPakId()), 7));
-        if (model != nullptr)
-            cgsGlobal.gameModels[index - 33] = *model;
+        cgsGlobal.gameModels[index - 33] =
+            *static_cast<IVPointerRaw*>(RE_RegisterModel(
+                &result, configString, static_cast<int>(CurPakId()), 7));
+        if (index - 33 >= 128)
+            break;
+        configString = nullptr;
     }
     SCR_UpdateScreen();
 }
