@@ -17,7 +17,8 @@
 // ============================================================================
 // cdGunSightShaderMat — gun sight shader material (24 bytes)
 // ============================================================================
-struct cdGunSightShaderMat : nglMaterial {
+class cdGunSightShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;   // +0x10
     int         mCullMode;  // +0x14
 
@@ -31,6 +32,9 @@ static_assert(sizeof(cdGunSightShaderMat) == 0x18, "cdGunSightShaderMat size mis
 struct cdGunSightShaderNode : nglShaderNode {
     cdGunSightShaderMat* mMaterial;  // +0x14
 
+    cdGunSightShaderNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
+                         cdGunSightShaderMat* iMaterial);  // @0x7CE6E0
+
     void Render() override;           // @0x7CE2B0
 };
 static_assert(sizeof(cdGunSightShaderNode) == 0x18, "cdGunSightShaderNode size mismatch");
@@ -40,6 +44,7 @@ static_assert(sizeof(cdGunSightShaderNode) == 0x18, "cdGunSightShaderNode size m
 // ============================================================================
 class cdGunSightShader : public nglShader {
 public:
+    cdGunSightShader();  // @0x7CE600
     virtual tlFixedString GetName(); // @0x7CE630
     virtual void Register();  // @0x7CE200
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CE240

@@ -25,6 +25,14 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdGunSightShader* gCDGunSightShader = nullptr;  // ?gCDGunSightShader@@3PAVcdGunSightShader@@A
 
+// ea: 0x007CE600
+cdGunSightShader::cdGunSightShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[3] &= ~0x10;
+}
+
 // ea: 0x007CE650
 void cdGunSightRender::RegisterVShader()
 {
@@ -88,11 +96,6 @@ void InitCDGunSightShader() {
     cdGunSightShader* result = (cdGunSightShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdGunSightShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdGunSightShader
-        ShaderCommon::ShaderSwitching.__s0[3] &= ~0x10;
         gCDGunSightShader = result;
     } else {
         gCDGunSightShader = NULL;
@@ -109,7 +112,17 @@ void ToggleCDGunSightShader() {
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
 }
 
+// ea: 0x007CE630
 tlFixedString cdGunSightShader::GetName() { return tlFixedString("cdGunSight"); }
+
+// ea: 0x007CE6E0
+cdGunSightShaderNode::cdGunSightShaderNode(nglMeshNode* iMeshNode,
+                                           nglMeshSection* iSection,
+                                           cdGunSightShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
 
 // ============================================================================
 // cdGunSightShader::Register — register the gun-sight vertex/pixel shaders.
@@ -134,10 +147,8 @@ void cdGunSightShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
     if ((ShaderCommon::ShaderSwitching.__s0[3] & 0x10) == 0) {
         cdGunSightShaderNode* node = (cdGunSightShaderNode*)nglListAlloc(0x18, 0x10);
         if (node != NULL) {
-            node->MeshNode = iMeshNode;
-            node->Section = iSection;
-            ::new (node) cdGunSightShaderNode;
-            node->mMaterial = (cdGunSightShaderMat*)iMat;
+            ::new (node) cdGunSightShaderNode(iMeshNode, iSection,
+                                               (cdGunSightShaderMat*)iMat);
         } else {
             node = NULL;
         }
