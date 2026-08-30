@@ -222,7 +222,7 @@ nfl_xbox_driver.o	1	0	0	1	0	0	0
 ngl_aux.o	164	154	2	8	0	0	0
 ngl_debug.o	62	15	0	45	0	2	0
 ngl_debugdraw.o	11	6	0	5	0	0	0
-ngl_dx_buf.o	4	0	0	4	0	0	0
+ngl_dx_buf.o	4	0	0	0	0	4	0
 ngl_dx_core.o	43	20	0	21	0	2	0
 ngl_dx_debug.o	5	0	0	0	0	5	0
 ngl_dx_draw.o	2	0	0	0	0	2	0
