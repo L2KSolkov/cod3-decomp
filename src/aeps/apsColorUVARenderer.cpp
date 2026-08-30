@@ -8,12 +8,6 @@
 // ============================================================================
 #include "apsColorUVARenderer.h"
 
-// APS shader static data definitions (aeps_xboxr)
-unsigned int* apsColorUVARender::VS = nullptr;
-const unsigned int** apsColorUVARender::VShaderTable = nullptr;
-unsigned int** apsColorUVARenderPixel::PS = nullptr;
-const unsigned int** apsColorUVARenderPixel::PShaderTable = nullptr;
-
 // apsColorUVARender::RegisterVShader - ea: 0x00805510
 void apsColorUVARender::RegisterVShader() {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
@@ -42,10 +36,8 @@ apsColorUVARenderer::apsColorUVARenderer(const apsColorUVARenderer::cArgs* args)
 // ea: 0x8054C0
 // ============================================================================
 void apsColorUVARenderer::Init() {
-    if (apsColorUVARender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorUVARender::VS), apsColorUVARender::VShaderTable[0]);
-    if (apsColorUVARenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorUVARenderPixel::PS), apsColorUVARenderPixel::PShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorUVARender::VS), apsColorUVARender::VShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorUVARenderPixel::PS), apsColorUVARenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================
