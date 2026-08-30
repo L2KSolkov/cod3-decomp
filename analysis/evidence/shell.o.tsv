@@ -371,3 +371,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AFA10	?GetDefaultColorScheme@FEMenuSystem@@UAEDXZ	V4	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1166658-1166662	Release returns default_color_scheme directly.
 0x005AFA20	?IsSystemActive@FEMenuSystem@@UAE_NXZ	V3	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	src/game/ui_types.h:1268-1271	Source returns the is_active state.
 0x005AFA20	?IsSystemActive@FEMenuSystem@@UAE_NXZ	V4	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1166664-1166668	Release returns is_active directly.
+0x005AE9A0	?GetBDFlag@FEMenuSystem@@IAE_NHH@Z	V3	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	src/game/shell/fe_menu.cpp:240-243	Source tests the selected controller's button-down flag mask.
+0x005AE9A0	?GetBDFlag@FEMenuSystem@@IAE_NHH@Z	V4	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165781-1165785	Release returns (button_down_flags[controller] & f) != 0.
+0x005AE9C0	?SetBDFlag@FEMenuSystem@@IAEXH_NH@Z	V3	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	src/game/shell/fe_menu.cpp:246-252	Source conditionally sets or clears the selected controller's button-down flag.
+0x005AE9C0	?SetBDFlag@FEMenuSystem@@IAEXH_NH@Z	V4	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165787-1165794	Release applies the same indexed flag set/clear operation; protected/public access decoration is normalized separately.
