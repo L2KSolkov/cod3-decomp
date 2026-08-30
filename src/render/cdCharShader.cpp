@@ -153,12 +153,12 @@ tlFixedString cdCharShader::GetName() { return tlFixedString("cdChar"); }
 // ============================================================================
 void cdCharShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdCharShaderRender::VS, cdCharShaderRender::VShaderTable, 0);
-    cdCharShaderRender::Shader = cdCharShaderRender::VS != nullptr ? cdCharShaderRender::VS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdCharPixel::PS, cdCharPixel::PShaderTable, 0);
-    cdCharPixel::Shader = cdCharPixel::PS != nullptr ? cdCharPixel::PS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdCharFullbrightPixel::PS, cdCharFullbrightPixel::PShaderTable, 0);
-    cdCharFullbrightPixel::Shader = cdCharFullbrightPixel::PS != nullptr ? cdCharFullbrightPixel::PS[0] : 0;
+    nglDxRegisterVShader(cdCharShaderRender::VS, cdCharShaderRender::VShaderTable[0]);
+    cdCharShaderRender::Shader = cdCharShaderRender::VS[0];
+    nglDxRegisterPShader(cdCharPixel::PS, cdCharPixel::PShaderTable[0]);
+    cdCharPixel::Shader = cdCharPixel::PS[0];
+    nglDxRegisterPShader(cdCharFullbrightPixel::PS, cdCharFullbrightPixel::PShaderTable[0]);
+    cdCharFullbrightPixel::Shader = cdCharFullbrightPixel::PS[0];
 }
 
 // ============================================================================
