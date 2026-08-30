@@ -2436,7 +2436,6 @@ void txPrintv(const char* channel, int level, const char* fmt, char* list)
 // ea: 0x004210A0
 char* txPathFix(const char* src, char* dir, int dirSize)
 {
-    if (src == nullptr || dir == nullptr || dirSize <= 0) return nullptr;
     int remaining = dirSize - 1;
     const char* input = src;
     char* output = dir;
@@ -2471,64 +2470,88 @@ char* txPathFix(const char* src, char* dir, int dirSize)
 // ea: 0x00421170
 char* txPathFormat(const char* src, char* dest, int destSize)
 {
-    char buffer[256]; const char* input = src != nullptr && *src != 0 ? src : ".";
-    strncpy_s(buffer, sizeof(buffer), input, _TRUNCATE);
-    strncat_s(buffer, sizeof(buffer), "/", _TRUNCATE);
+    char buffer[256];
+    const char* input = src;
+    if (src == nullptr || *src == 0) input = ".";
+    std::strncpy(buffer, input, 0x100u);
+    std::strncat(buffer, "/", 0x100u);
     return txPathFix(buffer, dest, destSize);
 }
 // ea: 0x004211E0
 char* txPathMake(const char* src, char* dest, int destSize)
 {
-    return txPathFormat(src, dest, destSize);
+    char buffer[256];
+    const char* input = src;
+    if (src == nullptr || *src == 0) input = ".";
+    std::strncpy(buffer, input, 0xFFu);
+    buffer[0xFF] = 0;
+    std::strcpy(buffer + std::strlen(buffer), "/");
+    txPathFix(buffer, dest, destSize);
+    return dest;
 }
 // ea: 0x00421250
 const char* txPathDirEnd(char* src)
 {
-    char* slash = src != nullptr ? strrchr(src, '/') : nullptr;
+    char* slash = std::strrchr(src, '/');
     return slash != nullptr ? slash + 1 : nullptr;
 }
 // ea: 0x00421270
 char* txPathFileStart(char* src)
 {
-    char* slash = src != nullptr ? strrchr(src, '/') : nullptr;
+    char* slash = std::strrchr(src, '/');
     return slash != nullptr ? slash + 1 : src;
 }
 // ea: 0x00421290
 void txPathExtStart(char* src)
 {
     char* file = txPathFileStart(src);
-    if (file != nullptr) strrchr(file, '.');
+    std::strrchr(file, '.');
 }
 // ea: 0x004212C0
 char* txPathFile(char* src, char* dest, int destSize)
 {
-    if (dest == nullptr || destSize <= 0) return dest;
-    const char* file = txPathFileStart(src); if (file == nullptr) file = "";
-    strncpy_s(dest, destSize, file, _TRUNCATE); return dest;
+    const char* file = txPathFileStart(src);
+    const int length = file != nullptr ? static_cast<int>(std::strlen(file)) : 0;
+    const int copyLength = length > destSize - 1 ? destSize - 1 : length;
+    dest[copyLength] = 0;
+    std::memcpy(dest, file, copyLength);
+    return dest;
 }
 // ea: 0x00421320
 char* txPathExt(char* src, char* dest, int destSize)
 {
-    if (dest == nullptr || destSize <= 0) return dest;
-    char* file = txPathFileStart(src); char* ext = file != nullptr ? strrchr(file, '.') : nullptr;
-    strncpy_s(dest, destSize, ext != nullptr ? ext : "", _TRUNCATE); return dest;
+    char* file = txPathFileStart(src);
+    char* ext = std::strrchr(file, '.');
+    const int length = ext != nullptr ? static_cast<int>(std::strlen(ext)) : 0;
+    const int copyLength = length > destSize - 1 ? destSize - 1 : length;
+    dest[copyLength] = 0;
+    std::memcpy(dest, ext, copyLength);
+    return dest;
 }
 // ea: 0x00421390
 char* txPathDir(char* src, char* dest, int destSize)
 {
-    if (dest == nullptr || destSize <= 0) return dest;
-    char* slash = src != nullptr ? strrchr(src, '/') : nullptr;
-    int length = slash != nullptr ? (int)(slash - src + 1) : 0;
-    if (length >= destSize) length = destSize - 1;
-    if (length > 0) memcpy(dest, src, length); dest[length] = 0; return dest;
+    char* slash = std::strrchr(src, '/');
+    int length = slash != nullptr ? static_cast<int>(slash - src + 1) : 0;
+    if (length > destSize - 1) length = destSize - 1;
+    dest[length] = 0;
+    std::memcpy(dest, src, length);
+    return dest;
 }
 // ea: 0x004213E0
 char* txPathName(char* src, char* dest, int destSize)
 {
-    if (dest == nullptr || destSize <= 0) return dest;
-    char* file = txPathFileStart(src); char* ext = file != nullptr ? strrchr(file, '.') : nullptr;
-    int length = ext != nullptr ? (int)(ext - file) : 0;
-    if (length >= destSize) length = destSize - 1;
-    if (length > 0) memcpy(dest, file, length); dest[length] = 0; return dest;
+    char* file = txPathFileStart(src);
+    int length = 0;
+    if (file != nullptr) {
+        char* slash = std::strrchr(file, '/');
+        if (slash == nullptr) slash = file;
+        char* ext = std::strrchr(slash, '.');
+        if (ext != nullptr) length = static_cast<int>(ext - file);
+    }
+    if (length > destSize - 1) length = destSize - 1;
+    dest[length] = 0;
+    std::memcpy(dest, file, length);
+    return dest;
 }
 }
