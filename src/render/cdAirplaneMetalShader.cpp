@@ -16,27 +16,12 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdAirplaneMetalShader* gCDAirplaneMetalShader = nullptr;  // ?gCDAirplaneMetalShader@@3PAVcdAirplaneMetalShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdAirplaneMetalRender {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-}
-
 // ea: 0x007D4960
 void cdAirplaneMetalRender::RegisterVShader()
 {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdAirplaneMetalRender::VS),
                          reinterpret_cast<const unsigned int*>(cdAirplaneMetalRender::VShaderTable[0]));
 }
-namespace cdAirplaneMetalPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-}
-namespace cdAirplaneMetalSolidColorPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-}
-
 // ============================================================================
 // InitCDAirplaneMetalShader — allocate the shader and link into the init list.
 // ea: 0x7D4130
@@ -74,9 +59,12 @@ tlFixedString cdAirplaneMetalShader::GetName() { return tlFixedString("cdAirplan
 // ============================================================================
 void cdAirplaneMetalShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdAirplaneMetalRender::VS, cdAirplaneMetalRender::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdAirplaneMetalPixel::PS, cdAirplaneMetalPixel::PShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdAirplaneMetalSolidColorPixel::PS, cdAirplaneMetalSolidColorPixel::PShaderTable, 0);
+    nglDxRegisterVShader(cdAirplaneMetalRender::VS,
+                         reinterpret_cast<const unsigned int*>(cdAirplaneMetalRender::VShaderTable[0]));
+    nglDxRegisterPShader(cdAirplaneMetalPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdAirplaneMetalPixel::PShaderTable[0]));
+    nglDxRegisterPShader(cdAirplaneMetalSolidColorPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdAirplaneMetalSolidColorPixel::PShaderTable[0]));
 }
 
 // ============================================================================
