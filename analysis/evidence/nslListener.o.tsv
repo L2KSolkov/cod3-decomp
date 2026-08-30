@@ -1,0 +1,15 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00823D50	?nslGetNumberOfListeners@@YAHXZ	V3	PASS	nsl-listener-manual-20260830	2026-08-30	src/sound/nsl.cpp:3787	Body returns the listener count state.
+0x00823D50	?nslGetNumberOfListeners@@YAHXZ	V4	PASS	nsl-listener-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561886-1561890	Release body is the same direct state return.
+0x00823D60	?nslSetNumberOfListeners@@YAXH@Z	V3	PASS	nsl-listener-manual-20260830	2026-08-30	src/sound/nsl.cpp:3790	Body stores the supplied listener count.
+0x00823D60	?nslSetNumberOfListeners@@YAXH@Z	V4	PASS	nsl-listener-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561892-1561896	Release body is the same direct state store.
+0x00823D70	?nslListenerGetGroup@@YAPAUnslGroup@@I@Z	V3	PASS	nsl-listener-manual-20260830	2026-08-30	src/sound/nsl.cpp:3794	Body rejects listener indices outside four, forms the listener group name, and resolves it.
+0x00823D70	?nslListenerGetGroup@@YAPAUnslGroup@@I@Z	V4	PASS	nsl-listener-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561898-1561908	Release name construction, bound check, suffix adjustment, and group lookup match source.
+0x00823DD0	?nslListenerSetMatrix@@YAXIQAY03$$CBM@Z	V3	PASS	nsl-listener-manual-20260830	2026-08-30	src/sound/nsl.cpp:3805	Body copies matrix position/orientation fields, normalizes both vectors, and marks listener parameters updated.
+0x00823DD0	?nslListenerSetMatrix@@YAXIQAY03$$CBM@Z	V4	PASS	nsl-listener-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561910-1561936	Release field indices, normalization calls, and low/high update masks match source, including release's repeated parameter-49 store.
+0x00823E60	?nslListenerSetPosition@@YAXIQBM@Z	V3	PASS	nsl-listener-manual-20260830	2026-08-30	src/sound/nsl.cpp:3825	Body copies position and marks the position mask when the group exists.
+0x00823E60	?nslListenerSetPosition@@YAXIQBM@Z	V4	PASS	nsl-listener-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561940-1561955	Release conditional writes and update mask match source.
+0x00823EA0	?nslListenerSetVelocity@@YAXIQBM@Z	V3	PASS	nsl-listener-manual-20260830	2026-08-30	src/sound/nsl.cpp:3836	Body copies velocity and marks the velocity mask when the group exists.
+0x00823EA0	?nslListenerSetVelocity@@YAXIQBM@Z	V4	PASS	nsl-listener-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561957-1561971	Release conditional writes and update mask match source.
+0x00823EE0	?nslListenerSetOrientation@@YAXIQBM0@Z	V3	PASS	nsl-listener-manual-20260830	2026-08-30	src/sound/nsl.cpp:3847	Body copies, normalizes, and publishes front/top orientation values and deltas.
+0x00823EE0	?nslListenerSetOrientation@@YAXIQBM0@Z	V4	PASS	nsl-listener-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561973-1562023	Release orientation stores, update mask, global snapshots, and deltas match source.
