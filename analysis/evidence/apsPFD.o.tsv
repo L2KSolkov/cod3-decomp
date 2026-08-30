@@ -1,0 +1,9 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00811FE0	?GetFieldByteSize@apsPFD@@SAEW4apsEPFDField@@@Z	V3	PASS	ida-manual-aps-pfd-20260829	2026-08-29	src/aeps/apsPFD.cpp:30-40	Source contains the field-range check, assertion path, and element-size lookup.
+0x00811FE0	?GetFieldByteSize@apsPFD@@SAEW4apsEPFDField@@@Z	V4	PASS	ida-manual-aps-pfd-20260829	2026-08-29	IDA:0x00811FE0;src/aeps/apsPFD.cpp:30-40	Release/source field bound, assert file/line/expression/description, and sElementSizes return match.
+0x00812020	?RecomputeOffsets@apsPFD@@AAEXXZ	V3	PASS	ida-manual-aps-pfd-20260829	2026-08-29	src/aeps/apsPFD.cpp:43-61	Source contains complete 32-field offset rebuild, overflow assertion, and aligned stride calculation.
+0x00812020	?RecomputeOffsets@apsPFD@@AAEXXZ	V4	PASS	ida-manual-aps-pfd-20260829	2026-08-29	IDA:0x00812020;src/aeps/apsPFD.cpp:43-61	Release/source field loop, mask test, offset/zero stores, overflow assert metadata, size accumulation, and 16-byte stride alignment match.
+0x008120A0	??0apsPFD@@QAE@XZ	V3	PASS	ida-manual-aps-pfd-20260829	2026-08-29	src/aeps/apsPFD.cpp:64-68	Source contains constructor initialization and offset recomputation.
+0x008120A0	??0apsPFD@@QAE@XZ	V4	PASS	ida-manual-aps-pfd-20260829	2026-08-29	IDA:0x008120A0;src/aeps/apsPFD.cpp:64-68	Release/source set mFields=0 then call RecomputeOffsets; constructor return is implicit and ABI-equivalent.
+0x008120C0	?AddFields@apsPFD@@QAEXI@Z	V3	PASS	ida-manual-aps-pfd-20260829	2026-08-29	src/aeps/apsPFD.cpp:73-77	Source contains field-mask update and offset recomputation.
+0x008120C0	?AddFields@apsPFD@@QAEXI@Z	V4	PASS	ida-manual-aps-pfd-20260829	2026-08-29	IDA:0x008120C0;src/aeps/apsPFD.cpp:73-77	Release/source OR iFields into mFields and call RecomputeOffsets in the same order.

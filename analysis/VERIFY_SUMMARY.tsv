@@ -40,7 +40,7 @@ apsGroupMgr.o	35	28	0	7	0	0	0
 apsInternal.o	25	10	2	12	0	1	0
 apsMath.o	21	17	0	4	0	0	0
 apsMemory.o	94	64	0	28	0	2	0
-apsPFD.o	4	0	0	4	0	0	0
+apsPFD.o	4	0	0	0	0	4	0
 apsRectangleNode.o	16	0	1	0	0	15	0
 apsRectangleRenderer.o	11	4	0	3	0	4	0
 apsRegister.o	515	484	3	14	0	14	0
