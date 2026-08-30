@@ -5734,7 +5734,6 @@ void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
     MatrixMultiply(viewAxis, playerAxis, v30);
     float outAngles[3];
     AxisToAngles(v30, outAngles);
-    outAngles[0] = AngleNormalize180(outAngles[0]);
     outAngles[1] = AngleNormalize180(outAngles[1]);
     UpdateVehicleDriverSteerLookAhead(veh);
     outAngles[1] = mSteerYawOffset + outAngles[1];
