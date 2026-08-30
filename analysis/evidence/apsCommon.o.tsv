@@ -1,0 +1,51 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007EB180	?SetDefaults@apsLOD@@QAEXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.h:55-66	Source initializes the LOD base rate, enabled flag, four distances/delays, and idle rate.
+0x007EB180	?SetDefaults@apsLOD@@QAEXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB180;src/aeps/apsCommon.h:55-66	Release/source constants, field order, and derived delay values match.
+0x007EB210	?SetEnabled@apsLOD@@QAEXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.h:69-71	Source assigns the requested enabled value.
+0x007EB210	?SetEnabled@apsLOD@@QAEXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB210;src/aeps/apsCommon.h:69-71	Release/source field assignment and return match.
+0x007EB270	?Init@CameraSettings@apsCommon@@QAEXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.h:115-125	Source initializes direction, up, left, roll, and x-flip from the release axis constants.
+0x007EB270	?Init@CameraSettings@apsCommon@@QAEXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB270;src/aeps/apsCommon.h:115-125	Release/source vector lanes, scalar fields, and constants match.
+0x007EB370	?MemAlign@apsAllocator@@UBEPAXII@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:181-186	Source returns zero for zero size and forwards nonzero allocations with flags 2.
+0x007EB370	?MemAlign@apsAllocator@@UBEPAXII@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB370;src/aeps/apsCommon.cpp:181-186	Release/source zero-size sentinel and apsMemAlloc forwarding match.
+0x007EB3A0	?MemFree@apsAllocator@@UBEXPAX@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:193-195	Source delegates directly to apsMemFree.
+0x007EB3A0	?MemFree@apsAllocator@@UBEXPAX@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB3A0;src/aeps/apsCommon.cpp:193-195	Release/source delegation and void return match.
+0x007EB3C0	?MemResize@apsAllocator@@UBEPAXPAXII@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:202-208	Source returns null for every resize request.
+0x007EB3C0	?MemResize@apsAllocator@@UBEPAXPAXII@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB3C0;src/aeps/apsCommon.cpp:202-208	Release/source constant-null behavior matches.
+0x007EB3D0	?InitShaders@apsCommon@@SAXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:215-217	Source thunk calls apsSimpleMeshRenderer::InitShader.
+0x007EB3D0	?InitShaders@apsCommon@@SAXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB3D0;src/aeps/apsCommon.cpp:215-217	Release/source thunk target and return match.
+0x007EB3E0	?SetupFrame@apsCommon@@SAXABVMat43@math@@M@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:225-296	Source extracts camera basis vectors, computes the release asin-based roll approximation, and swaps the vertex buffer.
+0x007EB3E0	?SetupFrame@apsCommon@@SAXABVMat43@math@@M@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB3E0;src/aeps/apsCommon.cpp:225-296	Release/source SSE shuffles, x-flip scaling, roll branches/constants, and Swap call match.
+0x007EB750	?Report@apsCommon@@SAXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:303-310	Source prints the AEPS report header/footer and delegates memory/effect reports.
+0x007EB750	?Report@apsCommon@@SAXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB750;src/aeps/apsCommon.cpp:303-310	Release/source print sequence, format strings, and delegate calls match.
+0x007EB780	?SetClient@apsCommon@@SAXPAVapsClient@@@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:317-319	Source stores the APS client pointer.
+0x007EB780	?SetClient@apsCommon@@SAXPAVapsClient@@@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB780;src/aeps/apsCommon.cpp:317-319	Release/source global assignment and return match.
+0x007EB790	?GetAllocator@apsCommon@@SAPAVapsAllocator@@XZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:326-328	Source returns the current allocator.
+0x007EB790	?GetAllocator@apsCommon@@SAPAVapsAllocator@@XZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB790;src/aeps/apsCommon.cpp:326-328	Release/source global read and pointer return match.
+0x007EB7A0	?GetCurrentPakId@apsCommon@@SAHXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:335-337	Source returns the current pak id.
+0x007EB7A0	?GetCurrentPakId@apsCommon@@SAHXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB7A0;src/aeps/apsCommon.cpp:335-337	Release/source global read and integer return match.
+0x007EB7B0	?SetCurrentPakId@apsCommon@@SAHH@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:344-349	Source returns the previous pak id and stores the new one.
+0x007EB7B0	?SetCurrentPakId@apsCommon@@SAHH@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB7B0;src/aeps/apsCommon.cpp:344-349	Release/source read-before-write ordering and return match.
+0x007EB7D0	?PakAllocs@apsCommon@@SAHXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:358-360	Source returns the pak allocation mode value.
+0x007EB7D0	?PakAllocs@apsCommon@@SAHXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB7D0;src/aeps/apsCommon.cpp:358-360	Release/source global read and integer return match.
+0x007EB7E0	?SetPakAllocs@apsCommon@@SAHH@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:367-372	Source returns the previous pak allocation value and stores the new one.
+0x007EB7E0	?SetPakAllocs@apsCommon@@SAHH@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB7E0;src/aeps/apsCommon.cpp:367-372	Release/source read-before-write ordering and return match.
+0x007EB800	?GetDefaultAllocator@apsCommon@@SAPAVapsAllocator@@XZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:381-383	Source returns the built-in allocator address.
+0x007EB800	?GetDefaultAllocator@apsCommon@@SAPAVapsAllocator@@XZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB800;src/aeps/apsCommon.cpp:381-383	Release/source global address and pointer return match.
+0x007EB810	?SetAllocator@apsCommon@@SAPAVapsAllocator@@PAV2@@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:392-399	Source returns the previous allocator, installs the new pointer, and maps null to the default allocator.
+0x007EB810	?SetAllocator@apsCommon@@SAPAVapsAllocator@@PAV2@@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB810;src/aeps/apsCommon.cpp:392-399	Release/source assignment order, null fallback, and return match.
+0x007EB840	?GetBlockAllocator@apsCommon@@SAPAVapsAllocator@@XZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:408-413	Source returns the block allocator or default allocator when unset.
+0x007EB840	?GetBlockAllocator@apsCommon@@SAPAVapsAllocator@@XZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB840;src/aeps/apsCommon.cpp:408-413	Release/source null fallback and pointer return match.
+0x007EB850	?SetBlockAllocator@apsCommon@@SAXPAVapsAllocator@@@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:422-424	Source stores the block allocator pointer.
+0x007EB850	?SetBlockAllocator@apsCommon@@SAXPAVapsAllocator@@@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB850;src/aeps/apsCommon.cpp:422-424	Release/source global assignment and return match.
+0x007EB860	?SubmitSpawnedEffectQueue@apsCommon@@SAXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:433-435	Source thunk delegates to apsInternal::SubmitSpawnedEffectQueue.
+0x007EB860	?SubmitSpawnedEffectQueue@apsCommon@@SAXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB860;src/aeps/apsCommon.cpp:433-435	Release/source thunk target and return match.
+0x007EB870	?RemoveFromSpawnedEffectQueueByPakId@apsCommon@@SAXH@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:444-446	Source thunk forwards the pak id to apsInternal.
+0x007EB870	?RemoveFromSpawnedEffectQueueByPakId@apsCommon@@SAXH@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB870;src/aeps/apsCommon.cpp:444-446	Release/source thunk target, argument forwarding, and return match.
+0x007EB880	?ClearSpawnedEffectQueue@apsCommon@@SAXXZ	V3	PASS	ida-manual-apsCommon-20260829	2026-08-29	src/aeps/apsCommon.cpp:455-457	Source thunk delegates to apsInternal::ClearSpawnedEffectQueue.
+0x007EB880	?ClearSpawnedEffectQueue@apsCommon@@SAXXZ	V4	PASS	ida-manual-apsCommon-20260829	2026-08-29	IDA:0x007EB880;src/aeps/apsCommon.cpp:455-457	Release/source thunk target and return match.
+0x007EB890	?GetPlayerViewPort@apsCommon@@SAPAUPlayerViewPort@1@I@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:410-416	Source asserts the viewport index and returns the corresponding viewport address.
+0x007EB890	?GetPlayerViewPort@apsCommon@@SAPAUPlayerViewPort@1@I@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB890;src/aeps/apsCommon.cpp:410-416	Release/source bound check, defaultFileName metadata, and indexed return match.
+0x007EB8D0	?Init@apsCommon@@SAXIHI@Z	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:425-470	Source resets flags, initializes camera/error/renderers/internal state, applies LOD defaults, and marks initialized.
+0x007EB8D0	?Init@apsCommon@@SAXIHI@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB8D0;src/aeps/apsCommon.cpp:425-470	Release/source initialization order, assertions, renderer calls, LOD values, and flag update match.
+0x007EBA40	?Term@apsCommon@@SAXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:477-492	Source asserts initialization, destroys/frees apsError, and clears the initialized flag.
+0x007EBA40	?Term@apsCommon@@SAXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EBA40;src/aeps/apsCommon.cpp:477-492	Release/source cleanup order, assertion metadata, allocator use, and flag clear match.
