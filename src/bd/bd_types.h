@@ -237,18 +237,18 @@ struct bdAddr {
     bdInetAddr      m_address;  // +0x00
     uint16_t        m_port;     // +0x04
 
-    bdAddr() : m_port(0) {}
-    bdAddr(const bdAddr& other) : m_address(other.m_address), m_port(other.m_port) {}
+    bdAddr();
+    bdAddr(const bdAddr& other);
     bdAddr(const bdInetAddr& address, unsigned short port);
     bdAddr(const char* str);
-    const bdInetAddr& set(const bdInetAddr& address, unsigned short port);
+    void set(const bdInetAddr& address, unsigned short port);
     void set(const char* cp);
     bool operator==(const bdAddr& other) const;
     bool operator!=(const bdAddr& other) const;
-    const bdInetAddr& getAddress() const { return m_address; }
-    bdInetAddr& getAddress() { return m_address; }
-    unsigned short setPort(unsigned short port) { m_port = port; return port; }
-    unsigned short getPort() const { return m_port; }
+    const bdInetAddr& getAddress() const;
+    bdInetAddr& getAddress();
+    unsigned short setPort(unsigned short port);
+    unsigned short getPort() const;
     unsigned int toString(char* const buf, unsigned int bufSize) const;
     bool serialize(void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset) const;
     bool deserialize(const void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset);

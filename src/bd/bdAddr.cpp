@@ -11,6 +11,36 @@
 
 unsigned int bdAddr::serializedSize = 0;
 
+// ea: 0x9EC8C0
+bdAddr::bdAddr() : m_port(0) {
+}
+
+// ea: 0x9EC8E0
+bdAddr::bdAddr(const bdAddr& other)
+    : m_address(other.m_address), m_port(other.m_port) {
+}
+
+// ea: 0x9EC9C0
+const bdInetAddr& bdAddr::getAddress() const {
+    return m_address;
+}
+
+// ea: 0x9EC9D0
+bdInetAddr& bdAddr::getAddress() {
+    return m_address;
+}
+
+// ea: 0x9EC9E0
+unsigned short bdAddr::setPort(unsigned short port) {
+    m_port = port;
+    return port;
+}
+
+// ea: 0x9EC9F0
+unsigned short bdAddr::getPort() const {
+    return m_port;
+}
+
 // ============================================================================
 // bdAddr::bdAddr (address, port) - ea: 0x9EC910
 // ============================================================================
@@ -29,10 +59,9 @@ bdAddr::bdAddr(const char* str)
 // ============================================================================
 // bdAddr::set (address, port) - ea: 0x9EC940
 // ============================================================================
-const bdInetAddr& bdAddr::set(const bdInetAddr& address, unsigned short port) {
+void bdAddr::set(const bdInetAddr& address, unsigned short port) {
     m_address.set(address);
     m_port = port;
-    return address;
 }
 
 // ============================================================================
