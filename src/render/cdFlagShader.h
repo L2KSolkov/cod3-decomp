@@ -20,7 +20,8 @@
 // ============================================================================
 // cdFlagShaderMat — flag shader material (24 bytes)
 // ============================================================================
-struct cdFlagShaderMat : nglMaterial {
+class cdFlagShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;   // +0x10
     int         mCullMode;  // +0x14
 
