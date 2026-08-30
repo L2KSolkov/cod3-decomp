@@ -45,7 +45,7 @@ namespace cdGlowRender1 {
     extern unsigned long Shader;             // ?Shader@cdGlowRender1@@3KA
     void RegisterShader();                   // @0x007C2AB0
     void RegisterVShader();                  // @0x007C2AD0
-    unsigned int GetVShader();               // @0x007C2AF0
+    unsigned long GetVShader();              // @0x007C2AF0
 }
 namespace cdGlowRender4 {
     extern unsigned long* VS;                // ?VS@cdGlowRender4@@3PAKA
@@ -53,7 +53,7 @@ namespace cdGlowRender4 {
     extern unsigned long Shader;             // ?Shader@cdGlowRender4@@3KA
     void RegisterShader();                   // @0x007C2A60
     void RegisterVShader();                  // @0x007C2A80
-    unsigned int GetVShader();               // @0x007C2AA0
+    unsigned long GetVShader();              // @0x007C2AA0
 }
 namespace cdGlowShrink {
     extern unsigned long** PS;               // ?PS@cdGlowShrink@@3PAPAKA

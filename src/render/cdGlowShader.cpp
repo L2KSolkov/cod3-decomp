@@ -49,8 +49,8 @@ void cdGlowRender4::RegisterShader()
 }
 
 // ea: 0x007C2AA0
-unsigned int cdGlowRender4::GetVShader() {
-    return static_cast<unsigned int>(cdGlowRender4::VS[0]);
+unsigned long cdGlowRender4::GetVShader() {
+    return cdGlowRender4::VS[0];
 }
 
 // ea: 0x007C2A80
@@ -68,8 +68,8 @@ void cdGlowRender1::RegisterShader()
 }
 
 // ea: 0x007C2AF0
-unsigned int cdGlowRender1::GetVShader() {
-    return static_cast<unsigned int>(cdGlowRender1::VS[0]);
+unsigned long cdGlowRender1::GetVShader() {
+    return cdGlowRender1::VS[0];
 }
 
 // ea: 0x007C2AD0
