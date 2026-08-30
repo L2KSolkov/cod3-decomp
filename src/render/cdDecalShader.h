@@ -32,6 +32,11 @@ static_assert(sizeof(cdDecalShaderMat) == 0x1C, "cdDecalShaderMat size mismatch"
 struct cdDecalShaderNode : nglShaderNode {
     cdDecalShaderMat* mMaterial;  // +0x14
 
+    cdDecalShaderNode(nglMeshNode* iMeshNode,
+                      nglMeshSection* iSection,
+                      cdDecalShaderMat* iMaterial); // @0x7D1DB0
+    virtual ~cdDecalShaderNode(); // @0x7D1E10
+
     void Render() override;       // @0x7D18E0
 };
 static_assert(sizeof(cdDecalShaderNode) == 0x18, "cdDecalShaderNode size mismatch");
@@ -41,6 +46,8 @@ static_assert(sizeof(cdDecalShaderNode) == 0x18, "cdDecalShaderNode size mismatc
 // ============================================================================
 class cdDecalShader : public nglShader {
 public:
+    cdDecalShader(); // @0x7D1CC0
+    virtual ~cdDecalShader(); // @0x7D1E50
     virtual tlFixedString GetName(); // @0x7D1CF0
     virtual void Register();  // @0x7D1820
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D1860
@@ -54,15 +61,24 @@ namespace cdDecalRender {
     extern unsigned long* VS;                       // ?VS@cdDecalRender@@3PAKA
     extern unsigned int const** VShaderTable;        // ?VShaderTable@cdDecalRender@@3PAPBIA
     void RegisterVShader();                           // @0x007D1D10
+    unsigned int GetVShader();                        // @0x007D1D30
 }
 namespace cdDecalPixel {
     extern unsigned long** PS;                       // ?PS@cdDecalPixel@@3PAPAKA
     extern unsigned int const** PShaderTable;         // ?PShaderTable@cdDecalPixel@@3PAPBIA
+    void RegisterPShader();                            // @0x007D1D40
+    unsigned int* GetPShader();                        // @0x007D1D60
 }
 namespace cdDecalFullbrightPixel {
     extern unsigned long** PS;                       // ?PS@cdDecalFullbrightPixel@@3PAPAKA
     extern unsigned int const** PShaderTable;         // ?PShaderTable@cdDecalFullbrightPixel@@3PAPBIA
+    void RegisterPShader();                            // @0x007D1D70
+    unsigned int* GetPShader();                        // @0x007D1D90
 }
+
+struct DecalContext {
+    DecalContext(); // @0x007D1DA0
+};
 
 // ============================================================================
 // Externs

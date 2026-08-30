@@ -82,6 +82,37 @@ void cdDecalRender::RegisterVShader()
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdDecalRender::VS),
                          cdDecalRender::VShaderTable[0]);
 }
+
+// ea: 0x007D1D30
+unsigned int cdDecalRender::GetVShader()
+{
+    return static_cast<unsigned int>(cdDecalRender::VS[0]);
+}
+
+// ea: 0x007D1D40
+void cdDecalPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(cdDecalPixel::PS, cdDecalPixel::PShaderTable[0]);
+}
+
+// ea: 0x007D1D60
+unsigned int* cdDecalPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdDecalPixel::PS[0]);
+}
+
+// ea: 0x007D1D70
+void cdDecalFullbrightPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(cdDecalFullbrightPixel::PS,
+                         cdDecalFullbrightPixel::PShaderTable[0]);
+}
+
+// ea: 0x007D1D90
+unsigned int* cdDecalFullbrightPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdDecalFullbrightPixel::PS[0]);
+}
 namespace cdDecalPixel {
     static const unsigned int PShaderMicrocode[60] = {
         0xd8d41010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -148,15 +179,21 @@ cdDecalShaderMat::cdDecalShaderMat(nglTexture* iTexture) {
 // InitCDDecalShader — allocate the shader and link into the init list.
 // ea: 0x7D17B0
 // ============================================================================
+// ea: 0x007D1CC0
+cdDecalShader::cdDecalShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[2] &= ~0x20;
+}
+
+// ea: 0x007D1E50
+cdDecalShader::~cdDecalShader() = default;
+
 void InitCDDecalShader() {
     cdDecalShader* result = (cdDecalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdDecalShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdDecalShader
-        ShaderCommon::ShaderSwitching.__s0[2] &= ~0x20;
         gCDDecalShader = result;
     } else {
         gCDDecalShader = NULL;
@@ -176,6 +213,7 @@ void ToggleCDDecalShader() {
 
 }
 
+// ea: 0x007D1CF0
 tlFixedString cdDecalShader::GetName() { return tlFixedString("cdDecal"); }
 
 // ============================================================================
@@ -203,7 +241,8 @@ void cdDecalShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdDecalShaderNode;
+            ::new (node) cdDecalShaderNode(iMeshNode, iSection,
+                                            (cdDecalShaderMat*)iMat);
             node->mMaterial = (cdDecalShaderMat*)iMat;
         } else {
             node = NULL;
@@ -214,6 +253,21 @@ void cdDecalShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+// ea: 0x007D1DA0
+DecalContext::DecalContext() {}
+
+// ea: 0x007D1DB0
+cdDecalShaderNode::cdDecalShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdDecalShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
+// ea: 0x007D1E10
+cdDecalShaderNode::~cdDecalShaderNode() = default;
 
 // ============================================================================
 // cdDecalShaderNode::Render — ea: 0x7D18E0
