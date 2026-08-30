@@ -1,7 +1,5 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
-0x00805510	?RegisterVShader@apsColorUVARender@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARenderer.cpp:17	Emitted namespace shader-registration body is non-empty.
-0x00805510	?RegisterVShader@apsColorUVARender@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805510;src/aeps/apsColorUVARenderer.cpp:17	Release and source both call nglDxRegisterVShader(VS,VShaderTable[0]).
-0x00805530	?RegisterPShader@apsColorUVARenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARenderer.cpp:21	Emitted namespace shader-registration body is non-empty.
-0x00805530	?RegisterPShader@apsColorUVARenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805530;src/aeps/apsColorUVARenderer.cpp:21	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).
-0x00805550	?InitPShader@apsColorUVARenderPixel@@YAXXZ	V3	PASS	ida-manual-20260827	2026-08-27	src/aeps/apsColorUVARenderer.cpp:25	Emitted namespace shader-registration body is non-empty.
-0x00805550	?InitPShader@apsColorUVARenderPixel@@YAXXZ	V4	PASS	ida-manual-20260827	2026-08-27	IDA:0x00805550;src/aeps/apsColorUVARenderer.cpp:25	Release and source both call nglDxRegisterPShader(PS,PShaderTable[0]).
+0x008054C0	?Init@apsColorUVARenderer@@SAXXZ	V3	PASS	ida-manual-aps-color-uva-20260829	2026-08-29	src/aeps/apsColorUVARenderer.cpp:42-49	Source directly registers the color-UVA vertex and pixel shaders from table entry zero.
+0x008054C0	?Init@apsColorUVARenderer@@SAXXZ	V4	PASS	ida-manual-aps-color-uva-20260829	2026-08-29	IDA:0x008054C0;src/aeps/apsColorUVARenderer.cpp:42-49	Release/source match both direct registration calls, shader pointers, and table index zero without added guards.
+0x008054F0	?Render@apsColorUVARenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	V3	PASS	ida-manual-aps-color-uva-20260829	2026-08-29	src/aeps/apsColorUVARenderer.cpp:53-56	Source dispatches rendering through the color-UVA DefaultRender template.
+0x008054F0	?Render@apsColorUVARenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z	V4	PASS	ida-manual-aps-color-uva-20260829	2026-08-29	IDA:0x008054F0;src/aeps/apsColorUVARenderer.cpp:53-56	Release/source match the apsBillboardRenderer::DefaultRender specialization and render-info forwarding.
