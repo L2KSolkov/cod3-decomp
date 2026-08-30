@@ -267,13 +267,45 @@ bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize,
 
 }
 
+// ea: 0x008A0670
 // bdByteBuffer ctor - ?0bdByteBuffer@@QAE@I@Z (bdCore:bdByteBuffer.o)
 bdByteBuffer::bdByteBuffer(unsigned int size)
 {
     m_size = size;
-    m_data = new uint8_t[size ? size : 1];
+    m_data = static_cast<uint8_t*>(bdMemory::allocate(size));
     m_readPtr = m_data;
     m_writePtr = m_data;
+}
+
+// ea: 0x0089E430
+bool bdByteBuffer::write(const void* data, unsigned int size)
+{
+    const unsigned int available = (unsigned int)((m_data + m_size) - m_writePtr);
+    if (size > available)
+    {
+        bdMessageProxy proxy(".\\bdContainers\\bdByteBuffer.cpp",
+                             "bool __thiscall bdByteBuffer::write(const void *,unsigned int)",
+                             0x20u, "dw/err/");
+        proxy.log("err", "Could not write data to buffer. Insufficient space.\n");
+        do
+        {
+            if (!g_assertFalse)
+                break;
+            bdMessageProxy retry(".\\bdContainers\\bdByteBuffer.cpp",
+                                 "bool __thiscall bdByteBuffer::write(const void *,unsigned int)",
+                                 0x21u, "dw/err");
+            retry.log(defaultFileName,
+                      "Could not write data to buffer. Insufficient space.\n");
+        }
+        while (g_assertFalse);
+        return false;
+    }
+
+    const bool result = bdBytePacker::appendBuffer(m_writePtr, available, 0,
+                                                   &size,
+                                                   reinterpret_cast<const unsigned char*>(data), size);
+    m_writePtr += size;
+    return result;
 }
 
 // bdBitBuffer ctors - ?0bdBitBuffer@@QAE@PBI_N@Z / ?0bdBitBuffer@@QAE@I_N@Z
@@ -922,6 +954,13 @@ bool bdByteBuffer::read(void* data, unsigned int size)
                                                    (unsigned char*)data, size);
     m_readPtr += size;
     return result;
+}
+
+// ea: 0x0089E5D0
+bdByteBuffer::~bdByteBuffer()
+{
+    if (m_data != nullptr)
+        bdMemory::deallocate(m_data);
 }
 
 bool bdBitBuffer::readDataType(bdBitBufferDataType type)

@@ -442,8 +442,10 @@ public:
     uint8_t*     m_writePtr;  // +0x14
 
     bdByteBuffer(unsigned int size);
+    virtual ~bdByteBuffer();
     unsigned int getMaxReadSize() const { return m_size + (unsigned int)(m_data - m_readPtr); }
     const unsigned char* getData() const { return m_data; }
+    bool write(const void* data, unsigned int size); // ?write@bdByteBuffer@@QAE_NPBXI@Z
     bool read(void* data, unsigned int size);              // ?read@bdByteBuffer@@QAE_NPAXI@Z
 };
 static_assert(sizeof(bdByteBuffer) == 0x18, "bdByteBuffer size mismatch");
