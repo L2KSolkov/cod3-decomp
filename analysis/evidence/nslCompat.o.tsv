@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008203F0	?nslGetNumVoices@@YAIXZ	V3	PASS	ida-manual-nsl-compat-20260829	2026-08-29	src/sound/nsl.cpp:1049-1051	Source forwards the voice-count query to nslVoiceCount.
+0x008203F0	?nslGetNumVoices@@YAIXZ	V4	PASS	ida-manual-nsl-compat-20260829	2026-08-29	IDA:0x008203F0;src/sound/nsl.cpp:1049-1051	Release/source contain the same thunk-level nslVoiceCount call and return value.
