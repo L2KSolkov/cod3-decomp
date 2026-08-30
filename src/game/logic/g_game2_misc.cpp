@@ -1207,10 +1207,6 @@ void AnimIK::RotateBone(int boneIndex, const math::Dir3& rotation)
 // ea: 0x004FCA40
 void AnimIK::ApplyPainFlinch(Entity* ent)
 {
-    if (ent == nullptr || ent->client == nullptr || pose == nullptr
-        || skeleton == nullptr)
-        return;
-
     for (int eventIndex = 0; eventIndex < 15; ++eventIndex)
     {
         AnimIKPainEvent& event = ent->client->AnimIKPainEvents[eventIndex];
