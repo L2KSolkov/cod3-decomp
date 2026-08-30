@@ -549,10 +549,7 @@ public:
             value = byte != 0;
         return ok;
     }
-    bool append(const bdBitBuffer& other) {
-        writeBits(other.getData(), other.getNumBitsWritten());
-        return true;
-    }
+    bool append(bdBitBuffer& other);
 };
 static_assert(sizeof(bdBitBuffer) == 0x24, "bdBitBuffer size mismatch");
 static_assert(offsetof(bdBitBuffer, m_data) == 0x08, "bdBitBuffer::m_data offset mismatch");

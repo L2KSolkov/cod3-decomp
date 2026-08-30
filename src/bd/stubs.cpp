@@ -410,6 +410,23 @@ void bdBitBuffer::writeBits(const void* data, unsigned int bitCount)
     }
 }
 
+// ea: 0x0089BE50
+bool bdBitBuffer::append(bdBitBuffer& other)
+{
+    if (m_typeChecked != other.m_typeChecked)
+        return false;
+
+    unsigned int savedReadPosition = other.m_readPosition;
+    other.m_readPosition = 1;
+    void* data = bdMemory::allocate(other.m_data.m_size);
+    bool result = other.readBits(data, other.m_maxWritePosition - 1);
+    if (result)
+        writeBits(data, other.m_maxWritePosition - 1);
+    bdMemory::deallocate(data);
+    other.m_readPosition = savedReadPosition;
+    return result;
+}
+
 void bdBitBuffer::writeDataType(bdBitBufferDataType type)
 {
     if (m_typeChecked)
