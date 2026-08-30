@@ -568,8 +568,8 @@ public:
     bdReference<bdByteBuffer> m_unencPayload;  // +0x14
 
     bdMessage(unsigned char type, bool payloadTypeChecked);
-    bdMessage(unsigned char type, const unsigned char* data, unsigned int dataSize,
-              bool typeChecked, const unsigned char* unencData, unsigned int unencSize);
+    bdMessage(unsigned char type, const unsigned char* const data, unsigned int dataSize,
+              bool typeChecked, const unsigned char* const unencData, unsigned int unencSize);
     virtual ~bdMessage();
     unsigned char getType() const;
     bdReference<bdBitBuffer> getPayload();

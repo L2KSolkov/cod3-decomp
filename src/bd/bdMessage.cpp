@@ -36,8 +36,8 @@ bdMessage::bdMessage(unsigned char type, bool payloadTypeChecked)
 // ============================================================================
 // bdMessage::bdMessage (full) â€” ea: 0x8A0700
 // ============================================================================
-bdMessage::bdMessage(unsigned char type, const unsigned char* data, unsigned int dataSize,
-                     bool typeChecked, const unsigned char* unencData,
+bdMessage::bdMessage(unsigned char type, const unsigned char* const data, unsigned int dataSize,
+                     bool typeChecked, const unsigned char* const unencData,
                      unsigned int unencSize)
     : m_type(type),
       m_payload(),

@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008A0700	??0bdMessage@@QAE@EQBEI_N0I@Z	V3	PASS	bdmessage-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:0x008A0700;src/bd/bdMessage.cpp:37-69	Release full constructor initializes the type, reference members, checked flag, and conditionally allocates/copies encrypted and unencrypted payloads; source follows the same concrete control flow.
+0x008A0700	??0bdMessage@@QAE@EQBEI_N0I@Z	V4	PASS	bdmessage-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:0x008A0700;src/bd/bdMessage.cpp:37-69	Equivalent release/source payload allocation, reference replacement, type-check propagation, unencrypted copy, and const-pointer ABI after restoring top-level const qualifiers.
