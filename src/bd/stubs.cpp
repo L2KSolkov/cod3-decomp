@@ -561,6 +561,7 @@ void bdBitBuffer::writeRangedFloat32(float value, float min, float max,
     }
 }
 
+// ea: 0x0089B710
 bool bdBitBuffer::readRangedInt32(int& value, int min, int max)
 {
     const int expectedMin = min;
@@ -627,6 +628,7 @@ bool bdBitBuffer::readRangedInt32(int& value, int min, int max)
     return true;
 }
 
+// ea: 0x0089B560
 bool bdBitBuffer::readRangedUInt32(unsigned int& value, unsigned int min,
                                    unsigned int max, bool typeChecked)
 {
