@@ -268,9 +268,11 @@ void nglCreateNormalCubeMap(unsigned int Width) {
     for (unsigned int Face = 0; Face < 6; ++Face) {
         unsigned int* pDest = pBits;
         for (unsigned int i = 0; i < Width; ++i) {
-            float y = (float)i / (float)(Width - 1) * 2.0f - 1.0f;
+            float y = (float)i / (float)(Width - 1);
+            y = y + y - 1.0f;
             for (unsigned int j = 0; j < Width; ++j) {
-                float x = (float)j / (float)(Width - 1) * 2.0f - 1.0f;
+                float x = (float)j / (float)(Width - 1);
+                x = x + x - 1.0f;
                 float nx, ny, nz;
                 switch (Face) {
                 case 0: nx = 1.0f; ny = -y; nz = -x; break;   // +X
@@ -287,9 +289,9 @@ void nglCreateNormalCubeMap(unsigned int Width) {
                 }
                 float len = sqrtf(nx*nx + ny*ny + nz*nz);
                 nx /= len; ny /= len; nz /= len;
-                unsigned int r = (unsigned int)((nx * 0.5f + 0.5f) * 255.0f);
-                unsigned int g = (unsigned int)((ny * 0.5f + 0.5f) * 255.0f);
-                unsigned int b = (unsigned int)((nz * 0.5f + 0.5f) * 255.0f);
+                unsigned int r = (unsigned int)((nx + 1.0f) * 127.5f);
+                unsigned int g = (unsigned int)((ny + 1.0f) * 127.5f);
+                unsigned int b = (unsigned int)((nz + 1.0f) * 127.5f);
                 *pDest++ = 0xFF000000 | (r << 16) | (g << 8) | b;
             }
         }
