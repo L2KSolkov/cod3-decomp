@@ -2142,30 +2142,16 @@ void nfdIoComplete(nfdDriver* driver, unsigned bytesCompleted, int errorCode)
 // ea: 0x00421560
 nfdError nfd_xbox_MediaBind(nflMediaID media, const char* src, char* dst, int dstSize)
 {
-    if (!src || !dst || dstSize <= 0) return NFD_ERROR_INVALID_ARGUMENTS;
-    const char* prefix = nullptr;
     if (std::isalpha(static_cast<unsigned char>(src[0])) && src[1] == ':') {
-        prefix = "";
-#ifdef _WIN32
-    } else if (media == NFL_MEDIA_ID_DISC || media == NFL_MEDIA_ID_HOST) {
-        prefix = "GameData\\";
-#else
+        dst[0] = 0;
     } else if (media == NFL_MEDIA_ID_DISC) {
-        prefix = "D:\\";
+        strcpy(dst, "D:\\");
     } else if (media == NFL_MEDIA_ID_HOST) {
-        prefix = "E:\\";
-#endif
+        strcpy(dst, "E:\\");
     } else {
         return NFD_ERROR_INVALID_MEDIA;
     }
-#ifdef _WIN32
-    strcpy_s(dst, static_cast<size_t>(dstSize), prefix);
-    strncat_s(dst, static_cast<size_t>(dstSize), src, _TRUNCATE);
-#else
-    std::strncpy(dst, prefix, static_cast<size_t>(dstSize - 1));
-    dst[dstSize - 1] = 0;
-    std::strncat(dst, src, static_cast<size_t>(dstSize - 1 - std::strlen(dst)));
-#endif
+    strcat(dst, src);
     for (char* cursor = dst; *cursor != 0; ++cursor)
         if (*cursor == '/') *cursor = '\\';
     return NFD_ERROR_NOERROR;
