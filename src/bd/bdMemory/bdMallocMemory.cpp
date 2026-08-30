@@ -18,6 +18,7 @@ void* bdAlignedOffsetRealloc(void* p, unsigned int oldSize,
                              unsigned int newSize, unsigned int align,
                              unsigned int offset);
 
+// ea: 0x008A0500
 bdMutex::bdMutex()
     : m_handle(NULL)
 {
@@ -26,6 +27,7 @@ bdMutex::bdMutex()
 #endif
 }
 
+// ea: 0x008A0510
 bdMutex::~bdMutex()
 {
 #ifdef _WIN32
@@ -35,6 +37,7 @@ bdMutex::~bdMutex()
     m_handle = NULL;
 }
 
+// ea: 0x008A0520
 void bdMutex::lock()
 {
 #ifdef _WIN32
@@ -42,6 +45,7 @@ void bdMutex::lock()
 #endif
 }
 
+// ea: 0x008A0530
 void bdMutex::unlock()
 {
 #ifdef _WIN32
