@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008B06A0	?registerInterceptor@bdDispatcher@@QAEXQAVbdDispatchInterceptor@@@Z	V3	PASS	ida-manual-bd-dispatcher-20260830	2026-08-30	src/bd/bdDispatcher.cpp:35-39	Grows interceptor storage when full and appends the interceptor pointer.
+0x008B06A0	?registerInterceptor@bdDispatcher@@QAEXQAVbdDispatchInterceptor@@@Z	V4	PASS	ida-manual-bd-dispatcher-20260830	2026-08-30	IDA:0x008B06A0;src/bd/bdDispatcher.cpp:35-39	Release/source match capacity-equality test, increaseCapacity(1), append index, and pointer assignment; Hex-Rays return is ABI artifact.
+0x008B0770	?unregisterInterceptor@bdDispatcher@@QAEXQAVbdDispatchInterceptor@@@Z	V3	PASS	ida-manual-bd-dispatcher-20260830	2026-08-30	src/bd/bdDispatcher.cpp:44-46	Removes all matching interceptor pointers while preserving order.
+0x008B0770	?unregisterInterceptor@bdDispatcher@@QAEXQAVbdDispatchInterceptor@@@Z	V4	PASS	ida-manual-bd-dispatcher-20260830	2026-08-30	IDA:0x008B0770;src/bd/bdDispatcher.cpp:44-46	Release/source are the same direct removeAllKeepOrder dispatch; thunk return display does not alter the void source ABI.
