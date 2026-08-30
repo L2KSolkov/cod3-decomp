@@ -939,6 +939,11 @@ def symbol_variants(name: str) -> set[str]:
             "?FnReverseOptions@@YAHXZ",
         "?nalMatrix4x4_to_Axis4@@YAXAAVnalMatrix4x4@@QAY02M@Z":
             "?nalMatrix4x4_to_Axis4@@YAXPAVnalMatrix4x4@@PAY02M@Z",
+        # The release map's PanelQuadSection helper uses reference-style
+        # vector/color decorations; the current ABI emits pointer-style
+        # decorations for the same four-byte aggregate arguments.
+        "?AddPQSection@PanelQuadSection@@QAEXQAUvector@Broc@@0QAVcolor32@@M@Z":
+            "?AddPQSection@PanelQuadSection@@QAEXPAUvector@Broc@@0PAVcolor32@@M@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:
