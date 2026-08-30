@@ -17,7 +17,8 @@
 // ============================================================================
 // cdGunSightSpecularShaderMat — gun sight specular shader material (36 bytes)
 // ============================================================================
-struct cdGunSightSpecularShaderMat : nglMaterial {
+class cdGunSightSpecularShaderMat : public nglMaterial {
+public:
     nglTexture* mDiffuseTexture;   // +0x10
     nglTexture* mSpecularTexture;  // +0x14
     float       mSpecularPower;    // +0x18
@@ -33,6 +34,13 @@ static_assert(sizeof(cdGunSightSpecularShaderMat) == 0x24, "cdGunSightSpecularSh
 // ============================================================================
 struct cdGunSightSpecularShaderNode : nglShaderNode {
     cdGunSightSpecularShaderMat* mMaterial;  // +0x14
+
+    cdGunSightSpecularShaderNode(nglMeshNode* iMeshNode,
+                                 nglMeshSection* iSection,
+                                 cdGunSightSpecularShaderMat* iMaterial); // @0x7CDD70
+    virtual ~cdGunSightSpecularShaderNode(); // @0x7CDDD0
+
+    void Render() override; // @0x7CD910
 };
 static_assert(sizeof(cdGunSightSpecularShaderNode) == 0x18, "cdGunSightSpecularShaderNode size mismatch");
 
@@ -41,6 +49,8 @@ static_assert(sizeof(cdGunSightSpecularShaderNode) == 0x18, "cdGunSightSpecularS
 // ============================================================================
 class cdGunSightSpecularShader : public nglShader {
 public:
+    cdGunSightSpecularShader(); // @0x7CDC80
+    virtual ~cdGunSightSpecularShader(); // @0x7CDE10
     virtual tlFixedString GetName(); // @0x7CDCB0
     virtual void Register();  // @0x7CD870
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CD8A0
@@ -54,21 +64,30 @@ namespace cdGunSightSpecularRender {
     extern unsigned long VS[2];                   // ?VS@cdGunSightSpecularRender@@3PAKA
     extern unsigned int const* VShaderTable[2];    // ?VShaderTable@cdGunSightSpecularRender@@3PAPBIA
     void RegisterVShader();                        // @0x007CDCD0
+    unsigned int GetVShader(unsigned int index);  // @0x007CDD00
 }
 namespace cdGunSightSpecularPixel {
     extern unsigned long* PS[2];                   // ?PS@cdGunSightSpecularPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];     // ?PShaderTable@cdGunSightSpecularPixel@@3PAPBIA
+    void RegisterPShader();                          // @0x007CDD10
+    unsigned long* GetPShader();                    // @0x007CDD30
 }
 namespace cdGunSightSpecularFullbrightPixel {
     extern unsigned long* PS[2];                   // ?PS@cdGunSightSpecularFullbrightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];     // ?PShaderTable@cdGunSightSpecularFullbrightPixel@@3PAPBIA
+    void RegisterPShader();                          // @0x007CDD40
+    unsigned long* GetPShader();                    // @0x007CDD60
 }
+
+struct GunSightSpecularContext {
+    GunSightSpecularContext(); // @0x007CDE20
+};
 
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern cdGunSightSpecularShader* gCDGunSightSpecularShader;  // @0x10DE4C8
 

@@ -29,7 +29,10 @@ static_assert(sizeof(FilterTaps) == 0x20, "FilterTaps size mismatch");
 // ============================================================================
 class cdGlowShader : public nglShader {
 public:
+    cdGlowShader(); // @0x7C2A00
+    virtual ~cdGlowShader(); // @0x7C2C60
     virtual tlFixedString GetName(); // @0x7C2A30
+    virtual void AddNode(nglMeshNode*, nglMeshSection*, nglMaterial*); // @0x7C2A50 (release no-op)
 };
 static_assert(sizeof(cdGlowShader) == 0x10, "cdGlowShader size mismatch");
 
@@ -40,28 +43,41 @@ namespace cdGlowRender1 {
     extern unsigned long* VS;                // ?VS@cdGlowRender1@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdGlowRender1@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdGlowRender1@@3KA
+    void RegisterShader();                   // @0x007C2AB0
     void RegisterVShader();                  // @0x007C2AD0
+    unsigned int GetVShader();               // @0x007C2AF0
 }
 namespace cdGlowRender4 {
     extern unsigned long* VS;                // ?VS@cdGlowRender4@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdGlowRender4@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdGlowRender4@@3KA
+    void RegisterShader();                   // @0x007C2A60
     void RegisterVShader();                  // @0x007C2A80
+    unsigned int GetVShader();               // @0x007C2AA0
 }
 namespace cdGlowShrink {
     extern unsigned long** PS;               // ?PS@cdGlowShrink@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdGlowShrink@@3PAPBIA
     extern unsigned long* Shader;            // ?Shader@cdGlowShrink@@3PAKA
+    void RegisterShader();                   // @0x007C2B00
+    void RegisterPShader();                  // @0x007C2B20
+    unsigned long* GetPShader();             // @0x007C2B40
 }
 namespace cdGlowBlur {
     extern unsigned long** PS;               // ?PS@cdGlowBlur@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdGlowBlur@@3PAPBIA
     extern unsigned long* Shader;            // ?Shader@cdGlowBlur@@3PAKA
+    void RegisterShader();                   // @0x007C2B50
+    void RegisterPShader();                  // @0x007C2B70
+    unsigned long* GetPShader();             // @0x007C2B90
 }
 namespace cdGlowApply {
     extern unsigned long** PS;               // ?PS@cdGlowApply@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdGlowApply@@3PAPBIA
     extern unsigned long* Shader;            // ?Shader@cdGlowApply@@3PAKA
+    void RegisterShader();                   // @0x007C2BA0
+    void RegisterPShader();                  // @0x007C2BC0
+    unsigned long* GetPShader();             // @0x007C2BE0
 }
 
 // ============================================================================
