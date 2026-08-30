@@ -163,7 +163,7 @@ cdSimpleShader.o	17	3	0	6	0	8	0
 cdSimpleSpecularShader.o	24	8	0	0	3	13	0
 cdSimpleUVAnimShader.o	40	21	1	6	0	12	0
 cdSkyShader.o	22	17	0	2	0	3	0
-cdWaterShader.o	21	16	0	4	0	1	0
+cdWaterShader.o	21	16	0	2	0	3	0
 cdWheelMarkShader.o	33	14	1	7	0	11	0
 cdWorldBlendPointLitShader.o	34	28	0	4	0	2	0
 cdWorldBlendShader.o	31	25	0	6	0	0	0
