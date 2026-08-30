@@ -86,6 +86,16 @@ T tl_max(const T& a, const U& b)
     return a <= b ? b : a;
 }
 
+// ea: 0x007BED70
+template <>
+int tl_max<int, int>(const int& a, const int& b)
+{
+    int result = a;
+    if (a <= b)
+        return b;
+    return result;
+}
+
 template float tl_min<float, float>(const float&, const float&);
 template float tl_max<float, float>(const float&, const float&);
 
