@@ -1355,7 +1355,7 @@ public:
     bool IsUnloaded() const;    // ?IsUnloaded@PakFile@@QBE_NXZ
     bool IsCancelled() const;   // ?IsCancelled@PakFile@@QBE_NXZ
 
-    // ?MemAlloc@PakFile@@QAEPAXII_N@Z (streamer.o 0x671F10; stub)
+    // ?MemAlloc@PakFile@@QAEPAXII_N@Z (streamer.o 0x665FE0)
     void* MemAlloc(unsigned int align, unsigned int size, bool search_prereqs);
     // ea: 0x666110
     bool MemFree(void* ptr, bool search_prereqs);
