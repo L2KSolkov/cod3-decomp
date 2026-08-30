@@ -96,15 +96,19 @@ void OverlayMenu::SetState(int state)
 {
     (void)state;
 }
+// ea: 0x0072A670
 bool InGameLiveOptionsMenu::ResponseYesJoin(int a)
 {
     (void)a;
-    return false;
+    LiveWrapper::theWrapper->JoinGame(
+        reinterpret_cast<XONLINE_FRIEND*>(&LiveWrapper::theWrapper->friendToJoin));
+    return true;
 }
+// ea: 0x0072A690
 bool InGameLiveOptionsMenu::ResponseNoJoin(int a)
 {
     (void)a;
-    return false;
+    return true;
 }
 
 // PanelFile members (shell.o; stubs, port later)
