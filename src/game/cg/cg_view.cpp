@@ -1419,7 +1419,6 @@ void CG_UpdateShellShockCamera(const shellshock_parms_t* parms, int time,
     if (parms == nullptr)
     {
         CG_ASSERT("parms", "c:\\cod\\code\\game\\cg_shellshock.cpp", 759);
-        return;
     }
 
     float frac = 1.0f;
@@ -1428,7 +1427,9 @@ void CG_UpdateShellShockCamera(const shellshock_parms_t* parms, int time,
     const float smooth = ((3.0f - (frac * 2.0f)) * frac) * frac;
     const float kickTime = (float)time * parms->view.kickRate;
     const float kickRadius = smooth * parms->view.kickRadius;
-    const int index = ((int)kickTime + (61 * duration)) & 0x7f;
+    const int index = (static_cast<int>(kickTime)
+                       + (61 * static_cast<signed char>(duration)))
+        & 0x7f;
     const float p0 = CG_ShellShockPerturbation(index, 0);
     const float p1 = CG_ShellShockPerturbation(index, 1);
     const float p2 = CG_ShellShockPerturbation(index, 2);
