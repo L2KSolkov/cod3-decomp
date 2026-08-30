@@ -55,9 +55,9 @@ void apsError::AddError(eErrorType iType, const char* iFormat, ...) {
     if (mNumErrors < kMaxErrors) {
         va_list ap;
         va_start(ap, iFormat);
-        mErrors[mNumErrors].mType = iType;
-        vsprintf(mErrors[mNumErrors].mMessage, iFormat, ap);
+        int index = mNumErrors++;
+        mErrors[index].mType = iType;
+        vsprintf(mErrors[index].mMessage, iFormat, ap);
         va_end(ap);
-        ++mNumErrors;
     }
 }
