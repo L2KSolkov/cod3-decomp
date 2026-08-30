@@ -1237,7 +1237,14 @@ void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
     if (weapDefArg == nullptr)
         CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1186);
     if (weapIndex < 0)
-        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1187);
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 1187;
+        AeAssert::gCurrentExpr = "weapIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", weapIndex))
+            __debugbreak();
+    }
 
     char* weapDef = reinterpret_cast<char*>(weapDefArg);
     const char* reticleName = *reinterpret_cast<const char**>(weapDef + 0x4D8);
@@ -1279,7 +1286,14 @@ void CG_DrawReticleHitIndicator(void* weapDefArg, int weapIndex, int* baseColor,
     if (weapDefArg == nullptr)
         CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1496);
     if (weapIndex < 0)
-        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1497);
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 1497;
+        AeAssert::gCurrentExpr = "weapIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", weapIndex))
+            __debugbreak();
+    }
 
     const char* weapDef = reinterpret_cast<const char*>(weapDefArg);
     const char* reticleSide = *reinterpret_cast<const char* const*>(
@@ -1487,8 +1501,14 @@ void CG_CalcReticleColor(const float* baseColor, float* reticleColor,
                          float alpha)
 {
     if (alpha < 0.0f || alpha > 1.0f)
-        CG_ASSERT("alpha >= 0 && alpha <= 1.0f",
-                  "c:\\cod\\code\\game\\cg_draw.cpp", 1171);
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 1171;
+        AeAssert::gCurrentExpr = "alpha >= 0 && alpha <= 1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%f", alpha))
+            __debugbreak();
+    }
 
     reticleColor[0] = baseColor[0];
     reticleColor[1] = baseColor[1];
@@ -1515,7 +1535,14 @@ void CG_CalcReticleSpread(const void* weapDefArg, int weapIndex,
     if (weapDefArg == nullptr)
         CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1248);
     if (weapIndex < 0)
-        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1249);
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 1249;
+        AeAssert::gCurrentExpr = "weapIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", weapIndex))
+            __debugbreak();
+    }
     Entity* player = EntityManager::sInst->GetPlayer(currCl);
 
     float minSpread;
@@ -1552,7 +1579,14 @@ void CG_DrawReticleSides(void* weapDefArg, int weapIndex, int* baseColor,
     if (weapDefArg == nullptr)
         CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1422);
     if (weapIndex < 0)
-        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1423);
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 1423;
+        AeAssert::gCurrentExpr = "weapIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", weapIndex))
+            __debugbreak();
+    }
     const char* weapDef = reinterpret_cast<const char*>(weapDefArg);
     const char* reticleSide = *(const char**)(weapDef + 0x4DC);
     if (reticleSide[0] == 0)
@@ -1615,7 +1649,14 @@ void CG_DrawAdsAimIndicator(void* weapDefArg, int weapIndex, int* color,
     if (weapDefArg == nullptr)
         CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1127);
     if (weapIndex < 0)
-        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1128);
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 1128;
+        AeAssert::gCurrentExpr = "weapIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%i", weapIndex))
+            __debugbreak();
+    }
     if (s_cgCvarStorage[0].integer != 0 || transScale >= 1.0f)
         return;
 
@@ -2486,8 +2527,14 @@ float CG_FadeLowHealthOverlay()
         alpha = from + (alpha - from) * (float)elapsed / (float)duration;
     }
     if (alpha < 0.0f || alpha > 1.0f)
-        CG_ASSERT("curAlpha >= 0.0f && curAlpha <= 1.0f",
-                  "c:\\cod\\code\\game\\cg_draw.cpp", 2867);
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 2867;
+        AeAssert::gCurrentExpr = "curAlpha >= 0.0f && curAlpha <= 1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("%f", alpha))
+            __debugbreak();
+    }
     return alpha;
 }
 
@@ -2515,7 +2562,7 @@ void CG_PulseLowHealthOverlay(float healthRatio)
     dword_F641AC[index] = dword_F641B0[index];
 
     const float pulseMags[4] = {1.0f, 0.8f, 0.6f, 0.3f};
-    const int pulse = dword_F641CC[index];
+    const unsigned int pulse = (unsigned int)dword_F641CC[index];
     if (pulse >= 4)
     {
         byte_F641C0[index * 4] = 0;
@@ -2580,12 +2627,12 @@ void CG_PulseLowHealthOverlay(float healthRatio)
 void CG_DrawPlayerLowHealthOverlay()
 {
     const float health = CG_CalcPlayerHealth();
-    if (health == 0.0f || cgsGlobal.media.lowHealthOverlay == nullptr)
+    if (health == 0.0f)
         return;
 
     CG_PulseLowHealthOverlay(health);
     float col[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-    CG_FadeLowHealthOverlay();
+    col[3] = CG_FadeLowHealthOverlay();
 
     const float sx = unk_F6A278[802 * currCl];
     const float sy = unk_F6A27C[802 * currCl];
@@ -2596,28 +2643,28 @@ void CG_DrawPlayerLowHealthOverlay()
     switch ((int)unk_F6A284[802 * currCl] - 3)
     {
     case 1:
-        y = sy * 240.0f;
-        h = sy * 240.0f;
+        y = 240.0f;
+        h = 240.0f;
         break;
     case 2:
-        w = sx * 320.0f;
-        h = sy * 240.0f;
+        w = 320.0f;
+        h = 240.0f;
         break;
     case 3:
-        x = sx * 320.0f;
-        w = sx * 320.0f;
-        h = sy * 240.0f;
+        x = 320.0f;
+        w = 320.0f;
+        h = 240.0f;
         break;
     case 4:
-        y = sy * 240.0f;
-        w = sx * 320.0f;
-        h = sy * 240.0f;
+        y = 240.0f;
+        w = 320.0f;
+        h = 240.0f;
         break;
     case 5:
-        x = sx * 320.0f;
-        y = sy * 240.0f;
-        w = sx * 320.0f;
-        h = sy * 240.0f;
+        x = 320.0f;
+        y = 240.0f;
+        w = 320.0f;
+        h = 240.0f;
         break;
     default:
         break;
