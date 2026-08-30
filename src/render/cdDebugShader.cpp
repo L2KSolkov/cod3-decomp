@@ -110,8 +110,10 @@ tlFixedString cdDebugShader::GetName() {
 // ============================================================================
 void cdDebugShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdDebugShaderRender::VS, cdDebugShaderRender::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdDebugPixel::PS, cdDebugPixel::PShaderTable, 0);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdDebugShaderRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdDebugShaderRender::VShaderTable[0]));
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdDebugPixel::PS),
+                         reinterpret_cast<const unsigned int*>(cdDebugPixel::PShaderTable[0]));
 }
 
 // ============================================================================
