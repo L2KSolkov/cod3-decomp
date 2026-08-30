@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00824590	?nslDriverVoiceSize@@YAIXZ	V3	PASS	nsl-driver-manual-20260830	2026-08-30	src/sound/nsl.cpp:4523	Body returns the release driver-voice size.
+0x00824590	?nslDriverVoiceSize@@YAIXZ	V4	PASS	nsl-driver-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1562469-1562472	Release returns 172, matching source.
+0x00824680	?nslDriverClamp@@YAMMMM@Z	V3	PASS	nsl-driver-manual-20260830	2026-08-30	src/sound/nsl.cpp:4525-4534	Body clamps to max then min using the release ordering.
+0x00824680	?nslDriverClamp@@YAMMMM@Z	V4	PASS	nsl-driver-manual-20260830	2026-08-30	IDA:0x824680-0x8246AF	Release disassembly max/min comparisons and return values match source.
+0x008246B0	?nslDriverCalculateRolloff@@YAXPAMMPBUnslWave@@@Z	V3	PASS	nsl-driver-manual-20260830	2026-08-30	src/sound/nsl.cpp:4536-4603	Body reads the four release parameters, computes the quadratic rolloff, clamps the result, and conditionally stores it.
+0x008246B0	?nslDriverCalculateRolloff@@YAXPAMMPBUnslWave@@@Z	V4	PASS	nsl-driver-manual-20260830	2026-08-30	IDA disasm:0x8246B0-0x824851	Release instruction flow, constants, parameter masks, quadratic formula, clamps, destination guard, and 0xFFFFFFF0 metadata sentinel handling match source.
