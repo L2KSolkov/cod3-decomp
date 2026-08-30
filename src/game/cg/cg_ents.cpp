@@ -1160,7 +1160,7 @@ void CG_Item(Entity* entity)
     int brushmodel = *(int*)((char*)&entity->s + 6) & 0xFF;
     if (brushmodel >= 0x89)
         CG_Error("Bad item index %i on entity", brushmodel);
-    if (entity->s.eFlags >= 0)
+    if (static_cast<signed char>(entity->s.eFlags) >= 0)
     {
         if (((unsigned char*)cg_items)[8 * brushmodel] != 0)
         {
@@ -1186,6 +1186,7 @@ void CG_Item(Entity* entity)
                 RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
                 RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
                 RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+                RefEntity->obj = mDObj;
                 RefEntity->entity = entity;
                 RefEntity->reType = 1;
                 RE_AddRefEntityToScene(RefEntity, -1);
