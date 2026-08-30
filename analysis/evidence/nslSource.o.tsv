@@ -71,3 +71,53 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00821870	?nslAddEmitterSource@@YAXW4nslEmitterID@@W4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560148-1560152	Release direct delegation matches source.
 0x00821890	?nslRemoveEmitterSource@@YAXW4nslEmitterID@@W4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1315-1332	Body validates both handles and clears the source emitter ID.
 0x00821890	?nslRemoveEmitterSource@@YAXW4nslEmitterID@@W4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560154-1560170	Release source/emitter validation and invalid-ID write match source.
+0x00822520	?nslUpdateEmitters@@YAXXZ	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1573-1584	Body walks used emitters, merges update bits into used bits, and clears update bits.
+0x00822520	?nslUpdateEmitters@@YAXXZ	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560712-1560737	Release emitter iteration and 64-bit paramsUsed/paramsUpdate merge match source.
+0x008225A0	?nslPause@@YAXXZ	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1888	Body applies nslPauseSource to all sources.
+0x008225A0	?nslPause@@YAXXZ	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560739-1560743	Release delegates to nslSource_ForAll(nslPauseSource).
+0x008225B0	?nslStop@@YAXXZ	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1890	Body applies nslStopSource to all sources.
+0x008225B0	?nslStop@@YAXXZ	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560745-1560749	Release delegates to nslSource_ForAll(nslStopSource).
+0x008225C0	?nslUnpause@@YAXXZ	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1892	Body applies nslUnpauseSource to all sources.
+0x008225C0	?nslUnpause@@YAXXZ	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560751-1560755	Release delegates to nslSource_ForAll(nslUnpauseSource).
+0x008225D0	?nslGetState@@YA?AW4nslSourceState@@XZ	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1894	Body returns the aggregate source state from nslSource_ForAll.
+0x008225D0	?nslGetState@@YA?AW4nslSourceState@@XZ	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560757-1560761	Release returns nslSource_ForAll(nullptr), matching source.
+0x008225E0	?nslQueueEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1898	Body applies nslQueueSource to sources belonging to the emitter.
+0x008225E0	?nslQueueEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560763-1560767	Release delegates to nslEmitter_ForAll(eid, nslQueueSource).
+0x00822600	?nslPlayEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1902	Body applies nslPlaySource to sources belonging to the emitter.
+0x00822600	?nslPlayEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560769-1560773	Release delegates to nslEmitter_ForAll(eid, nslPlaySource).
+0x00822620	?nslPauseEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1906	Body applies nslPauseSource to sources belonging to the emitter.
+0x00822620	?nslPauseEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560775-1560779	Release delegates to nslEmitter_ForAll(eid, nslPauseSource).
+0x00822640	?nslStopEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1910	Body applies nslStopSource to sources belonging to the emitter.
+0x00822640	?nslStopEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560781-1560785	Release delegates to nslEmitter_ForAll(eid, nslStopSource).
+0x00822660	?nslUnpauseEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1914	Body applies nslUnpauseSource to sources belonging to the emitter.
+0x00822660	?nslUnpauseEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560787-1560791	Release delegates to nslEmitter_ForAll(eid, nslUnpauseSource).
+0x00822680	?nslGetEmitterState@@YA?AW4nslSourceState@@W4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1918	Body returns aggregate state for the emitter's sources.
+0x00822680	?nslGetEmitterState@@YA?AW4nslSourceState@@W4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560793-1560797	Release returns nslEmitter_ForAll(eid, nullptr), matching source.
+0x008226A0	?nslDampenSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1474-1482	Body increments a source dampen count only while below one.
+0x008226A0	?nslDampenSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560799-1560817	Release source validation, count read, and capped increment match source.
+0x008226E0	?nslUndampenSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1484-1489	Body validates the source and clears its dampen count.
+0x008226E0	?nslUndampenSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560819-1560832	Release source validation and zero assignment match source.
+0x00822720	?nslDampenGuardSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1877-1886	Body sets a nonpositive source dampen count to -1.
+0x00822720	?nslDampenGuardSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560834-1560847	Release source validation, nonpositive test, and -1 assignment match source.
+0x00822770	?nslDampenGuardEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1923	Body applies nslDampenGuardSource to the emitter's sources.
+0x00822770	?nslDampenGuardEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560849-1560853	Release delegates to nslEmitter_ForAll(eid, nslDampenGuardSource).
+0x00822790	?nslDampenEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1927	Body applies nslDampenSource to the emitter's sources.
+0x00822790	?nslDampenEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560855-1560859	Release delegates to nslEmitter_ForAll(eid, nslDampenSource).
+0x008227B0	?nslUndampenEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1931	Body applies nslUndampenSource to the emitter's sources.
+0x008227B0	?nslUndampenEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560861-1560865	Release delegates to nslEmitter_ForAll(eid, nslUndampenSource).
+0x008227D0	?nslDampen@@YAXM@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1935-1938	Body stores dampenLevel and applies nslDampenSource to all sources.
+0x008227D0	?nslDampen@@YAXM@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560867-1560872	Release global assignment and source iteration match source.
+0x008227F0	?nslUndampen@@YAXXZ	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1940	Body applies nslUndampenSource to all sources.
+0x008227F0	?nslUndampen@@YAXXZ	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560874-1560878	Release delegates to nslSource_ForAll(nslUndampenSource).
+0x00822800	?nslSetSourceEffect@@YAXW4nslSourceID@@H@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1314-1332	Body validates source/wave metadata, updates effect state, and marks the effect dirty.
+0x00822800	?nslSetSourceEffect@@YAXW4nslSourceID@@H@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560880-1560914	Release validation, effect bit set/clear, and dirty flag match source.
+0x00822870	?nslSetSourceEffectOn@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1334-1336	Body delegates to nslSetSourceEffect with enabled state.
+0x00822870	?nslSetSourceEffectOn@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560916-1560945	Release enabled effect behavior is equivalent to the generic helper.
+0x008228E0	?nslSetSourceEffectOff@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1338-1340	Body delegates to nslSetSourceEffect with disabled state.
+0x008228E0	?nslSetSourceEffectOff@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560947-1560976	Release disabled effect behavior is equivalent to the generic helper.
+0x00822950	?nslGetSourceEffect@@YAHW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1343-1350	Body returns the source effect bit or zero for an invalid source.
+0x00822950	?nslGetSourceEffect@@YAHW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560978-1560986	Release source validation and effect-bit test match source.
+0x00822990	?nslSetEmitterEffectOn@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1943	Body applies nslSetSourceEffectOn to all sources belonging to the emitter.
+0x00822990	?nslSetEmitterEffectOn@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560988-1560992	Release delegates to nslEmitter_ForAll(eid, nslSetSourceEffectOn).
+0x008229B0	?nslSetEmitterEffectOff@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1947	Body applies nslSetSourceEffectOff to all sources belonging to the emitter.
+0x008229B0	?nslSetEmitterEffectOff@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560994-1560998	Release delegates to nslEmitter_ForAll(eid, nslSetSourceEffectOff).
