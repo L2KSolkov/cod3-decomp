@@ -188,6 +188,7 @@ nglDirLightInfo* nglGetLightAsDirLight(nglDirLightInfo* Out, nglLightNode* Node,
     case NGLLIGHT_PROJECTED_SPOT:
     case NGLLIGHT_PROJECTED_PARALLEL:
     case NGLLIGHT_USER_FIRST:
+        return NULL;
     default:
         _tlAssert("src/ngl_lighting.cpp", 467, "false", "Unsupported light type.");
         return NULL;
