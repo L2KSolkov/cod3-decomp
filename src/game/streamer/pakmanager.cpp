@@ -790,7 +790,8 @@ public:
 
 // ae/core/BitSet.h view (word-based; the core_systems.h template is byte-based)
 template <int N>
-struct BitSet {
+class BitSet {
+public:
     static const int kNumWords = (N + 31) / 32;
     unsigned int mBits[kNumWords];  // +0x00
 
@@ -2038,10 +2039,10 @@ public:
     // - ea: 0x6719E0
     bool IsLoaded(const char* long_name) const;
     // - ea: 0x671A70
-    void CopyContextStack(ae_sized_array<TPakId, 32>* ret) const;
+    void CopyContextStack(ae_sized_array<TPakId, 32>& ret) const;
     // - ea: 0x66FC30
-    void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>* ret,
-                             BitSet<99>* seen) const;
+    void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>& ret,
+                             BitSet<99>& seen) const;
     // - ea: 0x666A40
     void RegisterPakLoaded(PakInfoNode* pak);
     // - ea: 0x666B90
@@ -2051,7 +2052,7 @@ public:
     // - ea: 0x671CC0
     TPakId FindPakId(const char* pak_name) const;
     // - ea: 0x671D60
-    void GetActivePakIds(ae_vector<TPakId>* id_set) const;
+    void GetActivePakIds(ae_vector<TPakId>& id_set) const;
     // - ea: 0x671DF0
     int GetUnloadableBankCount(bool mram) const;
     // - ea: 0x671ED0 (stub: real impl walks mActivePaks and calls
@@ -9368,9 +9369,11 @@ template <typename T> class nalAnimClass;
 class nalAnyPose;
 struct MultiApk;
 const tlFixedString* GetKey(const nglMesh* m);  // ngl_internal.cpp
-void GetAllPaks(ae_sized_array<TPakId, 32>* ret);  // streamer.o (defined below)
+void GetAllPaks(ae_sized_array<TPakId, 32>& ret);  // streamer.o (defined below)
+void GetAllPaks(ae_sized_array<TPakId, 32>* ret);
 void GetPakPrerequisites(TPakId pakId,
-                         ae_sized_array<TPakId, 32>* ret);  // streamer.o
+                         ae_sized_array<TPakId, 32>& ret);  // streamer.o
+void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>* ret);
 apsEffectTemplate* sMissingParticleEffect =
     nullptr;  // ?sMissingParticleEffect@@3PAVapsEffectTemplate@@A @ 0xF59310
 static tlFixedString none_tfs("None");
@@ -9386,16 +9389,16 @@ unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
     prereqs.m_size = 0;
     if (type == INSTBANK_TYPE_ANIMFILE || type == INSTBANK_TYPE_ANIMOFFSET)
     {
-        GetAllPaks(&prereqs);
+        GetAllPaks(prereqs);
     }
     else if (pakId == PAK_ID_INVALID)
     {
         if (PakManager::sInst != nullptr)
-            PakManager::sInst->CopyContextStack(&prereqs);
+            PakManager::sInst->CopyContextStack(prereqs);
     }
     else
     {
-        GetPakPrerequisites(pakId, &prereqs);
+        GetPakPrerequisites(pakId, prereqs);
     }
     if (prereqs.m_size <= 0)
         return 0;
@@ -9432,16 +9435,16 @@ unsigned int InstanceBankMgr::Get(eInstanceBankType type, TPakId pakId,
     prereqs.m_size = 0;
     if (type == INSTBANK_TYPE_ANIMFILE || type == INSTBANK_TYPE_ANIMOFFSET)
     {
-        GetAllPaks(&prereqs);
+        GetAllPaks(prereqs);
     }
     else if (pakId == PAK_ID_INVALID)
     {
         if (PakManager::sInst != nullptr)
-            PakManager::sInst->CopyContextStack(&prereqs);
+            PakManager::sInst->CopyContextStack(prereqs);
     }
     else
     {
-        GetPakPrerequisites(pakId, &prereqs);
+        GetPakPrerequisites(pakId, prereqs);
     }
     if (prereqs.m_size <= 0)
         return 0;
@@ -10881,7 +10884,7 @@ bool PakManager::IsLoaded(const char* long_name) const
 }
 
 // ea: 0x671D60
-void PakManager::GetActivePakIds(ae_vector<TPakId>* id_set) const
+void PakManager::GetActivePakIds(ae_vector<TPakId>& id_set) const
 {
     reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
     reserved_dlist<PakFile>::dlist_node* m_next =
@@ -10891,7 +10894,7 @@ void PakManager::GetActivePakIds(ae_vector<TPakId>* id_set) const
         do
         {
             TPakId id = ((PakFile*)m_head)->mPakId;
-            id_set->push_back(id);
+            id_set.push_back(id);
             m_head = m_next;
             m_next = m_next->m_next;
         } while (m_next != nullptr);
@@ -10931,7 +10934,7 @@ int PakManager::GetUnloadableBankCount(bool mram) const
 }
 
 // ea: 0x671A70
-void PakManager::CopyContextStack(ae_sized_array<TPakId, 32>* ret) const
+void PakManager::CopyContextStack(ae_sized_array<TPakId, 32>& ret) const
 {
     TPakId pakId = mAnimPakId;
     ((ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack())
@@ -10967,7 +10970,7 @@ void PakManager::CopyContextStack(ae_sized_array<TPakId, 32>* ret) const
                     __debugbreak();
             }
             used_paks.Add(v12);
-            ret->push_back(pakId);
+            ret.push_back(pakId);
         }
     }
 
@@ -10991,13 +10994,13 @@ void PakManager::CopyContextStack(ae_sized_array<TPakId, 32>* ret) const
 
 // ea: 0x66FC30
 void PakManager::GetPakPrerequisites(TPakId pakId,
-                                     ae_sized_array<TPakId, 32>* ret,
-                                     BitSet<99>* seen) const
+                                     ae_sized_array<TPakId, 32>& ret,
+                                     BitSet<99>& seen) const
 {
     if (pakId == PAK_ID_INVALID)
         return;
-    ret->push_back(pakId);
-    seen->Add(pakId);
+    ret.push_back(pakId);
+    seen.Add(pakId);
     if (pakId == mDebugPakId)
         return;
     if (mPakInfoBank == nullptr)
@@ -11009,11 +11012,11 @@ void PakManager::GetPakPrerequisites(TPakId pakId,
     {
         for (int i = PAK_ID_MIN; i < PAK_ID_MAX; ++i)
         {
-            if (PakInfo->prereqPakIds->Test(i) && !seen->Test(i))
+            if (PakInfo->prereqPakIds->Test(i) && !seen.Test(i))
             {
-                seen->Add(i);
+                seen.Add(i);
                 pakId = (TPakId)i;
-                ret->push_back(pakId);
+                ret.push_back(pakId);
             }
         }
         return;
@@ -11028,7 +11031,7 @@ void PakManager::GetPakPrerequisites(TPakId pakId,
     {
         TPakId v13 = PakInfo->prereqs.mList[v6]->pakId;
         if (!prereqPakIds.Test(v13))
-            GetPakPrerequisites(v13, &ids, &prereqPakIds);
+            GetPakPrerequisites(v13, ids, prereqPakIds);
     }
     TPakId v14 = PakInfo->pakId;
     if (v14 != PAK_ID_MIN)
@@ -11049,10 +11052,10 @@ void PakManager::GetPakPrerequisites(TPakId pakId,
     for (int j = 0; j < ids.m_size; ++j)
     {
         TPakId v18 = ids.m_elements[j];
-        if (prereqPakIds.Test(v18) && !seen->Test(v18))
+        if (prereqPakIds.Test(v18) && !seen.Test(v18))
         {
-            seen->Add(v18);
-            ret->push_back(v18);
+            seen.Add(v18);
+            ret.push_back(v18);
         }
     }
 }
@@ -11083,7 +11086,7 @@ void ValidatePakId(TPakId pakId)
 }
 
 // ea: 0x66FB10
-void GetAllPaks(ae_sized_array<TPakId, 32>* ret)
+void GetAllPaks(ae_sized_array<TPakId, 32>& ret)
 {
     if (PakManager::sInst == nullptr)
         return;
@@ -11099,7 +11102,7 @@ void GetAllPaks(ae_sized_array<TPakId, 32>* ret)
     while (1)
     {
         TPakId elt = ((PakFile*)m_node)->mPakId;
-        ret->push_back(elt);
+        ret.push_back(elt);
         m_node = m_next;
         m_next = m_next->m_next;
         if (m_next == nullptr)
@@ -11107,29 +11110,41 @@ void GetAllPaks(ae_sized_array<TPakId, 32>* ret)
     }
 }
 
+void GetAllPaks(ae_sized_array<TPakId, 32>* ret)
+{
+    if (ret != nullptr)
+        GetAllPaks(*ret);
+}
+
 // ea: 0x6758C0
-void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>* ret)
+void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>& ret)
 {
     if (PakManager::sInst != nullptr)
     {
         BitSet<99> seenPaks;
         memset(&seenPaks, 0, sizeof(seenPaks));
-        PakManager::sInst->GetPakPrerequisites(pakId, ret, &seenPaks);
+        PakManager::sInst->GetPakPrerequisites(pakId, ret, seenPaks);
         TPakId anim_pak_id = PakManager::sInst->mAnimPakId;
         if (anim_pak_id != PAK_ID_INVALID && !seenPaks.Test(anim_pak_id))
-            ret->push_back(anim_pak_id);
+            ret.push_back(anim_pak_id);
         anim_pak_id = PakManager::sInst->mGlobalPakId;
         if (anim_pak_id != PAK_ID_INVALID && !seenPaks.Test(anim_pak_id))
-            ret->push_back(anim_pak_id);
+            ret.push_back(anim_pak_id);
     }
     else
     {
-        ret->push_back(pakId);
+        ret.push_back(pakId);
     }
 }
 
+void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>* ret)
+{
+    if (ret != nullptr)
+        GetPakPrerequisites(pakId, *ret);
+}
+
 // ea: 0x675960
-void get_context_stack(ae_sized_array<TPakId, 32>* ret)
+void get_context_stack(ae_sized_array<TPakId, 32>& ret)
 {
     if (PakManager::sInst != nullptr)
         PakManager::sInst->CopyContextStack(ret);
