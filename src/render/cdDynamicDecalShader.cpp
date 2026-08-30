@@ -17,12 +17,6 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdDynamicDecalShader* gCDDynamicDecalShader = nullptr;  // ?gCDDynamicDecalShader@@3PAVcdDynamicDecalShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdDynamicDecalRender {
-    unsigned long VS[2] = {};
-    unsigned int const* VShaderTable[2] = {};
-}
-
 void cdDynamicDecalRender::RegisterShader()
 {
     for (int index = 0; index != 2; ++index) {
@@ -36,11 +30,6 @@ void cdDynamicDecalRender::RegisterVShader()
 {
     cdDynamicDecalRender::RegisterShader();
 }
-namespace cdDynamicDecalPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
@@ -117,12 +106,12 @@ tlFixedString cdDynamicDecalShader::GetName() { return tlFixedString("cdDynamicD
 // ============================================================================
 void cdDynamicDecalShader::Register() {
     nglShader::Register();
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShaderSafe((unsigned int*)&cdDynamicDecalRender::VS[v0], cdDynamicDecalRender::VShaderTable, v0);
-    }
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShaderSafe((unsigned int**)&cdDynamicDecalPixel::PS[v0], cdDynamicDecalPixel::PShaderTable, v0);
-    }
+    for (int v0 = 0, i = 2; i != 0; --i, ++v0)
+        nglDxRegisterVShader(&cdDynamicDecalRender::VS[v0],
+                             cdDynamicDecalRender::VShaderTable[v0]);
+    for (int v0 = 0, i = 2; i != 0; --i, ++v0)
+        nglDxRegisterPShader(&cdDynamicDecalPixel::PS[v0],
+                             cdDynamicDecalPixel::PShaderTable[v0]);
 }
 
 // ============================================================================
