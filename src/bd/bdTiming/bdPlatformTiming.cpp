@@ -48,6 +48,6 @@ unsigned int bdPlatformTiming::getLoResElapsedTime(unsigned int t1,
 {
     unsigned __int64 extended = t2;
     if (t2 < t1)
-        extended += 0x100000000ULL;
+        extended += 0xFFFFFFFFULL;
     return static_cast<unsigned int>((extended - t1) / 1000);
 }

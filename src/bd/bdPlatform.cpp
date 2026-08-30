@@ -111,9 +111,7 @@ unsigned long bdPlatformMutex::lock(void*& h) { return WaitForSingleObject(h, 0x
 int bdPlatformMutex::unlock(void*& h) { return ReleaseMutex(h); }
 int bdPlatformMutex::destroy(void*& h) {
     ReleaseMutex(h);
-    int result = CloseHandle(h);
-    h = nullptr;
-    return result;
+    return CloseHandle(h);
 }
 #else
 void* bdPlatformMutex::createMutex() { return nullptr; }
