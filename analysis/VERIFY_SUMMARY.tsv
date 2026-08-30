@@ -287,7 +287,7 @@ rbc_def_contact.o	14	12	2	0	0	0	0
 rbc_def_custom.o	4	2	0	2	0	0	0
 rbc_def_generic.o	26	25	1	0	0	0	0
 rbc_def_ragdoll.o	38	33	4	0	0	1	0
-rbc_def_vehicle.o	46	41	4	1	0	0	0
+rbc_def_vehicle.o	46	41	4	0	0	1	0
 render.o	1038	672	4	288	0	74	0
 rigid_body.o	13	11	1	0	0	1	0
 scr.o	1540	488	1	22	0	1029	0
