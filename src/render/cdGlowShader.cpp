@@ -24,23 +24,98 @@ const _D3DVERTEXSHADERINPUT gGlowVertexElements[6] = {
 // Shader global pointer definitions
 cdGlowShader* gCDGlowShader = nullptr;  // ?gCDGlowShader@@3PAVcdGlowShader@@A
 
+// ea: 0x007C2A00
+cdGlowShader::cdGlowShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[0] &= ~1;
+}
+
+cdGlowShader::~cdGlowShader() = default;
+
+// ea: 0x007C2A30
 tlFixedString cdGlowShader::GetName() { return tlFixedString("Glow"); }
 
-// ea: 0x007C2A80
-void cdGlowRender4::RegisterVShader()
+// ea: 0x007C2A50
+void cdGlowShader::AddNode(nglMeshNode*, nglMeshSection*, nglMaterial*) {}
+
+// ea: 0x007C2A60
+void cdGlowRender4::RegisterShader()
 {
     nglDxRegisterVShader(cdGlowRender4::VS,
                          reinterpret_cast<const unsigned int*>(cdGlowRender4::VShaderTable[0]));
     cdGlowRender4::Shader = cdGlowRender4::VS[0];
 }
 
-// ea: 0x007C2AD0
-void cdGlowRender1::RegisterVShader()
+// ea: 0x007C2AA0
+unsigned int cdGlowRender4::GetVShader() {
+    return static_cast<unsigned int>(cdGlowRender4::VS[0]);
+}
+
+// ea: 0x007C2A80
+void cdGlowRender4::RegisterVShader()
+{
+    cdGlowRender4::RegisterShader();
+}
+
+// ea: 0x007C2AB0
+void cdGlowRender1::RegisterShader()
 {
     nglDxRegisterVShader(cdGlowRender1::VS,
                          reinterpret_cast<const unsigned int*>(cdGlowRender1::VShaderTable[0]));
     cdGlowRender1::Shader = cdGlowRender1::VS[0];
 }
+
+// ea: 0x007C2AF0
+unsigned int cdGlowRender1::GetVShader() {
+    return static_cast<unsigned int>(cdGlowRender1::VS[0]);
+}
+
+// ea: 0x007C2AD0
+void cdGlowRender1::RegisterVShader()
+{
+    cdGlowRender1::RegisterShader();
+}
+
+// ea: 0x007C2B00
+void cdGlowShrink::RegisterShader()
+{
+    nglDxRegisterPShader(cdGlowShrink::PS,
+                         reinterpret_cast<const unsigned int*>(cdGlowShrink::PShaderTable[0]));
+    cdGlowShrink::Shader = cdGlowShrink::PS[0];
+}
+
+// ea: 0x007C2B20
+void cdGlowShrink::RegisterPShader() { cdGlowShrink::RegisterShader(); }
+// ea: 0x007C2B40
+unsigned long* cdGlowShrink::GetPShader() { return cdGlowShrink::PS[0]; }
+
+// ea: 0x007C2B50
+void cdGlowBlur::RegisterShader()
+{
+    nglDxRegisterPShader(cdGlowBlur::PS,
+                         reinterpret_cast<const unsigned int*>(cdGlowBlur::PShaderTable[0]));
+    cdGlowBlur::Shader = cdGlowBlur::PS[0];
+}
+
+// ea: 0x007C2B70
+void cdGlowBlur::RegisterPShader() { cdGlowBlur::RegisterShader(); }
+// ea: 0x007C2B90
+unsigned long* cdGlowBlur::GetPShader() { return cdGlowBlur::PS[0]; }
+
+// ea: 0x007C2BA0
+void cdGlowApply::RegisterShader()
+{
+    nglDxRegisterPShader(cdGlowApply::PS,
+                         reinterpret_cast<const unsigned int*>(cdGlowApply::PShaderTable[0]));
+    cdGlowApply::Shader = cdGlowApply::PS[0];
+}
+
+// ea: 0x007C2BC0
+void cdGlowApply::RegisterPShader() { cdGlowApply::RegisterShader(); }
+// ea: 0x007C2BE0
+unsigned long* cdGlowApply::GetPShader() { return cdGlowApply::PS[0]; }
 
 // ============================================================================
 // Globals
@@ -68,11 +143,6 @@ void InitCDGlowShader() {
     cdGlowShader* v0 = (cdGlowShader*)mem_heap_malloc(0x10);
     if (v0 != NULL) {
         ::new (v0) cdGlowShader;
-        v0->next = tlInitList::head;
-        tlInitList::head = v0;
-        v0->Disabled = false;
-        // vftable = cdGlowShader
-        ShaderCommon::ShaderSwitching.__s0[0] &= ~1;
     } else {
         v0 = NULL;
     }
