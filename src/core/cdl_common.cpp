@@ -90,6 +90,54 @@ static const __m128 Float4_SignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
 // SSE reassembly macros (match compiler's dot/hadd patterns)
 #define DOT3(v) ((v).m128_f32[0] + ((v).m128_f32[1] + (v).m128_f32[2]))
 
+// ea: 0x81D420
+const math::Position3 cdlConvex::get_min() const
+{
+    math::Position3 result;
+    result.v = _mm_sub_ps(m_sphere.v, m_dims.v);
+    return result;
+}
+
+// ea: 0x81D450
+const math::Position3 cdlConvex::get_max() const
+{
+    math::Position3 result;
+    result.v = _mm_add_ps(m_sphere.v, m_dims.v);
+    return result;
+}
+
+// ea: 0x81D480
+const math::Dir3& cdlConvex::get_dims() const
+{
+    return m_dims;
+}
+
+// ea: 0x81D490
+const math::Position3& cdlConvex::get_center_local() const
+{
+    return reinterpret_cast<const math::Position3&>(m_sphere);
+}
+
+// ea: 0x81D4A0
+float cdlConvex::get_radius() const
+{
+    return m_sphere.v.m128_f32[3];
+}
+
+// ea: 0x81E4D0
+const math::Position3 cdlConvex::get_center(const math::Mat43& mat) const
+{
+    math::Position3 result;
+    result.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 0), mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 85), mat.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 170), mat.z.v),
+            mat.w.v));
+    return result;
+}
+
 // ============================================================================
 // math::operator/ — compose A with the inverse affine transform B
 // ea: 0x81D260

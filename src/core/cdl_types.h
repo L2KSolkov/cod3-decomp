@@ -60,38 +60,20 @@ public:
 
     // cdl_common.o COMDAT helpers recovered from IDA.
     // ea: 0x81D420
-    math::Position3 get_min() const {
-        math::Position3 result;
-        result.v = _mm_sub_ps(m_sphere.v, m_dims.v);
-        return result;
-    }
+    const math::Position3 get_min() const;
 
     // ea: 0x81D450
-    math::Position3 get_max() const {
-        math::Position3 result;
-        result.v = _mm_add_ps(m_sphere.v, m_dims.v);
-        return result;
-    }
+    const math::Position3 get_max() const;
 
     // ea: 0x81D480
-    const math::Dir3& get_dims() const { return m_dims; }
+    const math::Dir3& get_dims() const;
     // ea: 0x81D490
-    const math::Vector4& get_center_local() const { return m_sphere; }
+    const math::Position3& get_center_local() const;
     // ea: 0x81D4A0
-    float get_radius() const { return m_sphere.v.m128_f32[3]; }
+    float get_radius() const;
 
     // ea: 0x81E4D0
-    math::Position3 get_center(const math::Mat43& mat) const {
-        math::Position3 result;
-        result.v = _mm_add_ps(
-            _mm_add_ps(
-                _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 0), mat.x.v),
-                _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 85), mat.y.v)),
-            _mm_add_ps(
-                _mm_mul_ps(_mm_shuffle_ps(m_sphere.v, m_sphere.v, 170), mat.z.v),
-                mat.w.v));
-        return result;
-    }
+    const math::Position3 get_center(const math::Mat43& mat) const;
 };
 static_assert(sizeof(cdlConvex) == 0x30, "cdlConvex size mismatch");
 static_assert(offsetof(cdlConvex, __vftable)      == 0x00, "cdlConvex.__vftable offset mismatch");
