@@ -13547,7 +13547,8 @@ static void InternalGetAllocs(float numAvailableBanks, float* numBanks,
         ++v7;
         v8 += bankSize;
     }
-    if (*numBanks > 0.0f)
+    const float wholeBanks = (float)(int)(*numBanks);
+    if (*numBanks > wholeBanks)
     {
         int v9 = 0;
         float v16 = numAvailableBanks + 0.5f;
