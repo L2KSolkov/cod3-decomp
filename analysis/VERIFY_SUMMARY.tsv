@@ -141,7 +141,7 @@ cdDebugVertexDef.o	7	5	0	0	0	2	0
 cdDecalShader.o	22	15	0	1	0	6	0
 cdDynamicDecalShader.o	37	31	0	5	0	1	0
 cdDynamicDecalVertexDef.o	2	0	1	0	0	1	0
-cdFlagShader.o	42	33	1	1	0	7	0
+cdFlagShader.o	42	33	0	1	0	8	0
 cdGlassShader.o	25	9	0	0	0	16	0
 cdGlowShader.o	50	39	8	0	0	3	0
 cdGunShader.o	24	19	0	0	0	5	0
