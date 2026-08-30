@@ -13682,6 +13682,7 @@ half_search:
             }
         }
     }
+found_result:
     {
         unsigned int v10 = 0;
         if (half && bat.mram_alloc2.Test(index))
@@ -13721,8 +13722,7 @@ not_found:
         if (!AeAssert::IsIgnored()
             && AeAssert::Assert("bank alloc index out of range?"))
             __debugbreak();
-        mem_info result = mem_info(nullptr, 0);
-        return result;
+        goto found_result;
     }
 }
 
