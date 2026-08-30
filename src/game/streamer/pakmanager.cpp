@@ -574,6 +574,7 @@ static inline bool IsValidPakId(TPakId id)
            static_cast<unsigned int>(PAK_ID_MAX);
 }
 class PakFile;
+class ConfigString;
 
 // Minimal view of the IDA-typed client static state.  PostProcess only reads
 // the state field at +0x04; the complete object is owned by cl.o.
@@ -590,11 +591,21 @@ public:
     static ConfigStringManager* sInst;
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);
+    void CallbackSearch(TPakId pakId, const char* type,
+                        void (*callback)(const char*, const ConfigString*));
 };
+
+extern void ParseInteractionConfigString(const char* name,
+                                         const ConfigString* cfgstr);
+extern void ParseInteractStateConfigString(const char* name,
+                                           const ConfigString* cfgstr);
 
 void G_ParseInteractionInfo(TPakId pakId)
 {
-    (void)pakId;  // stub: game.o
+    ConfigStringManager::sInst->CallbackSearch(
+        pakId, "INTERACTIONFILE", ParseInteractionConfigString);
+    ConfigStringManager::sInst->CallbackSearch(
+        pakId, "INTERACTSTATEFILE", ParseInteractStateConfigString);
 }
 
 // Handle (game_types.h; class for VHandle mangling)
