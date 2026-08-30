@@ -718,7 +718,7 @@ extern void SoundDevice_UnpauseAllSounds(void* sInst);
 extern int Key_GetCatcher();
 extern void Key_SetCatcher(int catcher);
 void* EntityHandleDb_mActiveList = nullptr;  // cg.o BSS artifact
-char cgsGlobal_shellshockParms[0x7C];  // cg.o BSS
+char cgsGlobal_shellshockParms[0xF8];  // cg.o BSS: two shellshock_parms_t entries
 static Entity* EntityHandleDb_Get(unsigned int handleVal)
 {
     unsigned int v = handleVal & 0xFFF;
@@ -951,7 +951,8 @@ void CG_ConfigStringModifiedInternal(int num)
                     if (CG_LoadShellShockCvars(v2) != 0)
                         CG_SetShellShockParmsFromCvars(
                             (shellshock_parms_t*)((char*)
-                                cgsGlobal_shellshockParms + (num - 561)));
+                                cgsGlobal_shellshockParms
+                                + (num - 561) * 0x7C));
                 }
             }
         }

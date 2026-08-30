@@ -5271,7 +5271,7 @@ extern void SV_GetConfigstring(int index, Broc::string& str);  // ?SV_GetConfigs
 struct shellshock_parms_t;
 extern void CG_SetShellShockParmsFromCvars(
     shellshock_parms_t* parms);  // ?CG_SetShellShockParmsFromCvars@@YAXPAUshellshock_parms_t@@@Z (cg_view.cpp)
-extern char cgsGlobal_shellshockParms[0x7C];  // cg.o BSS (cg_ents.cpp)
+extern char cgsGlobal_shellshockParms[0xF8];  // cg.o BSS (cg_ents.cpp)
 extern void Axis4ToAngles(const float (*const axis)[4],
                           float* const angles);  // ?Axis4ToAngles@@YAXQAY03$$CBMQAM@Z (q_math.cpp)
 extern void GetAllPaks(ae_sized_array<TPakId, 32>* ret);  // ?GetAllPaks@@YAXAAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z (pakmanager.cpp)

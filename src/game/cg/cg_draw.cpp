@@ -799,7 +799,7 @@ extern void nglSetScissor(float x1, float y1, float x2, float y2);
 extern void CG_DrawCrosshair();
 extern void CG_Draw2D();
 extern void CG_DrawActive();
-extern char cgsGlobal_shellshockParms[0x7C];
+extern char cgsGlobal_shellshockParms[0xF8];
 extern void View_SetViewportClipping(int clientIndex);
 namespace View { extern int lNumViewports; }
 int cg_aWeaponSelect[4];  // ?cg_aWeaponSelect@@3PAHA (cg.o)
