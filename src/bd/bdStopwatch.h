@@ -9,7 +9,8 @@
 #include "bd/bdTiming/bdShortTimer.h"
 #include <stddef.h>
 
-struct bdStopwatch {
+class bdStopwatch {
+public:
     unsigned __int64 m_start;   // +0x00
     unsigned __int64 m_stop;    // +0x08
 
