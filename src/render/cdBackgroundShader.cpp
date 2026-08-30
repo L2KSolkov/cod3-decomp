@@ -25,7 +25,8 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 cdBackgroundShader* gCDBackgroundShader = nullptr;  // ?gCDBackgroundShader@@3PAVcdBackgroundShader@@A
 cdBackgroundShader* g_cdBackgroundShader = nullptr;  // ?g_cdBackgroundShader@@3PAVcdBackgroundShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o).
+// Shader static data definitions are restored in cdBackgroundShaderData.cpp.
+#if 0
 namespace cdBackgroundRender {
     static const unsigned int VShaderMicrocode[49] = {
         0x000c2078, 0x00000000, 0x0062601a, 0x08001468, 0xfeb00000,
@@ -95,6 +96,8 @@ namespace cdBackgroundFullbrightPixel {
     unsigned int const** PShaderTable = PShaderTableStorage;
     unsigned long* Shader = nullptr;
 }
+
+#endif
 
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
