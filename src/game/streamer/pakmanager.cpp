@@ -10442,6 +10442,7 @@ LABEL_20:
         ContextStack.m_size = ContextStack.m_size - 1;
 }
 
+// ea: 0x666D40
 void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
 {
     if (IsValidPakId(id))
