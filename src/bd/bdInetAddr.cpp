@@ -148,6 +148,7 @@ bdInetAddr bdInetAddr::Any() {
     return result;
 }
 
+// ea: 0x0089D700
 bdInetAddr::bdInetAddr(unsigned int addr) {
     m_addr.inUn.m_iaddr = addr;
 }
