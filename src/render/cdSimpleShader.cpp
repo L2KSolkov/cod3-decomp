@@ -202,7 +202,7 @@ void ToggleCDSimpleShader() {
 
 static void* cdSimpleShaderNodeVtable()
 {
-    static cdSimpleShaderNode Probe{};
+    static cdSimpleShaderNode Probe(nullptr, nullptr, nullptr, false);
     return *reinterpret_cast<void**>(&Probe);
 }
 

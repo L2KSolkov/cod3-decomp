@@ -14,10 +14,25 @@
 // Shader global pointer definitions
 cdSimpleColorShader* gCDSimpleColorShader = nullptr;  // ?gCDSimpleColorShader@@3PAVcdSimpleColorShader@@A
 
+// ea: 0x007D5EC0
+cdSimpleColorShader::cdSimpleColorShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[1] &= ~8;
+}
+
+// ea: 0x007D60B0
+cdSimpleColorShader::~cdSimpleColorShader() = default;
+
 // ============================================================================
 // cdSimpleColorShader::GetName — ea: 0x7D5EF0
 // ============================================================================
+// ea: 0x007D5EF0
 tlFixedString cdSimpleColorShader::GetName() { return tlFixedString("cdSimpleColor"); }
+
+// ea: 0x007D5F80
+void cdSimpleColorShader::Register() { nglShader::Register(); }
 
 // ============================================================================
 // InitCDSimpleColorShader — allocate the shader and link into the init list.
@@ -27,12 +42,6 @@ void InitCDSimpleColorShader() {
     cdSimpleColorShader* result = (cdSimpleColorShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdSimpleColorShader;
-        // vftable = tlInitList, link into init list
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdSimpleColorShader
-        ShaderCommon::ShaderSwitching.__s0[1] &= ~8;
         gCDSimpleColorShader = result;
     } else {
         gCDSimpleColorShader = NULL;
@@ -61,11 +70,8 @@ void cdSimpleColorShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSecti
     if ((ShaderCommon::ShaderSwitching.__s0[1] & 8) == 0) {
         cdSimpleShaderNode* node = (cdSimpleShaderNode*)nglListAlloc(0x1C, 0x10);
         if (node != NULL) {
-            node->MeshNode = iMeshNode;
-            node->Section = iSection;
-            ::new (node) cdSimpleShaderNode;
-            node->mMaterial = (cdSimpleShaderMat*)iMat;
-            node->hasColorVerts = true;
+            ::new (node) cdSimpleShaderNode(iMeshNode, iSection,
+                                             (cdSimpleShaderMat*)iMat, true);
         } else {
             node = NULL;
         }
@@ -75,3 +81,16 @@ void cdSimpleColorShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSecti
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+// ea: 0x007D6010
+cdSimpleShaderNode::cdSimpleShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdSimpleShaderMat* iMaterial, bool colorVerts) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+    this->hasColorVerts = colorVerts;
+}
+
+// ea: 0x007D6070
+cdSimpleShaderNode::~cdSimpleShaderNode() = default;

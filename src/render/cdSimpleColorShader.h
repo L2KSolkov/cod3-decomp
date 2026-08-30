@@ -64,6 +64,12 @@ struct cdSimpleShaderNode : nglShaderNode {
     cdSimpleShaderMat* mMaterial;     // +0x14
     bool               hasColorVerts; // +0x18
 
+    cdSimpleShaderNode(nglMeshNode* iMeshNode,
+                       nglMeshSection* iSection,
+                       cdSimpleShaderMat* iMaterial,
+                       bool hasColorVerts); // @0x7D6010
+    virtual ~cdSimpleShaderNode(); // @0x7D6070
+
     void Render() override;           // @0x7D6540
 };
 static_assert(sizeof(cdSimpleShaderNode) == 0x1C, "cdSimpleShaderNode size mismatch");
@@ -83,7 +89,10 @@ static_assert(sizeof(SimpleContext) == 0x40, "SimpleContext size mismatch");
 // ============================================================================
 class cdSimpleColorShader : public nglShader {
 public:
+    cdSimpleColorShader(); // @0x7D5EC0
+    virtual ~cdSimpleColorShader(); // @0x7D60B0
     virtual tlFixedString GetName(); // @0x7D5EF0
+    virtual void Register(); // @0x7D5F80
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D5F90
 };
 static_assert(sizeof(cdSimpleColorShader) == 0x10, "cdSimpleColorShader size mismatch");
