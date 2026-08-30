@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008AB910	??0bdCookie@@QAE@IIII@Z	V3	PASS	ida-manual-bd-cookie-20260829	2026-08-29	src/bd/bdCookie.cpp:70-85	Source initializes all four cookie tags and lazily seeds the 20-byte static secret through bdTrulyRandomImpl.
+0x008AB910	??0bdCookie@@QAE@IIII@Z	V4	PASS	ida-manual-bd-cookie-20260829	2026-08-29	IDA:0x008AB910;src/bd/bdCookie.cpp:70-85	Release/source match tag assignment order, one-time m_secret initialization, getInstance/getRandomUByte8(20), initialized flag store, and constructor return semantics.
