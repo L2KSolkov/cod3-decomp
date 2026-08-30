@@ -3,7 +3,7 @@
 #include "apsColorRectangleRenderer.h"
 
 namespace apsColorRectangleRender {
-static const unsigned int Microcode[58] = {
+static const unsigned int Microcode[57] = {
         0x000e2078, 0x00000000, 0x00e1201b, 0x08373800, 0x21001800,
         0x00000000, 0x00e0c01b, 0x0836d800, 0x28000000, 0x00000000,
         0x008260ff, 0x04007954, 0xf8b00000, 0x00000000, 0x008280ff,
@@ -15,7 +15,7 @@ static const unsigned int Microcode[58] = {
         0x2130e818, 0x00000000, 0x03202055, 0xb5543800, 0x98b0f82c,
         0x00000000, 0x0042e41b, 0x2836f800, 0x20a0f848, 0x00000000,
         0x004000ff, 0x34016800, 0x20b01818, 0x00000000, 0x0040001a,
-        0xc4002800, 0x20b0e801, 0x00e4a270,
+        0xc4002800, 0x20b0e801,
 };
 static const unsigned int* VShaderTableStorage[1] = { Microcode };
 static unsigned int VShaderHandle = 0;
@@ -43,4 +43,3 @@ static unsigned int* PShaderHandle = 0;
 unsigned int** PS = &PShaderHandle;
 const unsigned int** PShaderTable = PShaderTableStorage;
 }
-
