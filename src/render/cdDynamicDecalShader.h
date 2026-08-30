@@ -17,7 +17,8 @@
 // ============================================================================
 // cdDynamicDecalShaderMat — dynamic decal shader material (28 bytes)
 // ============================================================================
-struct cdDynamicDecalShaderMat : nglMaterial {
+class cdDynamicDecalShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;      // +0x10
     float       mZbias;        // +0x14
     bool        mAlphaBlend;   // +0x18
@@ -29,7 +30,8 @@ static_assert(sizeof(cdDynamicDecalShaderMat) == 0x1C, "cdDynamicDecalShaderMat 
 // ============================================================================
 // cdDynamicDecalShaderNode — dynamic decal shader render node (28 bytes)
 // ============================================================================
-struct cdDynamicDecalShaderNode : nglShaderNode {
+class cdDynamicDecalShaderNode : public nglShaderNode {
+public:
     cdDynamicDecalShaderMat* mMaterial;  // +0x14
     int                     Clip;       // +0x18
 };
@@ -40,6 +42,8 @@ static_assert(sizeof(cdDynamicDecalShaderNode) == 0x1C, "cdDynamicDecalShaderNod
 // ============================================================================
 class cdDynamicDecalShader : public nglShader {
 public:
+    cdDynamicDecalShader(); // @0x7CD260
+    virtual ~cdDynamicDecalShader(); // @0x7CD430
     virtual tlFixedString GetName(); // @0x7CD290
     virtual void Register();  // @0x7CBE80
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CBE90
@@ -54,17 +58,26 @@ namespace cdDynamicDecalRender {
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdDynamicDecalRender@@3PAPBIA
     void RegisterShader();                          // @0x007CD2C0
     void RegisterVShader();                         // @0x007CD2E0
+    unsigned int GetVShader(unsigned int index);   // @0x007CD2F0
+    struct cdDynamicDecalParams {
+        unsigned int data[0x6C];
+        cdDynamicDecalParams();                    // @0x007CD350
+    };
+    void SetConstants(const cdDynamicDecalParams& Params); // @0x007CD370
 }
 namespace cdDynamicDecalPixel {
     extern unsigned long* PS[2];                    // ?PS@cdDynamicDecalPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];      // ?PShaderTable@cdDynamicDecalPixel@@3PAPBIA
+    void RegisterShader();                            // @0x007CD300
+    void RegisterPShader();                           // @0x007CD330
+    unsigned long* GetPShader(unsigned int index);  // @0x007CD340
 }
 
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern unsigned int gShaderSwitchingFlags;  // @0x10DDB14 (dword after ShaderCommon::ShaderSwitching)
 extern cdDynamicDecalShader* gCDDynamicDecalShader;  // @0x10DE4A4

@@ -30,6 +30,37 @@ void cdDynamicDecalRender::RegisterVShader()
 {
     cdDynamicDecalRender::RegisterShader();
 }
+
+unsigned int cdDynamicDecalRender::GetVShader(unsigned int index)
+{
+    return static_cast<unsigned int>(cdDynamicDecalRender::VS[index]);
+}
+
+cdDynamicDecalRender::cdDynamicDecalParams::cdDynamicDecalParams() {}
+
+void cdDynamicDecalRender::SetConstants(
+    const cdDynamicDecalRender::cdDynamicDecalParams& Params)
+{
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, &Params, 0x6Cu);
+}
+
+void cdDynamicDecalPixel::RegisterShader()
+{
+    for (int index = 0; index != 2; ++index) {
+        nglDxRegisterPShader(&cdDynamicDecalPixel::PS[index],
+                             cdDynamicDecalPixel::PShaderTable[index]);
+    }
+}
+
+void cdDynamicDecalPixel::RegisterPShader()
+{
+    cdDynamicDecalPixel::RegisterShader();
+}
+
+unsigned long* cdDynamicDecalPixel::GetPShader(unsigned int index)
+{
+    return cdDynamicDecalPixel::PS[index];
+}
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
@@ -73,15 +104,18 @@ cdDynamicDecalShaderMat::cdDynamicDecalShaderMat() {
 // InitCDDynamicDecalShader — allocate the shader and link into the init list.
 // ea: 0x7CBE10
 // ============================================================================
+// ea: 0x007CD260
+cdDynamicDecalShader::cdDynamicDecalShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[0] &= ~2;
+}
+
 void InitCDDynamicDecalShader() {
     cdDynamicDecalShader* result = (cdDynamicDecalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdDynamicDecalShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdDynamicDecalShader
-        ShaderCommon::ShaderSwitching.__s0[0] &= ~2;
         gCDDynamicDecalShader = result;
     } else {
         gCDDynamicDecalShader = NULL;
@@ -106,12 +140,8 @@ tlFixedString cdDynamicDecalShader::GetName() { return tlFixedString("cdDynamicD
 // ============================================================================
 void cdDynamicDecalShader::Register() {
     nglShader::Register();
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0)
-        nglDxRegisterVShader(&cdDynamicDecalRender::VS[v0],
-                             cdDynamicDecalRender::VShaderTable[v0]);
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0)
-        nglDxRegisterPShader(&cdDynamicDecalPixel::PS[v0],
-                             cdDynamicDecalPixel::PShaderTable[v0]);
+    cdDynamicDecalRender::RegisterShader();
+    cdDynamicDecalPixel::RegisterShader();
 }
 
 // ============================================================================
@@ -125,7 +155,8 @@ void cdDynamicDecalShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            // vftable = cdDynamicDecalShaderNode
+            // Release writes the node vtable directly here; the constructor
+            // symbol exists in the object but is not called by AddNode.
             node->mMaterial = (cdDynamicDecalShaderMat*)iMat;
         } else {
             node = NULL;
@@ -137,3 +168,5 @@ void cdDynamicDecalShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+cdDynamicDecalShader::~cdDynamicDecalShader() = default;
