@@ -531,6 +531,7 @@ public:
     bool readString(bdString& s);                          // ?readString@bdBitBuffer@@QAE_NAAVbdString@@@Z
     bool readString(char* s, unsigned int maxLen);         // ?readString@bdBitBuffer@@QAE_NQADI@Z
     bool testBool();                                       // ?testBool@bdBitBuffer@@QAE_NXZ
+    bdBitBufferDataType readDataType();                    // ?readDataType@bdBitBuffer@@QAE?AW4bdBitBufferDataType@@XZ
     bool readDataType(bdBitBufferDataType type);
     static void typeToString(bdBitBufferDataType type, char* const buffer,
                              unsigned int bufferSize);

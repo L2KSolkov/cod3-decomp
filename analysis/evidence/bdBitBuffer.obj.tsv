@@ -1,4 +1,6 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x0089BC10	?readDataType@bdBitBuffer@@QAE?AW4bdBitBufferDataType@@XZ	V3	PASS	bd-bitbuffer-read-type-manual-20260830	2026-08-30	src/bd/stubs.cpp:438-444	Concrete no-argument type reader is present and handles ranged-read failure with the release no-type sentinel.
+0x0089BC10	?readDataType@bdBitBuffer@@QAE?AW4bdBitBufferDataType@@XZ	V4	PASS	bd-bitbuffer-read-type-manual-20260830	2026-08-30	IDA:0x0089BC10;release C dump:0x0089BC10;src/bd/stubs.cpp:438-444	Release/source match readRangedUInt32(value,0,0x1f,false), failure return 0, and enum return.
 0x0089B500	??1bdBitBuffer@@UAE@XZ	V3	PASS	bd-bitbuffer-dtor-manual-20260830	2026-08-30	src/bd/stubs.cpp:394-403	Concrete destructor releases the embedded byte array and resets its fields before normal member/base teardown.
 0x0089B500	??1bdBitBuffer@@UAE@XZ	V4	PASS	bd-bitbuffer-dtor-manual-20260830	2026-08-30	IDA:0x0089B500;release C dump:0x0089B500;src/bd/stubs.cpp:394-403	Release/source match the storage release, nulling, size/capacity reset, and base/member teardown protocol.
 0x0089BCD0	??_EbdBitBuffer@@UAEPAXI@Z	V3	PASS	bd-bitbuffer-dtor-manual-20260830	2026-08-30	src/bd/bd_types.h:535;src/bd/stubs.cpp:394-403	The generated vector deleting destructor delegates to the restored virtual destructor and uses the release alias address.

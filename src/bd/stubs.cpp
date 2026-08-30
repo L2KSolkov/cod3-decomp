@@ -425,6 +425,15 @@ bool bdBitBuffer::getTypeCheck() const
     return m_typeChecked;
 }
 
+// ea: 0x0089BC10
+bdBitBuffer::bdBitBufferDataType bdBitBuffer::readDataType()
+{
+    unsigned int value = 0;
+    if (!readRangedUInt32(value, 0, 0x1Fu, false))
+        return BD_BB_NO_TYPE;
+    return (bdBitBufferDataType)value;
+}
+
 // bdBitBuffer IO primitives (bdCore:bdBitBuffer.obj), reconstructed from the
 // generated release dump (writeBits 0x89BCF0, readBits 0x89B2F0).
 // ea: 0x0089BCF0
