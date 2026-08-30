@@ -45,6 +45,16 @@ extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
 cdDecalShader* gCDDecalShader = nullptr;  // ?gCDDecalShader@@3PAVcdDecalShader@@A
 cdDecalShader* g_cdDecalShader = nullptr;  // ?g_cdDecalShader@@3PAVcdDecalShader@@A
 
+namespace AeAssert {
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    extern ECoderId gCurrentAuthor;
+    extern const char* gCurrentFile;
+    extern int gCurrentLine;
+    extern const char* gCurrentExpr;
+    bool IsIgnored();
+    bool Assert(const char* msg, ...);
+}
+
 // Shader static data definitions (render_xboxr cd*Shader.o).
 namespace cdDecalRender {
     static const unsigned int VShaderMicrocode[49] = {
@@ -114,6 +124,26 @@ namespace cdDecalFullbrightPixel {
     unsigned int const** PShaderTable = PShaderTableStorage;
     unsigned long* Shader = nullptr;
 }
+
+// ea: 0x007D1720
+cdDecalShaderMat::cdDecalShaderMat(nglTexture* iTexture) {
+    this->mTexture = iTexture;
+    cdDecalShader* shader = g_cdDecalShader;
+    if (shader != NULL) {
+        this->Shader = shader;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "cdDecalShader.cpp";
+    AeAssert::gCurrentLine = 14;
+    AeAssert::gCurrentExpr = "g_cdDecalShader";
+    if (!AeAssert::IsIgnored() &&
+        AeAssert::Assert("Material is being created before the shader; the pointers won't be set up properly")) {
+        __debugbreak();
+    }
+    this->Shader = g_cdDecalShader;
+}
+
 // ============================================================================
 // InitCDDecalShader — allocate the shader and link into the init list.
 // ea: 0x7D17B0
@@ -154,9 +184,12 @@ tlFixedString cdDecalShader::GetName() { return tlFixedString("cdDecal"); }
 // ============================================================================
 void cdDecalShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdDecalRender::VS, cdDecalRender::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdDecalPixel::PS, cdDecalPixel::PShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdDecalFullbrightPixel::PS, cdDecalFullbrightPixel::PShaderTable, 0);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdDecalRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdDecalRender::VShaderTable[0]));
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdDecalPixel::PS),
+                         reinterpret_cast<const unsigned int*>(cdDecalPixel::PShaderTable[0]));
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdDecalFullbrightPixel::PS),
+                         reinterpret_cast<const unsigned int*>(cdDecalFullbrightPixel::PShaderTable[0]));
 }
 
 // ============================================================================
