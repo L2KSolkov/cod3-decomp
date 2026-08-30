@@ -43,15 +43,16 @@ bool gAssertsEnabled = true;   // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr:Ae
 struct IgnoredAssert {
     int         line;
     char        file[256];
-    char        expr[1024];
+    char        exp[1024];
     IgnoredAssert();
 };
 #define MAX_IGNORED 500
 static IgnoredAssert s_ignored[MAX_IGNORED];
 
+// ea: 0x007BE230
 IgnoredAssert::IgnoredAssert() {
     file[0] = 0;
-    expr[0] = 0;
+    exp[0] = 0;
 }
 
 struct InfiniteRecursionStopper {
@@ -60,11 +61,13 @@ struct InfiniteRecursionStopper {
     ~InfiniteRecursionStopper();
 };
 
+// ea: 0x007BED30
 InfiniteRecursionStopper::InfiniteRecursionStopper(bool* ref)
     : mRecursing(ref) {
     *ref = true;
 }
 
+// ea: 0x007BED50
 InfiniteRecursionStopper::~InfiniteRecursionStopper() {
     *mRecursing = false;
 }
@@ -84,9 +87,9 @@ bool IsIgnored() {
         if (s_ignored[i].line == gCurrentLine &&
             strcmp(gCurrentFile, s_ignored[i].file) == 0) {
             if (gCurrentExpr) {
-                if (strcmp(gCurrentExpr, s_ignored[i].expr) == 0)
+                if (strcmp(gCurrentExpr, s_ignored[i].exp) == 0)
                     return true;
-            } else if (!s_ignored[i].expr[0]) {
+            } else if (!s_ignored[i].exp[0]) {
                 return true;
             }
         }
@@ -98,6 +101,7 @@ bool IsIgnored() {
 // OnScreenMessageHandler - display assertion on screen / debug output
 // ea: 0x7BE500
 // ============================================================================
+// ea: 0x007BE500
 static bool OnScreenMessageHandler(ONSCREEN_MESSAGE_TYPE type, const char* text) {
     const char* prefix = "ASSERT";
     if (type == ONSCREEN_MESSAGE_ERROR) prefix = "ERROR";
