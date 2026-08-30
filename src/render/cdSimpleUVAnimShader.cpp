@@ -220,7 +220,7 @@ cdSimpleUVAnimShaderNode::cdSimpleUVAnimShaderNode(
 cdSimpleUVAnimShaderNode::~cdSimpleUVAnimShaderNode() = default;
 
 // ea: 0x007C7B20
-SimpleUVAnimContext::SimpleUVAnimContext() = default;
+SimpleUVAnimContext::SimpleUVAnimContext() {}
 
 // ============================================================================
 // cdSimpleUVAnimShaderNode::SetTextureMatrix — fetch and transpose the
