@@ -179,6 +179,7 @@ add_library(cod3_render STATIC
     src/render/cdGlowShader.cpp
     src/render/cdGlowShaderData.cpp
     src/render/cdSkyShader.cpp
+    src/render/cdSkyShaderData.cpp
     src/render/cdOceanGlobals.cpp
     src/render/stubs.cpp
 )
