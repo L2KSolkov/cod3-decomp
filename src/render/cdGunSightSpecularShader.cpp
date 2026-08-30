@@ -56,7 +56,7 @@ void cdGunSightSpecularRender::RegisterVShader()
 }
 
 // ea: 0x007CDD00
-unsigned int cdGunSightSpecularRender::GetVShader(unsigned int index)
+unsigned long cdGunSightSpecularRender::GetVShader(unsigned int index)
 {
     return static_cast<unsigned int>(cdGunSightSpecularRender::VS[index]);
 }

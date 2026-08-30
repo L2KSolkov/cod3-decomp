@@ -38,7 +38,7 @@ void cdScratchShaderVertex::RegisterVShader()
 }
 
 // ea: 0x007C5DD0
-unsigned int cdScratchShaderVertex::GetVShader()
+unsigned long cdScratchShaderVertex::GetVShader()
 {
     return static_cast<unsigned int>(cdScratchShaderVertex::VS[0]);
 }

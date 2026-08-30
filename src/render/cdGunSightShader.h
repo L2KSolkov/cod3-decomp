@@ -60,19 +60,19 @@ namespace cdGunSightRender {
     extern unsigned int VS[1];               // ?VS@cdGunSightRender@@3PAKA
     extern unsigned int const* VShaderTable[1]; // ?VShaderTable@cdGunSightRender@@3PAPBIA
     void RegisterVShader();                  // @0x007CE650
-    unsigned int GetVShader();               // @0x007CE670
+    unsigned long GetVShader();              // @0x007CE670
 }
 namespace cdGunSightPixel {
     extern unsigned int* PS[1];              // ?PS@cdGunSightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[1]; // ?PShaderTable@cdGunSightPixel@@3PAPBIA
     void RegisterPShader();                   // @0x007CE680
-    unsigned int* GetPShader();               // @0x007CE6A0
+    unsigned long* GetPShader();              // @0x007CE6A0
 }
 namespace cdGunSightFullbrightPixel {
     extern unsigned int* PS[1];              // ?PS@cdGunSightFullbrightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[1]; // ?PShaderTable@cdGunSightFullbrightPixel@@3PAPBIA
     void RegisterPShader();                   // @0x007CE6B0
-    unsigned int* GetPShader();               // @0x007CE6D0
+    unsigned long* GetPShader();              // @0x007CE6D0
 }
 
 // ============================================================================

@@ -84,7 +84,7 @@ void cdDecalRender::RegisterVShader()
 }
 
 // ea: 0x007D1D30
-unsigned int cdDecalRender::GetVShader()
+unsigned long cdDecalRender::GetVShader()
 {
     return static_cast<unsigned int>(cdDecalRender::VS[0]);
 }
@@ -96,9 +96,9 @@ void cdDecalPixel::RegisterPShader()
 }
 
 // ea: 0x007D1D60
-unsigned int* cdDecalPixel::GetPShader()
+unsigned long* cdDecalPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdDecalPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdDecalPixel::PS[0]);
 }
 
 // ea: 0x007D1D70
@@ -109,9 +109,9 @@ void cdDecalFullbrightPixel::RegisterPShader()
 }
 
 // ea: 0x007D1D90
-unsigned int* cdDecalFullbrightPixel::GetPShader()
+unsigned long* cdDecalFullbrightPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdDecalFullbrightPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdDecalFullbrightPixel::PS[0]);
 }
 namespace cdDecalPixel {
     static const unsigned int PShaderMicrocode[60] = {

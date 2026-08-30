@@ -75,19 +75,19 @@ namespace cdSimpleSpecularRender {
     extern unsigned int const* VShaderTable[2];    // ?VShaderTable@cdSimpleSpecularRender@@3PAPBIA
 
     void RegisterVShader();                         // @0x7D54B0
-    unsigned int GetVShader(unsigned int index);    // @0x7D54E0
+    unsigned long GetVShader(unsigned int index);   // @0x7D54E0
 }
 namespace cdSimpleSpecularPixel {
     extern unsigned long* PS[2];                   // ?PS@cdSimpleSpecularPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];     // ?PShaderTable@cdSimpleSpecularPixel@@3PAPBIA
     void RegisterPShader();                          // @0x7D54F0
-    unsigned int* GetPShader();                      // @0x7D5510
+    unsigned long* GetPShader();                     // @0x7D5510
 }
 namespace cdSimpleSpecularFullbrightPixel {
     extern unsigned long* PS[2];                   // ?PS@cdSimpleSpecularFullbrightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];     // ?PShaderTable@cdSimpleSpecularFullbrightPixel@@3PAPBIA
     void RegisterPShader();                          // @0x7D5520
-    unsigned int* GetPShader();                      // @0x7D5540
+    unsigned long* GetPShader();                     // @0x7D5540
 }
 
 // ============================================================================

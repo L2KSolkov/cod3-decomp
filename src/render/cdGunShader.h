@@ -59,7 +59,7 @@ namespace cdGunRender {
     extern unsigned int const** VShaderTable;  // ?VShaderTable@cdGunRender@@3PAPBIA
     extern unsigned long Shader;              // ?Shader@cdGunRender@@3KA
     void RegisterVShader();                   // @0x007CF000
-    unsigned int GetVShader();                // @0x007CF020
+    unsigned long GetVShader();               // @0x007CF020
 }
 namespace cdGunPixel {
     extern unsigned long** PS;                // ?PS@cdGunPixel@@3PAPAKA
@@ -67,7 +67,7 @@ namespace cdGunPixel {
     extern unsigned long* Shader;             // ?Shader@cdGunPixel@@3PAKA
     void RegisterShader();                    // @0x007CF030
     void RegisterPShader();                   // @0x007CF050
-    unsigned int* GetPShader();               // @0x007CF070
+    unsigned long* GetPShader();              // @0x007CF070
 }
 namespace cdGunFullbrightPixel {
     extern unsigned long** PS;                // ?PS@cdGunFullbrightPixel@@3PAPAKA
@@ -75,7 +75,7 @@ namespace cdGunFullbrightPixel {
     extern unsigned long* Shader;             // ?Shader@cdGunFullbrightPixel@@3PAKA
     void RegisterShader();                    // @0x007CF080
     void RegisterPShader();                   // @0x007CF0A0
-    unsigned int* GetPShader();               // @0x007CF0C0
+    unsigned long* GetPShader();              // @0x007CF0C0
 }
 
 // ============================================================================

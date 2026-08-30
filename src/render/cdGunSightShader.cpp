@@ -44,7 +44,7 @@ void cdGunSightRender::RegisterVShader()
 }
 
 // ea: 0x007CE670
-unsigned int cdGunSightRender::GetVShader()
+unsigned long cdGunSightRender::GetVShader()
 {
     return cdGunSightRender::VS[0];
 }
@@ -57,9 +57,9 @@ void cdGunSightPixel::RegisterPShader()
 }
 
 // ea: 0x007CE6A0
-unsigned int* cdGunSightPixel::GetPShader()
+unsigned long* cdGunSightPixel::GetPShader()
 {
-    return cdGunSightPixel::PS[0];
+    return reinterpret_cast<unsigned long*>(cdGunSightPixel::PS[0]);
 }
 
 // ea: 0x007CE6B0
@@ -70,9 +70,9 @@ void cdGunSightFullbrightPixel::RegisterPShader()
 }
 
 // ea: 0x007CE6D0
-unsigned int* cdGunSightFullbrightPixel::GetPShader()
+unsigned long* cdGunSightFullbrightPixel::GetPShader()
 {
-    return cdGunSightFullbrightPixel::PS[0];
+    return reinterpret_cast<unsigned long*>(cdGunSightFullbrightPixel::PS[0]);
 }
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;

@@ -26,7 +26,7 @@
 cdSimpleSpecularShader* gCDSimpleSpecularShader = nullptr;  // ?gCDSimpleSpecularShader@@3PAVcdSimpleSpecularShader@@A
 
 // ea: 0x007D54E0
-unsigned int cdSimpleSpecularRender::GetVShader(unsigned int index)
+unsigned long cdSimpleSpecularRender::GetVShader(unsigned int index)
 {
     return static_cast<unsigned int>(cdSimpleSpecularRender::VS[index]);
 }
@@ -39,9 +39,9 @@ void cdSimpleSpecularPixel::RegisterPShader()
 }
 
 // ea: 0x007D5510
-unsigned int* cdSimpleSpecularPixel::GetPShader()
+unsigned long* cdSimpleSpecularPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdSimpleSpecularPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdSimpleSpecularPixel::PS[0]);
 }
 
 // ea: 0x007D5520
@@ -52,9 +52,9 @@ void cdSimpleSpecularFullbrightPixel::RegisterPShader()
 }
 
 // ea: 0x007D5540
-unsigned int* cdSimpleSpecularFullbrightPixel::GetPShader()
+unsigned long* cdSimpleSpecularFullbrightPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdSimpleSpecularFullbrightPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdSimpleSpecularFullbrightPixel::PS[0]);
 }
 
 // ea: 0x007D5460

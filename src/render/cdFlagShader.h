@@ -62,7 +62,7 @@ namespace cdFlagVertex {
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdFlagVertex@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdFlagVertex@@3KA
     void RegisterVShader();                  // @0x007CB8B0
-    unsigned int GetVShader();               // @0x007CB8D0
+    unsigned long GetVShader();              // @0x007CB8D0
 }
 namespace cdFlagPixel {
     extern unsigned long** PS;               // ?PS@cdFlagPixel@@3PAPAKA

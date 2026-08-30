@@ -61,19 +61,19 @@ namespace cdDecalRender {
     extern unsigned long* VS;                       // ?VS@cdDecalRender@@3PAKA
     extern unsigned int const** VShaderTable;        // ?VShaderTable@cdDecalRender@@3PAPBIA
     void RegisterVShader();                           // @0x007D1D10
-    unsigned int GetVShader();                        // @0x007D1D30
+    unsigned long GetVShader();                       // @0x007D1D30
 }
 namespace cdDecalPixel {
     extern unsigned long** PS;                       // ?PS@cdDecalPixel@@3PAPAKA
     extern unsigned int const** PShaderTable;         // ?PShaderTable@cdDecalPixel@@3PAPBIA
     void RegisterPShader();                            // @0x007D1D40
-    unsigned int* GetPShader();                        // @0x007D1D60
+    unsigned long* GetPShader();                       // @0x007D1D60
 }
 namespace cdDecalFullbrightPixel {
     extern unsigned long** PS;                       // ?PS@cdDecalFullbrightPixel@@3PAPAKA
     extern unsigned int const** PShaderTable;         // ?PShaderTable@cdDecalFullbrightPixel@@3PAPBIA
     void RegisterPShader();                            // @0x007D1D70
-    unsigned int* GetPShader();                        // @0x007D1D90
+    unsigned long* GetPShader();                       // @0x007D1D90
 }
 
 struct DecalContext {

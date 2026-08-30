@@ -64,7 +64,7 @@ namespace cdGunSightSpecularRender {
     extern unsigned long VS[2];                   // ?VS@cdGunSightSpecularRender@@3PAKA
     extern unsigned int const* VShaderTable[2];    // ?VShaderTable@cdGunSightSpecularRender@@3PAPBIA
     void RegisterVShader();                        // @0x007CDCD0
-    unsigned int GetVShader(unsigned int index);  // @0x007CDD00
+    unsigned long GetVShader(unsigned int index);  // @0x007CDD00
 }
 namespace cdGunSightSpecularPixel {
     extern unsigned long* PS[2];                   // ?PS@cdGunSightSpecularPixel@@3PAPAKA

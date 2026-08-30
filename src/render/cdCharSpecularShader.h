@@ -59,7 +59,7 @@ namespace cdCharSpecularShaderRender {
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdCharSpecularShaderRender@@3PAPBIA
     void RegisterShader();                          // @0x007D26F0
     void RegisterVShader();                         // @0x007D2720
-    unsigned int GetVShader(unsigned int index);    // @0x007D2730
+    unsigned long GetVShader(unsigned int index);   // @0x007D2730
 }
 namespace cdCharSpecularPixel {
     extern unsigned long* PS[2];                    // ?PS@cdCharSpecularPixel@@3PAPAKA
@@ -67,7 +67,7 @@ namespace cdCharSpecularPixel {
     extern unsigned long* Shader;                   // ?Shader@cdCharSpecularPixel@@3PAKA
     void RegisterShader();                           // @0x007D2740
     void RegisterPShader();                          // @0x007D2760
-    unsigned int* GetPShader();                      // @0x007D2780
+    unsigned long* GetPShader();                     // @0x007D2780
 }
 namespace cdCharSpecularFullbrightPixel {
     extern unsigned long* PS[2];                    // ?PS@cdCharSpecularFullbrightPixel@@3PAPAKA
@@ -75,7 +75,7 @@ namespace cdCharSpecularFullbrightPixel {
     extern unsigned long* Shader;                   // ?Shader@cdCharSpecularFullbrightPixel@@3PAKA
     void RegisterShader();                           // @0x007D2790
     void RegisterPShader();                          // @0x007D27B0
-    unsigned int* GetPShader();                     // @0x007D27D0
+    unsigned long* GetPShader();                    // @0x007D27D0
 }
 
 struct CharSpecularContext {

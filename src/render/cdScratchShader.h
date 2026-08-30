@@ -62,7 +62,7 @@ namespace cdScratchShaderVertex {
     extern unsigned long* VS;                // ?VS@cdScratchShaderVertex@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdScratchShaderVertex@@3PAPBIA
     void RegisterVShader();                  // @0x007C5DB0
-    unsigned int GetVShader();                // @0x007C5DD0
+    unsigned long GetVShader();               // @0x007C5DD0
 }
 namespace cdScratchShaderPixel {
     extern unsigned long** PS;               // ?PS@cdScratchShaderPixel@@3PAPAKA

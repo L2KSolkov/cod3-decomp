@@ -32,7 +32,7 @@ void cdCharSpecularShaderRender::RegisterVShader()
 }
 
 // ea: 0x007D2730
-unsigned int cdCharSpecularShaderRender::GetVShader(unsigned int index)
+unsigned long cdCharSpecularShaderRender::GetVShader(unsigned int index)
 {
     return static_cast<unsigned int>(cdCharSpecularShaderRender::VS[index]);
 }
@@ -52,9 +52,9 @@ void cdCharSpecularPixel::RegisterPShader()
 }
 
 // ea: 0x007D2780
-unsigned int* cdCharSpecularPixel::GetPShader()
+unsigned long* cdCharSpecularPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdCharSpecularPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdCharSpecularPixel::PS[0]);
 }
 
 // ea: 0x007D2790
@@ -72,9 +72,9 @@ void cdCharSpecularFullbrightPixel::RegisterPShader()
 }
 
 // ea: 0x007D27D0
-unsigned int* cdCharSpecularFullbrightPixel::GetPShader()
+unsigned long* cdCharSpecularFullbrightPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdCharSpecularFullbrightPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdCharSpecularFullbrightPixel::PS[0]);
 }
 // ============================================================================
 // InitCDCharSpecularShader — allocate the shader and link into the init list.

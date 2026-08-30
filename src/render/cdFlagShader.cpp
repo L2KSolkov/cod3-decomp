@@ -36,7 +36,7 @@ void cdFlagVertex::RegisterVShader()
 }
 
 // ea: 0x007CB8D0
-unsigned int cdFlagVertex::GetVShader()
+unsigned long cdFlagVertex::GetVShader()
 {
     return static_cast<unsigned int>(cdFlagVertex::VS[0]);
 }

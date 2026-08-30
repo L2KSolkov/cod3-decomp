@@ -18,7 +18,7 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 cdGunShader* gCDGunShader = nullptr;  // ?gCDGunShader@@3PAVcdGunShader@@A
 
 // ea: 0x007CF020
-unsigned int cdGunRender::GetVShader()
+unsigned long cdGunRender::GetVShader()
 {
     return static_cast<unsigned int>(cdGunRender::VS[0]);
 }
@@ -37,9 +37,9 @@ void cdGunPixel::RegisterPShader()
 }
 
 // ea: 0x007CF070
-unsigned int* cdGunPixel::GetPShader()
+unsigned long* cdGunPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdGunPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdGunPixel::PS[0]);
 }
 
 // ea: 0x007CF080
@@ -57,9 +57,9 @@ void cdGunFullbrightPixel::RegisterPShader()
 }
 
 // ea: 0x007CF0C0
-unsigned int* cdGunFullbrightPixel::GetPShader()
+unsigned long* cdGunFullbrightPixel::GetPShader()
 {
-    return reinterpret_cast<unsigned int*>(cdGunFullbrightPixel::PS[0]);
+    return reinterpret_cast<unsigned long*>(cdGunFullbrightPixel::PS[0]);
 }
 
 // ea: 0x007CEF90
