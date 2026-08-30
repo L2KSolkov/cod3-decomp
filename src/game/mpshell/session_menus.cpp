@@ -16147,6 +16147,14 @@ AARGameModeVote::~AARGameModeVote()
         m_pBackgroundArt[i] = nullptr;
     for (int i = 0; i < 2; ++i)
         m_pScrollArrow[i] = nullptr;
+    for (int i = 0; i < 5; ++i)
+        m_pText[i] = nullptr;
+    for (int i = 0; i < 7; ++i)
+    {
+        m_pModeNames[i] = nullptr;
+        m_pModeVotes[i] = nullptr;
+        m_pModeVoteVals[i] = 0;
+    }
 }
 
 // ea: 0x007AFD30
