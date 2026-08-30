@@ -22,6 +22,49 @@ void cdAirplaneMetalRender::RegisterVShader()
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdAirplaneMetalRender::VS),
                          reinterpret_cast<const unsigned int*>(cdAirplaneMetalRender::VShaderTable[0]));
 }
+
+// ea: 0x007D4980
+unsigned long cdAirplaneMetalRender::GetVShader()
+{
+    return cdAirplaneMetalRender::VS[0];
+}
+
+// ea: 0x007D4990
+void cdAirplaneMetalPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(cdAirplaneMetalPixel::PS,
+                         cdAirplaneMetalPixel::PShaderTable[0]);
+}
+
+// ea: 0x007D49B0
+unsigned long* cdAirplaneMetalPixel::GetPShader()
+{
+    return cdAirplaneMetalPixel::PS[0];
+}
+
+// ea: 0x007D49C0
+void cdAirplaneMetalSolidColorPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(cdAirplaneMetalSolidColorPixel::PS,
+                         cdAirplaneMetalSolidColorPixel::PShaderTable[0]);
+}
+
+// ea: 0x007D49E0
+unsigned long* cdAirplaneMetalSolidColorPixel::GetPShader()
+{
+    return cdAirplaneMetalSolidColorPixel::PS[0];
+}
+
+// ea: 0x007D49F0
+cdAirplaneMetalShader::cdAirplaneMetalShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[3] &= ~2;
+}
+
+// ea: 0x007D4AF0
+cdAirplaneMetalShader::~cdAirplaneMetalShader() = default;
 // ============================================================================
 // InitCDAirplaneMetalShader — allocate the shader and link into the init list.
 // ea: 0x7D4130
@@ -30,11 +73,6 @@ void InitCDAirplaneMetalShader() {
     cdAirplaneMetalShader* result = (cdAirplaneMetalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdAirplaneMetalShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdAirplaneMetalShader
-        ShaderCommon::ShaderSwitching.__s0[3] &= ~2;
         gCDAirplaneMetalShader = result;
     } else {
         gCDAirplaneMetalShader = NULL;
@@ -51,6 +89,7 @@ void ToggleCDAirplaneMetalShader() {
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
 }
 
+// ea: 0x007D4A20
 tlFixedString cdAirplaneMetalShader::GetName() { return tlFixedString("cdAirplaneMetal"); }
 
 // ============================================================================
@@ -89,3 +128,18 @@ void cdAirplaneMetalShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSec
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+// ea: 0x007D4A40
+Context::Context() {}
+
+// ea: 0x007D4A50
+cdAirplaneMetalShaderNode::cdAirplaneMetalShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdAirplaneMetalShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
+// ea: 0x007D4AB0
+cdAirplaneMetalShaderNode::~cdAirplaneMetalShaderNode() = default;

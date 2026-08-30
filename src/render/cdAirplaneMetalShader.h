@@ -30,6 +30,11 @@ static_assert(sizeof(cdAirplaneMetalShaderMat) == 0x24, "cdAirplaneMetalShaderMa
 // ============================================================================
 struct cdAirplaneMetalShaderNode : nglShaderNode {
     cdAirplaneMetalShaderMat* mMaterial;  // +0x14
+
+    cdAirplaneMetalShaderNode(nglMeshNode* iMeshNode,
+                              nglMeshSection* iSection,
+                              cdAirplaneMetalShaderMat* iMaterial); // @0x7D4A50
+    virtual ~cdAirplaneMetalShaderNode(); // @0x7D4AB0
 };
 static_assert(sizeof(cdAirplaneMetalShaderNode) == 0x18, "cdAirplaneMetalShaderNode size mismatch");
 
@@ -38,6 +43,8 @@ static_assert(sizeof(cdAirplaneMetalShaderNode) == 0x18, "cdAirplaneMetalShaderN
 // ============================================================================
 class cdAirplaneMetalShader : public nglShader {
 public:
+    cdAirplaneMetalShader(); // @0x7D49F0
+    virtual ~cdAirplaneMetalShader(); // @0x7D4AF0
     virtual tlFixedString GetName(); // @0x7D4A20
     virtual void Register();  // @0x7D41A0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D41E0
@@ -51,15 +58,24 @@ namespace cdAirplaneMetalRender {
     extern unsigned long* VS;                // ?VS@cdAirplaneMetalRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdAirplaneMetalRender@@3PAPBIA
     void RegisterVShader();                  // @0x007D4960
+    unsigned long GetVShader();              // @0x007D4980
 }
 namespace cdAirplaneMetalPixel {
     extern unsigned long** PS;               // ?PS@cdAirplaneMetalPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdAirplaneMetalPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x007D4990
+    unsigned long* GetPShader();              // @0x007D49B0
 }
 namespace cdAirplaneMetalSolidColorPixel {
     extern unsigned long** PS;               // ?PS@cdAirplaneMetalSolidColorPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdAirplaneMetalSolidColorPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x007D49C0
+    unsigned long* GetPShader();              // @0x007D49E0
 }
+
+struct Context {
+    Context(); // @0x007D4A40
+};
 
 // ============================================================================
 // Externs
