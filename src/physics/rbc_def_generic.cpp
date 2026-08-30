@@ -34,7 +34,11 @@ void pulse_sum_point::setup_vel_bi_standard(float delta_t) {
     math::Dir3 pos;
     get_pos(&pos);
     __m128 scale = _mm_set1_ps(-0.5f / delta_t);
-    m_big_dirt.v = _mm_mul_ps(pos.v, scale);
+    __m128 scaled = _mm_mul_ps(pos.v, scale);
+    m_big_dirt.v.m128_f32[0] = scaled.m128_f32[0];
+    m_big_dirt.v.m128_f32[1] = scaled.m128_f32[1];
+    m_big_dirt.v.m128_f32[2] = scaled.m128_f32[2];
+    m_big_dirt.v.m128_f32[3] = pos.v.m128_f32[3];
     m_right_side.v = Float4_Zero_210.v;
 }
 
