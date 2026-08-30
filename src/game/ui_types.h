@@ -481,30 +481,38 @@ public:
     }
     virtual void ResetToInitialXY();          // slot 40 0x584250
     virtual void GetPos(float* x, float* y);  // slot 41 0x57A5C0
-    virtual void GetCenterPos(float& cx, float& cy)  // slot 42 inline 0x5B6470
+    // ea: 0x005B6470
+    virtual void GetCenterPos(float& cx, float& cy)  // slot 42 inline
     {
         cx = center_point.x;
         cy = center_point.y;
     }
-    virtual float GetCenterX() { return center_point.x; }  // slot 43 inline 0x5B6490
-    virtual float GetCenterY() { return center_point.y; }  // slot 44 inline 0x5B64A0
+    // ea: 0x005B6490
+    virtual float GetCenterX() { return center_point.x; }  // slot 43 inline
+    // ea: 0x005B64A0
+    virtual float GetCenterY() { return center_point.y; }  // slot 44 inline
     virtual nglTexture* GetTexture();          // slot 45 0x5B6530
-    virtual float GetRotation() { return rotation; }  // slot 46 inline 0x5B64C0
+    // ea: 0x005B64C0
+    virtual float GetRotation() { return rotation; }  // slot 46 inline
     virtual color32 GetColor(int pqsIdx,
                              int vertIdx);    // slot 47 0x5B66C0
-    virtual float GetWidth()                  // slot 48 inline 0x5B6710
+    // ea: 0x005B6710
+    virtual float GetWidth()                  // slot 48 inline
     {
         return GetMax().x - GetMin().x;
     }
-    virtual float GetInitialWidth()           // slot 49 inline 0x5B6750
+    // ea: 0x005B6750
+    virtual float GetInitialWidth()           // slot 49 inline
     {
         return GetInitialMax().x - GetInitialMin().x;
     }
-    virtual float GetHeight()                 // slot 50 inline 0x5B6790
+    // ea: 0x005B6790
+    virtual float GetHeight()                 // slot 50 inline
     {
         return GetMax().y - GetMin().y;
     }
-    virtual float GetInitialHeight()          // slot 51 inline 0x5B67D0
+    // ea: 0x005B67D0
+    virtual float GetInitialHeight()          // slot 51 inline
     {
         return GetInitialMax().y - GetInitialMin().y;
     }
