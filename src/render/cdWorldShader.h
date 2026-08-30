@@ -85,8 +85,11 @@ namespace cdWorldRender {
         math::Vector4 cFog;           // c17
         math::Vector4 cEyePos;        // c18
         math::Vector4 mLightInfo[4];  // c19-c22
+        cdWorldParams();              // @0x007E01E0
     };
     static_assert(sizeof(cdWorldParams) == 0x110, "cdWorldParams size mismatch");
+    template <typename T>
+    void SetConstants(const T& params); // @0x007E01F0
 }
 
 // ============================================================================

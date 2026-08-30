@@ -169,7 +169,7 @@ cdWorldBlendPointLitShader.o	34	28	0	4	0	2	0
 cdWorldBlendShader.o	31	25	0	6	0	0	0
 cdWorldColorShader.o	13	9	2	0	0	2	0
 cdWorldPointLitShader.o	31	25	0	4	0	2	0
-cdWorldShader.o	27	7	0	7	0	13	0
+cdWorldShader.o	27	6	0	7	0	14	0
 cdWorldVertexLitShader.o	25	18	0	6	0	1	0
 cdl_base.o	2	0	0	0	0	2	0
 cdl_common.o	16	0	0	0	0	16	0

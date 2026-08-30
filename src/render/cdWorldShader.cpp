@@ -214,6 +214,18 @@ cdWorldShader::cdWorldShader()
 // ea: 0x007E0240
 cdWorldShader::~cdWorldShader() = default;
 
+cdWorldRender::cdWorldParams::cdWorldParams() {}
+
+// ea: 0x007E01F0
+template <typename T>
+void cdWorldRender::SetConstants(const T& params)
+{
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, &params, 0x44u);
+}
+
+template void cdWorldRender::SetConstants<cdWorldRender::cdWorldParams>(
+    const cdWorldRender::cdWorldParams& params);
+
 // ============================================================================
 // InitCDWorldShader — allocate the shader and link into the init list.
 // ea: 0x7DF0D0
