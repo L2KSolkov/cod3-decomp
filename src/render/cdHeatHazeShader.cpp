@@ -11,13 +11,6 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 
 #include <intrin.h>
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdHeatHazeRender {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-    unsigned long Shader = 0;
-}
-
 // ea: 0x007CFC10
 void cdHeatHazeRender::RegisterVShader()
 {
@@ -25,12 +18,6 @@ void cdHeatHazeRender::RegisterVShader()
                          reinterpret_cast<const unsigned int*>(cdHeatHazeRender::VShaderTable[0]));
     cdHeatHazeRender::Shader = cdHeatHazeRender::VS[0];
 }
-namespace cdHeatHazePixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-
 // ============================================================================
 // File-local state (cdHeatHazeShader.o)
 // ============================================================================

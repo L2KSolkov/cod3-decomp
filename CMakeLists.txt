@@ -152,6 +152,7 @@ add_library(cod3_render STATIC
     src/render/cdRiverShader.cpp
     src/render/cdGlassShader.cpp
     src/render/cdHeatHazeShader.cpp
+    src/render/cdHeatHazeShaderData.cpp
     src/render/cdSimpleInstance.cpp
     src/render/cdGlowShader.cpp
     src/render/cdGlowShaderData.cpp
