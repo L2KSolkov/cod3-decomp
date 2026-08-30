@@ -34,7 +34,7 @@ apsCommon.o	48	12	11	25	0	0	0
 apsDebug.o	3	1	0	2	0	0	0
 apsEffect.o	145	143	0	2	0	0	0
 apsEffectTemplate.o	69	69	0	0	0	0	0
-apsError.o	8	5	0	3	0	0	0
+apsError.o	8	5	0	0	0	3	0
 apsGroup.o	42	21	0	20	0	1	0
 apsGroupMgr.o	35	28	0	7	0	0	0
 apsInternal.o	25	10	2	12	0	1	0
