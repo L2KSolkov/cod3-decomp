@@ -1527,7 +1527,7 @@ public:
 
 protected:
     friend class bdConnectionStore;
-    bdLoopbackConnection(const bdReference<bdCommonAddr>& addr);
+    bdLoopbackConnection(bdReference<bdCommonAddr> addr);
     bool checkNewMessages();  // ?checkNewMessages@bdLoopbackConnection@@QAE_NXZ
     virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize);
     void updateStatus();

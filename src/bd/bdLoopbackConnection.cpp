@@ -9,7 +9,7 @@
 // ============================================================================
 // bdLoopbackConnection::bdLoopbackConnection - ea: 0x8A4180
 // ============================================================================
-bdLoopbackConnection::bdLoopbackConnection(const bdReference<bdCommonAddr>& addr)
+bdLoopbackConnection::bdLoopbackConnection(bdReference<bdCommonAddr> addr)
     : bdConnection(addr), m_messages(), m_flag70(0) {
 }
 

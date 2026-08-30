@@ -93,7 +93,7 @@ bdInitChunk.obj	11	9	0	0	0	2	0
 bdLog.obj	15	15	0	0	0	0	0
 bdLogChannel.obj	48	48	0	0	0	0	0
 bdLogSubscriber.obj	5	5	0	0	0	0	0
-bdLoopbackConnection.obj	37	29	5	0	0	3	0
+bdLoopbackConnection.obj	37	29	4	0	0	4	0
 bdMallocMemory.obj	6	6	0	0	0	0	0
 bdMemory.obj	23	23	0	0	0	0	0
 bdMessage.obj	25	22	0	1	0	2	0
