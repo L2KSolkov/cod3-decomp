@@ -25,6 +25,49 @@
 // Shader global pointer definitions
 cdSimpleSpecularShader* gCDSimpleSpecularShader = nullptr;  // ?gCDSimpleSpecularShader@@3PAVcdSimpleSpecularShader@@A
 
+// ea: 0x007D54E0
+unsigned int cdSimpleSpecularRender::GetVShader(unsigned int index)
+{
+    return static_cast<unsigned int>(cdSimpleSpecularRender::VS[index]);
+}
+
+// ea: 0x007D54F0
+void cdSimpleSpecularPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(cdSimpleSpecularPixel::PS,
+                         cdSimpleSpecularPixel::PShaderTable[0]);
+}
+
+// ea: 0x007D5510
+unsigned int* cdSimpleSpecularPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdSimpleSpecularPixel::PS[0]);
+}
+
+// ea: 0x007D5520
+void cdSimpleSpecularFullbrightPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(cdSimpleSpecularFullbrightPixel::PS,
+                         cdSimpleSpecularFullbrightPixel::PShaderTable[0]);
+}
+
+// ea: 0x007D5540
+unsigned int* cdSimpleSpecularFullbrightPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdSimpleSpecularFullbrightPixel::PS[0]);
+}
+
+// ea: 0x007D5460
+cdSimpleSpecularShader::cdSimpleSpecularShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[2] &= ~1;
+}
+
+// ea: 0x007D55F0
+cdSimpleSpecularShader::~cdSimpleSpecularShader() = default;
+
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
 extern unsigned int dword_4033C;
@@ -87,11 +130,6 @@ void InitCDSimpleSpecularShader() {
     cdSimpleSpecularShader* result = (cdSimpleSpecularShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdSimpleSpecularShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdSimpleSpecularShader
-        ShaderCommon::ShaderSwitching.__s0[2] &= ~1;
         gCDSimpleSpecularShader = result;
     } else {
         gCDSimpleSpecularShader = NULL;
@@ -111,6 +149,7 @@ void ToggleCDSimpleSpecularShader() {
 
 }
 
+// ea: 0x007D5490
 tlFixedString cdSimpleSpecularShader::GetName() { return tlFixedString("cdSimpleSpecular"); }
 
 // ============================================================================
@@ -184,6 +223,12 @@ void cdSimpleSpecularShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSe
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+// ea: 0x007D55B0
+cdSimpleSpecularShaderNode::~cdSimpleSpecularShaderNode() = default;
+
+// ea: 0x007D5600
+SimpleSpecularContext::SimpleSpecularContext() {}
 
 // ============================================================================
 // cdSimpleSpecularShaderNode::Render — ea: 0x7D5060

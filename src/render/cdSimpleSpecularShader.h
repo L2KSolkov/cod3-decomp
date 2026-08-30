@@ -35,6 +35,8 @@ static_assert(sizeof(cdSimpleSpecularShaderMat) == 0x24, "cdSimpleSpecularShader
 struct cdSimpleSpecularShaderNode : nglShaderNode {
     cdSimpleSpecularShaderMat* mMaterial;  // +0x14
 
+    virtual ~cdSimpleSpecularShaderNode(); // @0x7D55B0
+
     void Render() override;  // @0x7D5060
 };
 static_assert(sizeof(cdSimpleSpecularShaderNode) == 0x18, "cdSimpleSpecularShaderNode size mismatch");
@@ -47,6 +49,8 @@ struct SimpleSpecularContext {
     math::Vector4 fog2;              // +0xD0
     math::Vector4 params;            // +0xE0
     math::Vector4 eyePos;            // +0xF0
+
+    SimpleSpecularContext();         // @0x7D5600
 };
 static_assert(sizeof(SimpleSpecularContext) == 0x100, "SimpleSpecularContext size mismatch");
 
@@ -55,6 +59,8 @@ static_assert(sizeof(SimpleSpecularContext) == 0x100, "SimpleSpecularContext siz
 // ============================================================================
 class cdSimpleSpecularShader : public nglShader {
 public:
+    cdSimpleSpecularShader(); // @0x7D5460
+    virtual ~cdSimpleSpecularShader(); // @0x7D55F0
     virtual tlFixedString GetName(); // @0x7D5490
     virtual void Register();  // @0x7D4ED0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D4FF0
@@ -69,14 +75,19 @@ namespace cdSimpleSpecularRender {
     extern unsigned int const* VShaderTable[2];    // ?VShaderTable@cdSimpleSpecularRender@@3PAPBIA
 
     void RegisterVShader();                         // @0x7D54B0
+    unsigned int GetVShader(unsigned int index);    // @0x7D54E0
 }
 namespace cdSimpleSpecularPixel {
     extern unsigned long* PS[2];                   // ?PS@cdSimpleSpecularPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];     // ?PShaderTable@cdSimpleSpecularPixel@@3PAPBIA
+    void RegisterPShader();                          // @0x7D54F0
+    unsigned int* GetPShader();                      // @0x7D5510
 }
 namespace cdSimpleSpecularFullbrightPixel {
     extern unsigned long* PS[2];                   // ?PS@cdSimpleSpecularFullbrightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];     // ?PShaderTable@cdSimpleSpecularFullbrightPixel@@3PAPBIA
+    void RegisterPShader();                          // @0x7D5520
+    unsigned int* GetPShader();                      // @0x7D5540
 }
 
 // ============================================================================
