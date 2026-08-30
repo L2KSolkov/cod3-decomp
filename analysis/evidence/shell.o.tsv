@@ -281,3 +281,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AD860	?IsOnMenu@FEText@@UAE_NXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164838-1164842	Release returns GetFlag(2), matching source.
 0x005AD870	?IsMultiLineObject@FEText@@UAE_NXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:766	Source returns false for the single-line FEText class.
 0x005AD870	?IsMultiLineObject@FEText@@UAE_NXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164844-1164848	Release returns false directly.
+0x005AE4F0	?OnUp@FEMenuEntry@@UAEFXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:985	Source returns the stored up navigation index.
+0x005AE4F0	?OnUp@FEMenuEntry@@UAEFXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165474-1165478	Release returns this->up.
+0x005AE500	?OnDown@FEMenuEntry@@UAEFXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:987	Source returns the stored down navigation index.
+0x005AE500	?OnDown@FEMenuEntry@@UAEFXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165480-1165484	Release returns this->down.
+0x005AE510	?OnLeft@FEMenuEntry@@UAEFXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:989	Source returns the stored left navigation index.
+0x005AE510	?OnLeft@FEMenuEntry@@UAEFXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165486-1165490	Release returns this->left.
+0x005AE520	?OnRight@FEMenuEntry@@UAEFXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:991	Source returns the stored right navigation index.
+0x005AE520	?OnRight@FEMenuEntry@@UAEFXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165492-1165496	Release returns this->right.
+0x005AE530	?Draw@FEMenuEntry@@UAEXXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:995-999	Source conditionally forwards Draw(highlight) when text exists.
+0x005AE530	?Draw@FEMenuEntry@@UAEXXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165498-1165506	Release conditionally dispatches the contained FEText draw with highlight.
+0x005AE550	?Update@FEMenuEntry@@UAEXM@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1001-1005	Source conditionally forwards Update(time_inc) when text exists.
+0x005AE550	?Update@FEMenuEntry@@UAEXM@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165508-1165516	Release conditionally dispatches the contained FEText update.
+0x005AE570	?UpdateInScene@FEMenuEntry@@UAEXXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1007-1009	Source forwards UpdateInScene(false) to the contained text.
+0x005AE570	?UpdateInScene@FEMenuEntry@@UAEXXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165518-1165522	Release dispatches text->UpdateInScene(false).
+0x005AE590	?SetShown@FEMenuEntry@@UAEX_N@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1023-1025	Source forwards visibility to the contained text.
+0x005AE590	?SetShown@FEMenuEntry@@UAEX_N@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165524-1165528	Release calls FEText::SetShown with the supplied boolean.
+0x005AE5A0	?GetDisable@FEMenuEntry@@UAE_NXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1031-1033	Source returns the disabled field.
+0x005AE5A0	?GetDisable@FEMenuEntry@@UAE_NXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165530-1165534	Release returns this->disabled.
+0x005AE5B0	?StartFade@FEMenuEntry@@UAEX_N0M@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1035-1039	Source forwards both fade booleans and duration to the contained text.
+0x005AE5B0	?StartFade@FEMenuEntry@@UAEX_N0M@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165536-1165540	Release dispatches StartFade with the same three arguments.
+0x005AE5C0	?SetPos@FEMenuEntry@@UAEXMM@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1043-1045	Source forwards x/y position to the contained text.
+0x005AE5C0	?SetPos@FEMenuEntry@@UAEXMM@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165542-1165546	Release dispatches SetPos with both coordinates.
+0x005AE5E0	?SetText@FEMenuEntry@@UAEXPBD@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1012-1014	Source forwards the text pointer to the contained FEText.
+0x005AE5E0	?SetText@FEMenuEntry@@UAEXPBD@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165548-1165552	Release forwards reference to FEText::SetText.

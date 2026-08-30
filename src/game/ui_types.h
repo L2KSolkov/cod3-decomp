@@ -982,20 +982,27 @@ protected:
     virtual void OnHighlight(bool anim) {}      // slot 1 (0x5AE860, empty)
 public:
     virtual void Load() {}                      // slot 2 (0x5AE490, empty)
+    // ea: 0x005AE4F0
     virtual short OnUp() { return up; }         // slot 3 0x5AE4F0
+    // ea: 0x005AE500
     virtual short OnDown() { return down; }     // slot 4 0x5AE500
+    // ea: 0x005AE510
     virtual short OnLeft() { return left; }     // slot 5 0x5AE510
+    // ea: 0x005AE520
     virtual short OnRight() { return right; }   // slot 6 0x5AE520
+    // ea: 0x005AE530
     virtual void Draw()                         // slot 7 0x5AE530
     {
         if (text != nullptr)
             text->Draw(highlight);
     }
+    // ea: 0x005AE550
     virtual void Update(float time_inc)         // slot 8 0x5AE550
     {
         if (text != nullptr)
             text->Update(time_inc);
     }
+    // ea: 0x005AE570
     virtual void UpdateInScene()                // slot 9 0x5AE570
     {
         text->UpdateInScene(false);
@@ -1007,26 +1014,31 @@ public:
                           ? (const char*)&ref.mBlock[1]
                           : defaultFileName);
     }
+    // ea: 0x005AE5E0
     virtual void SetText(const char* s)         // slot 12 0x5AE5E0
     {
         text->SetText(s);
     }
     virtual void SetText(FEText* fet);          // slot 13 0x56FC30
+    // ea: 0x005AE590
     virtual void SetShown(bool on)              // slot 14 0x5AE590
     {
         text->SetShown(on);
     }
     virtual void Highlight(bool h, bool anim);  // slot 15 0x56FC40
     virtual void Disable(bool d);               // slot 16 0x56FC70
+    // ea: 0x005AE5A0
     virtual bool GetDisable()                   // slot 17 0x5AE5A0
     {
         return disabled;
     }
+    // ea: 0x005AE5B0
     virtual void StartFade(bool s, bool f,      // slot 18 0x5AE5B0
                            float t)
     {
         text->StartFade(s, f, t);
     }
+    // ea: 0x005AE5C0
     virtual void SetPos(float x, float y)       // slot 19 0x5AE5C0
     {
         text->SetPos(x, y);
