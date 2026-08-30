@@ -1297,9 +1297,18 @@ struct ae_vector {
     }
 };
 
+// TRequestId is a translation-unit level union in the release ABI.  Keeping
+// it outside PakFile is significant: MSVC encodes a nested type with
+// ``@1@``, while the release helper symbols reference the global
+// ``TRequestId`` name directly.
+union TRequestId {
+    nflRequestID nflId;
+};
+
 // PakFile (streamer.o PakFile.h; 276 bytes, verified IDA)
 class PakFile {
 public:
+    friend class PakManager;
     enum EState {
         LOADED = 0,
         LOADING = 1,
@@ -1312,10 +1321,6 @@ public:
         UNLOADING_INPLACE = 5,
         UNLOADING_DONE = 6,
         LOADING_TOC = 7,
-    };
-
-    struct TRequestId {
-        nflRequestID nflId;  // +0x00
     };
 
     struct {
@@ -1446,6 +1451,7 @@ public:
     // ea: 0x6754A0
     void ReleaseApks();  // ?ReleaseApks@PakFile@@QAEXXZ
 
+private:
     // ea: 0x664B90
     float GetLoadTime() const;
     // ea: 0x664BC0
@@ -1459,13 +1465,14 @@ public:
     // ea: 0x664E50
     const PakInfoNode* GetInfo();
     // ea: 0x664E80
-    void ValidateRange(void* data);
+    void ValidateRange(void* data) const;
     // ea: 0x664EC0
-    bool IsRequestValid(TRequestId* req) const;
+    bool IsRequestValid(TRequestId& req) const;
     // ea: 0x664EE0
-    void SetRequestInvalid(TRequestId* req) const;
+    void SetRequestInvalid(TRequestId& req) const;
     // ea: 0x664EF0
-    bool IsRequestDone(TRequestId* requestId) const;
+    bool IsRequestDone(TRequestId& requestId) const;
+public:
 };
 
 struct PakInfoNode;
@@ -10213,7 +10220,7 @@ void PakFile::UpdateLoading()
             mCurrDecodeFile = nullptr;
         }
     }
-    else if (IsRequestDone(&mHeaderRequestId))  // LOADING_HEADER
+    else if (IsRequestDone(mHeaderRequestId))  // LOADING_HEADER
     {
         gThroughputMeasurer.stop(0x8000);
         mHeaderBuffer = this->mHeaderBuffer;
@@ -10617,7 +10624,7 @@ const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
                     oneBank.pcx = 1.0f;
                     oneBank.gc.main = 1.0f;
                     oneBank.gc.aram = 0.0f;
-                    PakFile::TRequestId id;
+                    TRequestId id;
                     id.nflId = (nflRequestID)sec.banks[bankIndex].fileOffset;
                     TBankAlloc bankAlloc = {};
                     TBankAlloc v31 = BankManager::sInst->Allocate(oneBank);
@@ -10643,7 +10650,7 @@ const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
                         nflUpdate();
                         if (nflGetState() == NFL_STATE_ERROR)
                             g_femanager.DrawDiscError();
-                    } while (!pak->IsRequestDone(&id));
+                    } while (!pak->IsRequestDone(id));
                     memcpy(fli_buffer, v30.data, fileSize);
                     BankManager::sInst->release(bankAlloc);
                     nflCloseFile(pak->mFileId);
@@ -13018,7 +13025,7 @@ const PakInfoNode* PakFile::GetInfo()
 }
 
 // ea: 0x664E80
-void PakFile::ValidateRange(void* data)
+void PakFile::ValidateRange(void* data) const
 {
     (void)data;
     AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -13030,21 +13037,21 @@ void PakFile::ValidateRange(void* data)
 }
 
 // ea: 0x664EC0
-bool PakFile::IsRequestValid(TRequestId* req) const
+bool PakFile::IsRequestValid(TRequestId& req) const
 {
-    return req->nflId != NFL_REQUEST_ID_INVALID;
+    return req.nflId != NFL_REQUEST_ID_INVALID;
 }
 
 // ea: 0x664EE0
-void PakFile::SetRequestInvalid(TRequestId* req) const
+void PakFile::SetRequestInvalid(TRequestId& req) const
 {
-    req->nflId = NFL_REQUEST_ID_INVALID;
+    req.nflId = NFL_REQUEST_ID_INVALID;
 }
 
 // ea: 0x664EF0
-bool PakFile::IsRequestDone(TRequestId* requestId) const
+bool PakFile::IsRequestDone(TRequestId& requestId) const
 {
-    int RequestState = (int)nflGetRequestState(requestId->nflId);
+    int RequestState = (int)nflGetRequestState(requestId.nflId);
     switch ((nflRequestState)RequestState)
     {
     case NFL_REQUEST_STATE_INVALID:
@@ -14721,7 +14728,7 @@ bool PakFile::IsNextFileReady()
     requestId.nflId = (nflRequestID)v7->requestId;
     if (requestId.nflId != NFL_REQUEST_ID_INVALID)
     {
-        if (IsRequestDone(&requestId))
+        if (IsRequestDone(requestId))
             return true;
         if ((v7->flags & PAK_BANK_FLAG_APK_HEADER) == 0)
         {
@@ -15007,7 +15014,7 @@ void PakFile::UpdateReads()
         PakHeader::Bank* bank = &sec.banks[bankIdx];
         if (bank->requestId == NFL_REQUEST_ID_INVALID)
             continue;
-        if (!IsRequestDone((TRequestId*)&bank->requestId))
+        if (!IsRequestDone(*(TRequestId*)&bank->requestId))
         {
             ++num_streams;
             continue;
