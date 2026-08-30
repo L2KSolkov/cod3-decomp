@@ -725,6 +725,17 @@ bool bdBitBuffer::readRangedUInt32(unsigned int& value, unsigned int min,
                       "bdBitBuffer::readRangedUInt32, read error u is out of range.");
         }
     } while (g_assertFalse);
+    do
+    {
+        if (value < min || value > max)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "bool __thiscall bdBitBuffer::readRangedFloat32(float &,const float,const float,const float)",
+                                 0x1A5u, "dw/err");
+            proxy.log(defaultFileName,
+                      "bdBitBuffer::readRangedFloat32, read error f is out of range.");
+        }
+    } while (g_assertFalse);
     if (value < min)
         value = min;
     else if (value > max)
