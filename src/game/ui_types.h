@@ -1256,14 +1256,17 @@ public:
     virtual void UpdateButtonDown();                // slot 18 0x570E40
     virtual void Draw();                            // slot 19 0x570E90
     virtual void Draw3D();                          // slot 20 0x570ED0
+    // ea: 0x005AE990
     virtual void SetDefaultColorScheme(char csi)    // slot 21 inline 0x5AE990
     {
         default_color_scheme = csi;
     }
+    // ea: 0x005AFA10
     virtual char GetDefaultColorScheme()            // slot 22 inline 0x5AFA10
     {
         return default_color_scheme;
     }
+    // ea: 0x005AFA20
     virtual bool IsSystemActive()                   // slot 23 inline 0x5AFA20
     {
         return is_active;

@@ -365,3 +365,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE920	?OnDown@FEMenu@@UAEXH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165748-1165752	Release calls Down and ignores the controller argument, matching source.
 0x005AE930	?SetDefaultColorScheme@FEMenu@@UAEXD@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1504-1507	Source stores the default color scheme index.
 0x005AE930	?SetDefaultColorScheme@FEMenu@@UAEXD@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165754-1165758	Release assigns default_color_scheme directly.
+0x005AE990	?SetDefaultColorScheme@FEMenuSystem@@UAEXD@Z	V3	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	src/game/ui_types.h:1260-1263	Source stores the FEMenuSystem default color scheme.
+0x005AE990	?SetDefaultColorScheme@FEMenuSystem@@UAEXD@Z	V4	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165775-1165779	Release assigns default_color_scheme directly.
+0x005AFA10	?GetDefaultColorScheme@FEMenuSystem@@UAEDXZ	V3	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	src/game/ui_types.h:1264-1267	Source returns the stored default color scheme.
+0x005AFA10	?GetDefaultColorScheme@FEMenuSystem@@UAEDXZ	V4	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1166658-1166662	Release returns default_color_scheme directly.
+0x005AFA20	?IsSystemActive@FEMenuSystem@@UAE_NXZ	V3	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	src/game/ui_types.h:1268-1271	Source returns the is_active state.
+0x005AFA20	?IsSystemActive@FEMenuSystem@@UAE_NXZ	V4	PASS	ida-manual-shell-femenu-system-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1166664-1166668	Release returns is_active directly.
