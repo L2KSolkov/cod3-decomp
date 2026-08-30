@@ -4111,7 +4111,6 @@ void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* wi)
 {
     (void)ps; (void)wi;
 }
-void GetPakPrerequisites(TPakId a, void* b) { (void)a; (void)b; }
 void GlowCallback(void* a) { (void)a; }
 extern unsigned int gpuHashVertexShader;
 extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
