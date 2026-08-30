@@ -60,7 +60,7 @@ apsVertexBuffer.o	13	9	2	0	0	2	0
 bdAddr.obj	19	1	0	2	0	16	0
 bdAddressMap-xbox.obj	7	0	3	0	0	4	0
 bdAlignedOffsetMemory.obj	4	0	0	0	0	4	0
-bdBitBuffer.obj	41	25	0	2	0	14	0
+bdBitBuffer.obj	41	24	0	3	0	14	0
 bdBitOperations.obj	4	0	0	0	0	4	0
 bdByteBuffer.obj	5	2	0	0	0	3	0
 bdBytePacker.obj	11	11	0	0	0	0	0
