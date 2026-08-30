@@ -19,8 +19,10 @@ typedef int bdInt;
 
 class bdReferencable {
 public:
+    // ea: 0x89AF70 (weak constructor emitted in bdBitBuffer.obj)
     bdReferencable() : m_refCount(0) {}
-    // ea: 0x89EB80
+    // ea: 0x89EB80 (canonical virtual destructor)
+    // ea: 0x89AF80 (weak scalar/vector deleting-destructor aliases)
     virtual ~bdReferencable() {}
 
     bdInt addRef() {
