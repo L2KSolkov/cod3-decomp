@@ -12718,9 +12718,15 @@ Vector4& Mat44::GetW() { return w; }
 // ea: 0x663B00
 Mat44::Mat44(const Mat33& m)
 {
-    x.v = _mm_shuffle_ps(_mm_setzero_ps(), m.x.v, 0xA0);
-    y.v = _mm_shuffle_ps(_mm_setzero_ps(), m.y.v, 0xA0);
-    z.v = _mm_shuffle_ps(_mm_setzero_ps(), m.z.v, 0xA0);
+    x.v = _mm_shuffle_ps(m.x.v, _mm_shuffle_ps(_mm_setzero_ps(), m.x.v,
+                                                0xA0),
+                           0x34);
+    y.v = _mm_shuffle_ps(m.y.v, _mm_shuffle_ps(_mm_setzero_ps(), m.y.v,
+                                                0xA0),
+                           0x34);
+    z.v = _mm_shuffle_ps(m.z.v, _mm_shuffle_ps(_mm_setzero_ps(), m.z.v,
+                                                0xA0),
+                           0x34);
     w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);  // Float4_WAxis
 }
 
