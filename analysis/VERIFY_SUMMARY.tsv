@@ -57,7 +57,7 @@ apsUVARectangleRenderer.o	11	4	1	0	0	6	0
 apsUVARenderer.o	7	1	1	0	0	5	0
 apsVFC.o	3	0	0	0	0	3	0
 apsVertexBuffer.o	13	9	2	0	0	2	0
-bdAddr.obj	19	7	6	5	0	1	0
+bdAddr.obj	19	7	6	0	0	6	0
 bdAddressMap-xbox.obj	7	0	3	0	0	4	0
 bdAlignedOffsetMemory.obj	4	0	0	0	0	4	0
 bdBitBuffer.obj	41	39	0	0	0	2	0
