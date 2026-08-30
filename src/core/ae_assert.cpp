@@ -57,14 +57,14 @@ IgnoredAssert::IgnoredAssert() {
 
 struct InfiniteRecursionStopper {
     bool* mRecursing;
-    explicit InfiniteRecursionStopper(bool* ref);
+    explicit InfiniteRecursionStopper(bool& ref);
     ~InfiniteRecursionStopper();
 };
 
 // ea: 0x007BED30
-InfiniteRecursionStopper::InfiniteRecursionStopper(bool* ref)
-    : mRecursing(ref) {
-    *ref = true;
+InfiniteRecursionStopper::InfiniteRecursionStopper(bool& ref)
+    : mRecursing(&ref) {
+    ref = true;
 }
 
 // ea: 0x007BED50
