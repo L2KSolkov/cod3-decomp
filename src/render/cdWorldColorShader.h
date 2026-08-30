@@ -47,7 +47,7 @@ extern cdWorldColorShader* gCDWorldColorShader;
 extern int cdGetClipResult(const nglMeshSection* Section, const nglMeshNode* MeshNode,
                            nglScene* Scene);
 
-void InitCDWorldColorShader();  // @0x7D9DC0
-void ToggleCDWorldColorShader();               // @0x7D9E10
+cdWorldColorShader* InitCDWorldColorShader(); // @0x7D9DC0
+unsigned char ToggleCDWorldColorShader();     // @0x7D9E10
 
 #endif // COD3_RENDER_CDWORLDCOLORSHADER_H

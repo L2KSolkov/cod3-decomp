@@ -28,6 +28,7 @@ int nglShader_NextID = 0;   // ?nglShader_NextID@@3HA
 // ============================================================================
 // Cross-object externs (shader Init/Setup/Render/Toggle functions).
 // ============================================================================
+class cdWorldColorShader;
 extern void InitCDSkyShader();
 extern void InitCDBackgroundShader();
 extern void InitCDWorldShader();
@@ -35,7 +36,7 @@ extern void InitCDWorldVertexLitShader();
 extern void InitCDWorldBlendShader();
 extern void InitCDWorldPointLitShader();
 extern void InitCDWorldBlendPointLitShader();
-extern void InitCDWorldColorShader();
+extern cdWorldColorShader* InitCDWorldColorShader();
 extern void InitCDWaterShader();
 extern void InitCDOceanShader();
 extern void InitCDRiverShader();
@@ -75,7 +76,7 @@ extern void ToggleCDWorldVertexLitShader();
 extern void ToggleCDWorldBlendShader();
 extern void ToggleCDWorldPointLitShader();
 extern void ToggleCDWorldBlendPointLitShader();
-extern void ToggleCDWorldColorShader();
+extern unsigned char ToggleCDWorldColorShader();
 extern void ToggleCDWaterShader();
 extern void ToggleCDOceanShader();
 extern void ToggleCDRiverShader();
@@ -134,7 +135,7 @@ ShaderSwitchPair gShaderSwitches[36] = {
     { "cdworldblend",      ToggleCDWorldBlendShader },
     { "cdworldlit",        ToggleCDWorldPointLitShader },
     { "cdblendpointlit",   ToggleCDWorldBlendPointLitShader },
-    { "cdworldcolor",      ToggleCDWorldColorShader },
+    { "cdworldcolor",      (void(*)())ToggleCDWorldColorShader },
     { "cdwater",           ToggleCDWaterShader },
     { "cdocean",           ToggleCDOceanShader },
     { "cdriver",           ToggleCDRiverShader },

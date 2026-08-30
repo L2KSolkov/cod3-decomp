@@ -22,7 +22,7 @@ class nglShader;
 class cdSimpleColorShader;
 void InitCDSimpleColorShader();
 class cdWorldColorShader;
-void InitCDWorldColorShader();
+cdWorldColorShader* InitCDWorldColorShader();
 class cdSimpleShader;
 void InitCDSimpleShader();
 class cdDecalShader;
@@ -112,7 +112,7 @@ private:
     friend class cdSimpleColorShader;
     friend void InitCDSimpleColorShader();
     friend class cdWorldColorShader;
-    friend void InitCDWorldColorShader();
+    friend cdWorldColorShader* InitCDWorldColorShader();
     friend class cdSimpleShader;
     friend void InitCDSimpleShader();
     friend class cdDecalShader;
