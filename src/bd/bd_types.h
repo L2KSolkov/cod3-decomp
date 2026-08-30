@@ -352,6 +352,7 @@ struct bdFastArray {
     unsigned int m_size;     // +0x08
 
     bdFastArray() : m_data(NULL), m_capacity(0), m_size(0) {}
+    // ea: 0x0089B4C0 (bdFastArray<unsigned char> destructor)
     ~bdFastArray() {
         bdMemory::deallocate(m_data);
         m_data = NULL;
@@ -363,6 +364,7 @@ struct bdFastArray {
     T& operator[](unsigned int index) { return m_data[index]; }
     const T& operator[](unsigned int index) const { return m_data[index]; }
 
+    // ea: 0x0089B290 (bdFastArray<unsigned char> increaseCapacity)
     void increaseCapacity(unsigned int count) {
         unsigned int extra = (count <= m_capacity) ? m_capacity : count;
         unsigned int newCapacity = extra + m_capacity;
@@ -380,6 +382,7 @@ struct bdFastArray {
         m_data[m_size++] = value;
     }
 
+    // ea: 0x0089BC80 (bdFastArray<unsigned char> bulk pushBack)
     unsigned int pushBack(const void* values, unsigned int count) {
         const unsigned int newSize = m_size + count;
         if (m_capacity < newSize)
@@ -390,6 +393,7 @@ struct bdFastArray {
         return m_size;
     }
 
+    // ea: 0x0089B270 (bdFastArray<unsigned char> clear)
     void clear() {
         bdMemory::deallocate(m_data);
         m_data = NULL;
