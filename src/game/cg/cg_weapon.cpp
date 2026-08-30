@@ -2140,8 +2140,26 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
     if (mainTree == nullptr)
         CG_ASSERT("pAnimTree", "c:\\cod\\code\\game\\cg_weapons.cpp", 1050);
     dobjModels[0].animTree = (XAnimTree*)mainTree;
-    XAnimIsLooped((struct AnimTree*)pAnims, 0x17);
-    XAnimIsLooped((struct AnimTree*)pAnims, 0x18);
+    const char* adsAnim23 =
+        *(const char**)((char*)InfoForWeapon + 0x44 + 23 * sizeof(char*));
+    if (adsAnim23 != nullptr
+        && adsAnim23[0] != '\0'
+        && XAnimIsLooped((struct AnimTree*)pAnims, 0x17) != 0)
+    {
+        Com_Error((errorParm_t)2,
+                  "CG_RegisterWeapon: ADS anim [%s] cannot be looping",
+                  adsAnim23);
+    }
+    const char* adsAnim24 =
+        *(const char**)((char*)InfoForWeapon + 0x44 + 24 * sizeof(char*));
+    if (adsAnim24 != nullptr
+        && adsAnim24[0] != '\0'
+        && XAnimIsLooped((struct AnimTree*)pAnims, 0x18) != 0)
+    {
+        Com_Error((errorParm_t)2,
+                  "CG_RegisterWeapon: ADS anim [%s] cannot be looping",
+                  adsAnim24);
+    }
     DObjCreate(dobjModels, v8, mainTree, dobj, 0);
     dword_F6A2A0[802 * currCl] = (int)dobj;
     if (strlen(szHandXModel) >= 0x18)
