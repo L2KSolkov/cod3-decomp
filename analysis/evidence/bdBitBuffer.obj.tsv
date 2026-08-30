@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0089C0D0	?writeRangedUInt32@bdBitBuffer@@QAEXIII_N@Z	V3	PASS	ida-manual-bd-bitbuffer-20260830	2026-08-30	src/bd/stubs.cpp:412-451	Implements range validation/logging, optional type metadata writes, clamping, high-bit width calculation, and final bit write.
+0x0089C0D0	?writeRangedUInt32@bdBitBuffer@@QAEXIII_N@Z	V4	PASS	ida-manual-bd-bitbuffer-20260830	2026-08-30	IDA:0x0089C0D0;src/bd/stubs.cpp:412-451	Release/source match all range diagnostics, typeChecked metadata tags 0xC/0x8, clamp branches, highBitNumber width, offset, and writeBits call.
+0x0089C1F0	?writeRangedInt32@bdBitBuffer@@QAEXHHH@Z	V3	PASS	ida-manual-bd-bitbuffer-20260830	2026-08-30	src/bd/stubs.cpp:367-410	Implements signed range validation, metadata writes, clamping, width calculation, offset, and bit serialization.
+0x0089C1F0	?writeRangedInt32@bdBitBuffer@@QAEXHHH@Z	V4	PASS	ida-manual-bd-bitbuffer-20260830	2026-08-30	IDA:0x0089C1F0;src/bd/stubs.cpp:367-410	Release/source match diagnostics, typeChecked tags 0xB/0x7, signed min/max handling, highBitNumber width, clamping, and writeBits sequencing.
