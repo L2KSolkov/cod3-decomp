@@ -42,6 +42,11 @@ static_assert(sizeof(cdSimpleAlphaShaderMat) == 0x48, "cdSimpleAlphaShaderMat si
 class cdSimpleAlphaShaderNode : public nglShaderNode {
 public:
     cdSimpleAlphaShaderMat* mMaterial;  // +0x14
+
+    cdSimpleAlphaShaderNode(nglMeshNode* iMeshNode,
+                            nglMeshSection* iSection,
+                            cdSimpleAlphaShaderMat* iMaterial); // @0x7C8F20
+    virtual ~cdSimpleAlphaShaderNode(); // @0x7C8F80
 };
 static_assert(sizeof(cdSimpleAlphaShaderNode) == 0x18, "cdSimpleAlphaShaderNode size mismatch");
 

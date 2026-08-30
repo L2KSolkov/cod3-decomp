@@ -171,3 +171,15 @@ void cdSimpleAlphaShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSecti
         ++nglBuildScene->TransListCount;
     }
 }
+
+// ea: 0x007C8F20
+cdSimpleAlphaShaderNode::cdSimpleAlphaShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdSimpleAlphaShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
+// ea: 0x007C8F80
+cdSimpleAlphaShaderNode::~cdSimpleAlphaShaderNode() = default;
