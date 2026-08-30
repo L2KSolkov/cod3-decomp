@@ -682,6 +682,17 @@ IVPointer<XModel> RE_RegisterModel(const char* name, TPakId pakId, int a3)
     return XModelManager::sInst->GetXModel(pakId, name);
 }
 
+extern "C" void RE_RegisterModelRaw(void* result, const char* name,
+                                      TPakId pakId, int a3)
+{
+    if (result == nullptr)
+        return;
+    const IVPointer<XModel> model = RE_RegisterModel(name, pakId, a3);
+    unsigned int* output = static_cast<unsigned int*>(result);
+    output[0] = reinterpret_cast<unsigned int>(model.mValue);
+    output[1] = model.mPakId;
+}
+
 // ea: 0x006D9730
 void XModelManager::PostProcess(XModelBank* xmodelBank, TPakId pak_id)
 {

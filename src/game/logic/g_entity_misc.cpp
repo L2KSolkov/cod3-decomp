@@ -2367,13 +2367,14 @@ void MetaNalBaseAnim_DelayCreate(void* self, void** anims, int count)
         static_cast<DelayCreateFn>(vt[7])(base->data, anims, count);
     MetaNalBaseAnim_Create(self, base->data);
 }
+extern "C" void RE_RegisterModelRaw(void*, const char*, TPakId, int);
+
 void* RE_RegisterModel(void* result, const char* name, int pakId, int imagetype)
 {
     if (result == nullptr)
         return nullptr;
-    extern IVPointer<XModel> RE_RegisterModel(const char*, TPakId, int);
-    *reinterpret_cast<IVPointer<XModel>*>(result) =
-        RE_RegisterModel(name, static_cast<TPakId>(pakId), imagetype);
+    IVPointerRaw* output = reinterpret_cast<IVPointerRaw*>(result);
+    RE_RegisterModelRaw(output, name, static_cast<TPakId>(pakId), imagetype);
     return result;
 }
 XAnimTree* XAnimCreateTree(Entity* ent, AnimTree* anims)
