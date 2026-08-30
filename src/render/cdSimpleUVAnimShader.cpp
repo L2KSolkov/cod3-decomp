@@ -43,23 +43,6 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // Shader global pointer definitions
 cdSimpleUVAnimShader* gCDSimpleUVAnimShader = nullptr;  // ?gCDSimpleUVAnimShader@@3PAVcdSimpleUVAnimShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdSimpleUVAnimRender {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-    unsigned long Shader = 0;
-}
-namespace cdSimpleUVAnimPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-namespace cdSimpleUVAnimFullbrightPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-
 // ea: 0x007C78B0
 void cdSimpleUVAnimRender::RegisterVShader()
 {
@@ -142,12 +125,15 @@ tlFixedString cdSimpleUVAnimShader::GetName() { return tlFixedString("cdSimpleUV
 // ============================================================================
 void cdSimpleUVAnimShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdSimpleUVAnimRender::VS, cdSimpleUVAnimRender::VShaderTable, 0);
-    cdSimpleUVAnimRender::Shader = cdSimpleUVAnimRender::VS != nullptr ? cdSimpleUVAnimRender::VS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleUVAnimPixel::PS, cdSimpleUVAnimPixel::PShaderTable, 0);
-    cdSimpleUVAnimPixel::Shader = cdSimpleUVAnimPixel::PS != nullptr ? cdSimpleUVAnimPixel::PS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleUVAnimFullbrightPixel::PS, cdSimpleUVAnimFullbrightPixel::PShaderTable, 0);
-    cdSimpleUVAnimFullbrightPixel::Shader = cdSimpleUVAnimFullbrightPixel::PS != nullptr ? cdSimpleUVAnimFullbrightPixel::PS[0] : 0;
+    nglDxRegisterVShader(cdSimpleUVAnimRender::VS,
+                         reinterpret_cast<const unsigned int*>(cdSimpleUVAnimRender::VShaderTable[0]));
+    cdSimpleUVAnimRender::Shader = cdSimpleUVAnimRender::VS[0];
+    nglDxRegisterPShader(cdSimpleUVAnimPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdSimpleUVAnimPixel::PShaderTable[0]));
+    cdSimpleUVAnimPixel::Shader = cdSimpleUVAnimPixel::PS[0];
+    nglDxRegisterPShader(cdSimpleUVAnimFullbrightPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdSimpleUVAnimFullbrightPixel::PShaderTable[0]));
+    cdSimpleUVAnimFullbrightPixel::Shader = cdSimpleUVAnimFullbrightPixel::PS[0];
 }
 
 // ============================================================================
