@@ -15,20 +15,6 @@
 // Shader global pointer definitions
 cdSimpleAlphaShader* gCDSimpleAlphaShader = nullptr;  // ?gCDSimpleAlphaShader@@3PAVcdSimpleAlphaShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdSimpleAlphaRender {
-    unsigned long VS[2] = {};
-    unsigned int const* VShaderTable[2] = {};
-}
-namespace cdSimpleAlphaPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-namespace cdSimpleAlphaPixel_Fullbright {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-
 // ea: 0x007C8D80
 void cdSimpleAlphaRender::RegisterVShader()
 {
