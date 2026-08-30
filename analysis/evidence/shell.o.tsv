@@ -273,3 +273,11 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005ADDD0	?SetFlag@FEText@@UAEXH_N@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165110-1165117	Release applies the same conditional bitwise set/clear.
 0x005ADE60	?GetLocation3D@FEText@@UAE?AUvector@Broc@@XZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:890-894	Source returns a zero Broc::vector.
 0x005ADE60	?GetLocation3D@FEText@@UAE?AUvector@Broc@@XZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165119-1165125	Release zeroes all result vector components and returns it.
+0x005AD830	?Draw@FEText@@UAEXXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:754	Source forwards the default Draw call to Draw(false).
+0x005AD830	?Draw@FEText@@UAEXXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164826-1164830	Release dispatches the second Draw vtable entry with a false selection argument.
+0x005AD840	?AddedToMenu@FEText@@UAEX_N@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:762	Source sets menu-membership flag 2 through SetFlag.
+0x005AD840	?AddedToMenu@FEText@@UAEX_N@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164832-1164836	Release calls SetFlag with mask 2 and the supplied boolean.
+0x005AD860	?IsOnMenu@FEText@@UAE_NXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:764	Source returns the menu-membership flag test.
+0x005AD860	?IsOnMenu@FEText@@UAE_NXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164838-1164842	Release returns GetFlag(2), matching source.
+0x005AD870	?IsMultiLineObject@FEText@@UAE_NXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:766	Source returns false for the single-line FEText class.
+0x005AD870	?IsMultiLineObject@FEText@@UAE_NXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164844-1164848	Release returns false directly.

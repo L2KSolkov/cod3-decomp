@@ -751,6 +751,7 @@ public:
     uint8_t          _pad6E[2];             // +0x6E
 
     // shell.o virtual layout follows FEText_vtbl from IDA (0xCF1784).
+    // ea: 0x005AD830
     virtual void Draw() { Draw(false); }                 // +0x04
     virtual void Update(float time_inc);                 // +0x08
     // ea: 0x005ADC20
@@ -759,8 +760,11 @@ public:
     virtual color32 GetColor() { return color1; }        // +0x44
     virtual void CopyFrom(FEText* fet);                  // +0x48
     virtual void Draw(bool selected);                    // +0x4C
+    // ea: 0x005AD840
     virtual void AddedToMenu(bool add) { SetFlag(2, add); } // +0x50
+    // ea: 0x005AD860
     virtual bool IsOnMenu() { return GetFlag(2); }        // +0x54
+    // ea: 0x005AD870
     virtual bool IsMultiLineObject() { return false; }   // +0x58
     virtual void SetHJustify(int h);                     // +0x5C
     virtual void SetVJustify(int v);                     // +0x60
