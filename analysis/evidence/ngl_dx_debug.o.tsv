@@ -1,0 +1,11 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00851120	?ngliGetDebugFlagPtr@@YAPAEPBD@Z	V3	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	src/ngl/ngl_dx_debug.cpp:23-26	Source contains the release null-return implementation; the input flag is intentionally unused.
+0x00851120	?ngliGetDebugFlagPtr@@YAPAEPBD@Z	V4	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	IDA:0x00851120;src/ngl/ngl_dx_debug.cpp:23-26	Release returns nullptr immediately and source preserves the same null result and ABI; omitted decompiler parameter is unused.
+0x00851130	?PrintHeader@ngliShaderProfile@@SAXXZ	V3	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	src/ngl/ngl_dx_debug.cpp:31-33	Source contains the complete shader-profile header print.
+0x00851130	?PrintHeader@ngliShaderProfile@@SAXXZ	V4	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	IDA:0x00851130;src/ngl/ngl_dx_debug.cpp:31-33	Release/source call tlPrint with the identical header string; decompiler integer return is an artifact of the void map ABI.
+0x00851140	?Print@ngliShaderProfile@@QAEXXZ	V3	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	src/ngl/ngl_dx_debug.cpp:38-41	Source contains the complete formatted shader-profile output.
+0x00851140	?Print@ngliShaderProfile@@QAEXXZ	V4	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	IDA:0x00851140;src/ngl/ngl_dx_debug.cpp:38-41	Release/source format string, field order, and Name.str argument match exactly.
+0x00851170	?Record@ngliShaderProfile@@QAEXXZ	V3	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	src/ngl/ngl_dx_debug.cpp:46-52	Source contains all five performance-field assignments.
+0x00851170	?Record@ngliShaderProfile@@QAEXXZ	V4	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	IDA:0x00851170;src/ngl/ngl_dx_debug.cpp:46-52	Release/source assign RenderMS, CPUMS, ListBuffer, ScratchBuffer, and NodeCount from the same globals/fields.
+0x008511B0	?Compare@ngliShaderProfile@@QAEXPAU1@@Z	V3	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	src/ngl/ngl_dx_debug.cpp:57-73	Source contains complete clamped profile subtraction for all five metrics.
+0x008511B0	?Compare@ngliShaderProfile@@QAEXPAU1@@Z	V4	PASS	ida-manual-ngl-dx-debug-20260829	2026-08-29	IDA:0x008511B0;src/ngl/ngl_dx_debug.cpp:57-73	Release/source subtract RenderMS and CPUMS with negative clamps, then clamp integer ListBuffer/ScratchBuffer/NodeCount differences to zero in the same order.
