@@ -12406,8 +12406,8 @@ int InstanceBank::strnicmp(const char* str1, const char* str2, int len) const
         int v5 = str2 - str1;
         while (v4[v5] != 0 && len != 0)
         {
-            char v6 = (char)tolower((unsigned char)*v4);
-            char v7 = (char)tolower((unsigned char)v4[v5]);
+            char v6 = (char)tolower(*v4);
+            char v7 = (char)tolower(v4[v5]);
             if (v6 != v7)
                 return v6 < v7;
             char v8 = *++v4;
