@@ -175,3 +175,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0056B9B0	?GetColor@FETextFlashInfo@@QAE?AVcolor32@@V2@@Z	V4	PASS	ida-manual-shell-flash-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1127874-1127892	Release computes the same channel deltas and stores b/r/a/g in the returned color; hidden result-pointer ABI is compiler-generated.
 0x0056BA70	?Reset@FETextFlashInfo@@QAEXXZ	V3	PASS	ida-manual-shell-flash-20260830	2026-08-30	src/game/shell/fe_text.cpp:936-941	Source clears flash timer and intensity.
 0x0056BA70	?Reset@FETextFlashInfo@@QAEXXZ	V4	PASS	ida-manual-shell-flash-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1127894-1127902	Release clears the same two fields.
+0x005AD680	?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z	V3	PASS	ida-manual-shell-flash-20260830	2026-08-30	src/game/shell/fe_text.cpp:900-903	Source stores the supplied flash color.
+0x005AD680	?SetColor@FETextFlashInfo@@QAEXVcolor32@@@Z	V4	PASS	ida-manual-shell-flash-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164784-1164788	Release stores the supplied flash color directly, matching source.
+0x005AD690	?SetPeriod@FETextFlashInfo@@QAEXM@Z	V3	PASS	ida-manual-shell-flash-20260830	2026-08-30	src/game/shell/fe_text.cpp:906-909	Source stores the supplied flash period.
+0x005AD690	?SetPeriod@FETextFlashInfo@@QAEXM@Z	V4	PASS	ida-manual-shell-flash-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164790-1164794	Release stores the supplied flash period directly, matching source.
