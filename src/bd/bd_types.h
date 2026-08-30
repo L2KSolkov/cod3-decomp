@@ -1265,12 +1265,12 @@ static_assert(offsetof(bdSAckChunk, m_windowCredit) == 0x24, "bdSAckChunk::m_win
 // ============================================================================
 class bdSequenceNumber {
 public:
-    bdSequenceNumber(int seqNum = -1) : m_seqNum(seqNum) {}
+    bdSequenceNumber(int seqNum = -1);
     bdSequenceNumber(const bdSequenceNumber& last, unsigned int seqNumber,
                      unsigned int bits);
     void set(const bdSequenceNumber& last, unsigned int seqNumber,
              unsigned int bits);
-    int getValue() const { return m_seqNum; }
+    int getValue() const;
 
     bdSequenceNumber operator+(const bdSequenceNumber& other) const;
     bdSequenceNumber& operator+=(const bdSequenceNumber& other);

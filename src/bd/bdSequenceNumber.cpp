@@ -6,6 +6,12 @@
 
 #include "bd/bd_types.h"
 
+// ea: 0x9EC060
+bdSequenceNumber::bdSequenceNumber(int seqNum)
+    : m_seqNum(seqNum) {
+    m_seqNum = seqNum;
+}
+
 // ============================================================================
 // bdSequenceNumber::bdSequenceNumber (last, seqNumber, bits) - ea: 0x9EC360
 // ============================================================================
@@ -13,6 +19,11 @@ bdSequenceNumber::bdSequenceNumber(const bdSequenceNumber& last,
                                    unsigned int seqNumber, unsigned int bits)
     : m_seqNum(-1) {
     set(last, seqNumber, bits);
+}
+
+// ea: 0x9EC230
+int bdSequenceNumber::getValue() const {
+    return m_seqNum;
 }
 
 // ============================================================================
@@ -114,22 +125,27 @@ bdSequenceNumber bdSequenceNumber::operator-(const bdSequenceNumber& other) cons
 // Comparison operators - ea: 0x9EC2C0 / 0x9EC2E0 / 0x9EC300 / 0x9EC320 /
 // 0x9EC340 (==) / inline (!=)
 // ============================================================================
+// ea: 0x9EC2C0
 bool bdSequenceNumber::operator>(const bdSequenceNumber& other) const {
     return m_seqNum > other.m_seqNum;
 }
 
+// ea: 0x9EC2E0
 bool bdSequenceNumber::operator<(const bdSequenceNumber& other) const {
     return m_seqNum < other.m_seqNum;
 }
 
+// ea: 0x9EC300
 bool bdSequenceNumber::operator<=(const bdSequenceNumber& other) const {
     return m_seqNum <= other.m_seqNum;
 }
 
+// ea: 0x9EC320
 bool bdSequenceNumber::operator>=(const bdSequenceNumber& other) const {
     return m_seqNum >= other.m_seqNum;
 }
 
+// ea: 0x9EC340
 bool bdSequenceNumber::operator==(const bdSequenceNumber& other) const {
     return m_seqNum == other.m_seqNum;
 }
