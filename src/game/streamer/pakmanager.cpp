@@ -9993,7 +9993,7 @@ enum RecordResourceType {
     Resource_Reserved = 5,
     Resource_MAX = 6,
 };
-RecordResourceType GetWorkAmount(const char* name);  // streamer.o (defined below)
+unsigned int GetWorkAmount(const char* name);  // streamer.o (release ABI)
 
 // ea: 0x67A380
 void PakFile::UpdateLoading()
@@ -13105,7 +13105,7 @@ const char* GetFileExt(const char* name)
 }
 
 // ea: 0x664030
-RecordResourceType GetWorkAmount(const char* name)
+unsigned int GetWorkAmount(const char* name)
 {
     const char* v1 = GetFileExt(name);
 
