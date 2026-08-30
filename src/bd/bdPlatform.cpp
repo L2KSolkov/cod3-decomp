@@ -227,9 +227,10 @@ bdUInt64 bdPlatformSocket::s_packetsRecvd=0;
 #endif
 
 // ============================================================================
-// bdGetRandomUChar8 — platform random bytes (ea: 0x9ED180)
+// ea: 0x9ED180
+// bdGetRandomUChar8 — platform random bytes
 // ============================================================================
-void bdGetRandomUChar8(unsigned char* d, bdUInt n) {
+void bdGetRandomUChar8(unsigned char* const d, bdUInt n) {
     for (bdUInt i = 0; i < n; ++i) d[i] = (unsigned char)(rand() & 0xFF);
 }
 
