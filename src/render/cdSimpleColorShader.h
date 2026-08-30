@@ -33,6 +33,12 @@ struct nglShaderNode : nglRenderNode {
     nglMeshNode*     MeshNode;  // +0x0C
     nglMeshSection*  Section;   // +0x10
 
+    nglShaderNode();                              // host default construction
+    nglShaderNode(nglMeshNode*, nglMeshSection*); // @0x7C5FC0
+    void GetDesc(char*);                          // @0x7C5FE0
+    void SetIFLFrame();                            // @0x7C5FF0
+    void RenderSetup();                            // @0x7C6040
+
     // ea: 0x7C5CE0 (cdScratchShader.o COMDAT)
     float GetDist(const math::Mat43& WorldToView) {
         __m128 v4 = _mm_add_ps(

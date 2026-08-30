@@ -11,6 +11,42 @@
 
 #include <intrin.h>
 
+extern unsigned int nglTextureFrameParamID;
+extern int nglTextureAnimFrame;
+
+nglShaderNode::nglShaderNode() : MeshNode(nullptr), Section(nullptr) {}
+
+// ea: 0x007C5FC0
+nglShaderNode::nglShaderNode(nglMeshNode* meshNode, nglMeshSection* section)
+    : MeshNode(meshNode), Section(section)
+{
+    this->MeshNode = meshNode;
+    this->Section = section;
+}
+
+// ea: 0x007C5FE0
+void nglShaderNode::GetDesc(char* desc)
+{
+    *desc = 0;
+}
+
+// ea: 0x007C5FF0
+void nglShaderNode::SetIFLFrame()
+{
+    const unsigned int id = nglTextureFrameParamID;
+    const unsigned int* values = this->MeshNode->ShaderParams.Array;
+    if ((1u << (id & 0x1Fu)) & values[id >> 5])
+        nglTextureAnimFrame = *reinterpret_cast<const int*>(values + id + 2);
+    else
+        nglTextureAnimFrame = nglBuildScene->IFLFrame;
+}
+
+// ea: 0x007C6040
+void nglShaderNode::RenderSetup()
+{
+    this->SetIFLFrame();
+}
+
 // Shader global pointer definitions
 cdSimpleColorShader* gCDSimpleColorShader = nullptr;  // ?gCDSimpleColorShader@@3PAVcdSimpleColorShader@@A
 
