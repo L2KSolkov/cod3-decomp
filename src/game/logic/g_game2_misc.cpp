@@ -1442,9 +1442,6 @@ void AnimIK::ApplyADS(Entity* ent)
 void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
                                  nalMatrix4x4& rightFootMat)
 {
-    if (ent == nullptr || ent->sentient == nullptr || ent->client == nullptr
-        || pose == nullptr || skeleton == nullptr)
-        return;
     sentient_s* sentient = ent->sentient;
     const int elapsedMs = level.time
         - sentient->mLastTerrainMappingFootOffsetZTime;
