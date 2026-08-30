@@ -15969,7 +15969,7 @@ void R_RefreshCell(int cellIndex, bool clear)
 void RegisterMesh(const char* name, MultiApk* file, TPakId pakId)
 {
     tlFixedString result = GetName(name);
-    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_MESHFILE, pakId, result,
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_TEXTURE, pakId, result,
                                  (unsigned int)file);
 }
 
