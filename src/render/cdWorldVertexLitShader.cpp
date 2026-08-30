@@ -220,9 +220,9 @@ void cdWorldVertexLitShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSe
     if ((ShaderCommon::ShaderSwitching.__s0[0] & 4) == 0) {
         cdWorldVertexLitShaderNode* node = (cdWorldVertexLitShaderNode*)nglListAlloc(0x18, 0x10);
         if (node != NULL) {
+            ::new (node) cdWorldVertexLitShaderNode;
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdWorldVertexLitShaderNode;
             node->mMaterial = (cdWorldVertexLitShaderMat*)iMat;
         } else {
             node = NULL;
