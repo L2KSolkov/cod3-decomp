@@ -121,3 +121,13 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x00822990	?nslSetEmitterEffectOn@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560988-1560992	Release delegates to nslEmitter_ForAll(eid, nslSetSourceEffectOn).
 0x008229B0	?nslSetEmitterEffectOff@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1947	Body applies nslSetSourceEffectOff to all sources belonging to the emitter.
 0x008229B0	?nslSetEmitterEffectOff@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560994-1560998	Release delegates to nslEmitter_ForAll(eid, nslSetSourceEffectOff).
+0x008229D0	?nslNewSource@@YA?AW4nslSourceID@@W4nslWaveID@@H@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:844-960	Body validates the wave, allocates/initializes the source record, selects 2D/3D voice behavior, unpacks parameters, applies randomization, and enables effects.
+0x008229D0	?nslNewSource@@YA?AW4nslSourceID@@W4nslWaveID@@H@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1560999-1561150	Release wave/source setup, 3D defaults, voice allocation, parameter unpack, random volume/pitch, masks, and effect enable match source.
+0x00822D40	?nslNewSource@@YA?AW4nslSourceID@@PBDH@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:963-966	Body resolves the wave name and delegates with the importance value.
+0x00822D40	?nslNewSource@@YA?AW4nslSourceID@@PBDH@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561151-1561158	Release wave lookup and delegation match source.
+0x00822D60	?nslIsSourceQueued@@YAHW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1081-1084	Body tests the queued source state.
+0x00822D60	?nslIsSourceQueued@@YAHW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561160-1561164	Release queued-state test matches source.
+0x00822D80	?nslIsSourcePlaying@@YAHW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1086-1089	Body tests the playing source state.
+0x00822D80	?nslIsSourcePlaying@@YAHW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561166-1561170	Release playing-state test matches source.
+0x00822DA0	?nslIsSourceFinished@@YAHW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1091-1094	Body tests for the invalid/finished source state.
+0x00822DA0	?nslIsSourceFinished@@YAHW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561172-1561176	Release finished-state test matches source.
