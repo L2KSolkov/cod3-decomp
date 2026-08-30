@@ -558,6 +558,15 @@ def candidate_name_matches(decorated: str, candidate: str) -> bool:
             (base == "operator bool" and candidate.endswith("operator T*")))
 
 
+def marker_candidate_matches(decorated: str, candidate: str) -> bool:
+    """Match a marker without conflating constructors and destructors."""
+    if decorated.startswith("??1") and "::~" not in candidate and "destructor" not in candidate:
+        return False
+    if "::~" in candidate and not decorated.startswith("??1"):
+        return False
+    return candidate_name_matches(decorated, candidate)
+
+
 def dumpbin_path() -> str | None:
     found = shutil.which("dumpbin")
     if found:
@@ -1219,17 +1228,28 @@ def main() -> int:
     map_idas = {row.ida_ea for row in functions}
     map_by_ea = {row.ida_ea: row for row in functions}
     map_linked_vas = {row.va for row in functions}
+    map_by_linked_va = {row.va: row for row in functions}
     # Some legacy source files copied the raw segment-2 offset from the map
     # (`0002:0041xxxx`) instead of the IDA EA. Normalize only an address that
     # becomes an exact map EA after applying a known segment base.
     for marker in markers:
-        if marker.address in map_idas or marker.address in map_linked_vas:
+        if marker.address in map_idas:
+            continue
+        # A linked-image VA is authoritative only when its readable candidate
+        # names the same map function.  Normalize that unambiguous case to the
+        # IDA EA; leave candidate-less/stale prose untouched for triage.
+        linked_target = map_by_linked_va.get(marker.address)
+        if (linked_target is not None and marker.candidate and
+                marker_candidate_matches(linked_target.name, marker.candidate)):
+            marker.address = linked_target.ida_ea
+            continue
+        if marker.address in map_linked_vas:
             continue
         for base in SEGMENT_BASES.values():
             normalized = marker.address + base
             target = map_by_ea.get(normalized)
             if (target is not None and marker.candidate and
-                    candidate_name_matches(target.name, marker.candidate)):
+                    marker_candidate_matches(target.name, marker.candidate)):
                 marker.address = normalized
                 break
         else:

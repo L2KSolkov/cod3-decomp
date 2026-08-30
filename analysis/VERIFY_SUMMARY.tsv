@@ -175,11 +175,11 @@ cdl_base.o	2	0	0	0	0	2	0
 cdl_common.o	16	0	0	0	0	16	0
 cdl_gjk.o	10	0	0	0	0	10	0
 cg.o	405	6	0	140	0	259	0
-cl.o	341	9	0	260	0	72	0
+cl.o	341	8	0	261	0	72	0
 compress.o	3	3	0	0	0	0	0
 controller.o	11	11	0	0	0	0	0
 controller_xbox.o	16	15	0	0	0	1	0
-core.o	1437	602	27	282	0	526	0
+core.o	1437	600	27	284	0	526	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
@@ -271,9 +271,9 @@ nslWaveBank.o	48	0	0	0	0	48	0
 nslWaveBankFixup.o	1	0	0	0	0	1	0
 nslWaveBankLoader.o	5	3	0	0	0	2	0
 nslWaveBankSort.o	3	0	0	0	0	3	0
-nvl_afmv.o	32	32	0	0	0	0	0
-nvl_base.o	23	23	0	0	0	0	0
-nvl_xbox.o	11	11	0	0	0	0	0
+nvl_afmv.o	32	17	0	15	0	0	0
+nvl_base.o	23	2	1	20	0	0	0
+nvl_xbox.o	11	6	0	5	0	0	0
 phys_collision.o	24	14	6	0	0	4	0
 phys_constraint_solver_multithreaded.o	184	137	37	7	0	3	0
 phys_contact_manifold.o	26	18	7	0	0	1	0
