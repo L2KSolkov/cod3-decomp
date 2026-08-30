@@ -39,10 +39,10 @@ bool bdChunk::isControl() const {
 // ============================================================================
 // bdChunk::getType (static) â€” ea: 0x8AD580
 // ============================================================================
-bdChunkTypes bdChunk::getType(const void* data, unsigned int size) {
+bdChunkTypes bdChunk::getType(const unsigned char* const data, unsigned int size) {
     unsigned int offset = 0;
     unsigned char type = 0;
-    if (!bdBytePacker::removeBasicType((const unsigned char*)data, size, 0, &offset,
+    if (!bdBytePacker::removeBasicType(data, size, 0, &offset,
                                        &type, 1u))
         return (bdChunkTypes)0;
     return (bdChunkTypes)type;

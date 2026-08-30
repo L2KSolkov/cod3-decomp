@@ -906,7 +906,7 @@ public:
     virtual ~bdChunk();
     virtual bdChunkTypes getType() const;
     bool isControl() const;
-    static bdChunkTypes getType(const void* data, unsigned int size);
+    static bdChunkTypes getType(const unsigned char* const data, unsigned int size);
     virtual unsigned int getSerializedSize() = 0;
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
     virtual bool deserialize(const unsigned char* data, unsigned int size,
