@@ -1710,7 +1710,7 @@ void stat_DecStat(eMissionStats which, _xmission_data* xd)
 }
 
 // ea: 0x4F6890
-float stat_GetAvgStat(unsigned int which)
+float stat_GetAvgStat(eMissionStats which)
 {
     if (which > 0x10u)
     {
