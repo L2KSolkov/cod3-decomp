@@ -1484,8 +1484,6 @@ public:
     const bdReference<bdAddrHandle>& getAddressHandle() const { return m_addrHandle; }
     bdConnectionStatistics* getStats() { return &m_stats; }
 
-    bdConnection();
-    bdConnection(const bdReference<bdCommonAddr>& addr);
     virtual ~bdConnection();
     virtual bool receive(const unsigned char* buffer, unsigned int bufferSize) = 0;
     virtual bool send(const bdReference<bdMessage>& message, bool reliable = false) = 0;
@@ -1502,6 +1500,8 @@ public:
     int unregisterListener(bdConnectionListener* listener);
 
 protected:
+    bdConnection();
+    bdConnection(bdReference<bdCommonAddr> addr);
     virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize) = 0;
 
     friend class bdConnectionStore;

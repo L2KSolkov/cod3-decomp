@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008A0F80	??0bdConnection@@IAE@V?$bdReference@VbdCommonAddr@@@@@Z	V3	PASS	bdconnection-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1671804-1671828;src/bd/bdConnection.cpp:33-47	Release initializes the base connection, stores and references the common address, initializes statistics/listener state and status fields, then releases the by-value temporary; source follows the same ownership path.
+0x008A0F80	??0bdConnection@@IAE@V?$bdReference@VbdCommonAddr@@@@@Z	V4	PASS	bdconnection-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1671804-1671828;src/bd/bdConnection.cpp:33-47	Equivalent release/source field initialization, common-address ownership, protected constructor ABI, and temporary cleanup behavior.

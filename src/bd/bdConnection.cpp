@@ -32,7 +32,7 @@ bdConnection::bdConnection()
 // ============================================================================
 // bdConnection::bdConnection (addr) â€” ea: 0x8A0F80
 // ============================================================================
-bdConnection::bdConnection(const bdReference<bdCommonAddr>& addr)
+bdConnection::bdConnection(bdReference<bdCommonAddr> addr)
     : m_addr(addr),
       m_addrHandle(),
       m_stats(),
