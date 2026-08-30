@@ -202,7 +202,7 @@ mp_shell.o	835	173	0	61	0	601	0
 mp_util_wad.o	1283	620	269	0	0	394	0
 mp_xbox.o	77	20	0	0	0	57	0
 nal_anim.o	29	20	5	4	0	0	0
-nal_cache.o	7	0	4	3	0	0	0
+nal_cache.o	7	0	4	0	0	3	0
 nal_generic.o	68	22	25	20	0	1	0
 nal_generic_component.o	36	31	0	5	0	0	0
 nal_ik.o	2	2	0	0	0	0	0

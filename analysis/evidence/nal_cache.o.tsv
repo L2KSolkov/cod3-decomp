@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00868700	?Release@nalAnimCache@@QAEXXZ	V3	PASS	ida-manual-nal-cache-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x00868700; src/animation/nal.cpp:1524	Real body walks MRUObject, advances to Next, and frees each object using its recorded Size.
+0x00868700	?Release@nalAnimCache@@QAEXXZ	V4	PASS	ida-manual-nal-cache-20260830	2026-08-30	IDA decompile 0x00868700 and src/animation/nal.cpp:1524-1532	Release loop condition, object/Next loads, and Heap->Free arguments match.
+0x00868730	?MemFree@nalAnimCache@@QAEXPAXI@Z	V3	PASS	ida-manual-nal-cache-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x00868730; src/animation/nal.cpp:1535	Real body forwards ptr and size to Heap->Free.
+0x00868730	?MemFree@nalAnimCache@@QAEXPAXI@Z	V4	PASS	ida-manual-nal-cache-20260830	2026-08-30	IDA decompile 0x00868730 and src/animation/nal.cpp:1535-1538	Release is a direct Heap->Free call with the same arguments.
+0x00868830	?MemAlloc@nalAnimCache@@QAEPAXII@Z	V3	PASS	ida-manual-nal-cache-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x00868830; src/animation/nal.cpp:1600	Real body returns null with no LRU object, otherwise retries Heap->Allocate and evicts LRU entries on failure.
+0x00868830	?MemAlloc@nalAnimCache@@QAEPAXII@Z	V4	PASS	ida-manual-nal-cache-20260830	2026-08-30	IDA decompile 0x00868830 and src/animation/nal.cpp:1600-1615	Release branch order, size forwarding, Free(LRUObject) retry, and final return match; unused formal parameter is intentional.
