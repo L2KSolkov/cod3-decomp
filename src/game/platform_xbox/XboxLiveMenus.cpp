@@ -6,6 +6,7 @@
 
 #include "XboxLiveMenus.h"
 
+// ea: 0x0056DBA0
 void FEMultiLineText::UpdateForSplitScreen(int viewport, int old_viewport)
 {
     if (viewport == old_viewport)
@@ -56,6 +57,7 @@ void FEMultiLineText::UpdateForSplitScreen(int viewport, int old_viewport)
     }
 }
 
+// ea: 0x0056DA80
 void FEMultiLineText::UpdateForWidescreen(bool widescreen)
 {
     FEText::UpdateForWidescreen(widescreen);
