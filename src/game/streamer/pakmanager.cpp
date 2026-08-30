@@ -14893,11 +14893,8 @@ void InstanceBankMgr::ReleaseAnims(TPakId pakId)
                      j = ((NalAnimClassView*)j)->NextAnim)
                 {
                     void* old_dir = m_anim_directory.m_old_directory;
-                    if (old_dir != nullptr)
-                    {
-                        void** odvt = *(void***)old_dir;
-                        ((void (__thiscall*)(void*, void*))odvt[4])(old_dir, j);
-                    }
+                    void** odvt = *(void***)old_dir;
+                    ((void (__thiscall*)(void*, void*))odvt[4])(old_dir, j);
                     XAnimRelease((nalAnimClass<nalAnyPose>*)j);
                 }
                 nalReleaseAnimFile(ptr);
