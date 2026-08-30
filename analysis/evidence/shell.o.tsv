@@ -619,3 +619,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0056CA30	?Animate@FEText@@MAEXPAVMat43@math@@M@Z	V4	PASS	ida-manual-shell-fetext-core-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1128581-1128626	Release matches current/initial transform selection, matrix translation/scale, and alpha update.
 0x0056CB60	?AdjustForJustification@FEText@@MAEXAAM0M@Z	V3	PASS	ida-manual-shell-fetext-core-20260830	2026-08-30	src/game/shell/fe_text.cpp:679-700	Source adjusts X/Y for left/center/right and top/center/bottom flags using measured dimensions.
 0x0056CB60	?AdjustForJustification@FEText@@MAEXAAM0M@Z	V4	PASS	ida-manual-shell-fetext-core-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1128628-1128710	Release applies the same justification flag branches and width/height offsets.
+0x005B1B40	?ResetFlash@FEText@@QAEXXZ	V3	PASS	ida-manual-shell-fetext-core-20260830	2026-08-30	src/game/ui_types.h:866-874	Source resets flash timer and intensity when flash_info exists.
+0x005B1B40	?ResetFlash@FEText@@QAEXXZ	V4	PASS	ida-manual-shell-fetext-core-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1168635-1168647	Release performs the same conditional timer and intensity reset.

@@ -863,7 +863,8 @@ public:
     }
     virtual void SetNoFlash(color32 c);                  // +0xA8
     virtual void SetFlash(color32 c1, color32 c2, float period); // +0xAC
-    void ResetFlash()                                     // shell.o 0x5B1B40
+    // ea: 0x005B1B40
+    void ResetFlash()                                     // shell.o
     {
         if (flash_info != nullptr)
         {
