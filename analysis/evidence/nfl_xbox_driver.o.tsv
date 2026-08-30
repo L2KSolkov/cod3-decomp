@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0082D560	?nfd_xbox_MediaBind@@YA?AW4nfdError@@W4nflMediaID@@PBDPADH@Z	V3	PASS	ida-manual-nfl-xbox-driver-20260829	2026-08-29	src/filesystem/nfl.cpp:2143-2173	Source handles drive-qualified paths, prepends D:/E: media roots, appends the source path, normalizes slashes, and returns the release error codes.
+0x0082D560	?nfd_xbox_MediaBind@@YA?AW4nfdError@@W4nflMediaID@@PBDPADH@Z	V4	PASS	ida-manual-nfl-xbox-driver-20260829	2026-08-29	IDA:0x0082D560;src/filesystem/nfl.cpp:2143-2173	Release/source match isalpha/colon detection, D:\\ and E:\\ prefixes, invalid-media return 4, strcat behavior, slash normalization, and success return; unused dstSize is ABI-only as in release.
