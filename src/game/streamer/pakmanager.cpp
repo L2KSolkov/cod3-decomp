@@ -600,6 +600,7 @@ extern void ParseInteractionConfigString(const char* name,
 extern void ParseInteractStateConfigString(const char* name,
                                            const ConfigString* cfgstr);
 
+// ea: 0x0053BF50
 void G_ParseInteractionInfo(TPakId pakId)
 {
     ConfigStringManager::sInst->CallbackSearch(
