@@ -183,9 +183,9 @@ float ReadFloat(unsigned char* buffer, int& index)
 }
 
 // ea: 0x0056AEE0
-unsigned char ReadShort(unsigned char* buffer, int& index)
+short ReadShort(unsigned char* buffer, int& index)
 {
-    unsigned char result = buffer[index];
+    short result = (short)(buffer[index] | (buffer[index + 1] << 8));
     index += 2;
     return result;
 }
