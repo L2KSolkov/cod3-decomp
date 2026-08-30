@@ -308,31 +308,73 @@ bool bdByteBuffer::write(const void* data, unsigned int size)
     return result;
 }
 
+// ea: 0x0089BFC0
 // bdBitBuffer ctors - ?0bdBitBuffer@@QAE@PBI_N@Z / ?0bdBitBuffer@@QAE@I_N@Z
 bdBitBuffer::bdBitBuffer(const unsigned char* data, unsigned int bitCount,
                          bool typeChecked)
 {
+    m_data.m_data = nullptr;
+    m_data.m_capacity = 0;
+    m_data.m_size = 0;
     m_writePosition = 0;
-    m_maxWritePosition = bitCount;
+    m_maxWritePosition = 0;
     m_readPosition = 0;
     m_failedRead = false;
-    m_typeChecked = typeChecked;
-    m_data.m_size = (bitCount + 7) / 8;
-    m_data.m_capacity = m_data.m_size;
-    m_data.m_data = const_cast<unsigned char*>(data);
+    m_typeChecked = false;
+
+    if (!typeChecked || bitCount == 0)
+    {
+        unsigned char header = 0;
+        writeBits(&header, 1);
+        writeBits(data, bitCount);
+        m_readPosition = 1;
+    }
+    else
+    {
+        m_data.pushBack(data, (bitCount >> 3) + ((bitCount & 7u) != 0));
+        m_writePosition = bitCount;
+        m_maxWritePosition = bitCount;
+        do
+        {
+            if (!readBits(&m_typeChecked, 1))
+            {
+                bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                     "__thiscall bdBitBuffer::bdBitBuffer(const unsigned char *,const unsigned int,const bool)",
+                                     0x46u, "dw/err");
+                proxy.log(defaultFileName,
+                          "bdBitBuffer constructor failed: could not read bits");
+            }
+        } while (g_assertFalse);
+    }
 }
 
+// ea: 0x0089BEC0
 bdBitBuffer::bdBitBuffer(unsigned int bitCount, bool typeChecked)
 {
+    const unsigned int bytes = (bitCount >> 3) + ((bitCount & 7u) != 0);
+    m_data.m_data = static_cast<unsigned char*>(bdMemory::allocate(bytes));
+    m_data.m_capacity = bytes;
+    m_data.m_size = 0;
     m_writePosition = 0;
-    m_maxWritePosition = bitCount;
+    m_maxWritePosition = 0;
     m_readPosition = 0;
     m_failedRead = false;
     m_typeChecked = typeChecked;
-    unsigned int bytes = (bitCount + 7) / 8;
-    m_data.m_size = bytes;
-    m_data.m_capacity = bytes;
-    m_data.m_data = bytes ? new uint8_t[bytes] : nullptr;
+
+    unsigned char header = typeChecked ? 0xFFu : 0u;
+    writeBits(&header, 1);
+    do
+    {
+        if (m_writePosition != 1)
+        {
+            bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                 "__thiscall bdBitBuffer::bdBitBuffer(const unsigned int,const bool)",
+                                 0x26u, "dw/err");
+            proxy.log(defaultFileName,
+                      "BD_BB_NUM_HEADER_BITS and written header don't match.");
+        }
+    } while (g_assertFalse);
+    m_readPosition = 1;
 }
 
 // ea: 0x0089AFC0

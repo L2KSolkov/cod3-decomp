@@ -380,6 +380,16 @@ struct bdFastArray {
         m_data[m_size++] = value;
     }
 
+    unsigned int pushBack(const void* values, unsigned int count) {
+        const unsigned int newSize = m_size + count;
+        if (m_capacity < newSize)
+            increaseCapacity(newSize - m_capacity);
+        if (count != 0)
+            memcpy(m_data + m_size, values, sizeof(T) * count);
+        m_size = newSize;
+        return m_size;
+    }
+
     void clear() {
         bdMemory::deallocate(m_data);
         m_data = NULL;
