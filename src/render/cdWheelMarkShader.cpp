@@ -27,18 +27,6 @@ gpuVertexFormat cdWheelMarkVertexFormat;  // ?cdWheelMarkVertexFormat@@3UgpuVert
 cdWheelMarkShader* gCDWheelMarkShader = nullptr;  // ?gCDWheelMarkShader@@3PAVcdWheelMarkShader@@A
 unsigned int cdWheelMarkShaderDataID;  // ?cdWheelMarkShaderDataID@@3IA @ 0x14CD57C
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdWheelMarkShaderVertex {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-    unsigned long Shader = 0;
-}
-namespace cdWheelMarkShaderPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-
 // ea: 0x007C9B30
 void cdWheelMarkShaderVertex::RegisterVShader()
 {
@@ -225,10 +213,12 @@ tlFixedString cdWheelMarkShader::GetName() { return tlFixedString("cdWheelMark")
 // ============================================================================
 void cdWheelMarkShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdWheelMarkShaderVertex::VS, cdWheelMarkShaderVertex::VShaderTable, 0);
-    cdWheelMarkShaderVertex::Shader = cdWheelMarkShaderVertex::VS != nullptr ? cdWheelMarkShaderVertex::VS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdWheelMarkShaderPixel::PS, cdWheelMarkShaderPixel::PShaderTable, 0);
-    cdWheelMarkShaderPixel::Shader = cdWheelMarkShaderPixel::PS != nullptr ? cdWheelMarkShaderPixel::PS[0] : 0;
+    nglDxRegisterVShader(cdWheelMarkShaderVertex::VS,
+                         reinterpret_cast<const unsigned int*>(cdWheelMarkShaderVertex::VShaderTable[0]));
+    cdWheelMarkShaderVertex::Shader = cdWheelMarkShaderVertex::VS[0];
+    nglDxRegisterPShader(cdWheelMarkShaderPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdWheelMarkShaderPixel::PShaderTable[0]));
+    cdWheelMarkShaderPixel::Shader = cdWheelMarkShaderPixel::PS[0];
 }
 
 // ============================================================================
