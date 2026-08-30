@@ -157,8 +157,10 @@ tlFixedString cdSimplePrelitShader::GetName() { return tlFixedString("cdSimplePr
 // ============================================================================
 void cdSimplePrelitShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdSimplePrelitRender::VS, cdSimplePrelitRender::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdSimplePrelitPixel::PS, cdSimplePrelitPixel::PShaderTable, 0);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdSimplePrelitRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdSimplePrelitRender::VShaderTable[0]));
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdSimplePrelitPixel::PS),
+                         reinterpret_cast<const unsigned int*>(cdSimplePrelitPixel::PShaderTable[0]));
 }
 
 // ============================================================================
