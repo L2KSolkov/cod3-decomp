@@ -4536,34 +4536,36 @@ float         nslDriverClamp(float value, float min, float max) {
 void          nslDriverCalculateRolloff(float* dest, float value,
                                         const nslWave* wave) {
     const unsigned char* raw = reinterpret_cast<const unsigned char*>(wave);
-    const unsigned char* nameOffset =
-        *reinterpret_cast<const unsigned char* const*>(raw);
-    const nslParam* params = nameOffset == nullptr
-        ? nullptr : reinterpret_cast<const nslParam*>(nameOffset + 0x10u);
+    const uintptr_t metadataAddress = static_cast<uintptr_t>(
+        *reinterpret_cast<const unsigned*>(raw));
+    // The release stores the no-parameter sentinel as -16 so adding the
+    // parameter-area offset produces a null address before each lookup.
+    const uintptr_t paramAddress = metadataAddress + 0x10u;
+    const nslParam* params = reinterpret_cast<const nslParam*>(paramAddress);
 
     float minDist = 1.0f;
-    if (params != nullptr) {
+    if (paramAddress != 0) {
         const int index = nslParam_Index_1(params, UINT64_C(0x02000000));
         if (index != -1 && params->values[index] > 0.0f)
             minDist = params->values[index];
     }
 
     float vol = 1.0f;
-    if (params != nullptr) {
+    if (paramAddress != 0) {
         const int index = nslParam_Index_1(params, UINT64_C(0x04000000));
         if (index != -1)
             vol = params->values[index];
     }
 
     float minVol = 0.0f;
-    if (params != nullptr) {
+    if (paramAddress != 0) {
         const int index = nslParam_Index_1(params, UINT64_C(0x40));
         if (index != -1)
             minVol = params->values[index];
     }
 
     float maxVol = 1.0f;
-    if (params != nullptr) {
+    if (paramAddress != 0) {
         const int index = nslParam_Index_1(params, UINT64_C(1));
         if (index != -1)
             maxVol = params->values[index];
