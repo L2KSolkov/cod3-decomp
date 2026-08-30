@@ -1,0 +1,15 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008267B0	?nslGetSpeakerMode@@YA?AW4nslSpeakerMode@@XZ	V3	PASS	nsl-init-manual-20260830	2026-08-30	src/sound/nsl.cpp:754-757	Body returns the absolute value of the signed speaker-mode state.
+0x008267B0	?nslGetSpeakerMode@@YA?AW4nslSpeakerMode@@XZ	V4	PASS	nsl-init-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564377-1564381	Release abs32 behavior matches source.
+0x008267C0	?nslSetSpeakerMode@@YAXW4nslSpeakerMode@@@Z	V3	PASS	nsl-init-manual-20260830	2026-08-30	src/sound/nsl.cpp:759-762	Body stores the negated absolute speaker mode, preserving release sign encoding.
+0x008267C0	?nslSetSpeakerMode@@YAXW4nslSpeakerMode@@@Z	V4	PASS	nsl-init-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564383-1564387	Release -abs32 assignment matches source.
+0x008267E0	?nslGetInitParams@@YAXPAUnslInitParams@@@Z	V3	PASS	nsl-init-manual-20260830	2026-08-30	src/sound/nsl.cpp:764-769	Body null-checks the destination and copies the complete 0x44-byte release parameter image.
+0x008267E0	?nslGetInitParams@@YAXPAUnslInitParams@@@Z	V4	PASS	nsl-init-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564389-1564394	Release qmemcpy of 68 bytes is represented by the explicit image copy used by source.
+0x00826850	?nslInit@@YAHPBUnslInitParams@@@Z	V3	PASS	nsl-init-manual-20260830	2026-08-30	src/sound/nsl.cpp:700-751	Body preserves already-called failure, imports the complete release parameter image, performs driver init when enabled, allocates each release pool with the same sizes/order, and returns the same work-size/failure convention.
+0x00826850	?nslInit@@YAHPBUnslInitParams@@@Z	V4	PASS	nsl-init-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564412-1564477	Release allocation order/sizes (12,12,328,4,272,288,320,driver voice,52), driver-init gate, and return paths match source; the explicit 0x44 image preserves adjacent release globals without overflowing the host 16-byte type.
+0x00826A00	?nslStart@@YAXPAX@Z	V3	PASS	nsl-init-manual-20260830	2026-08-30	src/sound/nsl.cpp:1588-1652	Body asserts null work, initializes the work allocator, calls nslInit, clears the allocated region, initializes pools/groups/ARAM, starts the driver when enabled, and performs the first update.
+0x00826A00	?nslStart@@YAXPAX@Z	V4	PASS	nsl-init-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564479-1564574	Release setup, allocation failure logging, group defaults, ARAM initialization, driver gate, and nslUpdate call match source.
+0x00826C20	?nslExit@@YAXXZ	V3	PASS	nsl-init-manual-20260830	2026-08-30	src/sound/nsl.cpp:1654-1660	Body stops and updates NSL, then resets work pointers and counters; the release-only nullsub has no side effects.
+0x00826C20	?nslExit@@YAXXZ	V4	PASS	nsl-init-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564576-1564591	Release stop/update/reset sequence matches source; omitted nullsub is behaviorally inert.
+0x00826C50	?nslGetVersion@@YAIXZ	V3	PASS	nsl-init-manual-20260830	2026-08-30	src/sound/nsl.cpp:774	Body returns version 4.
+0x00826C50	?nslGetVersion@@YAIXZ	V4	PASS	nsl-init-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564593-1564597	Release returns 4.
