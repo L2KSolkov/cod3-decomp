@@ -2705,7 +2705,7 @@ void nvlMovie::StopAudioPlayback() {
     }
 }
 
-// ea: 0x00C1D8A0
+// ea: 0x005AF610
 nvlMovie::nvlMovie()
     : nvlAFMVMovie()
 {
