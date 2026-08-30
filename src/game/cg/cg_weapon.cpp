@@ -139,6 +139,33 @@ extern void* cdGetAnimCompat(unsigned int hash);
 extern void* XAnimCreateTree(void* ent, void* anims);
 extern int XAnimIsLooped(AnimTree* anims, unsigned int animIndex);
 extern float XAnimGetLength(AnimTree* anims, unsigned int animIndex);
+
+// Release weapon-file records are pointer-based (0x44 szXAnims array).
+// Keep this local view separate from the smaller shared declaration.
+struct CgWeaponFileInfoView {
+    int index;
+    unsigned int internalNameHash;
+    char* szInternalName;
+    char* szDisplayName;
+    char* szOverlayName;
+    char* szGunXModel;
+    char* szHandXModel;
+    char* szAttachModel1;
+    char* szAttachModel2;
+    char* szAttachModel3;
+    char* szAttachModel4;
+    char* szAttachModel5;
+    char* szAttachTag1;
+    char* szAttachTag2;
+    char* szAttachTag3;
+    char* szAttachTag4;
+    char* szAttachTag5;
+    char* szXAnims[25];
+    char* szModeName;
+    int type;
+};
+static_assert(offsetof(CgWeaponFileInfoView, szXAnims) == 0x44,
+              "weapon file animation array offset mismatch");
 enum errorParm_t;
 extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
@@ -1281,11 +1308,11 @@ void CG_ChangeViewmodelDobj(int client, const char* handModel)
                       "c:\\cod\\code\\game\\cg_weapons.cpp", 1515);
         weaponInfo_s* v3 = &((weaponInfo_s*)cg_weapons)[weapon];
         int* v4 = &dword_F6A2A0[802 * client];
-        weaponFileInfo_t* InfoForWeapon =
-            (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
-        const char* szGunXModel = (const char*)&((char*)InfoForWeapon)[0x140];
-        const char* szHandXModel = (const char*)&((char*)InfoForWeapon)[0x100];
-        if (*v4 != 0 && szGunXModel[0] != 0)
+        CgWeaponFileInfoView* InfoForWeapon =
+            (CgWeaponFileInfoView*)BG_GetInfoForWeapon(weapon);
+        const char* szGunXModel = InfoForWeapon->szGunXModel;
+        const char* szHandXModel = InfoForWeapon->szHandXModel;
+        if (*v4 != 0 && szGunXModel != nullptr && szGunXModel[0] != 0)
         {
             void* pAnimTree = DObj_GetTree((void*)*v4);
             if (pAnimTree == nullptr)
@@ -2115,33 +2142,6 @@ struct XModelParts;
 extern void FixupGunModelParts(XModelParts* xmp);
 extern void* XModelParts_GetAnimDef(void* parts);
 extern int XAnimEntry_Create(XAnimEntry* self);
-
-// Release weapon-file records are pointer-based (0x44 szXAnims array).
-// Keep this local view separate from the smaller shared declaration.
-struct CgWeaponFileInfoView {
-    int index;
-    unsigned int internalNameHash;
-    char* szInternalName;
-    char* szDisplayName;
-    char* szOverlayName;
-    char* szGunXModel;
-    char* szHandXModel;
-    char* szAttachModel1;
-    char* szAttachModel2;
-    char* szAttachModel3;
-    char* szAttachModel4;
-    char* szAttachModel5;
-    char* szAttachTag1;
-    char* szAttachTag2;
-    char* szAttachTag3;
-    char* szAttachTag4;
-    char* szAttachTag5;
-    char* szXAnims[25];
-    char* szModeName;
-    int type;
-};
-static_assert(offsetof(CgWeaponFileInfoView, szXAnims) == 0x44,
-              "weapon file animation array offset mismatch");
 
 // ea: 0x006A92E0
 bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
