@@ -29,6 +29,15 @@
 #include "engine/broc_api_compat.h"
 #include "input/controller.h"
 
+// mem_heap.cpp exports the release's three-heap selector; keep the enum name
+// and values identical so the cross-translation-unit ABI remains unchanged.
+enum mem_heap_type {
+    MEM_HEAP_MAIN = 0,
+    MEM_HEAP_DEBUG = 1,
+    MEM_HEAP_COMBINE = 2,
+};
+extern mem_heap* mem_heap_get(mem_heap_type type);
+
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern "C" void CollisionContext_Init(void* storage);
@@ -13196,7 +13205,8 @@ unsigned char* stream_alloc(int size, bool aram)
             && AeAssert::Assert("attempting to allocate from aram!"))
             __debugbreak();
     }
-    void* v4 = mem_heap_malloc(4096, size);
+    mem_heap* v3 = mem_heap_get(MEM_HEAP_MAIN);
+    void* v4 = mem_heap_malloc(v3, 4096, size);
     if (v4 == nullptr)
     {
         char msg_buff[128];
