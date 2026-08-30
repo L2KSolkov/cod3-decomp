@@ -51,15 +51,24 @@ namespace cdWorldProjectedRender {
 namespace cdWorldPixel {
     extern unsigned long* PS[2][2][2];                    // ?PS@cdWorldPixel@@3PAY111PAKA
     extern unsigned int const* PShaderTable[2][2][2];     // ?PShaderTable@cdWorldPixel@@3PAY111PBIA
+    void RegisterShader();                                // @0x007E0090
+    void RegisterPShader();                               // @0x007E00C0
+    unsigned long* GetPShader(unsigned int, unsigned int, unsigned int); // @0x007E00D0
 }
 namespace cdWorldProjectedPixel {
     extern unsigned long* PS[2];                          // ?PS@cdWorldProjectedPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];            // ?PShaderTable@cdWorldProjectedPixel@@3PAPBIA
+    void RegisterShader();                                  // @0x007E00F0
+    void RegisterPShader();                                 // @0x007E0120
+    unsigned long* GetPShader(unsigned int);                // @0x007E0130
 }
 namespace cdWorldSolidColorPixel {
     extern unsigned long* PS[2];                          // ?PS@cdWorldSolidColorPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];            // ?PShaderTable@cdWorldSolidColorPixel@@3PAPBIA
     extern unsigned long* Shader;                         // ?Shader@cdWorldSolidColorPixel@@3PAKA
+    void RegisterShader();                                 // @0x007E0140
+    void RegisterPShader();                                // @0x007E0160
+    unsigned long* GetPShader();                           // @0x007E0180
 }
 
 // IDA local type 7957 (cdWorldShaderNode::Render stack context).
