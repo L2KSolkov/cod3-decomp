@@ -256,7 +256,7 @@ void cdSimplePixel::RegisterPShader() {
 }
 
 // ea: 0x007D6970
-unsigned int* cdSimplePixel::GetPShader() {
+unsigned long* cdSimplePixel::GetPShader() {
     return PS[0];
 }
 
@@ -266,6 +266,6 @@ void cdSimpleFullbrightPixel::RegisterPShader() {
 }
 
 // ea: 0x007D69A0
-unsigned int* cdSimpleFullbrightPixel::GetPShader() {
+unsigned long* cdSimpleFullbrightPixel::GetPShader() {
     return PS[0];
 }

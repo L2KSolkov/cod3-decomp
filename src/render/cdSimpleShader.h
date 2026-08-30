@@ -56,16 +56,16 @@ namespace cdSimpleRender {
     unsigned long GetVShader(unsigned int index);  // @0x7D6940
 }
 namespace cdSimplePixel {
-    extern unsigned int* PS[1];
+    extern unsigned long* PS[1];
     extern const unsigned int* PShaderTable[1];
     void RegisterPShader();  // @0x7D6950
-    unsigned int* GetPShader();  // @0x7D6970
+    unsigned long* GetPShader();  // @0x7D6970
 }
 namespace cdSimpleFullbrightPixel {
-    extern unsigned int* PS[1];
+    extern unsigned long* PS[1];
     extern const unsigned int* PShaderTable[1];
     void RegisterPShader();  // @0x7D6980
-    unsigned int* GetPShader();  // @0x7D69A0
+    unsigned long* GetPShader();  // @0x7D69A0
 }
 
 extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);

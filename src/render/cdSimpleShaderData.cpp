@@ -48,7 +48,7 @@ namespace cdSimpleRender {
 }
 
 namespace cdSimplePixel {
-    unsigned int* PS[1] = {};
+    unsigned long* PS[1] = {};
     static const unsigned int PShader[60] = {
         0xd8d41010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
         0x00000000, 0x00000000, 0x00000000, 0x130c0300, 0x00001c80,
@@ -67,7 +67,7 @@ namespace cdSimplePixel {
 }
 
 namespace cdSimpleFullbrightPixel {
-    unsigned int* PS[1] = {};
+    unsigned long* PS[1] = {};
     static const unsigned int PShader[60] = {
         0xd8301010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
         0x00000000, 0x00000000, 0x00000000, 0x130c0300, 0x00001c80,
@@ -84,6 +84,5 @@ namespace cdSimpleFullbrightPixel {
     };
     const unsigned int* PShaderTable[1] = { PShader };
 }
-
 
 
