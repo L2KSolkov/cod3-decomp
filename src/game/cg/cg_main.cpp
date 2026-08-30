@@ -858,7 +858,7 @@ int CG_ConsoleCommand()
 // ea: 0x00689910
 void CG_General(Entity* entity)
 {
-    if (entity->s.eFlags >= 0)
+    if (static_cast<signed char>(entity->s.eFlags) >= 0)
     {
         void* mDObj = entity->mDObj;
         if (mDObj != nullptr)
