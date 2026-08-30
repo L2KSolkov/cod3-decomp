@@ -23,6 +23,10 @@ public:
 
     Color32(unsigned char _r, unsigned char _g, unsigned char _b,
             unsigned char _a);
+    // ea: 0x00663200
+    Color32(unsigned int packed);
+    // ea: 0x00663220
+    unsigned int to_ulong() const;
     Color to_color();
 };
 static_assert(sizeof(Color32) == 4, "Color32 size mismatch");
