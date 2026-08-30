@@ -523,7 +523,7 @@ Broc::vector PanelQuad::GetMax()
         Broc::vector v22 = pqs.mElements[v8]->GetMax();
         if (v22.x > max_coords.x)
             max_coords.x = v22.x;
-        Broc::vector v21 = pqs.mElements[v8]->GetInitialMax();
+        Broc::vector v21 = pqs.mElements[v8]->GetMax();
         if (v21.y > max_coords.y)
             max_coords.y = v21.y;
     }
@@ -543,7 +543,7 @@ Broc::vector PanelQuad::GetMin()
         Broc::vector v22 = pqs.mElements[v8]->GetMin();
         if (min_coords.x > v22.x)
             min_coords.x = v22.x;
-        Broc::vector v21 = pqs.mElements[v8]->GetInitialMin();
+        Broc::vector v21 = pqs.mElements[v8]->GetMin();
         if (min_coords.y > v21.y)
             min_coords.y = v21.y;
     }
