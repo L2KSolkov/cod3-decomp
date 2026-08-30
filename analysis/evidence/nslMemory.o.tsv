@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00829210	?nslMemoryAlloc@@YAPAXI@Z	V3	PASS	nsl-memory-manual-20260830	2026-08-30	src/sound/nsl.cpp:5852	Body delegates allocation to tlMemAlloc with the release alignment and flags.
+0x00829210	?nslMemoryAlloc@@YAPAXI@Z	V4	PASS	nsl-memory-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566800-1566804	Release calls tlMemAlloc(size, 0x40, 0), matching source.
+0x00829230	?nslMemoryFree@@YAXPAX@Z	V3	PASS	nsl-memory-manual-20260830	2026-08-30	src/sound/nsl.cpp:5854	Body delegates freeing to tlMemFree.
+0x00829230	?nslMemoryFree@@YAXPAX@Z	V4	PASS	nsl-memory-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566806-1566809	Release calls tlMemFree(ptr), matching source.
