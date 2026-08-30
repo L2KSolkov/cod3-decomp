@@ -1,4 +1,14 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x009EC8C0	??0bdAddr@@QAE@XZ	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:14-16	Concrete default constructor initializes the address member and zeroes the port.
+0x009EC8C0	??0bdAddr@@QAE@XZ	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:14-16; c3_bin/codmp_xboxr.xbe.c:1914324-1914332	Release default-constructs m_address and assigns m_port zero; source matches.
+0x009EC940	?set@bdAddr@@QAEXABVbdInetAddr@@G@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:63-66	Concrete address-plus-port setter is present.
+0x009EC940	?set@bdAddr@@QAEXABVbdInetAddr@@G@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:63-66; c3_bin/codmp_xboxr.xbe.c:1914354-1914362	Release delegates to bdInetAddr::set then stores the port; source matches the mapped void ABI.
+0x009EC9C0	?getAddress@bdAddr@@QBEABVbdInetAddr@@XZ	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:26-28	Concrete const address accessor is present.
+0x009EC9C0	?getAddress@bdAddr@@QBEABVbdInetAddr@@XZ	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:26-28; c3_bin/codmp_xboxr.xbe.c:1914376-1914381	Release returns the address subobject; source returns m_address by const reference.
+0x009EC9D0	?getAddress@bdAddr@@QAEAAVbdInetAddr@@XZ	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:31-33	Concrete mutable address accessor is present.
+0x009EC9D0	?getAddress@bdAddr@@QAEAAVbdInetAddr@@XZ	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:31-33; c3_bin/codmp_xboxr.xbe.c:1914382-1914386	Release returns the address subobject; source returns m_address by mutable reference.
+0x009EC9F0	?getPort@bdAddr@@QBEGXZ	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:42-44	Concrete port accessor is present.
+0x009EC9F0	?getPort@bdAddr@@QBEGXZ	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:42-44; c3_bin/codmp_xboxr.xbe.c:1914395-1914400	Release returns m_port; source matches.
 0x009ECA00	?set@bdAddr@@QAEXPBD@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x009ECA00; src/bd/bdAddr.cpp:39	Real body validates the string, splits at colon, bounds/copies the address text, parses the port, or constructs an address-only endpoint with port zero.
 0x009ECA00	?set@bdAddr@@QAEXPBD@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	IDA decompile 0x009ECA00 and src/bd/bdAddr.cpp:39-69	Release assertion metadata/message, 16-byte copy limit, null termination, address setter, decimal port parse, and no-colon path match source.
 0x009ECB70	?toString@bdAddr@@QBEIQADI@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x009ECB70; src/bd/bdAddr.cpp:86	Real body formats the address then appends a colon and decimal port within remaining capacity.
