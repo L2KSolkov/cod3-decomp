@@ -1246,9 +1246,6 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
 // ea: 0x004FDDC0
 void AnimIK::ApplyTorsoRotations(Entity* ent)
 {
-    if (ent == nullptr || ent->client == nullptr || pose == nullptr
-        || skeleton == nullptr)
-        return;
     Client* client = ent->client;
     float pitch = (client->ps.pm_flags & 1) != 0
         ? 0.0f : AngleNormalize180(client->ps.viewangles[0]);
