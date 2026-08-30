@@ -142,10 +142,14 @@ tlFixedString cdPrelitShader::GetName() { return tlFixedString("cdPrelit"); }
 // ============================================================================
 void cdPrelitShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdPrelitRender::VS, cdPrelitRender::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdPrelitPixel::PS, cdPrelitPixel::PShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdPrelitFullbrightPixel::PS, cdPrelitFullbrightPixel::PShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdPrelitSolidColorPixel::PS, cdPrelitSolidColorPixel::PShaderTable, 0);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdPrelitRender::VS),
+                         reinterpret_cast<const unsigned int*>(cdPrelitRender::VShaderTable[0]));
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdPrelitPixel::PS),
+                         reinterpret_cast<const unsigned int*>(cdPrelitPixel::PShaderTable[0]));
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdPrelitFullbrightPixel::PS),
+                         reinterpret_cast<const unsigned int*>(cdPrelitFullbrightPixel::PShaderTable[0]));
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdPrelitSolidColorPixel::PS),
+                         reinterpret_cast<const unsigned int*>(cdPrelitSolidColorPixel::PShaderTable[0]));
 }
 
 // ============================================================================
