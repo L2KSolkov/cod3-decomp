@@ -28,6 +28,8 @@ extern void nglSceneDumpPointLight(nglLightType Type, unsigned int LightCat,
                                    float Far,
                                    const math::Vector4& Color);  // ngl_scenedump.o
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
+extern bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                               const math::Vector4* Clip);
 
 // ============================================================================
 // Data (ngl_lighting.o)
@@ -409,8 +411,7 @@ void nglListAddDirLight(unsigned int LightCat, const math::Dir3& Dir, const math
 static void nglListAddPointLightCommon(nglLightType Type, unsigned int LightCat,
                                        const math::Position3& Pos, float Near, float Far,
                                        const math::Vector4& Color, bool isVertexPointLight) {
-    if (nglIsSphereVisible((const nglFrustum*)&nglBuildScene->ClipPlanes,
-                           (const math::Vector4*)&Pos, Far)) {
+    if (nglIsSphereVisible(Pos, Far, nglBuildScene->ClipPlanes)) {
         __m128* v6 = (__m128*)nglListAlloc(0x30, 0x10);
         if (v6 != NULL) {
             v6[0] = Pos.v;
