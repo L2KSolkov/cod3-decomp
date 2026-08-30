@@ -9,6 +9,16 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x009EC9D0	?getAddress@bdAddr@@QAEAAVbdInetAddr@@XZ	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:31-33; c3_bin/codmp_xboxr.xbe.c:1914382-1914386	Release returns the address subobject; source returns m_address by mutable reference.
 0x009EC9F0	?getPort@bdAddr@@QBEGXZ	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:42-44	Concrete port accessor is present.
 0x009EC9F0	?getPort@bdAddr@@QBEGXZ	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:42-44; c3_bin/codmp_xboxr.xbe.c:1914395-1914400	Release returns m_port; source matches.
+0x009EC8E0	??0bdAddr@@QAE@ABV0@@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:19-22	Concrete copy constructor copies address and port members.
+0x009EC8E0	??0bdAddr@@QAE@ABV0@@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:19-22; c3_bin/codmp_xboxr.xbe.c:1914334-1914342	Release copy-constructs the address and copies the port; source matches observable state.
+0x009EC960	??8bdAddr@@QBE_NABV0@@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:103-106	Concrete equality comparison is present.
+0x009EC960	??8bdAddr@@QBE_NABV0@@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:103-106; c3_bin/codmp_xboxr.xbe.c:1914364-1914368	Release compares port first and then the address; source matches.
+0x009EC990	??9bdAddr@@QBE_NABV0@@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:110-113	Concrete inequality comparison is present.
+0x009EC990	??9bdAddr@@QBE_NABV0@@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:110-113; c3_bin/codmp_xboxr.xbe.c:1914370-1914374	Release compares port first and then the address; source matches.
+0x009EC9E0	?setPort@bdAddr@@QAEXG@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:36-39	Concrete void port setter stores the supplied port.
+0x009EC9E0	?setPort@bdAddr@@QAEXG@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:36-39; c3_bin/codmp_xboxr.xbe.c:1914388-1914393	Release stores the port; the apparent return is a decompiler artifact and the mapped ABI is void.
+0x009ECFB0	??MbdAddr@@QBE_NABV0@@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:226-229	Concrete hash-based ordering comparison is present.
+0x009ECFB0	??MbdAddr@@QBE_NABV0@@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	src/bd/bdAddr.cpp:226-229; c3_bin/codmp_xboxr.xbe.c:1914645-1914652	Release compares getHash results; source matches.
 0x009ECA00	?set@bdAddr@@QAEXPBD@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x009ECA00; src/bd/bdAddr.cpp:39	Real body validates the string, splits at colon, bounds/copies the address text, parses the port, or constructs an address-only endpoint with port zero.
 0x009ECA00	?set@bdAddr@@QAEXPBD@Z	V4	PASS	ida-manual-bd-addr-20260830	2026-08-30	IDA decompile 0x009ECA00 and src/bd/bdAddr.cpp:39-69	Release assertion metadata/message, 16-byte copy limit, null termination, address setter, decimal port parse, and no-colon path match source.
 0x009ECB70	?toString@bdAddr@@QBEIQADI@Z	V3	PASS	ida-manual-bd-addr-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x009ECB70; src/bd/bdAddr.cpp:86	Real body formats the address then appends a colon and decimal port within remaining capacity.

@@ -57,7 +57,7 @@ apsUVARectangleRenderer.o	11	4	1	0	0	6	0
 apsUVARenderer.o	7	1	1	0	0	5	0
 apsVFC.o	3	0	0	0	0	3	0
 apsVertexBuffer.o	13	9	2	0	0	2	0
-bdAddr.obj	19	1	7	0	0	11	0
+bdAddr.obj	19	1	0	2	0	16	0
 bdAddressMap-xbox.obj	7	0	3	0	0	4	0
 bdAlignedOffsetMemory.obj	4	0	0	0	0	4	0
 bdBitBuffer.obj	41	39	0	0	0	2	0
@@ -87,7 +87,7 @@ bdHMacSHA1.obj	9	9	0	0	0	0	0
 bdHeartbeatAckChunk.obj	8	8	0	0	0	0	0
 bdHeartbeatChunk.obj	8	8	0	0	0	0	0
 bdInAddr.obj	5	0	2	1	0	2	0
-bdInetAddr.obj	25	1	6	1	0	17	0
+bdInetAddr.obj	25	0	0	1	0	24	0
 bdInitAckChunk.obj	15	13	0	0	0	2	0
 bdInitChunk.obj	11	9	0	0	0	2	0
 bdLog.obj	15	15	0	0	0	0	0
