@@ -147,9 +147,9 @@ void cdWorldBlendShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSectio
         cdGetClipResult(iSection, iMeshNode, nglBuildScene) != -1) {
         cdWorldBlendShaderNode* node = (cdWorldBlendShaderNode*)nglListAlloc(0x18, 0x10);
         if (node != NULL) {
+            ::new (node) cdWorldBlendShaderNode;
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdWorldBlendShaderNode;
             node->mMaterial = (cdWorldBlendShaderMat*)iMat;
         } else {
             node = NULL;
