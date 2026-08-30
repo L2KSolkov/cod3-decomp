@@ -2134,6 +2134,19 @@ enum eInstanceBankType {
     INSTBANK_TYPE_DISCTEX = 11,
     INSTBANK_TYPE_DISCTEXSIZE = 12,
 };
+static_assert(INSTBANK_TYPE_APK == 0 && INSTBANK_TYPE_ADF == 1
+                  && INSTBANK_TYPE_TEXTURE == 2
+                  && INSTBANK_TYPE_MESHFILE == 3
+                  && INSTBANK_TYPE_MESH == 4
+                  && INSTBANK_TYPE_ANIMFILE == 5
+                  && INSTBANK_TYPE_ANIM == 6
+                  && INSTBANK_TYPE_SCNANIM == 7
+                  && INSTBANK_TYPE_ANIMOFFSET == 8
+                  && INSTBANK_TYPE_SKELETON == 9
+                  && INSTBANK_TYPE_EFFECT == 10
+                  && INSTBANK_TYPE_FX == 11
+                  && INSTBANK_TYPE_DISCTEXSIZE == 12,
+              "Instance-bank enum values must match the release");
 // Numeric values match DecodeInstbank's release type-string table.
 
 class InstanceBankSet;
@@ -2159,6 +2172,16 @@ struct InstanceBank {
                                     void*),
                    void* userdata);  // ?Enumerate@InstanceBank@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z
 };
+static_assert(sizeof(InstanceBank::IbEntry) == 0x08,
+              "InstanceBank::IbEntry layout mismatch");
+static_assert(offsetof(InstanceBank::IbEntry, ptr) == 0x04,
+              "InstanceBank::IbEntry::ptr offset mismatch");
+static_assert(sizeof(InstanceBank) == 0x20,
+              "InstanceBank layout mismatch");
+static_assert(offsetof(InstanceBank, mTypeStr) == 0x04
+                  && offsetof(InstanceBank, mTree) == 0x10
+                  && offsetof(InstanceBank, mEntries) == 0x18,
+              "InstanceBank field offsets mismatch");
 
 // InstanceBankSet (streamer.o InstanceBank.h; 20 bytes, verified IDA)
 struct InstanceBankSet {
@@ -2175,6 +2198,11 @@ struct InstanceBankSet {
                                     void*),
                    void* userdata);  // ?Enumerate@InstanceBankSet@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z
 };
+static_assert(sizeof(InstanceBankSet) == 0x14,
+              "InstanceBankSet layout mismatch");
+static_assert(offsetof(InstanceBankSet, mInstanceBanks) == 0x08
+                  && offsetof(InstanceBankSet, mPtrFixupTable) == 0x10,
+              "InstanceBankSet field offsets mismatch");
 
 // nal resource types (nal.h; forward decls)
 class nalAnyPose;
