@@ -12,12 +12,6 @@
 #include "apsBillboardRenderer.h"
 #include "apsShrimpRenderer.h"
 
-// APS shader static data definitions (aeps_xboxr)
-unsigned int* apsBillboardRender::VS = nullptr;
-const unsigned int** apsBillboardRender::VShaderTable = nullptr;
-unsigned int** apsBillboardRenderPixel::PS = nullptr;
-const unsigned int** apsBillboardRenderPixel::PShaderTable = nullptr;
-
 // apsBillboardRender::RegisterVShader - ea: 0x00806140
 void apsBillboardRender::RegisterVShader() {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
@@ -133,10 +127,8 @@ bool apsBillboardRenderer::UsesDiffuseLighting() const {
 // ea: 0x805D50
 // ============================================================================
 void apsBillboardRenderer::Init() {
-    if (apsBillboardRender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsBillboardRender::VS), apsBillboardRender::VShaderTable[0]);
-    if (apsBillboardRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsBillboardRenderPixel::PS), apsBillboardRenderPixel::PShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsBillboardRender::VS), apsBillboardRender::VShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsBillboardRenderPixel::PS), apsBillboardRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

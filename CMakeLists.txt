@@ -187,6 +187,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsDebug.cpp
     src/aeps/apsVertexBuffer.cpp
     src/aeps/apsSimpleMeshRenderer.cpp
+    src/aeps/apsGenericRendererShaderData.cpp
     src/aeps/apsShrimpRenderer.cpp
     src/aeps/apsBillboardRenderer.cpp
     src/aeps/apsColorBillboardRenderer.cpp

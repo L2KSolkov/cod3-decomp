@@ -8,12 +8,6 @@
 // ============================================================================
 #include "apsUVARenderer.h"
 
-// APS shader static data definitions (aeps_xboxr)
-unsigned int* apsUVARender::VS = nullptr;
-const unsigned int** apsUVARender::VShaderTable = nullptr;
-unsigned int** apsUVARenderPixel::PS = nullptr;
-const unsigned int** apsUVARenderPixel::PShaderTable = nullptr;
-
 // apsUVARender::RegisterVShader - ea: 0x00805AC0
 void apsUVARender::RegisterVShader() {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
@@ -50,10 +44,8 @@ apsUVARenderer::apsUVARenderer(const apsUVARenderer::cArgs* args)
 // ea: 0x805A50
 // ============================================================================
 void apsUVARenderer::Init() {
-    if (apsUVARender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsUVARender::VS), apsUVARender::VShaderTable[0]);
-    if (apsUVARenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsUVARenderPixel::PS), apsUVARenderPixel::PShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsUVARender::VS), apsUVARender::VShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsUVARenderPixel::PS), apsUVARenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

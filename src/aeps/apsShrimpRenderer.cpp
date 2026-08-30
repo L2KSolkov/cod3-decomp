@@ -11,12 +11,6 @@
 
 #include <new>
 
-// APS shader static data definitions (aeps_xboxr)
-unsigned int* apsShrimpRender::VS = nullptr;
-const unsigned int** apsShrimpRender::VShaderTable = nullptr;
-unsigned int** apsShrimpRenderPixel::PS = nullptr;
-const unsigned int** apsShrimpRenderPixel::PShaderTable = nullptr;
-
 // apsShrimpRender::RegisterVShader - ea: 0x00804490
 // The release body registers the vertex microcode through the static table.
 void apsShrimpRender::RegisterVShader() {
@@ -45,10 +39,8 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // ea: 0x8044F0
 // ============================================================================
 void apsShrimpRenderer::Init() {
-    if (apsShrimpRender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsShrimpRender::VS), apsShrimpRender::VShaderTable[0]);
-    if (apsShrimpRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsShrimpRenderPixel::PS), apsShrimpRenderPixel::PShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsShrimpRender::VS), apsShrimpRender::VShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsShrimpRenderPixel::PS), apsShrimpRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

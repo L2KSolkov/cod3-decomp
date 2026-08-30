@@ -8,12 +8,6 @@
 // ============================================================================
 #include "apsColorUVARectangleRenderer.h"
 
-// APS shader static data definitions (aeps_xboxr)
-unsigned int* apsColorUVARectangleRender::VS = nullptr;
-const unsigned int** apsColorUVARectangleRender::VShaderTable = nullptr;
-unsigned int** apsColorUVARectangleRenderPixel::PS = nullptr;
-const unsigned int** apsColorUVARectangleRenderPixel::PShaderTable = nullptr;
-
 // apsColorUVARectangleRender::RegisterVShader - ea: 0x00804D20
 void apsColorUVARectangleRender::RegisterVShader() {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
@@ -42,10 +36,8 @@ apsColorUVARectangleRenderer::apsColorUVARectangleRenderer(const apsColorUVARect
 // ea: 0x804CD0
 // ============================================================================
 void apsColorUVARectangleRenderer::Init() {
-    if (apsColorUVARectangleRender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorUVARectangleRender::VS), apsColorUVARectangleRender::VShaderTable[0]);
-    if (apsColorUVARectangleRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorUVARectangleRenderPixel::PS), apsColorUVARectangleRenderPixel::PShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorUVARectangleRender::VS), apsColorUVARectangleRender::VShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorUVARectangleRenderPixel::PS), apsColorUVARectangleRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================
