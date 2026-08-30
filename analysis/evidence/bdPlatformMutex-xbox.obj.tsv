@@ -1,0 +1,9 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008B5EE0	?createMutex@bdPlatformMutex@@SAPAXXZ	V3	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:110-110	Concrete mutex factory body is present.
+0x008B5EE0	?createMutex@bdPlatformMutex@@SAPAXXZ	V4	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:110-110; c3_bin/codmp_xboxr.xbe.c:1694011-1694015	CreateMutexA arguments and returned handle match release.
+0x008B5EF0	?lock@bdPlatformMutex@@SAXAAPAX@Z	V3	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:112-112	Concrete lock body is present.
+0x008B5EF0	?lock@bdPlatformMutex@@SAXAAPAX@Z	V4	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:112-112; c3_bin/codmp_xboxr.xbe.c:1694017-1694021	WaitForSingleObject handle and infinite timeout match release; status is discarded by the void ABI.
+0x008B5F00	?unlock@bdPlatformMutex@@SAXAAPAX@Z	V3	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:114-114	Concrete unlock body is present.
+0x008B5F00	?unlock@bdPlatformMutex@@SAXAAPAX@Z	V4	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:114-114; c3_bin/codmp_xboxr.xbe.c:1694023-1694027	ReleaseMutex handle call and void return behavior match release.
+0x008B5F10	?destroy@bdPlatformMutex@@SAXAAPAX@Z	V3	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:116-119	Concrete destroy body is present.
+0x008B5F10	?destroy@bdPlatformMutex@@SAXAAPAX@Z	V4	PASS	ida-manual-bd-platform-mutex-20260830	2026-08-30	src/bd/bdPlatform.cpp:116-119; c3_bin/codmp_xboxr.xbe.c:1694029-1694034	ReleaseMutex followed by CloseHandle with no handle reset matches release cleanup sequence.

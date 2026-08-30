@@ -100,7 +100,7 @@ bdMessage.obj	25	22	0	1	0	2	0
 bdMutex.obj	4	0	0	0	0	4	0
 bdNet-xbox.obj	49	35	5	8	0	1	0
 bdPacket.obj	32	30	0	0	0	2	0
-bdPlatformMutex-xbox.obj	4	4	0	0	0	0	0
+bdPlatformMutex-xbox.obj	4	0	0	0	0	4	0
 bdPlatformSocket-win32.obj	8	0	4	0	0	4	0
 bdPlatformSocket.obj	5	0	0	0	0	5	0
 bdPlatformTiming-xbox.obj	5	0	0	0	0	5	0
