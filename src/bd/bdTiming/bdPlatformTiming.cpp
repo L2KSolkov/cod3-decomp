@@ -7,6 +7,7 @@
 
 #include "bd/bdTiming/bdShortTimer.h"
 
+// ea: 0x008B5D50
 unsigned __int64 bdPlatformTiming::getHiResTimeStamp()
 {
     LARGE_INTEGER counter;
@@ -14,6 +15,7 @@ unsigned __int64 bdPlatformTiming::getHiResTimeStamp()
     return static_cast<unsigned __int64>(counter.QuadPart);
 }
 
+// ea: 0x008B5D70
 float bdPlatformTiming::getElapsedTime(unsigned __int64 t1,
                                        unsigned __int64 t2)
 {
@@ -28,16 +30,19 @@ float bdPlatformTiming::getElapsedTime(unsigned __int64 t1,
         static_cast<double>(t2 - t1) / static_cast<double>(frequency.QuadPart));
 }
 
+// ea: 0x008B5DE0
 void bdPlatformTiming::sleep(unsigned int ms)
 {
     Sleep(ms);
 }
 
+// ea: 0x008B5DF0
 unsigned int bdPlatformTiming::getLoResTimeStamp()
 {
     return static_cast<unsigned int>(GetTickCount());
 }
 
+// ea: 0x008B5E00
 unsigned int bdPlatformTiming::getLoResElapsedTime(unsigned int t1,
                                                    unsigned int t2)
 {
