@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00800060	?PrintWarning@apsDebug@@SAXW4eWarningLevel@1@PBDZZ	V3	PASS	ida-manual-aps-debug-20260829	2026-08-29	src/aeps/apsDebug.cpp:24-39	Source conditionally formats the warning into a 512-byte buffer and emits the release prefix, message, and newline through tlPrint.
+0x00800060	?PrintWarning@apsDebug@@SAXW4eWarningLevel@1@PBDZZ	V4	PASS	ida-manual-aps-debug-20260829	2026-08-29	IDA:0x00800060;src/aeps/apsDebug.cpp:24-39	Release/source match enabled gate, vsprintf buffer, defaultFileName empty prefix, warning label, formatted text, newline, and disabled no-op path.
+0x008000C0	?Print@apsDebug@@SAXPBDZZ	V3	PASS	ida-manual-aps-debug-20260829	2026-08-29	src/aeps/apsDebug.cpp:42-58	Source conditionally formats the variadic message into the release-sized buffer and prints it.
+0x008000C0	?Print@apsDebug@@SAXPBDZZ	V4	PASS	ida-manual-aps-debug-20260829	2026-08-29	IDA:0x008000C0;src/aeps/apsDebug.cpp:42-58	Release/source match enabled gate, vsprintf call, buffer, tlPrint output, and disabled no-op path.
