@@ -134,11 +134,11 @@ bdUnreliableReceiveWindow.obj	7	2	1	0	0	4	0
 bdUnreliableSendWindow.obj	32	27	1	0	0	4	0
 cdAirplaneMetalShader.o	21	16	0	4	0	1	0
 cdBackgroundShader.o	24	17	0	6	0	1	0
-cdCharShader.o	24	19	0	4	0	1	0
+cdCharShader.o	24	19	0	0	0	5	0
 cdCharSpecularShader.o	24	18	0	5	0	1	0
 cdDebugShader.o	26	17	0	8	0	1	0
 cdDebugVertexDef.o	7	5	0	0	0	2	0
-cdDecalShader.o	22	16	0	5	0	1	0
+cdDecalShader.o	22	15	0	1	0	6	0
 cdDynamicDecalShader.o	37	31	0	5	0	1	0
 cdDynamicDecalVertexDef.o	2	0	1	0	0	1	0
 cdFlagShader.o	42	36	0	5	0	1	0
@@ -150,7 +150,7 @@ cdGunSightSpecularShader.o	22	16	0	5	0	1	0
 cdHeatHazeShader.o	20	17	1	0	0	2	0
 cdOceanGlobals.o	19	5	0	14	0	0	0
 cdOceanShader.o	23	12	1	9	0	1	0
-cdPrelitShader.o	25	20	0	4	0	1	0
+cdPrelitShader.o	25	20	0	0	0	5	0
 cdPropellerShader.o	22	6	1	4	0	11	0
 cdRiverShader.o	37	26	1	8	0	2	0
 cdScratchShader.o	46	34	0	4	0	8	0
@@ -158,8 +158,8 @@ cdScratchVertexDef.o	2	0	0	0	0	2	0
 cdSimpleAlphaShader.o	31	23	0	0	0	8	0
 cdSimpleColorShader.o	13	9	0	0	0	4	0
 cdSimpleInstance.o	17	10	0	7	0	0	0
-cdSimplePrelitShader.o	19	12	0	6	0	1	0
-cdSimpleShader.o	17	10	0	6	0	1	0
+cdSimplePrelitShader.o	19	12	0	1	0	6	0
+cdSimpleShader.o	17	10	0	1	0	6	0
 cdSimpleSpecularShader.o	24	16	0	0	3	5	0
 cdSimpleUVAnimShader.o	40	32	1	1	0	6	0
 cdSkyShader.o	22	17	0	4	0	1	0
