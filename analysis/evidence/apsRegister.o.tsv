@@ -1,0 +1,29 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007F0940	?GetVtable@apsVirtualBase@@QBEIXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsAction.h:39-40	Source returns the object vtable pointer.
+0x007F0940	?GetVtable@apsVirtualBase@@QBEIXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F0940;src/aeps/apsAction.h:39-40	Release/source vtable read and return type match.
+0x007F0CD0	??1apsRenderer@@UAE@XZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsRenderer.cpp:116-118	Source resets the renderer vtable to apsVirtualBase.
+0x007F0CD0	??1apsRenderer@@UAE@XZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F0CD0;src/aeps/apsRenderer.cpp:116-118	Release/source base-vtable assignment matches.
+0x007F3040	?GetChanceToRemove@apsRenderer@@UBEMXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsRenderer.cpp:101-103	Source returns the default removal chance 1.0.
+0x007F3040	?GetChanceToRemove@apsRenderer@@UBEMXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F3040;src/aeps/apsRenderer.cpp:101-103	Release/source constant and floating return match.
+0x007F3050	?GetMeshRadius@apsRenderer@@UBE_NAAM@Z	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsRenderer.cpp:108-111	Source ignores the output radius and returns false.
+0x007F3050	?GetMeshRadius@apsRenderer@@UBE_NAAM@Z	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F3050;src/aeps/apsRenderer.cpp:108-111	Release/source constant-false behavior matches.
+0x007F30D0	?GetId@apsBillboardRenderer@@UBEIXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsBillboardRenderer.cpp:248-250	Source returns the release billboard renderer id.
+0x007F30D0	?GetId@apsBillboardRenderer@@UBEIXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F30D0;src/aeps/apsBillboardRenderer.cpp:248-250	Release/source id constant and return match.
+0x007F30E0	?GetVersion@apsBillboardRenderer@@UBEMXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsBillboardRenderer.cpp:255-257	Source returns version 1.0.
+0x007F30E0	?GetVersion@apsBillboardRenderer@@UBEMXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F30E0;src/aeps/apsBillboardRenderer.cpp:255-257	Release/source version constant and floating return match.
+0x007F30F0	?IsCameraFacing@apsBillboardRenderer@@UBEHXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsBillboardRenderer.cpp:262-266	Source checks the three spatial normal lanes for zero.
+0x007F30F0	?IsCameraFacing@apsBillboardRenderer@@UBEHXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F30F0;src/aeps/apsBillboardRenderer.cpp:262-266	Release/source lane tests and BOOL result match.
+0x007F3170	?SetScreenFacingNormal@apsBillboardRenderer@@UAEXABVDir3@math@@@Z	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsBillboardRenderer.cpp:271-273	Source copies the input normal vector.
+0x007F3170	?SetScreenFacingNormal@apsBillboardRenderer@@UAEXABVDir3@math@@@Z	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F3170;src/aeps/apsBillboardRenderer.cpp:271-273	Release/source vector copy and void return match.
+0x007F31B0	?GetChanceToRemove@apsBillboardRenderer@@UBEMXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsBillboardRenderer.cpp:278-280	Source returns the billboard renderer removal chance field.
+0x007F31B0	?GetChanceToRemove@apsBillboardRenderer@@UBEMXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F31B0;src/aeps/apsBillboardRenderer.cpp:278-280	Release/source field read and floating return match.
+0x007F36E0	?GetId@apsSimpleMeshRenderer@@UBEIXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsSimpleMeshRenderer.cpp:100-102	Source returns the release simple-mesh renderer id.
+0x007F36E0	?GetId@apsSimpleMeshRenderer@@UBEIXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F36E0;src/aeps/apsSimpleMeshRenderer.cpp:100-102	Release/source id constant and return match.
+0x007F36F0	?GetVersion@apsSimpleMeshRenderer@@UBEMXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsSimpleMeshRenderer.cpp:107-109	Source returns version 1.0.
+0x007F36F0	?GetVersion@apsSimpleMeshRenderer@@UBEMXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F36F0;src/aeps/apsSimpleMeshRenderer.cpp:107-109	Release/source version constant and floating return match.
+0x007F3720	?GetMeshRadius@apsSimpleMeshRenderer@@UBE_NAAM@Z	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsSimpleMeshRenderer.cpp:128-134	Source returns false for a null mesh, otherwise copies the sphere radius and returns true.
+0x007F3720	?GetMeshRadius@apsSimpleMeshRenderer@@UBE_NAAM@Z	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F3720;src/aeps/apsSimpleMeshRenderer.cpp:128-134	Release/source null check, sphere W-lane read, and BOOL result match.
+0x007F3820	?GetId@apsShrimpRenderer@@UBEIXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsShrimpRenderer.cpp:79-81	Source returns the release shrimp renderer id.
+0x007F3820	?GetId@apsShrimpRenderer@@UBEIXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F3820;src/aeps/apsShrimpRenderer.cpp:79-81	Release/source id constant and return match.
+0x007F3830	?GetVersion@apsShrimpRenderer@@UBEMXZ	V3	PASS	ida-manual-aps-register-20260829	2026-08-29	src/aeps/apsShrimpRenderer.cpp:86-88	Source returns version 1.0.
+0x007F3830	?GetVersion@apsShrimpRenderer@@UBEMXZ	V4	PASS	ida-manual-aps-register-20260829	2026-08-29	IDA:0x007F3830;src/aeps/apsShrimpRenderer.cpp:86-88	Release/source version constant and floating return match.
