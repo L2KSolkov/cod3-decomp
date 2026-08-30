@@ -161,7 +161,7 @@ cdSimpleInstance.o	17	10	0	7	0	0	0
 cdSimplePrelitShader.o	19	12	0	6	0	1	0
 cdSimpleShader.o	17	10	0	6	0	1	0
 cdSimpleSpecularShader.o	24	16	0	0	3	5	0
-cdSimpleUVAnimShader.o	40	32	1	6	0	1	0
+cdSimpleUVAnimShader.o	40	32	1	1	0	6	0
 cdSkyShader.o	22	17	0	4	0	1	0
 cdWaterShader.o	21	16	0	4	0	1	0
 cdWheelMarkShader.o	33	24	0	7	0	2	0
