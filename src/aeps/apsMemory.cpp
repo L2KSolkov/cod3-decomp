@@ -447,6 +447,11 @@ void apsMemory::SetMaxModifiers(int maxModifiers) { gConfig.mMaxModifiers = maxM
 // ea: 0x7EC930
 // ============================================================================
 apsMemory::BlockManager::BlockManager(int memSize, int maxPools) {
+    if (apsSingleton<apsMemory::BlockManager>::sInstancePtr != 0 &&
+        _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
+                  "0 == sInstancePtr", "singleton already initialised"))
+        __debugbreak();
+    apsSingleton<apsMemory::BlockManager>::sInstancePtr = this;
     mPools.mElements = 0;
     mPools.mCapacity = 0;
     mPools.mSize = 0;
