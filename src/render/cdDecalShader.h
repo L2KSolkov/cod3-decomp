@@ -17,7 +17,8 @@
 // ============================================================================
 // cdDecalShaderMat — decal shader material (28 bytes)
 // ============================================================================
-struct cdDecalShaderMat : nglMaterial {
+class cdDecalShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;   // +0x10
     float       mZBias;     // +0x14
     int         mCullMode;  // +0x18
