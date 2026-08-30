@@ -135,6 +135,7 @@ void ToggleCDSimpleAlphaShader() {
         (unsigned char)(~byte ^ ((byte ^ ~byte) & 0x7F));
 }
 
+// ea: 0x007C8D60
 tlFixedString cdSimpleAlphaShader::GetName() { return tlFixedString("cdSimpleAlpha"); }
 
 // ============================================================================
