@@ -1055,67 +1055,83 @@ public:
                                     ? (const char*)&str.mBlock[1]
                                     : defaultFileName);
     }
+    // ea: 0x005AE620
     virtual void SetLocation3D(Broc::vector loc)  // slot 22 0x5AE620
     {
         text->SetLocation3D(loc);
     }
+    // ea: 0x005AE660
     virtual void SetHJustify(int h)             // slot 23 0x5AE660
     {
         text->SetHJustify(h);
     }
+    // ea: 0x005AE670
     virtual void SetVJustify(int v)             // slot 24 0x5AE670
     {
         text->SetVJustify(v);
     }
+    // ea: 0x005AE680
     virtual void SetLineSpacing(int s)          // slot 25 0x5AE680
     {
         text->SetLineSpacing(s);
     }
+    // ea: 0x005AE6A0
     virtual void SetFont(font_index f)          // slot 26 0x5AE6A0
     {
         text->SetFont(f);
     }
+    // ea: 0x005AE6B0
     virtual void SetBehaviorNF(float x, float y)  // slot 27 0x5AE6B0
     {
         text->SetBehaviorNF(x, y);
     }
+    // ea: 0x005AE6D0
     virtual void SetBehavior(bool nfb)          // slot 28 0x5AE6D0
     {
         text->SetBehavior(nfb);
     }
+    // ea: 0x005AE6F0
     virtual void SetColorSchemeIndex(char csi)  // slot 29 0x5AE6F0
     {
         color_scheme_index = csi;
         AdjustColor();
     }
+    // ea: 0x005AE720
     virtual void SetScale(float s, float su)    // slot 30 0x5AE720
     {
         text->SetScaleMenuItem(s, su);
     }
+    // ea: 0x005AE710
     virtual void SetScale(float s)              // slot 31 0x5AE710
     {
         text->SetScale(s);
     }
+    // ea: 0x005AE730
     virtual void SetZ(float z, panel_layer layer)  // slot 32 0x5AE730
     {
         text->SetZvalue(z, layer);
     }
+    // ea: 0x005AE740
     virtual Broc::string GetText()              // slot 33 0x5AE740
     {
         return text->GetText();
     }
+    // ea: 0x005AE770
     virtual float GetWidth()                    // slot 34 0x5AE770
     {
         return text->GetWidth(nullptr);
     }
+    // ea: 0x005AE780
     virtual float GetX()                        // slot 35 0x5AE780
     {
         return text->GetX();
     }
+    // ea: 0x005AE790
     virtual float GetY()                        // slot 36 0x5AE790
     {
         return text->GetY();
     }
+    // ea: 0x005AE7A0
     virtual int GetLineNum()                    // slot 37 0x5AE7A0
     {
         return text->GetLineNum();

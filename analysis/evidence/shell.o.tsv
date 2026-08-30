@@ -305,3 +305,35 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE5C0	?SetPos@FEMenuEntry@@UAEXMM@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165542-1165546	Release dispatches SetPos with both coordinates.
 0x005AE5E0	?SetText@FEMenuEntry@@UAEXPBD@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1012-1014	Source forwards the text pointer to the contained FEText.
 0x005AE5E0	?SetText@FEMenuEntry@@UAEXPBD@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165548-1165552	Release forwards reference to FEText::SetText.
+0x005AE620	?SetLocation3D@FEMenuEntry@@UAEXUvector@Broc@@@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1059-1062	Source forwards the location vector to the contained text.
+0x005AE620	?SetLocation3D@FEMenuEntry@@UAEXUvector@Broc@@@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165560-1165564	Release forwards all vector components to FEText::SetLocation3D.
+0x005AE660	?SetHJustify@FEMenuEntry@@UAEXH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1064-1067	Source forwards horizontal justification.
+0x005AE660	?SetHJustify@FEMenuEntry@@UAEXH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165566-1165570	Release forwards hjust to FEText.
+0x005AE670	?SetVJustify@FEMenuEntry@@UAEXH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1070-1073	Source forwards vertical justification.
+0x005AE670	?SetVJustify@FEMenuEntry@@UAEXH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165572-1165576	Release forwards vjust to FEText.
+0x005AE680	?SetLineSpacing@FEMenuEntry@@UAEXH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1075-1078	Source forwards line spacing.
+0x005AE680	?SetLineSpacing@FEMenuEntry@@UAEXH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165578-1165582	Release forwards spacing to FEText.
+0x005AE6A0	?SetFont@FEMenuEntry@@UAEXW4font_index@@@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1080-1083	Source forwards font selection.
+0x005AE6A0	?SetFont@FEMenuEntry@@UAEXW4font_index@@@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165584-1165588	Release forwards f to FEText::SetFont.
+0x005AE6B0	?SetBehaviorNF@FEMenuEntry@@UAEXMM@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1085-1088	Source forwards both behavior coordinates.
+0x005AE6B0	?SetBehaviorNF@FEMenuEntry@@UAEXMM@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165590-1165594	Release forwards x/y to FEText::SetBehaviorNF.
+0x005AE6D0	?SetBehavior@FEMenuEntry@@UAEX_N@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1090-1093	Source forwards the behavior boolean.
+0x005AE6D0	?SetBehavior@FEMenuEntry@@UAEX_N@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165596-1165600	Release forwards nfb to FEText::SetBehavior.
+0x005AE6F0	?SetColorSchemeIndex@FEMenuEntry@@UAEXD@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1095-1099	Source stores the color scheme index and calls AdjustColor.
+0x005AE6F0	?SetColorSchemeIndex@FEMenuEntry@@UAEXD@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165602-1165610	Release stores csi then dispatches the virtual AdjustColor call.
+0x005AE710	?SetScale@FEMenuEntry@@UAEXM@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1106-1109	Source forwards uniform scale.
+0x005AE710	?SetScale@FEMenuEntry@@UAEXM@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165612-1165616	Release forwards s to FEText::SetScale.
+0x005AE720	?SetScale@FEMenuEntry@@UAEXMM@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1101-1104	Source forwards selected/unselected scales through SetScaleMenuItem.
+0x005AE720	?SetScale@FEMenuEntry@@UAEXMM@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165618-1165622	Release forwards s and s_unselected to FEText::SetScale.
+0x005AE730	?SetZ@FEMenuEntry@@UAEXMW4panel_layer@@@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1111-1114	Source forwards z and panel layer to the contained text.
+0x005AE730	?SetZ@FEMenuEntry@@UAEXMW4panel_layer@@@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165624-1165628	Release forwards z and layer to FEText::SetZvalue.
+0x005AE740	?GetText@FEMenuEntry@@UAE?AVstring@Broc@@XZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1115-1118	Source returns the contained FEText text string.
+0x005AE740	?GetText@FEMenuEntry@@UAE?AVstring@Broc@@XZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165630-1165635	Release returns FEText::GetText from the contained object.
+0x005AE770	?GetWidth@FEMenuEntry@@UAEMXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1121-1124	Source queries contained FEText width with a null parameter.
+0x005AE770	?GetWidth@FEMenuEntry@@UAEMXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165637-1165641	Release calls FEText::GetWidth with nullptr.
+0x005AE780	?GetX@FEMenuEntry@@UAEMXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1126-1129	Source returns contained FEText X.
+0x005AE780	?GetX@FEMenuEntry@@UAEMXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165643-1165647	Release forwards GetX to FEText.
+0x005AE790	?GetY@FEMenuEntry@@UAEMXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1131-1134	Source returns contained FEText Y.
+0x005AE790	?GetY@FEMenuEntry@@UAEMXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165649-1165653	Release forwards GetY to FEText.
+0x005AE7A0	?GetLineNum@FEMenuEntry@@UAEHXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1136-1139	Source returns contained FEText line count.
+0x005AE7A0	?GetLineNum@FEMenuEntry@@UAEHXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165655-1165659	Release forwards GetLineNum to FEText.
