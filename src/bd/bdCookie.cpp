@@ -226,7 +226,7 @@ bdCookieEchoChunk::bdCookieEchoChunk()
 // ============================================================================
 // bdCookieEchoChunk::bdCookieEchoChunk (raw) â€” ea: 0x8ABA60
 // ============================================================================
-bdCookieEchoChunk::bdCookieEchoChunk(const bdReference<bdByteBuffer>& rawCookie)
+bdCookieEchoChunk::bdCookieEchoChunk(bdReference<bdByteBuffer> rawCookie)
     : bdChunk((bdChunkTypes)13),
       m_flags(BD_COOKIE_ECHO_NONE),
       m_cookie(),

@@ -1061,7 +1061,7 @@ public:
     bdReference<bdByteBuffer> m_rawCookie;      // +0x14
 
     bdCookieEchoChunk();
-    bdCookieEchoChunk(const bdReference<bdByteBuffer>& rawCookie);
+    bdCookieEchoChunk(bdReference<bdByteBuffer> rawCookie);
     virtual ~bdCookieEchoChunk();
     bdCookieEchoFlags getFlags() const;
     virtual unsigned int getSerializedSize();

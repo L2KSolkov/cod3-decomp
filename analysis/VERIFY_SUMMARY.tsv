@@ -72,7 +72,7 @@ bdConnectionStatistics.obj	16	16	0	0	0	0	0
 bdConnectionStore.obj	87	75	4	8	0	0	0
 bdCookie.obj	12	10	0	0	0	2	0
 bdCookieAckChunk.obj	8	8	0	0	0	0	0
-bdCookieEchoChunk.obj	14	12	1	0	0	1	0
+bdCookieEchoChunk.obj	14	12	0	0	0	2	0
 bdCore.obj	12	12	0	0	0	0	0
 bdDataChunk.obj	20	8	4	7	0	1	0
 bdDiscoveryClient.obj	35	27	1	7	0	0	0
