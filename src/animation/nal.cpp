@@ -37641,7 +37641,8 @@ void AnimBankManager::AddBank(TPakId pakId, AnimBank* bank)
 // ea: 0x00545760
 AnimBank* AnimBankManager::GetBank(TPakId pakId)
 {
-    if (mBankArray[(int)pakId] == nullptr)
+    AnimBank*& selectedBank = mBankArray[(int)pakId];
+    if (selectedBank == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
@@ -37651,7 +37652,7 @@ AnimBank* AnimBankManager::GetBank(TPakId pakId)
             && AeAssert::Assert("no bank for this pak id!"))
             __debugbreak();
     }
-    return mBankArray[(int)pakId];
+    return mBankArray[0];
 }
 
 // ea: 0x005457D0
