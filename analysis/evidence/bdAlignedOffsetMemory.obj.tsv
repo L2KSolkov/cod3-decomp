@@ -1,4 +1,6 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x008A03C0	?bdMalloc@@YAPAXI@Z	V3	PASS	ida-manual-bd-aligned-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008A03C0; src/bd/bdMemory/bdAlignedOffsetMemory.cpp:15	Real body is the malloc thunk for the requested size.
+0x008A03C0	?bdMalloc@@YAPAXI@Z	V4	PASS	ida-manual-bd-aligned-20260830	2026-08-30	IDA decompile 0x008A03C0 and src/bd/bdMemory/bdAlignedOffsetMemory.cpp:15-17	Release malloc forwarding and return match source.
 0x008A03D0	?bdAlignedOffsetMalloc@@YAPAXIII@Z	V3	PASS	ida-manual-bd-aligned-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008A03D0; src/bd/bdMemory/bdAlignedOffsetMemory.cpp:20	Real body validates power-of-two alignment, allocates extra storage, aligns with offset, stores raw pointer at user-4, and asserts on bad alignment.
 0x008A03D0	?bdAlignedOffsetMalloc@@YAPAXIII@Z	V4	PASS	ida-manual-bd-aligned-20260830	2026-08-30	IDA decompile 0x008A03D0 and src/bd/bdMemory/bdAlignedOffsetMemory.cpp:20-54	Release arithmetic, allocation size, raw-pointer slot, assertion strings, and return paths match source.
 0x008A04A0	?bdAlignedOffsetFree@@YAXPAX@Z	V3	PASS	ida-manual-bd-aligned-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008A04A0; src/bd/bdMemory/bdAlignedOffsetMemory.cpp:57	Real body frees the raw allocation stored immediately before the aligned user pointer.
