@@ -79,16 +79,16 @@ extern const _D3DVERTEXSHADERINPUT gGlowVertexElements[];  // @0xE3BB78
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern nglTexture* nglCreateTexture(unsigned int Flags, _D3DFORMAT Format, int Width, int Height,
                                     int Depth, int Levels);  // ngl_gpu_texture.o
 
 extern cdGlowShader* gCDGlowShader;  // @0x10DDF2C
 
-void ToggleCDGlowShader();   // @0x7C1280
+int ToggleCDGlowShader();    // @0x7C1280
 void InitCDGlowShader();     // @0x7C12A0
-void SetupCDGlowShader();    // @0x7C1370
+nglTexture* SetupCDGlowShader(); // @0x7C1370
 void GlowSetTaps(const FilterTaps* t0, const FilterTaps* t1, const FilterTaps* t2, const FilterTaps* t3);  // @0x7C13E0
 FilterTaps* LerpTaps(FilterTaps* result, const FilterTaps* Taps0, const FilterTaps* Taps1, float t);  // @0x7C1430
 

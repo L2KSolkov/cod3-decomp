@@ -64,12 +64,12 @@ extern void InitCDGunSightShader();
 extern void InitCDGunSightSpecularShader();
 extern void InitCDDebugShader();
 
-extern void SetupCDGlowShader();
+extern nglTexture* SetupCDGlowShader();
 extern void SetupCDHeatHazeShader();
 extern void RenderCDHeatHazeShader();
 extern void GlowCallback(void*);
 
-extern void ToggleCDGlowShader();
+extern int ToggleCDGlowShader();
 extern void ToggleCDWorldShader();
 extern void ToggleCDWorldVertexLitShader();
 extern void ToggleCDWorldBlendShader();
@@ -128,7 +128,7 @@ float gTime = 0.0f;                        // @0x10DDB18
 math::Vector4 FarFogColor;                 // @0x10DDB30
 
 ShaderSwitchPair gShaderSwitches[36] = {
-    { "cdglow",            ToggleCDGlowShader },
+    { "cdglow",            (void(*)())ToggleCDGlowShader },
     { "cdworld",           ToggleCDWorldShader },
     { "cdworldvertexlit",  ToggleCDWorldVertexLitShader },
     { "cdworldblend",      ToggleCDWorldBlendShader },

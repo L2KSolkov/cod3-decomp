@@ -81,8 +81,10 @@ unsigned int GlowTargetPrev;           // ?GlowTargetPrev@@3IA
 // ToggleCDGlowShader — flip the glow enable flag.
 // ea: 0x7C1280
 // ============================================================================
-void ToggleCDGlowShader() {
-    ShaderCommon::gGlowEnable = (ShaderCommon::gGlowEnable == 0);
+int ToggleCDGlowShader() {
+    int result = (ShaderCommon::gGlowEnable == 0);
+    ShaderCommon::gGlowEnable = result;
+    return result;
 }
 
 // ============================================================================
@@ -102,27 +104,33 @@ void InitCDGlowShader() {
         v0 = NULL;
     }
     gCDGlowShader = v0;
-    nglDxRegisterVShaderSafe((unsigned int*)cdGlowRender1::VS, cdGlowRender1::VShaderTable, 0);
-    cdGlowRender1::Shader = cdGlowRender1::VS != nullptr ? cdGlowRender1::VS[0] : 0;
-    nglDxRegisterVShaderSafe((unsigned int*)cdGlowRender4::VS, cdGlowRender4::VShaderTable, 0);
-    cdGlowRender4::Shader = cdGlowRender4::VS != nullptr ? cdGlowRender4::VS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGlowShrink::PS, cdGlowShrink::PShaderTable, 0);
-    cdGlowShrink::Shader = cdGlowShrink::PS != nullptr ? cdGlowShrink::PS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGlowBlur::PS, cdGlowBlur::PShaderTable, 0);
-    cdGlowBlur::Shader = cdGlowBlur::PS != nullptr ? cdGlowBlur::PS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGlowApply::PS, cdGlowApply::PShaderTable, 0);
-    cdGlowApply::Shader = cdGlowApply::PS != nullptr ? cdGlowApply::PS[0] : 0;
+    nglDxRegisterVShader(cdGlowRender1::VS,
+                         cdGlowRender1::VShaderTable[0]);
+    cdGlowRender1::Shader = cdGlowRender1::VS[0];
+    nglDxRegisterVShader(cdGlowRender4::VS,
+                         cdGlowRender4::VShaderTable[0]);
+    cdGlowRender4::Shader = cdGlowRender4::VS[0];
+    nglDxRegisterPShader(cdGlowShrink::PS,
+                         cdGlowShrink::PShaderTable[0]);
+    cdGlowShrink::Shader = cdGlowShrink::PS[0];
+    nglDxRegisterPShader(cdGlowBlur::PS,
+                         cdGlowBlur::PShaderTable[0]);
+    cdGlowBlur::Shader = cdGlowBlur::PS[0];
+    nglDxRegisterPShader(cdGlowApply::PS,
+                         cdGlowApply::PShaderTable[0]);
+    cdGlowApply::Shader = cdGlowApply::PS[0];
 }
 
 // ============================================================================
 // SetupCDGlowShader — build the glow vertex format + render targets.
 // ea: 0x7C1370
 // ============================================================================
-void SetupCDGlowShader() {
+nglTexture* SetupCDGlowShader() {
     gpuVertexFormat v1;
     gGlowVertexFormat = *gpuCreateVertexFormat(&v1, 0x2C, gGlowVertexElements);
     GlowTargets[0] = nglCreateTexture(0x11, (_D3DFORMAT)6, 256, 256, 1, 1);
     GlowTargets[1] = nglCreateTexture(0x11, (_D3DFORMAT)6, 256, 256, 1, 1);
+    return GlowTargets[1];
 }
 
 // ============================================================================
