@@ -1136,26 +1136,32 @@ public:
     {
         return text->GetLineNum();
     }
+    // ea: 0x005AE7B0
     virtual float GetScaleX()                   // slot 38 0x5AE7B0
     {
         return text->GetScaleX();
     }
+    // ea: 0x005AE7C0
     virtual float GetScaleY()                   // slot 39 0x5AE7C0
     {
         return text->GetScaleY();
     }
+    // ea: 0x005AE7D0
     virtual char GetColorSchemeIndex()          // slot 40
     {
         return color_scheme_index;
     }
+    // ea: 0x005AE7E0
     virtual color32 GetColor()                  // slot 41
     {
         return text->GetColor();
     }
+    // ea: 0x005AE800
     virtual float GetZ()                        // slot 42
     {
         return text->GetZvalue();
     }
+    // ea: 0x005AE810
     virtual void AddFont(int index, font_index f)  // slot 43 0x5AE810
     {
         text->AddFont(index, f);
@@ -1169,6 +1175,7 @@ public:
                                     int old_viewport);  // slot 47 0x56FE70
     virtual void UpdateWidescreen(bool) {}      // slot 48 0x5AE830 (empty)
     virtual void OnSelect() {}                  // slot 49 0x5AE4A0 (empty)
+    // ea: 0x005AE850
     virtual int GetValue() { return 0; }        // slot 50 0x5AE850
     virtual void SetValue(int) {}               // slot 51 0x5AE840 (empty)
 

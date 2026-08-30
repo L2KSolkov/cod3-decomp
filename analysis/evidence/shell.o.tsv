@@ -337,3 +337,17 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE790	?GetY@FEMenuEntry@@UAEMXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165649-1165653	Release forwards GetY to FEText.
 0x005AE7A0	?GetLineNum@FEMenuEntry@@UAEHXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1136-1139	Source returns contained FEText line count.
 0x005AE7A0	?GetLineNum@FEMenuEntry@@UAEHXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165655-1165659	Release forwards GetLineNum to FEText.
+0x005AE7B0	?GetScaleX@FEMenuEntry@@UAEMXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1140-1143	Source returns contained FEText scale X.
+0x005AE7B0	?GetScaleX@FEMenuEntry@@UAEMXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165661-1165665	Release forwards GetScaleX to FEText.
+0x005AE7C0	?GetScaleY@FEMenuEntry@@UAEMXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1144-1147	Source returns contained FEText scale Y.
+0x005AE7C0	?GetScaleY@FEMenuEntry@@UAEMXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165667-1165671	Release forwards GetScaleY to FEText.
+0x005AE7D0	?GetColorSchemeIndex@FEMenuEntry@@UAEDXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1148-1151	Source returns the stored color scheme index.
+0x005AE7D0	?GetColorSchemeIndex@FEMenuEntry@@UAEDXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165673-1165677	Release returns this->color_scheme_index.
+0x005AE7E0	?GetColor@FEMenuEntry@@UAE?AVcolor32@@XZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1152-1155	Source returns the contained FEText color.
+0x005AE7E0	?GetColor@FEMenuEntry@@UAE?AVcolor32@@XZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165679-1165684	Release forwards GetColor to the contained text.
+0x005AE800	?GetZ@FEMenuEntry@@UAEMXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1156-1159	Source returns the contained FEText Z value.
+0x005AE800	?GetZ@FEMenuEntry@@UAEMXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165686-1165690	Release forwards GetZvalue to the contained text.
+0x005AE810	?AddFont@FEMenuEntry@@UAEXHW4font_index@@@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1160-1163	Source forwards index and font to FEText::AddFont.
+0x005AE810	?AddFont@FEMenuEntry@@UAEXHW4font_index@@@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165692-1165696	Release dispatches the contained text vtable AddFont entry with both arguments.
+0x005AE850	?GetValue@FEMenuEntry@@UAEHXZ	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1173-1174	Source returns constant zero for the base menu entry value.
+0x005AE850	?GetValue@FEMenuEntry@@UAEHXZ	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165698-1165702	Release returns constant zero.
