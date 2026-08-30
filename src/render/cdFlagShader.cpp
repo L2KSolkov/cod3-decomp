@@ -80,11 +80,7 @@ cdFlagShaderMat::cdFlagShaderMat(nglTexture* iTexture) {
 void InitCDFlagShader() {
     cdFlagShader* v0 = (cdFlagShader*)mem_heap_malloc(0x10);
     if (v0 != NULL) {
-        v0->next = tlInitList::head;
-        tlInitList::head = v0;
-        v0->Disabled = false;
-        // vftable = cdFlagShader
-        *((unsigned char*)&gShaderSwitchingFlags) &= 0xF7;
+        ::new (v0) cdFlagShader;
     } else {
         v0 = NULL;
     }
