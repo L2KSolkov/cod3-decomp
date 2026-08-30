@@ -1023,7 +1023,7 @@ FEComboBox* FEMenu::AddComboBox(int index, int numOptions, FEText* text,
         v9 = nullptr;
     entries[index] = v9;
     ConnectEntries((short)index);
-    return v8;
+    return static_cast<FEComboBox*>(entries[index]);
 }
 
 // ea: 0x00585E60
@@ -1048,7 +1048,7 @@ FEComboBox* FEMenu::AddComboBox(int index, int numOptions, FEText* text,
         v8 = nullptr;
     entries[index] = v8;
     ConnectEntries((short)index);
-    return v8;
+    return static_cast<FEComboBox*>(entries[index]);
 }
 
 // ea: 0x005860D0
@@ -1071,7 +1071,7 @@ FESlider* FEMenu::AddSlider(int index, FEText* barText, FEText* label)
         v6 = nullptr;
     entries[index] = v6;
     ConnectEntries((short)index);
-    return v6;
+    return static_cast<FESlider*>(entries[index]);
 }
 
 // ea: 0x00586000
@@ -1094,7 +1094,7 @@ FESlider* FEMenu::AddSlider(int index, PanelQuad* bar, FEText* label)
         v6 = nullptr;
     entries[index] = v6;
     ConnectEntries((short)index);
-    return v6;
+    return static_cast<FESlider*>(entries[index]);
 }
 
 // ea: 0x005861A0
@@ -1118,7 +1118,7 @@ FEDoubleEntry* FEMenu::AddDoubleEntry(int index, FEText* barText,
         v6 = nullptr;
     entries[index] = v6;
     ConnectEntries((short)index);
-    return v6;
+    return static_cast<FEDoubleEntry*>(entries[index]);
 }
 
 // ea: 0x0058DFF0
