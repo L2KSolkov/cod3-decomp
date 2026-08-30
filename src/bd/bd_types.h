@@ -201,30 +201,30 @@ class bdInetAddr {
 public:
     bdInAddr m_addr;  // +0x00
 
-    bdInetAddr() {}
-    bdInetAddr(const bdInetAddr& other) { m_addr = other.m_addr; }
-    bdInetAddr(const bdInAddr* addr) { m_addr = *addr; }
+    bdInetAddr();
+    bdInetAddr(const bdInetAddr& other);
+    bdInetAddr(const bdInAddr* addr);
     bdInetAddr(const char* str);
-    bdInetAddr(unsigned int addr) { m_addr.inUn.m_iaddr = addr; }
-    ~bdInetAddr() { m_addr.inUn.m_iaddr = 0xDEADBEEF; }
+    bdInetAddr(unsigned int addr);
+    ~bdInetAddr();
 
-    const bdInetAddr& set(const bdInetAddr& other) { m_addr = other.m_addr; return other; }
-    void set(const char* str) { m_addr.fromString(str); }
-    unsigned int set(unsigned int addr) { m_addr.inUn.m_iaddr = addr; return addr; }
-    void set(const bdInAddr* addr) { m_addr = *addr; }
-    bool operator==(const bdInetAddr& other) const { return m_addr.inUn.m_iaddr == other.m_addr.inUn.m_iaddr; }
-    bool operator!=(const bdInetAddr& other) const { return m_addr.inUn.m_iaddr != other.m_addr.inUn.m_iaddr; }
+    void set(const bdInetAddr& other);
+    void set(const char* str);
+    void set(unsigned int addr);
+    void set(const bdInAddr* addr);
+    bool operator==(const bdInetAddr& other) const;
+    bool operator!=(const bdInetAddr& other) const;
     bool isValid() const;
-    unsigned int toUInt32() const { return m_addr.inUn.m_iaddr; }
+    unsigned int toUInt32() const;
     unsigned int toString(char* const pchBuf, unsigned int cchBuf) const;
-    bdInAddr* getInAddr() { return &m_addr; }
-    const bdInAddr* getInAddr() const { return &m_addr; }
+    bdInAddr* getInAddr();
+    const bdInAddr* getInAddr() const;
     bool serialize(void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset) const;
     bool deserialize(const void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset);
     static bdInetAddr Loopback();
     static bdInetAddr Broadcast();
     static bdInetAddr Any();
-    bool operator<(const bdInetAddr& other) const { return m_addr.inUn.m_iaddr < other.m_addr.inUn.m_iaddr; }
+    bool operator<(const bdInetAddr& other) const;
     bool isLoopback() const;
     bool isBroadcast() const;
 };

@@ -6,6 +6,61 @@
 
 #include "bd/bd_types.h"
 
+bdInetAddr::bdInetAddr() {
+}
+
+bdInetAddr::~bdInetAddr() {
+    m_addr.inUn.m_iaddr = 0xDEADBEEF;
+}
+
+bdInetAddr::bdInetAddr(const bdInetAddr& other) {
+    m_addr = other.m_addr;
+}
+
+bdInetAddr::bdInetAddr(const bdInAddr* addr) {
+    m_addr = *addr;
+}
+
+void bdInetAddr::set(const bdInetAddr& other) {
+    m_addr = other.m_addr;
+}
+
+void bdInetAddr::set(const char* str) {
+    m_addr.fromString(str);
+}
+
+void bdInetAddr::set(unsigned int addr) {
+    m_addr.inUn.m_iaddr = addr;
+}
+
+void bdInetAddr::set(const bdInAddr* addr) {
+    m_addr = *addr;
+}
+
+bool bdInetAddr::operator==(const bdInetAddr& other) const {
+    return m_addr.inUn.m_iaddr == other.m_addr.inUn.m_iaddr;
+}
+
+bool bdInetAddr::operator!=(const bdInetAddr& other) const {
+    return m_addr.inUn.m_iaddr != other.m_addr.inUn.m_iaddr;
+}
+
+unsigned int bdInetAddr::toUInt32() const {
+    return m_addr.inUn.m_iaddr;
+}
+
+bdInAddr* bdInetAddr::getInAddr() {
+    return &m_addr;
+}
+
+const bdInAddr* bdInetAddr::getInAddr() const {
+    return &m_addr;
+}
+
+bool bdInetAddr::operator<(const bdInetAddr& other) const {
+    return m_addr.inUn.m_iaddr < other.m_addr.inUn.m_iaddr;
+}
+
 // ============================================================================
 // bdInetAddr::bdInetAddr (from string) - ea: 0x89D6E0
 // ============================================================================
@@ -18,7 +73,6 @@ bdInetAddr::bdInetAddr(const char* str) {
 // ============================================================================
 bool bdInetAddr::isValid() const {
     bdInAddr zero;
-    zero.inUn.m_iaddr = 0;
     return m_addr.inUn.m_iaddr != zero.inUn.m_iaddr;
 }
 
@@ -77,6 +131,10 @@ bdInetAddr bdInetAddr::Any() {
     bdInetAddr result;
     result.m_addr.inUn.m_iaddr = 0;
     return result;
+}
+
+bdInetAddr::bdInetAddr(unsigned int addr) {
+    m_addr.inUn.m_iaddr = addr;
 }
 
 // ============================================================================
