@@ -210,9 +210,9 @@ void cdSimpleSpecularShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSe
     if ((ShaderCommon::ShaderSwitching.__s0[2] & 1) == 0) {
         cdSimpleSpecularShaderNode* node = (cdSimpleSpecularShaderNode*)nglListAlloc(0x18, 0x10);
         if (node != NULL) {
+            ::new (node) cdSimpleSpecularShaderNode;
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdSimpleSpecularShaderNode;
             node->mMaterial = (cdSimpleSpecularShaderMat*)iMat;
         } else {
             node = NULL;
