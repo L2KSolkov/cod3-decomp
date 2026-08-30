@@ -1653,7 +1653,8 @@ public:
 
 // InplaceTriple (ae/inplace; used by ZoneOverrideBrushSet::mNonZoneDistances)
 template <typename A, typename B, typename C>
-struct InplaceTriple {
+class InplaceTriple {
+public:
     A a;  // +0x00
     B b;  // +0x04
     C c;  // +0x08
