@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00853A70	?Render@nglStringNode@@UAEXXZ	V3	PASS	ida-manual-ngl-font-20260829	2026-08-29	src/ngl/ngl_dx_font.cpp:54-182	Source contains the complete font render path, push-buffer construction, glyph loop, overflow assertion, and performance accounting.
+0x00853A70	?Render@nglStringNode@@UAEXXZ	V4	PASS	ida-manual-ngl-font-20260829	2026-08-29	IDA:0x00853A70;src/ngl/ngl_dx_font.cpp:54-182	Release/source guards, render-state setup, shader/texture selection, section-length accounting, push count/assert, four-vertex glyph emission, glyph advance, section traversal, terminator, and FontCycles update match.
+0x00853E80	?SetMeasures@nglFont@@QAEXEPAM000MM@Z	V3	PASS	ida-manual-ngl-font-20260829	2026-08-29	src/ngl/nglFont.h:82-105	Source contains the complete glyph clamp, metric scaling, UV lookup, and UV-size calculation.
+0x00853E80	?SetMeasures@nglFont@@QAEXEPAM000MM@Z	V4	PASS	ida-manual-ngl-font-20260829	2026-08-29	IDA:0x00853E80;src/ngl/nglFont.h:82-105	Release/source glyph-index clamp, seven-dword glyph copy semantics, scaled offsets/sizes, low-byte FirstGlyph UV index, and UV differences match.
