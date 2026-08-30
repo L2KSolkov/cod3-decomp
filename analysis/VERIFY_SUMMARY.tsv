@@ -129,7 +129,7 @@ bdSocketRouter-xbox.obj	25	15	3	6	0	1	0
 bdStopwatch.obj	7	0	0	0	0	7	0
 bdString.obj	30	25	0	4	0	1	0
 bdTrulyRandom.obj	3	1	1	0	0	1	0
-bdUnicastConnection.obj	152	141	6	5	0	0	0
+bdUnicastConnection.obj	152	141	5	5	0	1	0
 bdUnreliableReceiveWindow.obj	7	2	1	0	0	4	0
 bdUnreliableSendWindow.obj	32	27	1	0	0	4	0
 cdAirplaneMetalShader.o	21	7	0	0	0	14	0

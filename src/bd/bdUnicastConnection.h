@@ -84,7 +84,7 @@ public:
 protected:
     friend class bdConnectionStore;
     bdUnicastConnection();
-    bdUnicastConnection(const bdReference<bdCommonAddr>& dest);
+    bdUnicastConnection(bdReference<bdCommonAddr> dest);
 
     virtual bool receive(const unsigned char* buffer, unsigned int bufferSize);
     virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize);

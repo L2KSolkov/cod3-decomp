@@ -50,7 +50,7 @@ bdUnicastConnection::bdUnicastConnection()
 // ============================================================================
 // bdUnicastConnection (dest) - ea: 0x8A6D00
 // ============================================================================
-bdUnicastConnection::bdUnicastConnection(const bdReference<bdCommonAddr>& dest)
+bdUnicastConnection::bdUnicastConnection(bdReference<bdCommonAddr> dest)
     : bdConnection(dest), m_reliableSendWindow(NULL), m_reliableRecvWindow(NULL),
       m_unreliableSendWindow(), m_unreliableReceiveWindow(), m_outQueue(),
       m_sendTimer(), m_receiveTimer(), m_state(BD_UC_CLOSED), m_localTag(0),
