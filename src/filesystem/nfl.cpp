@@ -2485,7 +2485,6 @@ char* txPathMake(const char* src, char* dest, int destSize)
     const char* input = src;
     if (src == nullptr || *src == 0) input = ".";
     std::strncpy(buffer, input, 0xFFu);
-    buffer[0xFF] = 0;
     std::strcpy(buffer + std::strlen(buffer), "/");
     txPathFix(buffer, dest, destSize);
     return dest;
