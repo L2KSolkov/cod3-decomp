@@ -230,7 +230,7 @@ ngl_dx_filters.o	28	16	0	9	0	3	0
 ngl_dx_font.o	2	0	0	0	0	2	0
 ngl_dx_fsaa.o	2	0	1	0	0	1	0
 ngl_dx_mesh.o	4	0	0	0	0	4	0
-ngl_dx_quad.o	11	8	0	3	0	0	0
+ngl_dx_quad.o	11	8	0	0	0	3	0
 ngl_dx_scene.o	27	13	1	12	0	1	0
 ngl_dx_scenedump.o	3	0	0	0	0	3	0
 ngl_dx_shader.o	18	10	0	8	0	0	0
