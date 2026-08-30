@@ -292,7 +292,7 @@ render.o	1038	671	4	285	0	78	0
 rigid_body.o	13	11	1	0	0	1	0
 scr.o	1540	488	1	22	0	1029	0
 shell.o	2214	734	24	655	0	801	0
-streamer.o	730	359	80	150	5	136	0
+streamer.o	730	359	78	150	5	138	0
 sv.o	148	29	2	93	0	24	0
 tl_initlist.o	1	0	0	0	0	1	0
 tl_instbank.o	9	0	0	0	0	9	0
