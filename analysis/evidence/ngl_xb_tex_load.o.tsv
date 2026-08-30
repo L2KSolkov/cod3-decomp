@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00844D00	?ngliProcessTexture@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@@Z	V3	PASS	ida-manual-ngl-xb-tex-load-20260829	2026-08-29	src/ngl/ngl_xb_tex_load.cpp:23-40	Source contains image-section lookup, texture metadata initialization, physical-section lookup, and backing-resource registration.
+0x00844D00	?ngliProcessTexture@@YAXPAVapkFile@apk@@PAVapkFileEntry@2@@Z	V4	PASS	ida-manual-ngl-xb-tex-load-20260829	2026-08-29	IDA:0x00844D00;src/ngl/ngl_xb_tex_load.cpp:23-40	Release/source fixed-string names, section-index/data calls, flags test, File/LastFrameRef stores, physical-data null guard, and D3DResource_Register target match.
