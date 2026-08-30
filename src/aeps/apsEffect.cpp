@@ -861,6 +861,10 @@ unsigned int apsEffect::IsDone() {
     if (mSize <= 0)
         return 1;
     while (1) {
+        if (mTemplate == 0 &&
+            _tlAssert("c:/cod/code/tl/aeps/include\\apsEffect.h", 182,
+                      "mTemplate", "null template"))
+            __debugbreak();
         if (mTemplate->GetElement(v6).mEndTime > mLastTime)
             break;
         if (++v6 >= mSize)
