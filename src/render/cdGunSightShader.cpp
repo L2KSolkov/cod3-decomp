@@ -25,27 +25,12 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdGunSightShader* gCDGunSightShader = nullptr;  // ?gCDGunSightShader@@3PAVcdGunSightShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdGunSightRender {
-    unsigned int VS[1] = {};
-    unsigned int const* VShaderTable[1] = {};
-}
-
 // ea: 0x007CE650
 void cdGunSightRender::RegisterVShader()
 {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdGunSightRender::VS),
                          cdGunSightRender::VShaderTable[0]);
 }
-namespace cdGunSightPixel {
-    unsigned int* PS[1] = {};
-    unsigned int const* PShaderTable[1] = {};
-}
-namespace cdGunSightFullbrightPixel {
-    unsigned int* PS[1] = {};
-    unsigned int const* PShaderTable[1] = {};
-}
-
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
 extern unsigned int dword_4033C;
@@ -132,9 +117,12 @@ tlFixedString cdGunSightShader::GetName() { return tlFixedString("cdGunSight"); 
 // ============================================================================
 void cdGunSightShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdGunSightRender::VS, cdGunSightRender::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdGunSightPixel::PS, cdGunSightPixel::PShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdGunSightFullbrightPixel::PS, cdGunSightFullbrightPixel::PShaderTable, 0);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdGunSightRender::VS),
+                         cdGunSightRender::VShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdGunSightPixel::PS),
+                         cdGunSightPixel::PShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdGunSightFullbrightPixel::PS),
+                         cdGunSightFullbrightPixel::PShaderTable[0]);
 }
 
 // ============================================================================
