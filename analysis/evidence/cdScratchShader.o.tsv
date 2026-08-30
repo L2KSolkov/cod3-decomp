@@ -1,0 +1,17 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007C5DD0	?GetVShader@cdScratchShaderVertex@@YAKXZ	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5DD0; src/render/cdScratchShader.cpp:41-44	Returns the release vertex-shader slot-zero handle.
+0x007C5DD0	?GetVShader@cdScratchShaderVertex@@YAKXZ	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5DD0; src/render/cdScratchShader.cpp:41-44	Indexed VS access matches release.
+0x007C5DE0	?RegisterPShader@cdScratchShaderPixel@@YAXXZ	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5DE0; src/render/cdScratchShader.cpp:47-51	Registers the scratch pixel shader table entry through the direct release API.
+0x007C5DE0	?RegisterPShader@cdScratchShaderPixel@@YAXXZ	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5DE0; src/render/cdScratchShader.cpp:47-51	PS storage and table index match release.
+0x007C5E00	?GetPShader@cdScratchShaderPixel@@YAPAKXZ	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E00; src/render/cdScratchShader.cpp:54-57	Returns scratch pixel shader slot zero.
+0x007C5E00	?GetPShader@cdScratchShaderPixel@@YAPAKXZ	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E00; src/render/cdScratchShader.cpp:54-57	PS slot access matches release.
+0x007C5E10	??0cdScratchShader@@QAE@XZ	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E10; src/render/cdScratchShader.cpp:73-78	Constructor links into tlInitList and clears Disabled.
+0x007C5E10	??0cdScratchShader@@QAE@XZ	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E10; src/render/cdScratchShader.cpp:73-78	List-head and flag stores match release.
+0x007C5E40	?GetName@cdScratchShader@@UAE?AVtlFixedString@@XZ	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E40; src/render/cdScratchShader.cpp:91-92	Returns the exact release name PCUV.
+0x007C5E40	?GetName@cdScratchShader@@UAE?AVtlFixedString@@XZ	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E40; src/render/cdScratchShader.cpp:91-92	String construction matches release.
+0x007C5E90	??1cdScratchShader@@UAE@XZ	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E90; src/render/cdScratchShader.cpp:81-82	Virtual shader destructor is emitted for the release class.
+0x007C5E90	??1cdScratchShader@@UAE@XZ	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C5E90; src/render/cdScratchShader.cpp:81-82	Compiler-generated teardown preserves the release shader destructor contract.
+0x007C60C0	??0cdScratchShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdScratchMaterial@@@Z	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C60C0; src/render/cdScratchShader.cpp:151-157	Node constructor stores mesh node, section, and material in release order.
+0x007C60C0	??0cdScratchShaderNode@@QAE@PAVnglMeshNode@@PAUnglMeshSection@@PAVcdScratchMaterial@@@Z	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C60C0; src/render/cdScratchShader.cpp:151-157	Node field offsets and vtable-bearing C++ construction match release.
+0x007C6120	??1cdScratchShaderNode@@UAE@XZ	V3	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C6120; src/render/cdScratchShader.cpp:160-161	Virtual destructor is emitted for the node type.
+0x007C6120	??1cdScratchShaderNode@@UAE@XZ	V4	PASS	ida-manual-scratch-20260829	2026-08-29	IDA decompile 0x007C6120; src/render/cdScratchShader.cpp:160-161	Compiler-generated base teardown preserves the release node destructor contract.

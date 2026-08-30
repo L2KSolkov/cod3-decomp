@@ -33,6 +33,11 @@ static_assert(sizeof(cdScratchMaterial) == 0x20, "cdScratchMaterial size mismatc
 struct cdScratchShaderNode : nglShaderNode {
     cdScratchMaterial* Material;  // +0x14
 
+    cdScratchShaderNode(nglMeshNode* iMeshNode,
+                        nglMeshSection* iSection,
+                        cdScratchMaterial* iMaterial); // @0x7C60C0
+    virtual ~cdScratchShaderNode(); // @0x7C6120
+
     void Render() override;        // @0x7C57F0
 };
 static_assert(sizeof(cdScratchShaderNode) == 0x18, "cdScratchShaderNode size mismatch");
@@ -42,6 +47,8 @@ static_assert(sizeof(cdScratchShaderNode) == 0x18, "cdScratchShaderNode size mis
 // ============================================================================
 class cdScratchShader : public nglShader {
 public:
+    cdScratchShader(); // @0x7C5E10
+    virtual ~cdScratchShader(); // @0x7C5E90
     virtual tlFixedString GetName(); // @0x7C5E40
     virtual void Register();  // @0x7C56B0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C5720
@@ -55,17 +62,20 @@ namespace cdScratchShaderVertex {
     extern unsigned long* VS;                // ?VS@cdScratchShaderVertex@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdScratchShaderVertex@@3PAPBIA
     void RegisterVShader();                  // @0x007C5DB0
+    unsigned int GetVShader();                // @0x007C5DD0
 }
 namespace cdScratchShaderPixel {
     extern unsigned long** PS;               // ?PS@cdScratchShaderPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdScratchShaderPixel@@3PAPBIA
+    void RegisterPShader();                    // @0x007C5DE0
+    unsigned long* GetPShader();              // @0x007C5E00
 }
 
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern cdScratchShader* gCDScratchShader;  // @0x10DE02C
 

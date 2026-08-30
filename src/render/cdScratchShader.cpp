@@ -37,6 +37,25 @@ void cdScratchShaderVertex::RegisterVShader()
                          reinterpret_cast<const unsigned int*>(cdScratchShaderVertex::VShaderTable[0]));
 }
 
+// ea: 0x007C5DD0
+unsigned int cdScratchShaderVertex::GetVShader()
+{
+    return static_cast<unsigned int>(cdScratchShaderVertex::VS[0]);
+}
+
+// ea: 0x007C5DE0
+void cdScratchShaderPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(cdScratchShaderPixel::PS,
+                         cdScratchShaderPixel::PShaderTable[0]);
+}
+
+// ea: 0x007C5E00
+unsigned long* cdScratchShaderPixel::GetPShader()
+{
+    return cdScratchShaderPixel::PS[0];
+}
+
 // ============================================================================
 // cdScratchMaterial::cdScratchMaterial — bind texture + blend + shader.
 // ea: 0x7C5660
@@ -50,6 +69,16 @@ cdScratchMaterial::cdScratchMaterial(nglTexture* tex, unsigned int BlendMode,
     this->Shader = gCDScratchShader;
 }
 
+// ea: 0x007C5E10
+cdScratchShader::cdScratchShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+}
+
+// ea: 0x007C5E90
+cdScratchShader::~cdScratchShader() = default;
+
 // ============================================================================
 // ToggleCDScratchShader — toggle the scratch-shader enable (high bit).
 // ea: 0x7C5690
@@ -60,6 +89,7 @@ void ToggleCDScratchShader() {
         (unsigned char)(~byte ^ ((byte ^ ~byte) & 0x7F));
 }
 
+// ea: 0x007C5E40
 tlFixedString cdScratchShader::GetName() { return tlFixedString("PCUV"); }
 
 // ============================================================================
@@ -82,15 +112,23 @@ void InitCDScratchShader() {
     cdScratchShader* result = (cdScratchShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdScratchShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdScratchShader
         gCDScratchShader = result;
     } else {
         gCDScratchShader = NULL;
     }
 }
+
+// ea: 0x007C60C0
+cdScratchShaderNode::cdScratchShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdScratchMaterial* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->Material = iMaterial;
+}
+
+// ea: 0x007C6120
+cdScratchShaderNode::~cdScratchShaderNode() = default;
 
 // ============================================================================
 // cdScratchShader::AddNode — add a scratch node to opaque/transparent list.
@@ -103,7 +141,8 @@ void cdScratchShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdScratchShaderNode;
+            ::new (node) cdScratchShaderNode(iMeshNode, iSection,
+                                               (cdScratchMaterial*)iMat);
             node->Material = (cdScratchMaterial*)iMat;
         } else {
             node = NULL;
