@@ -40,7 +40,7 @@ void cdWorldColorShader::Register() {
 // InitCDWorldColorShader — allocate the shader and link into the init list.
 // ea: 0x7D9DC0
 // ============================================================================
-cdWorldColorShader* InitCDWorldColorShader() {
+void InitCDWorldColorShader() {
     cdWorldColorShader* result = (cdWorldColorShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdWorldColorShader;
@@ -48,18 +48,16 @@ cdWorldColorShader* InitCDWorldColorShader() {
     } else {
         gCDWorldColorShader = NULL;
     }
-    return result;
 }
 
 // ============================================================================
 // ToggleCDWorldColorShader — toggle the world-color enable bit (bit 6).
 // ea: 0x7D9E10
 // ============================================================================
-unsigned char ToggleCDWorldColorShader() {
+void ToggleCDWorldColorShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[0];
     byte = (unsigned char)(((byte ^ (~(byte >> 6) << 6)) & 0x40) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[0] = byte;
-    return byte;
 }
 
 // ============================================================================
