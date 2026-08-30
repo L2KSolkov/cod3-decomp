@@ -355,6 +355,44 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE400	??0FEMenuColorScheme@@QAE@Vcolor32@@0@Z	V4	PASS	ida-manual-shell-femenu-color-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165417-1165427	Release initializes high fields/flash and performs the same u/h1 assignments with high2=h1.
 0x005AE430	??0FEMenuColorScheme@@QAE@Vcolor32@@00@Z	V3	PASS	ida-manual-shell-femenu-color-20260830	2026-08-30	src/game/shell/fe_text.cpp:1371-1379	Source initializes colors and flash state, then stores unselect, high1, and high2.
 0x005AE430	??0FEMenuColorScheme@@QAE@Vcolor32@@00@Z	V4	PASS	ida-manual-shell-femenu-color-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165429-1165441	Release performs the same initialization and stores all three supplied colors with flash enabled.
+0x005AE000	?SetX@PanelQuadSection@@AAEXHM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:126-129	Source stores x in the indexed quad vertex.
+0x005AE000	?SetX@PanelQuadSection@@AAEXHM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165191-1165195	Release stores x in Verts[index].X.
+0x005AE020	?SetY@PanelQuadSection@@AAEXHM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:132-135	Source stores y in the indexed quad vertex.
+0x005AE020	?SetY@PanelQuadSection@@AAEXHM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165197-1165201	Release stores y in Verts[index].Y.
+0x005AE040	?SetU@PanelQuadSection@@AAEXHM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:138-141	Source stores u in the indexed quad vertex.
+0x005AE040	?SetU@PanelQuadSection@@AAEXHM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165203-1165207	Release stores u in Verts[index].U.
+0x005AE060	?SetV@PanelQuadSection@@AAEXHM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:144-147	Source stores v in the indexed quad vertex.
+0x005AE060	?SetV@PanelQuadSection@@AAEXHM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165209-1165213	Release stores v in Verts[index].V.
+0x005AE080	?SetCol@PanelQuadSection@@AAEXHI@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:150-153	Source stores the packed color in the indexed quad vertex.
+0x005AE080	?SetCol@PanelQuadSection@@AAEXHI@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165215-1165219	Release stores c in Verts[index].Color.
+0x005AE0A0	?SetTex@PanelQuadSection@@AAEXPAUnglTexture@@@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:156-159	Source stores the texture pointer in the quad.
+0x005AE0A0	?SetTex@PanelQuadSection@@AAEXPAUnglTexture@@@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165221-1165225	Release assigns quad.Tex from t.
+0x005AE0B0	?SetTexture@PanelQuadSection@@QAEXPAUnglTexture@@@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:162-165	Source stores the texture pointer in the quad.
+0x005AE0B0	?SetTexture@PanelQuadSection@@QAEXPAUnglTexture@@@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165227-1165231	Release assigns quad.Tex from tex.
+0x005AE0C0	?SetZ@PanelQuadSection@@QAEXM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:168-171	Source stores the quad z value.
+0x005AE0C0	?SetZ@PanelQuadSection@@QAEXM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165233-1165237	Release assigns quad.Z from z.
+0x005AE0E0	?GetTexture@PanelQuadSection@@QAEPAUnglTexture@@XZ	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:174-177	Source returns the quad texture pointer.
+0x005AE0E0	?GetTexture@PanelQuadSection@@QAEPAUnglTexture@@XZ	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165239-1165243	Release returns quad.Tex.
+0x005AE0F0	?GetX@PanelQuadSection@@QAEMH@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:180-183	Source returns indexed vertex X.
+0x005AE0F0	?GetX@PanelQuadSection@@QAEMH@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165245-1165249	Release returns Verts[index].X.
+0x005AE110	?GetY@PanelQuadSection@@QAEMH@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:186-189	Source returns indexed vertex Y.
+0x005AE110	?GetY@PanelQuadSection@@QAEMH@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165251-1165255	Release returns Verts[index].Y.
+0x005AE130	?GetU@PanelQuadSection@@QAEMH@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:192-195	Source returns indexed vertex U.
+0x005AE130	?GetU@PanelQuadSection@@QAEMH@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165257-1165261	Release returns Verts[index].U.
+0x005AE150	?GetV@PanelQuadSection@@QAEMH@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:198-201	Source returns indexed vertex V.
+0x005AE150	?GetV@PanelQuadSection@@QAEMH@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165263-1165267	Release returns Verts[index].V.
+0x005AE170	?GetZ@PanelQuadSection@@QAEMXZ	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:204-207	Source returns quad.Z.
+0x005AE170	?GetZ@PanelQuadSection@@QAEMXZ	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165269-1165273	Release returns quad.Z.
+0x005AE180	?GetCol@PanelQuadSection@@QAEIH@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:210-213	Source returns indexed vertex color.
+0x005AE180	?GetCol@PanelQuadSection@@QAEIH@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165275-1165279	Release returns Verts[index].Color.
+0x005AE1A0	?Maximum@PanelQuad@@SAMMM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:239-242	Source returns the greater of two floats.
+0x005AE1A0	?Maximum@PanelQuad@@SAMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165281-1165287	Release returns b when a<=b, otherwise a.
+0x005AE1D0	?Minimum@PanelQuad@@SAMMM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:245-248	Source returns the lesser of two floats.
+0x005AE1D0	?Minimum@PanelQuad@@SAMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165289-1165301	Release returns b when b<=a, otherwise a.
+0x005AE200	?Maximum@PanelQuad@@SAMMMMM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:251-255	Source computes max of two pairs then their maximum.
+0x005AE200	?Maximum@PanelQuad@@SAMMMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165302-1165319	Release computes max(c,d), max(a,b), then max of those intermediates.
+0x005AE250	?Minimum@PanelQuad@@SAMMMMM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:257-262	Source computes min of two pairs then their minimum.
+0x005AE250	?Minimum@PanelQuad@@SAMMMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165321-1165341	Release computes min(c,d), min(a,b), then min of those intermediates.
 0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1535-1538	Source tests the requested bit mask against FEMenu flags.
 0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165760-1165764	Release returns (flags & f) != 0.
 0x005AE960	?SetFlag@FEMenu@@QAEXH_N@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1539-1542	Source conditionally sets or clears the requested FEMenu flag bits.
