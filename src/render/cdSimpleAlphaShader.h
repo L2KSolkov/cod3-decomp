@@ -17,7 +17,8 @@
 // ============================================================================
 // cdSimpleAlphaShaderMat — simple alpha shader material (72 bytes)
 // ============================================================================
-struct cdSimpleAlphaShaderMat : nglMaterial {
+class cdSimpleAlphaShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;      // +0x10
     int         mCullMode;     // +0x14
     int         mBlendMode;    // +0x18
@@ -38,7 +39,8 @@ static_assert(sizeof(cdSimpleAlphaShaderMat) == 0x48, "cdSimpleAlphaShaderMat si
 // ============================================================================
 // cdSimpleAlphaShaderNode — simple alpha shader render node (24 bytes)
 // ============================================================================
-struct cdSimpleAlphaShaderNode : nglShaderNode {
+class cdSimpleAlphaShaderNode : public nglShaderNode {
+public:
     cdSimpleAlphaShaderMat* mMaterial;  // +0x14
 };
 static_assert(sizeof(cdSimpleAlphaShaderNode) == 0x18, "cdSimpleAlphaShaderNode size mismatch");
@@ -48,6 +50,8 @@ static_assert(sizeof(cdSimpleAlphaShaderNode) == 0x18, "cdSimpleAlphaShaderNode 
 // ============================================================================
 class cdSimpleAlphaShader : public nglShader {
 public:
+    cdSimpleAlphaShader(); // @0x7C8D30
+    virtual ~cdSimpleAlphaShader(); // @0x7C8FC0
     virtual tlFixedString GetName(); // @0x7C8D60
     virtual void Register();  // @0x7C7F10
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C7F30
@@ -61,22 +65,30 @@ namespace cdSimpleAlphaRender {
     extern unsigned long VS[2];               // ?VS@cdSimpleAlphaRender@@3PAKA
     extern unsigned int const* VShaderTable[2];  // ?VShaderTable@cdSimpleAlphaRender@@3PAPBIA
     void RegisterVShader();                   // @0x007C8D80
+    unsigned int GetVShader(unsigned int index); // @0x007C8DB0
+    struct Params {
+        unsigned int data[0x34];
+        Params();                              // @0x007C8FD0
+    };
+    void SetConstants(const Params& Params);   // @0x007C8F00
 }
 namespace cdSimpleAlphaPixel {
     extern unsigned long* PS[2];               // ?PS@cdSimpleAlphaPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2]; // ?PShaderTable@cdSimpleAlphaPixel@@3PAPBIA
     void RegisterPShader();                   // @0x007C8DC0
+    unsigned long* GetPShader(unsigned int index); // @0x007C8DF0
 }
 namespace cdSimpleAlphaPixel_Fullbright {
     extern unsigned long* PS[2];               // ?PS@cdSimpleAlphaPixel_Fullbright@@3PAPAKA
     extern unsigned int const* PShaderTable[2]; // ?PShaderTable@cdSimpleAlphaPixel_Fullbright@@3PAPBIA
     void RegisterPShader();                   // @0x007C8E00
+    unsigned long* GetPShader(unsigned int index); // @0x007C8E30
 }
 
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern cdSimpleAlphaShader* gCDSimpleAlphaShader;  // @0x10DE058

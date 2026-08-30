@@ -15,6 +15,29 @@
 // Shader global pointer definitions
 cdSimpleAlphaShader* gCDSimpleAlphaShader = nullptr;  // ?gCDSimpleAlphaShader@@3PAVcdSimpleAlphaShader@@A
 
+// ea: 0x007C8DB0
+unsigned int cdSimpleAlphaRender::GetVShader(unsigned int index) {
+    return static_cast<unsigned int>(cdSimpleAlphaRender::VS[index]);
+}
+
+// ea: 0x007C8DF0
+unsigned long* cdSimpleAlphaPixel::GetPShader(unsigned int index) {
+    return cdSimpleAlphaPixel::PS[index];
+}
+
+// ea: 0x007C8E30
+unsigned long* cdSimpleAlphaPixel_Fullbright::GetPShader(unsigned int index) {
+    return cdSimpleAlphaPixel_Fullbright::PS[index];
+}
+
+// ea: 0x007C8FD0
+cdSimpleAlphaRender::Params::Params() {}
+
+// ea: 0x007C8F00
+void cdSimpleAlphaRender::SetConstants(const cdSimpleAlphaRender::Params& Params) {
+    D3DDevice_SetVertexShaderConstantNotInlineFast(8, &Params, 0x34u);
+}
+
 // ea: 0x007C8D80
 void cdSimpleAlphaRender::RegisterVShader()
 {
@@ -76,6 +99,17 @@ cdSimpleAlphaShaderMat::cdSimpleAlphaShaderMat(nglTexture* iTexture) {
     this->Shader = gCDSimpleAlphaShader;
 }
 
+// ea: 0x007C8D30
+cdSimpleAlphaShader::cdSimpleAlphaShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[1] &= ~0x80;
+}
+
+// ea: 0x007C8FC0
+cdSimpleAlphaShader::~cdSimpleAlphaShader() = default;
+
 // ============================================================================
 // InitCDSimpleAlphaShader — allocate the shader and link into the init list.
 // ea: 0x7C7EA0
@@ -84,11 +118,6 @@ void InitCDSimpleAlphaShader() {
     cdSimpleAlphaShader* result = (cdSimpleAlphaShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdSimpleAlphaShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdSimpleAlphaShader
-        ShaderCommon::ShaderSwitching.__s0[1] &= ~0x80;
         gCDSimpleAlphaShader = result;
     } else {
         gCDSimpleAlphaShader = NULL;
