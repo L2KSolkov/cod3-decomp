@@ -1002,6 +1002,20 @@ def symbol_variants(name: str) -> set[str]:
         values.add(value.replace("PAUTaskHandler", "PAVTaskHandler"))
         values.add(value.replace("?AV0@", "?AU0@"))
         values.add(value.replace("?AU0@", "?AV0@"))
+    # The release map classifies bdAddr as a class in its copy/comparison
+    # decorations, while the shared port header uses a public struct. These
+    # declarations have identical layout and member ABI; accept only the
+    # four exact bdAddr symbols affected by that spelling difference.
+    for release_name, current_name in (
+        ("??0bdAddr@@QAE@ABV0@@Z", "??0bdAddr@@QAE@ABU0@@Z"),
+        ("??8bdAddr@@QBE_NABV0@@Z", "??8bdAddr@@QBE_NABU0@@Z"),
+        ("??9bdAddr@@QBE_NABV0@@Z", "??9bdAddr@@QBE_NABU0@@Z"),
+        ("??MbdAddr@@QBE_NABV0@@Z", "??MbdAddr@@QBE_NABU0@@Z"),
+    ):
+        if name == release_name:
+            values.add(current_name)
+        elif name == current_name:
+            values.add(release_name)
     return values
 
 
