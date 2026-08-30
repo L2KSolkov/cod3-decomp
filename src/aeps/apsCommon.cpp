@@ -31,6 +31,8 @@
 #include <math.h>
 #include <new>
 
+extern const char defaultFileName[];
+
 enum TPakId : int;
 #define PAK_ID_INVALID ((TPakId)-1)
 
@@ -410,7 +412,7 @@ void apsCommon::ClearSpawnedEffectQueue() {
 apsCommon::PlayerViewPort* apsCommon::GetPlayerViewPort(unsigned int playerId) {
     if (playerId >= MAX_NUM_VIEWPORTS &&
         _tlAssert("source/apsCommon.cpp", 343,
-                  "playerId < MAX_NUM_VIEWPORTS", ""))
+                  "playerId < MAX_NUM_VIEWPORTS", defaultFileName))
         __debugbreak();
     return &mViewPort[playerId];
 }
