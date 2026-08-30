@@ -1971,8 +1971,7 @@ void Destructible::Initialize(Entity* ent, bool reInit)
             handler = new (handler) ScriptEventHandler();
         ent->SetScriptEventHandler(handler);
     }
-    if (handler != nullptr)
-        handler->AddEvent(hash_const.damage, mScriptFunction.mStr);
+    handler->AddEvent(hash_const.damage, mScriptFunction.mStr);
 }
 
 struct PakFileLayout {
