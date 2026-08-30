@@ -3158,7 +3158,7 @@ public:
     const StreamZone* FindZone(TPakId pakId) const;  // ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@W4TPakId@@@Z
     const StreamZone* FindZone(const char* name) const;  // ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@PBD@Z
     const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
-    const StreamZone* GetCellZone(unsigned int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@I@Z
+    const StreamZone* GetCellZone(int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@H@Z
     void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);  // ?DecodeBank@StreamZoneManager@@QAEXPBDPAEHW4TPakId@@@Z @ 0x6795C0
@@ -3908,7 +3908,7 @@ const PakInfoNode* StreamZoneManager::GetCellPakInfo(int cellIndex)
 }
 
 // ea: 0x667450
-const StreamZone* StreamZoneManager::GetCellZone(unsigned int cellIndex)
+const StreamZone* StreamZoneManager::GetCellZone(int cellIndex)
 {
     if (mFirstBank == -1)
     {
@@ -3921,7 +3921,7 @@ const StreamZone* StreamZoneManager::GetCellZone(unsigned int cellIndex)
     }
     ZoneBoundaryBank* bank = ZoneBankRef(*this, mFirstBank);
     const ZoneCellDesc* cell =
-        InplaceVectorAt(bank->mCells, cellIndex);
+        InplaceVectorAt(bank->mCells, (unsigned int)cellIndex);
     return cell->mZone;
 }
 
