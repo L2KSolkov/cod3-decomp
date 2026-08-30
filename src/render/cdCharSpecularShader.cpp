@@ -30,19 +30,71 @@ void cdCharSpecularShaderRender::RegisterVShader()
 {
     cdCharSpecularShaderRender::RegisterShader();
 }
+
+// ea: 0x007D2730
+unsigned int cdCharSpecularShaderRender::GetVShader(unsigned int index)
+{
+    return static_cast<unsigned int>(cdCharSpecularShaderRender::VS[index]);
+}
+
+// ea: 0x007D2740
+void cdCharSpecularPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdCharSpecularPixel::PS,
+                         cdCharSpecularPixel::PShaderTable[0]);
+    cdCharSpecularPixel::Shader = cdCharSpecularPixel::PS[0];
+}
+
+// ea: 0x007D2760
+void cdCharSpecularPixel::RegisterPShader()
+{
+    cdCharSpecularPixel::RegisterShader();
+}
+
+// ea: 0x007D2780
+unsigned int* cdCharSpecularPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdCharSpecularPixel::PS[0]);
+}
+
+// ea: 0x007D2790
+void cdCharSpecularFullbrightPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdCharSpecularFullbrightPixel::PS,
+                         cdCharSpecularFullbrightPixel::PShaderTable[0]);
+    cdCharSpecularFullbrightPixel::Shader = cdCharSpecularFullbrightPixel::PS[0];
+}
+
+// ea: 0x007D27B0
+void cdCharSpecularFullbrightPixel::RegisterPShader()
+{
+    cdCharSpecularFullbrightPixel::RegisterShader();
+}
+
+// ea: 0x007D27D0
+unsigned int* cdCharSpecularFullbrightPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdCharSpecularFullbrightPixel::PS[0]);
+}
 // ============================================================================
 // InitCDCharSpecularShader — allocate the shader and link into the init list.
 // ea: 0x7D2130
 // ============================================================================
+// ea: 0x007D26A0
+cdCharSpecularShader::cdCharSpecularShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[2] &= ~2;
+}
+
+// ea: 0x007D2880
+cdCharSpecularShader::~cdCharSpecularShader() = default;
+
 void InitCDCharSpecularShader() {
     cdCharSpecularShader* result = (cdCharSpecularShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdCharSpecularShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdCharSpecularShader
-        ShaderCommon::ShaderSwitching.__s0[2] &= ~2;
         gcdCharSpecularShader = result;
     } else {
         gcdCharSpecularShader = NULL;
@@ -59,6 +111,7 @@ void ToggleCDCharSpecularShader() {
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
 }
 
+// ea: 0x007D26D0
 tlFixedString cdCharSpecularShader::GetName() { return tlFixedString("cdCharSpecular"); }
 
 // ============================================================================
@@ -98,3 +151,18 @@ void cdCharSpecularShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+// ea: 0x007D27E0
+cdCharSpecularShaderNode::cdCharSpecularShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdCharSpecularShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
+// ea: 0x007D2840
+cdCharSpecularShaderNode::~cdCharSpecularShaderNode() = default;
+
+// ea: 0x007D2890
+CharSpecularContext::CharSpecularContext() {}

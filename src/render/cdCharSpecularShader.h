@@ -16,7 +16,8 @@
 // ============================================================================
 // cdCharSpecularShaderMat — char specular shader material (32 bytes)
 // ============================================================================
-struct cdCharSpecularShaderMat : nglMaterial {
+class cdCharSpecularShaderMat : public nglMaterial {
+public:
     nglTexture* mDiffuse;       // +0x10
     nglTexture* mSpecularMask;  // +0x14
     float       mSpecularPower; // +0x18
@@ -29,6 +30,11 @@ static_assert(sizeof(cdCharSpecularShaderMat) == 0x20, "cdCharSpecularShaderMat 
 // ============================================================================
 struct cdCharSpecularShaderNode : nglShaderNode {
     cdCharSpecularShaderMat* mMaterial;  // +0x14
+
+    cdCharSpecularShaderNode(nglMeshNode* iMeshNode,
+                             nglMeshSection* iSection,
+                             cdCharSpecularShaderMat* iMaterial); // @0x7D27E0
+    virtual ~cdCharSpecularShaderNode(); // @0x7D2840
 };
 static_assert(sizeof(cdCharSpecularShaderNode) == 0x18, "cdCharSpecularShaderNode size mismatch");
 
@@ -37,6 +43,8 @@ static_assert(sizeof(cdCharSpecularShaderNode) == 0x18, "cdCharSpecularShaderNod
 // ============================================================================
 class cdCharSpecularShader : public nglShader {
 public:
+    cdCharSpecularShader(); // @0x7D26A0
+    virtual ~cdCharSpecularShader(); // @0x7D2880
     virtual tlFixedString GetName(); // @0x7D26D0
     virtual void Register();  // @0x7D21A0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D21F0
@@ -51,17 +59,28 @@ namespace cdCharSpecularShaderRender {
     extern unsigned int const* VShaderTable[2];     // ?VShaderTable@cdCharSpecularShaderRender@@3PAPBIA
     void RegisterShader();                          // @0x007D26F0
     void RegisterVShader();                         // @0x007D2720
+    unsigned int GetVShader(unsigned int index);    // @0x007D2730
 }
 namespace cdCharSpecularPixel {
     extern unsigned long* PS[2];                    // ?PS@cdCharSpecularPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];      // ?PShaderTable@cdCharSpecularPixel@@3PAPBIA
     extern unsigned long* Shader;                   // ?Shader@cdCharSpecularPixel@@3PAKA
+    void RegisterShader();                           // @0x007D2740
+    void RegisterPShader();                          // @0x007D2760
+    unsigned int* GetPShader();                      // @0x007D2780
 }
 namespace cdCharSpecularFullbrightPixel {
     extern unsigned long* PS[2];                    // ?PS@cdCharSpecularFullbrightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2];      // ?PShaderTable@cdCharSpecularFullbrightPixel@@3PAPBIA
     extern unsigned long* Shader;                   // ?Shader@cdCharSpecularFullbrightPixel@@3PAKA
+    void RegisterShader();                           // @0x007D2790
+    void RegisterPShader();                          // @0x007D27B0
+    unsigned int* GetPShader();                     // @0x007D27D0
 }
+
+struct CharSpecularContext {
+    CharSpecularContext(); // @0x007D2890
+};
 
 // ============================================================================
 // Externs
