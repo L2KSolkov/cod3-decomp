@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008B5D10	?getBytesReceived@bdPlatformSocket@@SA_KXZ	V3	PASS	ida-manual-bd-platform-stats-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008B5D10; src/bd/bdPlatformSocket.cpp:28	Real body returns the static total-bytes-received counter.
+0x008B5D10	?getBytesReceived@bdPlatformSocket@@SA_KXZ	V4	PASS	ida-manual-bd-platform-stats-20260830	2026-08-30	IDA decompile 0x008B5D10 and src/bd/bdPlatformSocket.cpp:28-30	Release counter symbol and return match source.
+0x008B5D20	?getPacketsSent@bdPlatformSocket@@SA_KXZ	V3	PASS	ida-manual-bd-platform-stats-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008B5D20; src/bd/bdPlatformSocket.cpp:35	Real body returns the static total-packets-sent counter.
+0x008B5D20	?getPacketsSent@bdPlatformSocket@@SA_KXZ	V4	PASS	ida-manual-bd-platform-stats-20260830	2026-08-30	IDA decompile 0x008B5D20 and src/bd/bdPlatformSocket.cpp:35-37	Release counter symbol and return match source.
+0x008B5D30	?getPacketsRecvd@bdPlatformSocket@@SA_KXZ	V3	PASS	ida-manual-bd-platform-stats-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008B5D30; src/bd/bdPlatformSocket.cpp:42	Real body returns the static total-packets-received counter.
+0x008B5D30	?getPacketsRecvd@bdPlatformSocket@@SA_KXZ	V4	PASS	ida-manual-bd-platform-stats-20260830	2026-08-30	IDA decompile 0x008B5D30 and src/bd/bdPlatformSocket.cpp:42-44	Release counter symbol and return match source.
