@@ -16203,7 +16203,7 @@ void WeaponSelectMenu::OnCross(int c)
         EPlayerClass playerClass = LocalIndexToPlayerClass(highlighted);
         Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
         GetBrocAPI()->mBrocExports.mCallbackPlayerClassChange(
-            Player->mHandle.mVal, playerClass);
+            Player->mHandle.mHandle.mVal, playerClass);
     }
     ClearButton((controller::ButtonIndex)(controller::SQUARE
                                           | controller::DOWNBUTTON));
