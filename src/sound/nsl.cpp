@@ -4021,13 +4021,11 @@ void          nslUpdate() {
             waveID = nslWaveBankGetWave(waveBankID, static_cast<unsigned>(i));
             waveName = nslWaveGetName(waveID);
             wave = nslWavePtr(waveID);
-            if (wave != nullptr) {
-                const unsigned char* waveInfo =
-                    *reinterpret_cast<const unsigned char* const*>(wave);
-                if ((waveInfo[5] & 2u) == 0u) {
-                    sourceID = nslNewSource(waveID, 1);
-                    nslPlaySource(sourceID);
-                }
+            const unsigned char* waveInfo =
+                *reinterpret_cast<const unsigned char* const*>(wave);
+            if ((waveInfo[5] & 2u) == 0u) {
+                sourceID = nslNewSource(waveID, 1);
+                nslPlaySource(sourceID);
             }
         }
     }
