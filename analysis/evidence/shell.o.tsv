@@ -249,3 +249,27 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005ADCD0	?GetScaleInitY@FEText@@UBEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165030-1165034	Release returns this->scale_init.y.
 0x005ADCE0	?GetScaleY@FEText@@UBEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:862	Source returns scale.y.
 0x005ADCE0	?GetScaleY@FEText@@UBEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165036-1165040	Release returns this->scale.y.
+0x005ADCF0	?GetEvenNumberSpacing@FEText@@UBE_NXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:864-867	Source tests the flags bit 4.
+0x005ADCF0	?GetEvenNumberSpacing@FEText@@UBE_NXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165042-1165046	Release returns the same flags bit-4 test.
+0x005ADD10	?GetColor@FEText@@UAE?AVcolor32@@XZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:757	Source returns color1 by value.
+0x005ADD10	?GetColor@FEText@@UAE?AVcolor32@@XZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165054-1165059	Release copies color1 into the hidden return object, matching source value semantics.
+0x005ADD30	?GetUnselectedColor@FEText@@UAE?AVcolor32@@XZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:870	Source returns color_unselected by value.
+0x005ADD30	?GetUnselectedColor@FEText@@UAE?AVcolor32@@XZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165061-1165066	Release copies color_unselected into the hidden return object.
+0x005ADD50	?GetFlags@FEText@@UAEHXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:871	Source returns flags.
+0x005ADD50	?GetFlags@FEText@@UAEHXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165068-1165072	Release returns this->flags directly.
+0x005ADD60	?GetHJustify@FEText@@UAEHXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:872	Source masks flags with 0x30.
+0x005ADD60	?GetHJustify@FEText@@UAEHXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165074-1165078	Release returns flags & 0x30.
+0x005ADD70	?GetVJustify@FEText@@UAEHXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:873	Source masks flags with 0xC0.
+0x005ADD70	?GetVJustify@FEText@@UAEHXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165080-1165084	Release returns flags & 0xC0.
+0x005ADD80	?GetLineNum@FEText@@UAEHXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:874	Source returns the constant line count 1.
+0x005ADD80	?GetLineNum@FEText@@UAEHXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165086-1165090	Release returns constant 1.
+0x005ADD90	?GetX@FEText@@UAEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:875	Source returns xy.x.
+0x005ADD90	?GetX@FEText@@UAEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165092-1165096	Release returns this->xy.x.
+0x005ADDA0	?GetY@FEText@@UAEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:876	Source returns xy.y.
+0x005ADDA0	?GetY@FEText@@UAEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165098-1165102	Release returns this->xy.y.
+0x005ADDB0	?GetFlag@FEText@@UAE_NH@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:879	Source tests the requested flag mask.
+0x005ADDB0	?GetFlag@FEText@@UAE_NH@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165104-1165108	Release returns (flags & f) != 0.
+0x005ADDD0	?SetFlag@FEText@@UAEXH_N@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:881-887	Source sets or clears the requested flags.
+0x005ADDD0	?SetFlag@FEText@@UAEXH_N@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165110-1165117	Release applies the same conditional bitwise set/clear.
+0x005ADE60	?GetLocation3D@FEText@@UAE?AUvector@Broc@@XZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:890-894	Source returns a zero Broc::vector.
+0x005ADE60	?GetLocation3D@FEText@@UAE?AUvector@Broc@@XZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165119-1165125	Release zeroes all result vector components and returns it.
