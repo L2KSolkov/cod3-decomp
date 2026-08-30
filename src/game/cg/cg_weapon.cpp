@@ -1568,8 +1568,9 @@ void CG_RegisterWeapon(int weaponNum)
                           "c:\\cod\\code\\game\\cg_weapons.cpp", 1266);
                 goto LABEL_25;
             }
-            XAnimEntry* entries = (XAnimEntry*)((char*)AnimTree + 4);
-            int entryCount = *(int*)((char*)AnimTree + 0x38);
+            const class AnimTree* animTree = reinterpret_cast<const class AnimTree*>(AnimTree);
+            const unsigned int entryCount = animTree->entries.mSize;
+            XAnimEntry* entries = animTree->entries.mList;
             for (int ai = 0; ai < entryCount; ++ai)
             {
                 XAnimEntry* v7 = &entries[ai];
@@ -2220,8 +2221,9 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
         CG_ASSERT("pAnims", "c:\\cod\\code\\game\\cg_weapons.cpp", 1010);
         goto LABEL_90;
     }
-    XAnimEntry* entries = (XAnimEntry*)((char*)AnimTree + 4);
-    int mSize = *(int*)((char*)AnimTree + 0x38);
+    const class AnimTree* animTree = reinterpret_cast<const class AnimTree*>(AnimTree);
+    const unsigned int mSize = animTree->entries.mSize;
+    XAnimEntry* entries = animTree->entries.mList;
     for (int i = 0; i < mSize; ++i)
     {
         XAnimEntry* v28 = &entries[i];
@@ -2245,8 +2247,9 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
         if (v35 == nullptr)
             CG_ASSERT("pAnimsWeapon",
                       "c:\\cod\\code\\game\\cg_weapons.cpp", 1038);
-        XAnimEntry* entriesW = (XAnimEntry*)((char*)v35 + 4);
-        int v36 = *(int*)((char*)v35 + 0x38);
+        const class AnimTree* animTreeWeapon = reinterpret_cast<const class AnimTree*>(v35);
+        XAnimEntry* entriesW = animTreeWeapon->entries.mList;
+        const unsigned int v36 = animTreeWeapon->entries.mSize;
         for (int i = 0; i < v36; ++i)
         {
             XAnimEntry* v37 = &entriesW[i];
