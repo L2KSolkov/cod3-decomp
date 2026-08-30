@@ -25,20 +25,6 @@
 // Shader global pointer definitions
 cdSimpleSpecularShader* gCDSimpleSpecularShader = nullptr;  // ?gCDSimpleSpecularShader@@3PAVcdSimpleSpecularShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdSimpleSpecularRender {
-    unsigned long VS[2] = {};
-    unsigned int const* VShaderTable[2] = {};
-}
-namespace cdSimpleSpecularPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-namespace cdSimpleSpecularFullbrightPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
 extern unsigned int dword_4033C;
