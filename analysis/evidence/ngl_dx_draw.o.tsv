@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00851070	?SetRenderTarget@D3DDevice@@SGJPAUD3DSurface@@0@Z	V3	PASS	ida-manual-ngl-draw-20260829	2026-08-29	src/ngl/ngl_dx_draw.cpp:20-24	Source contains the complete D3DDevice render-target forwarding body and HRESULT return.
+0x00851070	?SetRenderTarget@D3DDevice@@SGJPAUD3DSurface@@0@Z	V4	PASS	ida-manual-ngl-draw-20260829	2026-08-29	IDA:0x00851070;src/ngl/ngl_dx_draw.cpp:20-24	Release/source call D3DDevice_SetRenderTarget with both surfaces and return zero.
+0x00851090	?nglDxSetRenderTarget@@YAXPBUnglTexture@@0IH@Z	V3	PASS	ida-manual-ngl-draw-20260829	2026-08-29	src/ngl/ngl_dx_draw.cpp:31-63	Source contains complete color/depth surface selection, state caching, device bind, and release logic.
+0x00851090	?nglDxSetRenderTarget@@YAXPBUnglTexture@@0IH@Z	V4	PASS	ida-manual-ngl-draw-20260829	2026-08-29	IDA:0x00851090;src/ngl/ngl_dx_draw.cpp:31-63	Release/source back-buffer and null branches, cubemap/2D mip surface lookup, depth fallback, cached-state guard, device bind, and non-backbuffer release match.
