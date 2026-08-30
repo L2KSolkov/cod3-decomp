@@ -808,7 +808,7 @@ int CG_UpdateCameraShake(cameraShake_t* shake, int client)
     shake->rumbleScale = value;
     return 1;
 }
-extern void CG_EndShellShock(const void* parms, int time);
+extern void CG_EndShellShock();
 extern int CG_EndShellShockSound();
 extern void CG_UpdateShellShockSound(const void* parms, int time,
                                      int duration);
@@ -861,7 +861,7 @@ extern void nglSetSceneCallBack(nglSceneCallbackType Type,
 extern const float LerpAngle(float from, float to, float frac);
 
 // ea: 0x00698650 (release cg.o)
-void CG_EndShellShock(const void*, int)
+void CG_EndShellShock()
 {
     CG_EndShellShockSound();
     const int base = 1580 * currCl;
@@ -1464,7 +1464,7 @@ void CG_UpdateShellShock(const shellshock_parms_t* parms, int start,
     int v3 = cgGlobal_time - start;
     int time = cgGlobal_time - start;
     if (start == 0 || v3 < 0 || v3 > duration)
-        CG_EndShellShock(parms, time);
+        CG_EndShellShock();
     else
     {
         CG_UpdateShellShockSound(parms, v3, duration);
