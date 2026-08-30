@@ -673,7 +673,7 @@ void cdInvokeMultiApkCallbacks(const char* name, const char* file_ext,
                                apk::apkFileEntry* Entry);  // streamer.o
 // Decoders (DecodePakFile.cpp; defined below)
 void DecodeAITypeBank(const char* name, unsigned char* data,
-                      unsigned int size, TPakId pakId, PakFile* pak);
+                      int size, TPakId pakId, PakFile* pak);
 void DecodeGDB(const char* name, unsigned char* data, unsigned int size,
                TPakId pakId, PakFile* pak);
 void DecodeBSP(const char* name, unsigned char* data, unsigned int size,
@@ -686,10 +686,10 @@ void DecodeInstanceBank(const char* name, unsigned char* data,
                         unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeCGBank(const char* name, unsigned char* data, unsigned int size,
                   TPakId pakId, PakFile* pak);
-void DecodeDB(const char* name, unsigned char* data, unsigned int size,
+void DecodeDB(const char* name, unsigned char* data, int size,
               TPakId pakId, PakFile* pak);
 void DecodeGrassInfo(const char* name, unsigned char* data,
-                     unsigned int size, TPakId pakId, PakFile* pak);
+                     int size, TPakId pakId, PakFile* pak);
 void DecodeDestructible(const char* name, unsigned char* data,
                         unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeDCGBankPak(const char* name, unsigned char* data, unsigned int size,
@@ -700,19 +700,19 @@ void DecodeDialogueBank(const char* name, unsigned char* data,
                         unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeFLI(const char* name, unsigned char* data, unsigned int size,
                TPakId pakId, PakFile* pak);
-void DecodeSPT(const char* name, unsigned char* data, unsigned int size,
+void DecodeSPT(const char* name, unsigned char* data, int size,
                TPakId pakId, PakFile* pak);
 void DecodeScene(const char* name, unsigned char* data, unsigned int size,
                  TPakId pakId, PakFile* pak);
-void DecodeWIND(const char* name, unsigned char* data, unsigned int size,
+void DecodeWIND(const char* name, unsigned char* data, int size,
                 TPakId pakId, PakFile* pak);
 void DecodePhysData(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak);
 void DecodeSplineGroup(const char* name, unsigned char* data,
                        unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeXModelBank(const char* name, unsigned char* data,
-                      unsigned int size, TPakId pakId, PakFile* pak);
-void DecodeSTB(const char* name, unsigned char* data, unsigned int size,
+                      int size, TPakId pakId, PakFile* pak);
+void DecodeSTB(const char* name, unsigned char* data, int size,
                TPakId pakId, PakFile* pak);
 void DecodeBin(const char* name, unsigned char* data, unsigned int size,
                TPakId pakId, PakFile* pak);
@@ -721,21 +721,21 @@ void DecodeZoneBoundaryBank(const char* name, unsigned char* data,
 void DecodeMipSettings(const char* name, unsigned char* data,
                        unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeLevelPath(const char* name, unsigned char* data,
-                     unsigned int size, TPakId pakId, PakFile* pak);
+                     int size, TPakId pakId, PakFile* pak);
 void DecodeAnimBank(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* pak);
 void DecodeAnimBank(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak);
 void DecodeHeap(const char* name, unsigned char* data, unsigned int size,
                 TPakId pakId, PakFile* pak);
-void DecodeSEED(const char* name, unsigned char* data, unsigned int size,
+void DecodeSEED(const char* name, unsigned char* data, int size,
                 TPakId pakId, PakFile* pak);
-void DecodeZonePath(const char* name, unsigned char* data, unsigned int size,
+void DecodeZonePath(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* pak);
 void DecodeTexture(const char* name, unsigned char* data, unsigned int size,
                    TPakId pakId, PakFile* pak);
 void DecodeXModelPartsBank(const char* name, unsigned char* data,
-                           unsigned int size, TPakId pakId, PakFile* pak);
+                           int size, TPakId pakId, PakFile* pak);
 void DecodeAnimMatrix(const char* name, unsigned char* data,
                       unsigned int size, TPakId pakId, PakFile* pak);
 void DecodeFont(const char* name, unsigned char* data, unsigned int size,
@@ -743,12 +743,12 @@ void DecodeFont(const char* name, unsigned char* data, unsigned int size,
 void DecodeAnim(const char* name, unsigned char* data, unsigned int size,
                 TPakId pakId, PakFile* pak);
 void DecodeLightGrid(const char* name, unsigned char* data,
-                     unsigned int size, TPakId pakId, PakFile* pak);
+                     int size, TPakId pakId, PakFile* pak);
 void DecodePanel(const char* name, unsigned char* data, int size,
                  TPakId pakId, PakFile* pak);
 void DecodeSkeleton(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak);
-void DecodeCharSkel(const char* name, unsigned char* data, unsigned int size,
+void DecodeCharSkel(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* pak);
 void DecodeConfigStrings(const char* name, unsigned char* data,
                          unsigned int size, TPakId pakId, PakFile* pak);
@@ -10340,44 +10340,44 @@ PakDecoder GetDecoder(const char* ext)
     unsigned int hash = v4.hash;
     switch (hash)
     {
-    case 0x36FEC0:  return DecodeAITypeBank;         // "aitb"
+    case 0x36FEC0:  return reinterpret_cast<PakDecoder>(DecodeAITypeBank); // "aitb"
     case 0x1C36D:   return DecodeGDB;                // "gdb"
     case 0x1B048:   return DecodeBSPAdapter;
     case 0xDEB:     return DecodeInstanceBank;       // "ib"
     case 0xD2A:     return DecodeCGBank;             // "cg"
-    case 0xD46:     return DecodeDB;                 // "db"
-    case 0x1AE92:   return DecodeGrassInfo;          // no-op decoder
+    case 0xD46:     return reinterpret_cast<PakDecoder>(DecodeDB); // "db"
+    case 0x1AE92:   return reinterpret_cast<PakDecoder>(DecodeGrassInfo); // no-op decoder
     case 0x1B8CA:   return DecodeDestructible;
     case 0x1B68E:   return DecodeDCGBankPak;         // "dcg"
     case 0x1B7B7:   return DecodeDialogueBank;       // "dlg"
     case 0x1C03B:   return DecodeFLI;                // "fli"
-    case 0x1F817:   return DecodeSPT;                // "spt"
+    case 0x1F817:   return reinterpret_cast<PakDecoder>(DecodeSPT); // "spt"
     case 0x1F664:   return DecodeScene;              // "scn"
-    case 0x1E118:   return DecodeWIND;               // no-op decoder
+    case 0x1E118:   return reinterpret_cast<PakDecoder>(DecodeWIND); // no-op decoder
     case 0x1EA51:   return DecodePhysData;           // "phy"
     case 0x1F80A:   return DecodeSplineGroup;        // "spg"
-    case 0x20CE7:   return DecodeXModelBank;         // "xmb"
-    case 0x1F889:   return DecodeSTB;                // "stb"
+    case 0x20CE7:   return reinterpret_cast<PakDecoder>(DecodeXModelBank); // "xmb"
+    case 0x1F889:   return reinterpret_cast<PakDecoder>(DecodeSTB); // "stb"
     case 0x2031E:   return DecodeBin;
     case 0x213FE:   return DecodeZoneBoundaryBank;   // "zbb"
     case 0x72AF43B: return DecodeMipSettings;
-    case 0x430E52:  return DecodeWIND;               // "wind"
-    case 0x3D24B8:  return DecodeLevelPath;          // "lpth"
+    case 0x430E52:  return reinterpret_cast<PakDecoder>(DecodeWIND); // "wind"
+    case 0x3D24B8:  return reinterpret_cast<PakDecoder>(DecodeLevelPath); // "lpth"
     case 0x372D49:  return DecodeAnimBank;
     case 0x3AC1FE:  return DecodeHeap;               // "heap"
-    case 0x40CAA1:  return DecodeSEED;               // "seed"
-    case 0x44D206:  return DecodeZonePath;
+    case 0x40CAA1:  return reinterpret_cast<PakDecoder>(DecodeSEED); // "seed"
+    case 0x44D206:  return reinterpret_cast<PakDecoder>(DecodeZonePath);
     case 0x437CB3:  return DecodeTexture;
-    case 0x43ABF7:  return DecodeXModelPartsBank;    // "xmpb"
+    case 0x43ABF7:  return reinterpret_cast<PakDecoder>(DecodeXModelPartsBank); // "xmpb"
     case 0x66417A2: return DecodeAnimMatrix;
     case 0x1F124251: return DecodeFont;              // "xbfont"
     case 0x1F0F7F7F: return DecodeAnim;
     case 0x8B3348B: return DecodeTexture;            // "xbtex"
-    case 0x7DCC452: return DecodeLightGrid;          // "lgrid"
+    case 0x7DCC452: return reinterpret_cast<PakDecoder>(DecodeLightGrid); // "lgrid"
     case 0x821CA90:
         return reinterpret_cast<PakDecoder>(DecodePanel); // "panel"
     case 0x1F195109: return DecodeSkeleton;
-    case 0x8DB2340D: return DecodeCharSkel;          // "charskel"
+    case 0x8DB2340D: return reinterpret_cast<PakDecoder>(DecodeCharSkel); // "charskel"
     case 0xEE5EED49: return DecodeConfigStrings;     // "cfgstr"
     default:
         break;
@@ -15153,29 +15153,29 @@ void PakFile::ReleaseApks()
 }
 
 // ea: 0x6652B0 / 0x665320 / 0x665330 / 0x665340 (empty no-ops)
-void DecodeGrassInfo(const char* name, unsigned char* data, unsigned int size,
+void DecodeGrassInfo(const char* name, unsigned char* data, int size,
                      TPakId pakId, PakFile* pak)
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
-void DecodeSPT(const char* name, unsigned char* data, unsigned int size, TPakId pakId,
+void DecodeSPT(const char* name, unsigned char* data, int size, TPakId pakId,
                PakFile* pak)
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
-void DecodeWIND(const char* name, unsigned char* data, unsigned int size, TPakId pakId,
+void DecodeWIND(const char* name, unsigned char* data, int size, TPakId pakId,
                 PakFile* pak)
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
-void DecodeSEED(const char* name, unsigned char* data, unsigned int size, TPakId pakId,
+void DecodeSEED(const char* name, unsigned char* data, int size, TPakId pakId,
                 PakFile* pak)
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
 
 // ea: 0x6663D0
-void DecodeCharSkel(const char* name, unsigned char* data, unsigned int size,
+void DecodeCharSkel(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* pak)
 {
     (void)name; (void)size; (void)pakId; (void)pak;
@@ -15199,7 +15199,7 @@ void DecodeInstanceBank(const char* name, unsigned char* data, unsigned int size
 }
 
 // ea: 0x665210
-void DecodeDB(const char* name, unsigned char* data, unsigned int size, TPakId pakId,
+void DecodeDB(const char* name, unsigned char* data, int size, TPakId pakId,
               PakFile* pak)
 {
     (void)pak;
@@ -15207,7 +15207,7 @@ void DecodeDB(const char* name, unsigned char* data, unsigned int size, TPakId p
 }
 
 // ea: 0x665230
-void DecodeXModelBank(const char* name, unsigned char* data, unsigned int size,
+void DecodeXModelBank(const char* name, unsigned char* data, int size,
                       TPakId pakId, PakFile* pak)
 {
     (void)pak;
@@ -15215,7 +15215,7 @@ void DecodeXModelBank(const char* name, unsigned char* data, unsigned int size,
 }
 
 // ea: 0x665250
-void DecodeXModelPartsBank(const char* name, unsigned char* data, unsigned int size,
+void DecodeXModelPartsBank(const char* name, unsigned char* data, int size,
                            TPakId pakId, PakFile* pak)
 {
     (void)pak;
@@ -15223,7 +15223,7 @@ void DecodeXModelPartsBank(const char* name, unsigned char* data, unsigned int s
 }
 
 // ea: 0x665270
-void DecodeAITypeBank(const char* name, unsigned char* data, unsigned int size,
+void DecodeAITypeBank(const char* name, unsigned char* data, int size,
                       TPakId pakId, PakFile* pak)
 {
     (void)pak;
@@ -15231,7 +15231,7 @@ void DecodeAITypeBank(const char* name, unsigned char* data, unsigned int size,
 }
 
 // ea: 0x665290
-void DecodeLightGrid(const char* name, unsigned char* data, unsigned int size,
+void DecodeLightGrid(const char* name, unsigned char* data, int size,
                      TPakId pakId, PakFile* pak)
 {
     (void)pak;
@@ -15239,7 +15239,7 @@ void DecodeLightGrid(const char* name, unsigned char* data, unsigned int size,
 }
 
 // ea: 0x6652C0
-void DecodeLevelPath(const char* name, unsigned char* data, unsigned int size,
+void DecodeLevelPath(const char* name, unsigned char* data, int size,
                      TPakId pakId, PakFile* pak)
 {
     (void)pak;
@@ -15247,7 +15247,7 @@ void DecodeLevelPath(const char* name, unsigned char* data, unsigned int size,
 }
 
 // ea: 0x6652E0
-void DecodeZonePath(const char* name, unsigned char* data, unsigned int size,
+void DecodeZonePath(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* pak)
 {
     (void)pak;
@@ -15255,7 +15255,7 @@ void DecodeZonePath(const char* name, unsigned char* data, unsigned int size,
 }
 
 // ea: 0x665300
-void DecodeSTB(const char* name, unsigned char* data, unsigned int size, TPakId pakId,
+void DecodeSTB(const char* name, unsigned char* data, int size, TPakId pakId,
                PakFile* pak)
 {
     (void)pak;
