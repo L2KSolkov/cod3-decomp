@@ -16156,6 +16156,8 @@ AARMapVote::~AARMapVote()
         m_pBackgroundArt[i] = nullptr;
     for (int i = 0; i < 2; ++i)
         m_pScrollArrow[i] = nullptr;
+    memset(&m_pMapNames, 0, sizeof(m_pMapNames));
+    memset(&m_pMapVotes, 0, sizeof(m_pMapVotes));
     mem_heap_free(m_pMapVoteVals);
     m_pMapVoteVals = nullptr;
     m_FirstTimeAccessedByte = 0;
