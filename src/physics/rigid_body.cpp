@@ -225,7 +225,7 @@ void rigid_body::update_col_mat() {
 void rigid_body::add_force(const math::Dir3& force, const math::Dir3& point,
                            float torque_mult) {
     if ((~(this->m_flags >> 6) & 1) == 0 &&
-        _tlAssert("source/rigid_body.cpp", 78, "debug_flag_is_not_in_collision()", "")) {
+        _tlAssert("source/rigid_body.cpp", 78, "debug_flag_is_not_in_collision()", defaultFileName)) {
         __debugbreak();
     }
     this->m_force_sum.v = _mm_add_ps(this->m_force_sum.v, force.v);
