@@ -27,12 +27,50 @@ gpuVertexFormat cdWheelMarkVertexFormat;  // ?cdWheelMarkVertexFormat@@3UgpuVert
 cdWheelMarkShader* gCDWheelMarkShader = nullptr;  // ?gCDWheelMarkShader@@3PAVcdWheelMarkShader@@A
 unsigned int cdWheelMarkShaderDataID;  // ?cdWheelMarkShaderDataID@@3IA @ 0x14CD57C
 
-// ea: 0x007C9B30
-void cdWheelMarkShaderVertex::RegisterVShader()
+// ea: 0x007C9B10
+void cdWheelMarkShaderVertex::RegisterShader()
 {
     nglDxRegisterVShader(cdWheelMarkShaderVertex::VS,
                          reinterpret_cast<const unsigned int*>(cdWheelMarkShaderVertex::VShaderTable[0]));
     cdWheelMarkShaderVertex::Shader = cdWheelMarkShaderVertex::VS[0];
+}
+
+// ea: 0x007C9B50
+unsigned int cdWheelMarkShaderVertex::GetVShader() {
+    return static_cast<unsigned int>(cdWheelMarkShaderVertex::VS[0]);
+}
+
+// ea: 0x007C9B30
+void cdWheelMarkShaderVertex::RegisterVShader()
+{
+    cdWheelMarkShaderVertex::RegisterShader();
+}
+
+// ea: 0x007C9B60
+void cdWheelMarkShaderPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdWheelMarkShaderPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdWheelMarkShaderPixel::PShaderTable[0]));
+    cdWheelMarkShaderPixel::Shader = cdWheelMarkShaderPixel::PS[0];
+}
+
+// ea: 0x007C9B80
+void cdWheelMarkShaderPixel::RegisterPShader() {
+    cdWheelMarkShaderPixel::RegisterShader();
+}
+
+// ea: 0x007C9BA0
+unsigned long* cdWheelMarkShaderPixel::GetPShader() {
+    return cdWheelMarkShaderPixel::PS[0];
+}
+
+// ea: 0x007C9BB0
+cdWheelMarkShaderVertex::Params::Params() {}
+
+// ea: 0x007C9C50
+void cdWheelMarkShaderVertex::SetConstants(
+    const cdWheelMarkShaderVertex::Params& Params) {
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, &Params, 0x18u);
 }
 
 extern unsigned int dword_40300;
@@ -137,6 +175,17 @@ namespace AeAssert {
     bool Assert(const char* msg, ...);
 }
 
+// ea: 0x007C9AC0
+cdWheelMarkShader::cdWheelMarkShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[0] &= ~2;
+}
+
+// ea: 0x007C9D10
+cdWheelMarkShader::~cdWheelMarkShader() = default;
+
 // ============================================================================
 // cdWheelMarkShaderMat::cdWheelMarkShaderMat — default material, bind shader.
 // ea: 0x7C92B0
@@ -172,11 +221,6 @@ void InitCDWheelMarkShader() {
     cdWheelMarkShader* result = (cdWheelMarkShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdWheelMarkShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdWheelMarkShader
-        ShaderCommon::ShaderSwitching.__s0[0] &= ~2;
         gCDWheelMarkShader = result;
     } else {
         gCDWheelMarkShader = NULL;
@@ -205,6 +249,7 @@ void InitCDWheelMarkVertexDefBuilder() {
     cdWheelMarkVertexFormat.VertexDeclaration = v0->VertexDeclaration;
 }
 
+// ea: 0x007C9AF0
 tlFixedString cdWheelMarkShader::GetName() { return tlFixedString("cdWheelMark"); }
 
 // ============================================================================
@@ -229,10 +274,8 @@ void cdWheelMarkShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection
                                 nglMaterial* iMat) {
     cdWheelMarkShaderNode* node = (cdWheelMarkShaderNode*)nglListAlloc(0x1C, 0x10);
     if (node != NULL) {
-        node->MeshNode = iMeshNode;
-        node->Section = iSection;
-        ::new (node) cdWheelMarkShaderNode;
-        node->mMaterial = (cdWheelMarkShaderMat*)iMat;
+        ::new (node) cdWheelMarkShaderNode(iMeshNode, iSection,
+                                            (cdWheelMarkShaderMat*)iMat);
     } else {
         node = NULL;
     }
@@ -240,6 +283,15 @@ void cdWheelMarkShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection
     node->Next = nglBuildScene->OpaqueRenderList;
     nglBuildScene->OpaqueRenderList = node;
     ++nglBuildScene->OpaqueListCount;
+}
+
+// ea: 0x007C9C70
+cdWheelMarkShaderNode::cdWheelMarkShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdWheelMarkShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
 }
 
 // ============================================================================
