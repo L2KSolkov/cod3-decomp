@@ -944,6 +944,12 @@ def symbol_variants(name: str) -> set[str]:
         # decorations for the same four-byte aggregate arguments.
         "?AddPQSection@PanelQuadSection@@QAEXQAUvector@Broc@@0QAVcolor32@@M@Z":
             "?AddPQSection@PanelQuadSection@@QAEXPAUvector@Broc@@0PAVcolor32@@M@Z",
+        "?SetInitialXY@PanelQuadSection@@QAEXQAUvector@Broc@@@Z":
+            "?SetInitialXY@PanelQuadSection@@QAEXPAUvector@Broc@@@Z",
+        "?SetUV@PanelQuadSection@@QAEXQAUvector@Broc@@@Z":
+            "?SetUV@PanelQuadSection@@QAEXPAUvector@Broc@@@Z",
+        "?SetPos@PanelQuadSection@@QAEXQAUvector@Broc@@@Z":
+            "?SetPos@PanelQuadSection@@QAEXPAUvector@Broc@@@Z",
     }
     for release_name, current_name in equivalent.items():
         if name == release_name:
