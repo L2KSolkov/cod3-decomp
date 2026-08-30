@@ -17,7 +17,8 @@
 // ============================================================================
 // cdGunShaderMat — gun shader material (24 bytes)
 // ============================================================================
-struct cdGunShaderMat : nglMaterial {
+class cdGunShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;   // +0x10
     int         mCullMode;  // +0x14
 

@@ -17,6 +17,31 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdGunShader* gCDGunShader = nullptr;  // ?gCDGunShader@@3PAVcdGunShader@@A
 
+// ea: 0x007CEA70
+cdGunShaderMat::cdGunShaderMat(nglTexture* iTexture)
+{
+    this->mTexture = iTexture;
+    cdGunShader* shader = gCDGunShader;
+    if (shader != nullptr) {
+        this->Shader = shader;
+        return;
+    }
+    AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+    AeAssert::gCurrentFile = "cdGunShader.cpp";
+    AeAssert::gCurrentLine = 14;
+    AeAssert::gCurrentExpr = "gCDGunShader";
+    if (AeAssert::IsIgnored()) {
+        this->Shader = gCDGunShader;
+        return;
+    }
+    if (AeAssert::Assert("Material is being created before the shader; the pointers won't be set up properly")) {
+        __debugbreak();
+        this->Shader = gCDGunShader;
+        return;
+    }
+    this->Shader = gCDGunShader;
+}
+
 // ea: 0x007CF020
 unsigned long cdGunRender::GetVShader()
 {

@@ -144,7 +144,7 @@ cdDynamicDecalVertexDef.o	2	0	1	0	0	1	0
 cdFlagShader.o	42	28	0	0	0	14	0
 cdGlassShader.o	25	9	0	0	0	16	0
 cdGlowShader.o	50	23	10	0	0	17	0
-cdGunShader.o	24	9	1	4	0	10	0
+cdGunShader.o	24	8	0	4	0	12	0
 cdGunSightShader.o	22	6	0	0	1	15	0
 cdGunSightSpecularShader.o	22	8	0	4	0	10	0
 cdHeatHazeShader.o	20	17	1	0	0	2	0
