@@ -986,6 +986,22 @@ void CG_UpdateShellShockSound(const shellshock_parms_t* parms, int time,
 void CG_InterpolateEntityOrigin(Entity* cent)
 {
     cent->s.SetLerpOrigin(cent->r.currentOrigin);
+    const float* origin = cent->s.lerpOrigin.v.m128_f32;
+    if ((__fpclass(origin[0]) & 0x297) != 0
+        || (__fpclass(origin[1]) & 0x297) != 0
+        || (__fpclass(origin[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\cg_ent.cpp";
+        AeAssert::gCurrentLine = 1153;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((cent->s.GetLerpOrigin())[0]) && "
+            "!IS_NAN((cent->s.GetLerpOrigin())[1]) && "
+            "!IS_NAN((cent->s.GetLerpOrigin())[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
 }
 
 // ea: 0x006971E0
