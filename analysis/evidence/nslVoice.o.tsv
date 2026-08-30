@@ -1,0 +1,11 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008285E0	?nslVoicePtr@@YAPAUnslVoice@@H@Z	V3	PASS	nsl-voice-manual-20260830	2026-08-30	src/sound/nsl.cpp:4304	Body applies the release unsigned index conversion, inclusive upper-bound check, and 0x140-byte voice stride.
+0x008285E0	?nslVoicePtr@@YAPAUnslVoice@@H@Z	V4	PASS	nsl-voice-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566150-1566157	Release bound check and nsl_voices + 320 * index address calculation match source.
+0x00828610	?nslVoiceCount@@YAIXZ	V3	PASS	nsl-voice-manual-20260830	2026-08-30	src/sound/nsl.cpp:4312	Body returns nsl_initParams.aramSize directly.
+0x00828610	?nslVoiceCount@@YAIXZ	V4	PASS	nsl-voice-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566159-1566163	Release returns nsl_initParams.aramSize directly.
+0x00828620	?nslVoiceAlloc@@YAHW4nslWaveID@@W4nslSourceID@@H@Z	V3	PASS	nsl-voice-manual-20260830	2026-08-30	src/sound/nsl.cpp:4314	Body matches release voice-type selection, circular free-slot search, 0x140-byte clear, metadata copies, and lastPos update; the importance parameter is intentionally unused by this routine.
+0x00828620	?nslVoiceAlloc@@YAHW4nslWaveID@@W4nslSourceID@@H@Z	V4	PASS	nsl-voice-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566165-1566203	Release allocation loop, raw offsets 0x108/0x10A/0x110/0x114/0x10B-0x10D, and failure return match source.
+0x00828700	?nslVoiceFree@@YAXH@Z	V3	PASS	nsl-voice-manual-20260830	2026-08-30	src/sound/nsl.cpp:4353	Body bounds-checks, ignores free voices, clears state 1, and marks other non-state-7 voices pending free.
+0x00828700	?nslVoiceFree@@YAXH@Z	V4	PASS	nsl-voice-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566205-1566225	Release state transitions and raw offsets match source.
+0x00828750	?nslVoiceRender@@YAXPAUnslVoice@@@Z	V3	PASS	nsl-voice-manual-20260830	2026-08-30	src/sound/nsl.cpp:4368	Body computes listener-relative direction, azimuth, directional gain, and two speaker gains with the release thresholds.
+0x00828750	?nslVoiceRender@@YAXPAUnslVoice@@@Z	V4	PASS	nsl-voice-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566227-1566338	Release vector normalization, matrix rotation, attenuation, clamp branches, speaker constants, and output offsets match source.
