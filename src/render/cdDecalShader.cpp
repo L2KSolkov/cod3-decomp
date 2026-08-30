@@ -115,7 +115,6 @@ cdDecalShaderMat::cdDecalShaderMat(nglTexture* iTexture) {
 
 // ============================================================================
 // InitCDDecalShader — allocate the shader and link into the init list.
-// ea: 0x7D17B0
 // ============================================================================
 // ea: 0x007D1CC0
 cdDecalShader::cdDecalShader() {
@@ -128,6 +127,7 @@ cdDecalShader::cdDecalShader() {
 // ea: 0x007D1E50
 cdDecalShader::~cdDecalShader() = default;
 
+// ea: 0x007D17B0
 void InitCDDecalShader() {
     cdDecalShader* result = (cdDecalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
