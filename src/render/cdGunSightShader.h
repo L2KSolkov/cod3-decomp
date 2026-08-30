@@ -34,6 +34,7 @@ struct cdGunSightShaderNode : nglShaderNode {
 
     cdGunSightShaderNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
                          cdGunSightShaderMat* iMaterial);  // @0x7CE6E0
+    virtual ~cdGunSightShaderNode(); // @0x7CE740
 
     void Render() override;           // @0x7CE2B0
 };
@@ -45,6 +46,7 @@ static_assert(sizeof(cdGunSightShaderNode) == 0x18, "cdGunSightShaderNode size m
 class cdGunSightShader : public nglShader {
 public:
     cdGunSightShader();  // @0x7CE600
+    virtual ~cdGunSightShader(); // @0x7CE780
     virtual tlFixedString GetName(); // @0x7CE630
     virtual void Register();  // @0x7CE200
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CE240
@@ -58,14 +60,19 @@ namespace cdGunSightRender {
     extern unsigned int VS[1];               // ?VS@cdGunSightRender@@3PAKA
     extern unsigned int const* VShaderTable[1]; // ?VShaderTable@cdGunSightRender@@3PAPBIA
     void RegisterVShader();                  // @0x007CE650
+    unsigned int GetVShader();               // @0x007CE670
 }
 namespace cdGunSightPixel {
     extern unsigned int* PS[1];              // ?PS@cdGunSightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[1]; // ?PShaderTable@cdGunSightPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x007CE680
+    unsigned int* GetPShader();               // @0x007CE6A0
 }
 namespace cdGunSightFullbrightPixel {
     extern unsigned int* PS[1];              // ?PS@cdGunSightFullbrightPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[1]; // ?PShaderTable@cdGunSightFullbrightPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x007CE6B0
+    unsigned int* GetPShader();               // @0x007CE6D0
 }
 
 // ============================================================================

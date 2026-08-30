@@ -33,11 +33,46 @@ cdGunSightShader::cdGunSightShader() {
     ShaderCommon::ShaderSwitching.__s0[3] &= ~0x10;
 }
 
+// ea: 0x007CE780
+cdGunSightShader::~cdGunSightShader() = default;
+
 // ea: 0x007CE650
 void cdGunSightRender::RegisterVShader()
 {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdGunSightRender::VS),
                          cdGunSightRender::VShaderTable[0]);
+}
+
+// ea: 0x007CE670
+unsigned int cdGunSightRender::GetVShader()
+{
+    return cdGunSightRender::VS[0];
+}
+
+// ea: 0x007CE680
+void cdGunSightPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdGunSightPixel::PS),
+                         cdGunSightPixel::PShaderTable[0]);
+}
+
+// ea: 0x007CE6A0
+unsigned int* cdGunSightPixel::GetPShader()
+{
+    return cdGunSightPixel::PS[0];
+}
+
+// ea: 0x007CE6B0
+void cdGunSightFullbrightPixel::RegisterPShader()
+{
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdGunSightFullbrightPixel::PS),
+                         cdGunSightFullbrightPixel::PShaderTable[0]);
+}
+
+// ea: 0x007CE6D0
+unsigned int* cdGunSightFullbrightPixel::GetPShader()
+{
+    return cdGunSightFullbrightPixel::PS[0];
 }
 extern unsigned int dword_40300;
 extern unsigned int dword_40304;
@@ -123,6 +158,12 @@ cdGunSightShaderNode::cdGunSightShaderNode(nglMeshNode* iMeshNode,
     this->Section = iSection;
     this->mMaterial = iMaterial;
 }
+
+// ea: 0x007CE740
+cdGunSightShaderNode::~cdGunSightShaderNode() = default;
+
+// ea: 0x007CE790
+SimpleContext::SimpleContext() {}
 
 // ============================================================================
 // cdGunSightShader::Register — register the gun-sight vertex/pixel shaders.

@@ -77,6 +77,8 @@ static_assert(sizeof(cdSimpleShaderNode) == 0x1C, "cdSimpleShaderNode size misma
 // IDA local type 7959 (render_xboxr:cdSimpleShader.o).
 struct SimpleContext {
     math::Mat44 mLToS;
+
+    SimpleContext(); // @0x007CE790 (cdGunSightShader.o)
 };
 static_assert(sizeof(SimpleContext) == 0x40, "SimpleContext size mismatch");
 
