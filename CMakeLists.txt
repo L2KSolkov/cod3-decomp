@@ -166,6 +166,7 @@ add_library(cod3_render STATIC
     src/render/cdWorldVertexLitShader.cpp
     src/render/cdWorldVertexLitShaderData.cpp
     src/render/cdWorldPointLitShader.cpp
+    src/render/cdWorldPointLitShaderData.cpp
     src/render/cdWorldBlendShader.cpp
     src/render/cdWorldBlendPointLitShader.cpp
     src/render/cdWaterShader.cpp
