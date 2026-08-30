@@ -173,7 +173,7 @@ bdInitAckChunk::bdInitAckChunk()
 // ============================================================================
 // bdInitAckChunk::bdInitAckChunk (full) â€” ea: 0x8AB100
 // ============================================================================
-bdInitAckChunk::bdInitAckChunk(unsigned int initTag, const bdReference<bdCookie>& cookie,
+bdInitAckChunk::bdInitAckChunk(unsigned int initTag, bdReference<bdCookie> cookie,
                                int windowCredit, unsigned int peerTag)
     : bdChunk((bdChunkTypes)4),
       m_initTag(initTag),

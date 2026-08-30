@@ -1137,7 +1137,7 @@ public:
     unsigned int   m_peerTag;        // +0x20
 
     bdInitAckChunk();
-    bdInitAckChunk(unsigned int initTag, const bdReference<bdCookie>& cookie,
+    bdInitAckChunk(unsigned int initTag, bdReference<bdCookie> cookie,
                    int windowCredit, unsigned int peerTag);
     virtual ~bdInitAckChunk();
     unsigned int getInitTag() const;
