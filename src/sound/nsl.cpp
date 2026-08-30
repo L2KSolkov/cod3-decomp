@@ -527,6 +527,12 @@ static unsigned char ignoreAssert_10 = 0;
 static unsigned char ignoreAssert_11 = 0;
 static unsigned char ignoreAssert_12 = 0;
 static unsigned char ignoreAssert_13 = 0;
+static unsigned char ignoreAssert_15 = 0;
+static unsigned char ignoreAssert_16 = 0;
+static unsigned char ignoreAssert_17 = 0;
+static unsigned char ignoreAssert_18 = 0;
+static unsigned char ignoreAssert_19 = 0;
+static unsigned char ignoreAssert_20 = 0;
 static unsigned char ignoreAssert_14 = 0;
 int nsl_random_play = 0;
 nslWave* wave = nullptr;
@@ -3163,11 +3169,24 @@ nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_INITIAL)
         waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_START_READ_HEADER;
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_START_READ_HEADER) {
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
+            txAssertFailed(&ignoreAssert_20,
+                           "waveBankLoader->rid == NFL_REQUEST_ID_INVALID",
+                           "nslWaveBankLoaderUpdate",
+                           "c:/cod/code/tl/nsl2/src/nsl/nslWaveBankLoader.cpp",
+                           61);
         waveBankLoader->rid = nflReadFileAsync(waveBankLoader->file, waveBankLoader->fileOffset,
                                                 waveBankLoader->waveBank, 0x1000u);
         if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
             waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_HEADER;
     }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_HEADER &&
+        waveBankLoader->rid == NFL_REQUEST_ID_INVALID)
+        txAssertFailed(&ignoreAssert_19,
+                       "waveBankLoader->rid != NFL_REQUEST_ID_INVALID",
+                       "nslWaveBankLoaderUpdate",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslWaveBankLoader.cpp",
+                       69);
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_HEADER &&
         waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
         nflGetRequestState(waveBankLoader->rid) == NFL_REQUEST_STATE_INVALID) {
@@ -3175,6 +3194,10 @@ nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader
         waveBankLoader->rid = NFL_REQUEST_ID_INVALID;
         if (std::memcmp(waveBank->header, "NSLB", 4) != 0 ||
             waveBank->versionMajor != 1 || waveBank->versionMinor != 0) {
+            txPrintf("NSL", 0,
+                     "Invalid wave waveBank: %s (%-6.6s:%d.%d)\n",
+                     waveBank->name, waveBank->header,
+                     waveBank->versionMajor, waveBank->versionMinor);
             waveBankLoader->state = NSL_WAVE_BANK_LOADER_ERROR_INVALIDBANK;
             return waveBankLoader->state;
         }
@@ -3193,17 +3216,31 @@ nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader
             nslMemoryFree(waveBankLoader->waveBank);
             waveBankLoader->waveBank = nullptr;
             waveBankLoader->state = NSL_WAVE_BANK_LOADER_ERROR_NOMEMORY;
+            txPrintf("NSL", 0, "No memory\n");
             return waveBankLoader->state;
         }
         waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_START_READ_DIR_SECTION;
     }
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_START_READ_DIR_SECTION) {
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
+            txAssertFailed(&ignoreAssert_18,
+                           "waveBankLoader->rid == NFL_REQUEST_ID_INVALID",
+                           "nslWaveBankLoaderUpdate",
+                           "c:/cod/code/tl/nsl2/src/nsl/nslWaveBankLoader.cpp",
+                           158);
         waveBankLoader->rid = nflReadFileAsync(waveBankLoader->file, waveBankLoader->fileOffset,
                                                 waveBankLoader->waveBank,
                                                 waveBankLoader->waveBankSize);
         if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
             waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_DIR_SECTION;
     }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_DIR_SECTION &&
+        waveBankLoader->rid == NFL_REQUEST_ID_INVALID)
+        txAssertFailed(&ignoreAssert_17,
+                       "waveBankLoader->rid != NFL_REQUEST_ID_INVALID",
+                       "nslWaveBankLoaderUpdate",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslWaveBankLoader.cpp",
+                       166);
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_DIR_SECTION &&
         waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
         nflGetRequestState(waveBankLoader->rid) == NFL_REQUEST_STATE_INVALID) {
@@ -3213,12 +3250,25 @@ nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader
             : NSL_WAVE_BANK_LOADER_STATE_START_READ_ARAM_SECTION;
     }
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_START_READ_ARAM_SECTION) {
+        if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
+            txAssertFailed(&ignoreAssert_16,
+                           "waveBankLoader->rid == NFL_REQUEST_ID_INVALID",
+                           "nslWaveBankLoaderUpdate",
+                           "c:/cod/code/tl/nsl2/src/nsl/nslWaveBankLoader.cpp",
+                           179);
         waveBankLoader->rid = nflReadFileAsync(
             waveBankLoader->file, waveBankLoader->fileOffset + waveBankLoader->aramOffset,
             waveBankLoader->aram, waveBankLoader->aramSize);
         if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID)
             waveBankLoader->state = NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_ARAM_SECTION;
     }
+    if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_ARAM_SECTION &&
+        waveBankLoader->rid == NFL_REQUEST_ID_INVALID)
+        txAssertFailed(&ignoreAssert_15,
+                       "waveBankLoader->rid != NFL_REQUEST_ID_INVALID",
+                       "nslWaveBankLoaderUpdate",
+                       "c:/cod/code/tl/nsl2/src/nsl/nslWaveBankLoader.cpp",
+                       198);
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CHECK_READ_ARAM_SECTION &&
         waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
         nflGetRequestState(waveBankLoader->rid) == NFL_REQUEST_STATE_INVALID) {
