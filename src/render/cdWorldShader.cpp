@@ -143,6 +143,18 @@ void cdWorldProjectedRender::RegisterVShader()
     cdWorldProjectedRender::RegisterShader();
 }
 
+// ea: 0x007E0020
+unsigned long cdWorldRender::GetVShader(unsigned int dynamicLights, unsigned int colorVerts)
+{
+    return cdWorldRender::VS[dynamicLights][colorVerts];
+}
+
+// ea: 0x007E0080
+unsigned long cdWorldProjectedRender::GetVShader(unsigned int index)
+{
+    return cdWorldProjectedRender::VS[index];
+}
+
 // ============================================================================
 // cdWorldPixel::RegisterShader — register the 8 world pixel shaders.
 // ea: 0x7E0090 (inline COMDAT)
