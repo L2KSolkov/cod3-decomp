@@ -250,7 +250,7 @@ unsigned int apsInternal::ClampToColor32(const math::Vector4& iColor) {
 
 // ea: 0x8036D0
 void apsInternal::SetupBlendAndTexture(nglTexture* iTexture, apsEBlendMode iBlendMode,
-                                       bool bFogEnable, int alphaCutOff) {
+                                       bool bFogEnable, unsigned int alphaCutOff) {
     nglDxSetTexture(0, iTexture, 1u, 3u);
 
     if (nglDxTexCache.Prev[0].WrapU != 3u) {

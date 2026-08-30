@@ -214,7 +214,7 @@ unsigned int ClampToColor32(const math::Vector4& iColor);            // @0x813DD
 // ---- D3D render-state and light-context helpers ---------------------------
 void GetLocalLights(nglLightContext* ioLightContext, const apsSphere& iSphere);  // ?GetLocalLights@apsInternal@@YAXPAUnglLightContext@@ABUapsSphere@@@Z
 void SetupBlendAndTexture(nglTexture* iTexture, apsEBlendMode iBlendMode,
-                          bool bFogEnable, int alphaCutOff);  // ?SetupBlendAndTexture@apsInternal@@YAXPAUnglTexture@@W4apsEBlendMode@@_NH@Z
+                          bool bFogEnable, unsigned int alphaCutOff);  // ?SetupBlendAndTexture@apsInternal@@YAXPAUnglTexture@@W4apsEBlendMode@@_NH@Z
 void SetupFog(int fogConst, float fogNear, float fogFar,
               float fogMin, float fogMax, bool fogEnable);   // ?SetupFog@apsInternal@@YAXHMMMM_N@Z
 void SetupAlphaFade(int fadeConst, float fadeNear, float fadeFar);  // ?SetupAlphaFade@apsInternal@@YAXHMM@Z
