@@ -34,9 +34,8 @@ bdInetAddr& bdAddr::getAddress() {
 }
 
 // ea: 0x9EC9E0
-unsigned short bdAddr::setPort(unsigned short port) {
+void bdAddr::setPort(unsigned short port) {
     m_port = port;
-    return port;
 }
 
 // ea: 0x9EC9F0

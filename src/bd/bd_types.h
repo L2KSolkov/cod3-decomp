@@ -247,7 +247,7 @@ struct bdAddr {
     bool operator!=(const bdAddr& other) const;
     const bdInetAddr& getAddress() const;
     bdInetAddr& getAddress();
-    unsigned short setPort(unsigned short port);
+    void setPort(unsigned short port);
     unsigned short getPort() const;
     unsigned int toString(char* const buf, unsigned int bufSize) const;
     bool serialize(void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset) const;
