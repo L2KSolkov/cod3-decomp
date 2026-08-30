@@ -239,12 +239,12 @@ void rigid_body_constraint_wheel::get_wheel_collide_segment(const math::Mat43* b
                                                             math::Dir3* p0, math::Dir3* p1) {
     if (((unsigned int)p0 & 0xF) != 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 365,
-                  "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", "")) {
+                  "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", defaultFileName)) {
         __debugbreak();
     }
     if (((unsigned int)p1 & 0xF) != 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 365,
-                  "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", "")) {
+                  "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", defaultFileName)) {
         __debugbreak();
     }
     math::Dir3 v5;
