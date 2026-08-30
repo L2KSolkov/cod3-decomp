@@ -70,7 +70,7 @@ bdString::bdString()
 }
 
 // ea: 0x0089CB50
-bdString::bdString(const char* value)
+bdString::bdString(const char* const value)
 {
     const unsigned int length = (unsigned int)strlen(value);
     if (length != 0)

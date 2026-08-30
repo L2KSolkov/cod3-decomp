@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0089CB50	??0bdString@@QAE@QBD@Z	V3	PASS	bdstring-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1667302-1667338;src/bd/stubs.cpp:72-93	Release computes the rounded capacity, allocates the header plus string, initializes reference/length/capacity, copies the value, and uses shared empty storage for zero length; source follows the same paths.
+0x0089CB50	??0bdString@@QAE@QBD@Z	V4	PASS	bdstring-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1667302-1667338;src/bd/stubs.cpp:72-93	Equivalent release/source allocation layout, metadata stores, string copy, empty-storage handling, and restored top-level-const pointer ABI.

@@ -40,7 +40,7 @@ public:
     char* m_string;
 
     bdString();
-    bdString(const char* value);
+    bdString(const char* const value);
     bdString(const bdString& value);
     ~bdString();
     bdString& operator=(const char* value);
