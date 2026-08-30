@@ -122,6 +122,7 @@ add_library(cod3_render STATIC
     src/render/cdSimpleColorShader.cpp
     src/render/cdWorldColorShader.cpp
     src/render/cdSimpleShader.cpp
+    src/render/cdSimpleShaderData.cpp
     src/render/cdDecalShader.cpp
     src/render/cdGunShader.cpp
     src/render/cdGunShaderData.cpp
