@@ -16156,6 +16156,9 @@ AARMapVote::~AARMapVote()
         m_pBackgroundArt[i] = nullptr;
     for (int i = 0; i < 2; ++i)
         m_pScrollArrow[i] = nullptr;
+    mem_heap_free(m_pMapVoteVals);
+    m_pMapVoteVals = nullptr;
+    m_FirstTimeAccessedByte = 0;
 }
 
 // ea: 0x007AB420
