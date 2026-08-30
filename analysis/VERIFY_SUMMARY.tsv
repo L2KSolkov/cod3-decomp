@@ -97,7 +97,7 @@ bdLoopbackConnection.obj	37	29	5	0	0	3	0
 bdMallocMemory.obj	6	6	0	0	0	0	0
 bdMemory.obj	23	23	0	0	0	0	0
 bdMessage.obj	25	23	1	0	0	1	0
-bdMutex.obj	4	4	0	0	0	0	0
+bdMutex.obj	4	0	0	0	4	0	0
 bdNet-xbox.obj	49	35	5	8	0	1	0
 bdPacket.obj	32	30	0	0	0	2	0
 bdPlatformMutex-xbox.obj	4	4	0	0	0	0	0

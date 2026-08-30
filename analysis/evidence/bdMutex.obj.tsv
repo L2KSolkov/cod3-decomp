@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008A0500	??0bdMutex@@QAE@XZ	V3	PASS	bdmutex-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1671008-1671015;src/bd/bdMemory/bdMallocMemory.cpp:21-28	Release constructs the platform mutex handle; source creates the Win32 mutex handle on the target platform.
+0x008A0510	??1bdMutex@@QAE@XZ	V3	PASS	bdmutex-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1671017-1671023;src/bd/bdMemory/bdMallocMemory.cpp:29-37	Release destroys the platform mutex; source releases and closes the Win32 handle and clears it.
+0x008A0520	?lock@bdMutex@@QAEXXZ	V3	PASS	bdmutex-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1671024-1671029;src/bd/bdMemory/bdMallocMemory.cpp:38-43	Release delegates locking to the platform mutex; source waits on the Win32 mutex handle.
+0x008A0530	?unlock@bdMutex@@QAEXXZ	V3	PASS	bdmutex-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1671031-1671036;src/bd/bdMemory/bdMallocMemory.cpp:45-49	Release delegates unlocking to the platform mutex; source releases the Win32 mutex handle.
