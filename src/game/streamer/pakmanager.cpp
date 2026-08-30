@@ -12761,9 +12761,18 @@ const Vector4& Vector4::operator*=(const Mat44& m)
 // ea: 0x663D10
 Mat44 Mul(const Mat44& a, const Mat33& b)
 {
-    __m128 v3 = _mm_shuffle_ps(_mm_setzero_ps(), b.x.v, 0xA0);
-    __m128 v4 = _mm_shuffle_ps(_mm_setzero_ps(), b.y.v, 0xA0);
-    __m128 v6 = _mm_shuffle_ps(_mm_setzero_ps(), b.z.v, 0xA0);
+    __m128 v3 = _mm_shuffle_ps(b.x.v,
+                               _mm_shuffle_ps(_mm_setzero_ps(), b.x.v,
+                                              0xA0),
+                               0x34);
+    __m128 v4 = _mm_shuffle_ps(b.y.v,
+                               _mm_shuffle_ps(_mm_setzero_ps(), b.y.v,
+                                              0xA0),
+                               0x34);
+    __m128 v6 = _mm_shuffle_ps(b.z.v,
+                               _mm_shuffle_ps(_mm_setzero_ps(), b.z.v,
+                                              0xA0),
+                               0x34);
     __m128 waxis = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);  // Float4_WAxis
 
     Vector4 tmp_4, tmp_20;
