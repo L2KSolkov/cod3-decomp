@@ -753,7 +753,9 @@ public:
     // shell.o virtual layout follows FEText_vtbl from IDA (0xCF1784).
     virtual void Draw() { Draw(false); }                 // +0x04
     virtual void Update(float time_inc);                 // +0x08
+    // ea: 0x005ADC20
     virtual void SetColor(color32 c) { SetNoFlash(c); }  // +0x40
+    // ea: 0x005ADD10
     virtual color32 GetColor() { return color1; }        // +0x44
     virtual void CopyFrom(FEText* fet);                  // +0x48
     virtual void Draw(bool selected);                    // +0x4C
@@ -762,11 +764,14 @@ public:
     virtual bool IsMultiLineObject() { return false; }   // +0x58
     virtual void SetHJustify(int h);                     // +0x5C
     virtual void SetVJustify(int v);                     // +0x60
+    // ea: 0x005AD8B0
     virtual void SetFont(font_index f) { font = f; }     // +0x64
+    // ea: 0x005AD8C0
     virtual void SetEvenNumberSpacing(bool on)           // +0x68
     {
         flags = (int16_t)(on ? (flags | 4) : (flags & ~4));
     }
+    // ea: 0x005AD950
     virtual void SetScale(float sx, float sy)            // +0x6C
     {
         scale.x = sx;
@@ -775,6 +780,7 @@ public:
         scale_unselected.y = sy;
         scale_unselected.z = 0.0f;
     }
+    // ea: 0x005AD8E0
     virtual void SetScale(float s)                       // +0x70
     {
         scale.x = s;
@@ -782,6 +788,7 @@ public:
         scale_unselected.x = s;
         scale_unselected.y = s;
     }
+    // ea: 0x005AD9D0
     virtual void SetScaleMenuItem(float s_selected,      // +0x74
                                   float s_unselected)
     {
@@ -793,19 +800,23 @@ public:
         scale_unselected.z = 0.0f;
         scale_init.z = s_unselected;
     }
+    // ea: 0x005ADA50
     virtual void SetScaleInit(float sx, float sy)        // +0x78
     {
         scale_init.x = sx;
         scale_init.y = sy;
         scale_init.z = 0.0f;
     }
+    // ea: 0x005ADAA0
     virtual void SetName(const char* n) { name = n; }    // +0x7C
     virtual void SetText(unsigned int hash);             // +0x80
     virtual void SetText(const char* s);                 // +0x84
+    // ea: 0x005ADAB0
     virtual void Shift(float offx, float offy)            // +0x88
     {
         SetPos(GetX() + offx, GetY() + offy);
     }
+    // ea: 0x005ADAF0
     virtual void ShiftXYInitial(Broc::vector offset)      // +0x8C
     {
         xy_initial.x += offset.x;
@@ -815,20 +826,25 @@ public:
     // ea: 0x005ADB40
     virtual void SetTextNoLocalize(const char* s) { text = s; } // +0x90
     void SetInitialXY(Broc::vector pos);                  // shell.o 0x5AD880
+    // ea: 0x005ADB50
     virtual void SetPos(float x, float y)                // +0x94
     {
         xy.x = x;
         xy.y = y;
         xy.z = 0.0f;
     }
+    // ea: 0x005ADBA0
     virtual void SetX(float posX) { xy.x = posX; }        // +0x98
+    // ea: 0x005ADBC0
     virtual void SetY(float y) { xy.y = y; }              // +0x9C
+    // ea: 0x005ADBE0
     virtual void SetAlpha(float a)                        // +0xA0
     {
         const unsigned char alpha = (unsigned char)(a * 255.0f);
         color1.c.a = alpha;
         color_unselected.c.a = alpha;
     }
+    // ea: 0x005ADC10
     virtual void SetPanelTextIndex(int the_index)        // +0xA4
     {
         panel_text_index = the_index;
@@ -843,33 +859,50 @@ public:
             flash_info->flash_intensity = 0.0f;
         }
     }
+    // ea: 0x005ADC30
     virtual void SetColorMenuItem(color32 normal, color32 selected) // +0xB0
     {
         color1 = normal;
         color_unselected = selected;
     }
     virtual void SetNoColor();                           // +0xB4
+    // ea: 0x005ADC50
     virtual Broc::string GetName() { return name; }       // +0xB8
+    // ea: 0x005ADC80
     virtual Broc::string GetText() { return text; }       // +0xBC
+    // ea: 0x005ADCB0
     virtual float GetScaleX() const { return scale.x; }   // +0xC0
+    // ea: 0x005ADCC0
     virtual float GetScaleInitX() const { return scale_init.x; } // +0xC4
+    // ea: 0x005ADCD0
     virtual float GetScaleInitY() const { return scale_init.y; } // +0xC8
+    // ea: 0x005ADCE0
     virtual float GetScaleY() const { return scale.y; }   // +0xCC
+    // ea: 0x005ADCF0
     virtual bool GetEvenNumberSpacing() const             // +0xD0
     {
         return (flags & 4) != 0;
     }
     virtual font_index GetFont();                         // +0xD4
+    // ea: 0x005ADD30
     virtual color32 GetUnselectedColor() { return color_unselected; } // +0xD8
+    // ea: 0x005ADD50
     virtual int GetFlags() { return flags; }              // +0xDC
+    // ea: 0x005ADD60
     virtual int GetHJustify() { return flags & 0x30; }    // +0xE0
+    // ea: 0x005ADD70
     virtual int GetVJustify() { return flags & 0xC0; }    // +0xE4
+    // ea: 0x005ADD80
     virtual int GetLineNum() { return 1; }                // +0xE8
+    // ea: 0x005ADD90
     virtual float GetX() { return xy.x; }                 // +0xEC
+    // ea: 0x005ADDA0
     virtual float GetY() { return xy.y; }                 // overrides PanelAnimObject +0x30
     virtual float GetWidth(const float* p);               // +0xF0
     virtual float GetHeight(const float* p);              // +0xF4
+    // ea: 0x005ADDB0
     virtual bool GetFlag(int f) { return (flags & f) != 0; } // +0xF8
+    // ea: 0x005ADDD0
     virtual void SetFlag(int f, bool on)                  // +0xFC
     {
         if (on)
@@ -883,6 +916,7 @@ public:
     virtual void SetLocation3D(Broc::vector) {}           // +0x10C
     virtual void SetBehaviorNF(float, float) {}           // +0x110
     virtual void SetBehavior(bool) {}                     // +0x114
+    // ea: 0x005ADE60
     virtual Broc::vector GetLocation3D()                  // +0x118
     {
         Broc::vector v;
