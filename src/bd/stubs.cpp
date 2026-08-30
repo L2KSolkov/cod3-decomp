@@ -493,6 +493,7 @@ bool bdBitBuffer::append(bdBitBuffer& other)
     return result;
 }
 
+// ea: 0x0089C1D0
 void bdBitBuffer::writeDataType(bdBitBufferDataType type)
 {
     if (m_typeChecked)
@@ -590,6 +591,7 @@ void bdBitBuffer::writeRangedUInt32(unsigned int value, unsigned int min,
     writeBits(&v8, bits);
 }
 
+// ea: 0x0089C2F0
 void bdBitBuffer::writeRangedFloat32(float value, float min, float max,
                                      float scale)
 {
