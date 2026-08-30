@@ -355,3 +355,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE400	??0FEMenuColorScheme@@QAE@Vcolor32@@0@Z	V4	PASS	ida-manual-shell-femenu-color-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165417-1165427	Release initializes high fields/flash and performs the same u/h1 assignments with high2=h1.
 0x005AE430	??0FEMenuColorScheme@@QAE@Vcolor32@@00@Z	V3	PASS	ida-manual-shell-femenu-color-20260830	2026-08-30	src/game/shell/fe_text.cpp:1371-1379	Source initializes colors and flash state, then stores unselect, high1, and high2.
 0x005AE430	??0FEMenuColorScheme@@QAE@Vcolor32@@00@Z	V4	PASS	ida-manual-shell-femenu-color-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165429-1165441	Release performs the same initialization and stores all three supplied colors with flash enabled.
+0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1535-1538	Source tests the requested bit mask against FEMenu flags.
+0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165760-1165764	Release returns (flags & f) != 0.
+0x005AE960	?SetFlag@FEMenu@@QAEXH_N@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1539-1542	Source conditionally sets or clears the requested FEMenu flag bits.
+0x005AE960	?SetFlag@FEMenu@@QAEXH_N@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165766-1165773	Release applies the same conditional set/clear operation.

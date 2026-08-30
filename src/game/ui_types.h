@@ -1531,10 +1531,12 @@ public:
     FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve,
            int flg);                                // 0x57DAE0 ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z
     void Cleanup();                                 // ?Cleanup@FEMenu@@QAEXXZ 0x58DF20
+    // ea: 0x005AE940
     bool GetFlag(int f)                             // ?GetFlag@FEMenu@@QAE_NH@Z 0x5AE940
     {
         return (flags & f) != 0;
     }
+    // ea: 0x005AE960
     void SetFlag(int f, bool b)                     // ?SetFlag@FEMenu@@QAEXH_N@Z 0x5AE960
     {
         flags = b ? (int16_t)(flags | f) : (int16_t)(flags & ~f);
