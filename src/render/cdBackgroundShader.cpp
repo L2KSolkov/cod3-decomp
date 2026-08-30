@@ -218,9 +218,9 @@ void cdBackgroundShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSectio
     if ((ShaderCommon::ShaderSwitching.__s0[2] & 0x40) == 0) {
         cdBackgroundShaderNode* node = (cdBackgroundShaderNode*)nglListAlloc(0x18, 0x10);
         if (node != NULL) {
+            ::new (node) cdBackgroundShaderNode;
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdBackgroundShaderNode;
             node->mMaterial = (cdBackgroundShaderMat*)iMat;
         } else {
             node = NULL;
