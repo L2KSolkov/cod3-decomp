@@ -65,17 +65,19 @@ namespace cdSimpleAlphaRender {
 namespace cdSimpleAlphaPixel {
     extern unsigned long* PS[2];               // ?PS@cdSimpleAlphaPixel@@3PAPAKA
     extern unsigned int const* PShaderTable[2]; // ?PShaderTable@cdSimpleAlphaPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x007C8DC0
 }
 namespace cdSimpleAlphaPixel_Fullbright {
     extern unsigned long* PS[2];               // ?PS@cdSimpleAlphaPixel_Fullbright@@3PAPAKA
     extern unsigned int const* PShaderTable[2]; // ?PShaderTable@cdSimpleAlphaPixel_Fullbright@@3PAPBIA
+    void RegisterPShader();                   // @0x007C8E00
 }
 
 // ============================================================================
 // Externs
 // ============================================================================
 extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern cdSimpleAlphaShader* gCDSimpleAlphaShader;  // @0x10DE058
 

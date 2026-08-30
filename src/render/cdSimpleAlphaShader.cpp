@@ -24,6 +24,24 @@ void cdSimpleAlphaRender::RegisterVShader()
     }
 }
 
+// ea: 0x007C8DC0
+void cdSimpleAlphaPixel::RegisterPShader()
+{
+    int v0 = 0;
+    for (int i = 2; i != 0; --i, ++v0)
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(&PS[v0]),
+                             PShaderTable[v0]);
+}
+
+// ea: 0x007C8E00
+void cdSimpleAlphaPixel_Fullbright::RegisterPShader()
+{
+    int v0 = 0;
+    for (int i = 2; i != 0; --i, ++v0)
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(&PS[v0]),
+                             PShaderTable[v0]);
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
@@ -96,15 +114,9 @@ tlFixedString cdSimpleAlphaShader::GetName() { return tlFixedString("cdSimpleAlp
 // ============================================================================
 void cdSimpleAlphaShader::Register() {
     nglShader::Register();
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShaderSafe((unsigned int*)&cdSimpleAlphaRender::VS[v0], cdSimpleAlphaRender::VShaderTable, v0);
-    }
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShaderSafe((unsigned int**)&cdSimpleAlphaPixel::PS[v0], cdSimpleAlphaPixel::PShaderTable, v0);
-    }
-    for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShaderSafe((unsigned int**)&cdSimpleAlphaPixel_Fullbright::PS[v0], cdSimpleAlphaPixel_Fullbright::PShaderTable, v0);
-    }
+    cdSimpleAlphaRender::RegisterVShader();
+    cdSimpleAlphaPixel::RegisterPShader();
+    cdSimpleAlphaPixel_Fullbright::RegisterPShader();
 }
 
 // ============================================================================
