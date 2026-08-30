@@ -24,7 +24,24 @@ extern nglMeshNode* nglListAddMesh_Sections(nglMesh* Mesh, nglMeshNode* MeshNode
 
 cdSimpleInstanceShader* gCDSimpleInstanceShader = nullptr;  // ?gCDSimpleInstanceShader (render_xboxr @ 0x10DE008)
 
+// ea: 0x007C4BD0
+cdSimpleInstanceShader::cdSimpleInstanceShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[1] &= ~0x10;
+}
+
+cdSimpleInstanceShader::~cdSimpleInstanceShader() = default;
+
+// ea: 0x007C4C00
 tlFixedString cdSimpleInstanceShader::GetName() { return tlFixedString("cdSimpleInstance"); }
+
+// ea: 0x007C4C20
+void cdSimpleInstanceShader::AddNode(nglMeshNode*, nglMeshSection*, nglMaterial*) {}
+
+// ea: 0x007C4C30
+void cdSimpleInstanceShader::Register() {}
 
 #include <intrin.h>
 
@@ -36,11 +53,6 @@ void InitCDSimpleInstanceShader() {
     cdSimpleInstanceShader* result = (cdSimpleInstanceShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdSimpleInstanceShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdSimpleInstanceShader
-        ShaderCommon::ShaderSwitching.__s0[1] &= ~0x10;
         gCDSimpleInstanceShader = result;
     } else {
         gCDSimpleInstanceShader = NULL;

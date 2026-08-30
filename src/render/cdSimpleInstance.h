@@ -60,7 +60,11 @@ static_assert(sizeof(cdSimpleInstance) == 0x20, "cdSimpleInstance size mismatch"
 // ============================================================================
 class cdSimpleInstanceShader : public nglShader {
 public:
+    cdSimpleInstanceShader(); // @0x7C4BD0
+    virtual ~cdSimpleInstanceShader(); // @0x7C5340
     virtual tlFixedString GetName(); // @0x7C4C00
+    virtual void AddNode(nglMeshNode*, nglMeshSection*, nglMaterial*); // @0x7C4C20
+    virtual void Register(); // @0x7C4C30
 };
 static_assert(sizeof(cdSimpleInstanceShader) == 0x10, "cdSimpleInstanceShader size mismatch");
 
