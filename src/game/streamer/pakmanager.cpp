@@ -3084,12 +3084,12 @@ class StreamZone {
 public:
     uint8_t _pad[0x20];
     InplaceString mName;         // +0x20
-    const PakInfoNode* mPakInfo;  // +0x24
+    mutable const PakInfoNode* mPakInfo;  // +0x24
     uint8_t _pad28[0x30 - 0x28];
     InplaceVector<const ZoneCellDesc*> mCells;  // +0x30
 
     const char* GetName() const;              // ?GetName@StreamZone@@QBEPBDXZ
-    void SetPakInfo(const PakInfoNode* n);    // ?SetPakInfo@StreamZone@@QBEXPBUPakInfoNode@@@Z
+    void SetPakInfo(const PakInfoNode* n) const;    // ?SetPakInfo@StreamZone@@QBEXPBUPakInfoNode@@@Z
     const PakInfoNode* GetPakInfo() const;     // ?GetPakInfo@StreamZone@@QBEPBUPakInfoNode@@XZ (game2.o 0x5173A0)
 };
 
@@ -11534,7 +11534,7 @@ const StreamZone* ZoneCellDesc::GetZone() const { return mZone; }
 const char* StreamZone::GetName() const { return mName.mStr; }
 
 // ea: 0x6636C0
-void StreamZone::SetPakInfo(const PakInfoNode* n) { mPakInfo = n; }
+void StreamZone::SetPakInfo(const PakInfoNode* n) const { mPakInfo = n; }
 
 // ea: 0x005173A0
 const PakInfoNode* StreamZone::GetPakInfo() const { return mPakInfo; }
