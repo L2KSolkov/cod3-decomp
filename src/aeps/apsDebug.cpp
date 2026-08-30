@@ -13,6 +13,7 @@
 
 // tl_system.o (tl_xboxr, ported)
 extern void tlPrint(const char* text);
+extern const char defaultFileName[];
 
 // ============================================================================
 // Data globals owned by apsDebug.o
@@ -30,7 +31,7 @@ void apsDebug::PrintWarning(apsDebug::eWarningLevel level, const char* format, .
 
     if (apsDebug::mbEnabled != 0) {
         vsprintf(workBuffer, format, ap);
-        tlPrint("");
+        tlPrint(defaultFileName);
         tlPrint("Aeps Warning : ");
         tlPrint(workBuffer);
         tlPrint("\n");
