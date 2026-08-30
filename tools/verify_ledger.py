@@ -1011,6 +1011,14 @@ def symbol_variants(name: str) -> set[str]:
         ("??8bdAddr@@QBE_NABV0@@Z", "??8bdAddr@@QBE_NABU0@@Z"),
         ("??9bdAddr@@QBE_NABV0@@Z", "??9bdAddr@@QBE_NABU0@@Z"),
         ("??MbdAddr@@QBE_NABV0@@Z", "??MbdAddr@@QBE_NABU0@@Z"),
+        ("?serialize@bdInetAddr@@QBE_NPAXIIAAI@Z",
+         "?serialize@bdInetAddr@@QBE_NPAXIIPAI@Z"),
+        ("?deserialize@bdInetAddr@@QAE_NPBXIIAAI@Z",
+         "?deserialize@bdInetAddr@@QAE_NPBXIIPAI@Z"),
+        ("?serialize@bdAddr@@QBE_NPAXIIAAI@Z",
+         "?serialize@bdAddr@@QBE_NPAXIIPAI@Z"),
+        ("?deserialize@bdAddr@@QAE_NPBXIIAAI@Z",
+         "?deserialize@bdAddr@@QAE_NPBXIIPAI@Z"),
     ):
         if name == release_name:
             values.add(current_name)
