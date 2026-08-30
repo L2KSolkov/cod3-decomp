@@ -130,7 +130,7 @@ unsigned int MemoryUnitManager::GetNumBytes()
 }
 
 // ea: 0x899160
-void MemoryUnitManager::Container::Reset(const char* gameName)
+void MemoryUnitManager::Container::Reset(const char* const gameName)
 {
     strcpy(mGameName, gameName);
     mCurrentFile = 0;
@@ -138,7 +138,7 @@ void MemoryUnitManager::Container::Reset(const char* gameName)
 }
 
 // ea: 0x8991A0
-bool MemoryUnitManager::Container::AddFile(const char* fileName,
+bool MemoryUnitManager::Container::AddFile(const char* const fileName,
                                            unsigned char* buffer,
                                            unsigned int numBytes)
 {
@@ -182,7 +182,7 @@ unsigned char* MemoryUnitManager::Container::GetFile(int idx)
 }
 
 // ea: 0x899250
-bool MemoryUnitManager::Container::GetNextFile(char* fileName,
+bool MemoryUnitManager::Container::GetNextFile(char* const fileName,
                                                unsigned char** buffer,
                                                unsigned int* numBytes)
 {
@@ -309,7 +309,7 @@ MemoryUnitManager::eStatus MemoryUnitManager::LoadGameSync(const Container& game
 }
 
 // ea: 0x899490
-MemoryUnitManager::eStatus MemoryUnitManager::DeleteGameSync(const char* gameName)
+MemoryUnitManager::eStatus MemoryUnitManager::DeleteGameSync(const char* const gameName)
 {
     if (DeleteGame(gameName) == eSuccess)
     {
@@ -395,7 +395,7 @@ unsigned int peripheralsGetVersion()
 }
 
 // ea: 0x899690
-MemoryUnitManager::Container::Container(const char* gameName)
+MemoryUnitManager::Container::Container(const char* const gameName)
 {
     strcpy(mGameName, gameName);
     mCurrentFile = 0;

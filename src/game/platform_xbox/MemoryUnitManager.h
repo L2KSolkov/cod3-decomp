@@ -51,8 +51,9 @@ public:
         eFormat = 4,
     };
 
-    struct Observer
+    class Observer
     {
+    public:
         virtual void Callback(eOperation op) = 0;
     };
 
@@ -62,14 +63,16 @@ public:
         eRemoved = 1,
     };
 
-    struct InsertRemoveObserver
+    class InsertRemoveObserver
     {
+    public:
         virtual void Callback(eDeviceChange change, int deviceID) = 0;
     };
 
     // A named save game: up to 8 files per container. Size 0x288.
-    struct Container
+    class Container
     {
+    public:
         char mFileNames[8][64];      // +0x000
         unsigned char* mBuffers[8];  // +0x200
         unsigned int mNumBytes[8];   // +0x220
@@ -77,15 +80,18 @@ public:
         unsigned int mIndex;         // +0x244
         char mGameName[64];          // +0x248
 
-        Container(const char* gameName);
-        void Reset(const char* gameName);
-        bool AddFile(const char* fileName, unsigned char* buffer,
+        Container(const char* const gameName);
+        void Reset(const char* const gameName);
+        bool AddFile(const char* const fileName, unsigned char* buffer,
                      unsigned int numBytes);
         int GetTotalBytes();
         int GetNumFiles() const;
         unsigned char* GetFile(int idx);
-        bool GetNextFile(char* fileName, unsigned char** buffer,
+        bool GetNextFile(char* const fileName, unsigned char** buffer,
                          unsigned int* numBytes);
+    private:
+        friend class MemoryUnitManager;
+        friend class XBoxStorage;
         const char* GetGameName() const;
     };
 
@@ -152,7 +158,7 @@ public:
     static int FindPrevMemoryUnit();
     static eStatus SaveGameSync(const Container& gameSave);
     static eStatus LoadGameSync(const Container& gameLoad);
-    static eStatus DeleteGameSync(const char* gameName);
+    static eStatus DeleteGameSync(const char* const gameName);
     static eStatus FormatSync();
     static const char* StatusToString(eStatus status);
     static int GetFirstDeviceID();
