@@ -30,16 +30,6 @@ extern unsigned int gpuHashVertexShader;
 extern unsigned int gpuHashPixelShader;
 extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdDebugShaderRender {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-}
-namespace cdDebugPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-}
-
 // ea: 0x007C68E0
 void cdDebugShaderRender::RegisterVShader()
 {
