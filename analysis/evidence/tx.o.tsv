@@ -1,0 +1,9 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0082CD70	_txTime	V3	PASS	ida-manual-tx-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x0082CD70; src/filesystem/nfl.cpp:2167	Real body computes 1000*clock()/1000, stores the result in tx_time, and returns it.
+0x0082CD70	_txTime	V4	PASS	ida-manual-tx-20260830	2026-08-30	IDA decompile 0x0082CD70 and src/filesystem/nfl.cpp:2167-2173	Release clock call, 64-bit arithmetic, tx_time store, and return match source.
+0x0082CDA0	_txMatch	V3	PASS	ida-manual-tx-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x0082CDA0; src/filesystem/nfl.cpp:2174	Real body implements recursive wildcard matching with ? and * semantics and literal traversal.
+0x0082CDA0	_txMatch	V4	PASS	ida-manual-tx-20260830	2026-08-30	IDA decompile 0x0082CDA0 and src/filesystem/nfl.cpp:2174-2195	Release empty-pattern, literal/? scan, star recursion, end-of-string handling, and return paths match source.
+0x0082CE50	_txGetPrimeLessThanPow2	V3	PASS	ida-manual-tx-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x0082CE50; src/filesystem/nfl.cpp:2198	Real body binary-searches the release prime table and returns the greatest prime below the power-of-two bound.
+0x0082CE50	_txGetPrimeLessThanPow2	V4	PASS	ida-manual-tx-20260830	2026-08-30	IDA decompile 0x0082CE50 and src/filesystem/nfl.cpp:2198-2220	Release table indexing, low/high updates, loop condition, and final p[low] return match source.
+0x0082CEA0	_txPrintf	V3	PASS	ida-manual-tx-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x0082CEA0; src/filesystem/nfl.cpp:2316	Real body collects variadic arguments and forwards channel, level, format, and list to txPrintv.
+0x0082CEA0	_txPrintf	V4	PASS	ida-manual-tx-20260830	2026-08-30	IDA decompile 0x0082CEA0 and src/filesystem/nfl.cpp:2316-2321	Release va_list setup and txPrintv forwarding match source.
