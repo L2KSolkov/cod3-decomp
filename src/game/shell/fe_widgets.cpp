@@ -879,6 +879,16 @@ void FEMenuListBox::Draw()
                 AdjustColor();
             }
             unsigned int v12 = 0;
+            if (v10 < 0 || v10 >= mItems.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
             Broc::string::Block* mBlock =
                 mItems.mElements[v10]->mText.mBlock;
             text->SetTextNoLocalize(mBlock != nullptr
