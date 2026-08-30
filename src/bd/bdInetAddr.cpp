@@ -8,6 +8,7 @@
 
 // ea: 0x0089D420
 bdInetAddr::bdInetAddr() {
+    m_addr.inUn.m_iaddr = 0xFF00FF00;
 }
 
 // ea: 0x0089D430
