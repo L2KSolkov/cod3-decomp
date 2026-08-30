@@ -108,6 +108,56 @@ void ToggleCDFlagShader() {
     *((unsigned char*)&gShaderSwitchingFlags) = byte;
 }
 
+// ea: 0x007CA180
+void CalculateFlagMatrix(math::Mat43* Matrix, nglMeshSection* Section,
+                         float Intensity) {
+    math::Dir3 Up;
+    Up.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    const __m128 sphere = Section->Sphere.v;
+    const float radius = sphere.m128_f32[3];
+    const __m128 cross = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(Up.v, Up.v, 9),
+                   _mm_shuffle_ps(sphere, sphere, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(Up.v, Up.v, 18),
+                   _mm_shuffle_ps(sphere, sphere, 9)));
+    const __m128 crossSquared = _mm_mul_ps(cross, cross);
+    const float halfWidth = sqrtf(radius * radius -
+        (crossSquared.m128_f32[0] +
+         _mm_shuffle_ps(crossSquared, crossSquared, 85).m128_f32[0] +
+         _mm_shuffle_ps(crossSquared, crossSquared, 170).m128_f32[0]));
+    const __m128 upDot = _mm_mul_ps(sphere, Up.v);
+    const float side = upDot.m128_f32[0] +
+        _mm_shuffle_ps(upDot, upDot, 85).m128_f32[0] +
+        _mm_shuffle_ps(upDot, upDot, 170).m128_f32[0] - halfWidth;
+    const __m128 origin = _mm_mul_ps(Up.v, _mm_set1_ps(side));
+    const __m128 center = _mm_sub_ps(
+        _mm_sub_ps(sphere, origin), _mm_mul_ps(Up.v, _mm_set1_ps(halfWidth)));
+    const __m128 width = _mm_mul_ps(center, _mm_set1_ps(2.0f));
+    const __m128 height = _mm_mul_ps(Up.v, _mm_set1_ps(halfWidth + halfWidth));
+    const __m128 tangent = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(height, height, 9),
+                   _mm_shuffle_ps(width, width, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(height, height, 18),
+                   _mm_shuffle_ps(width, width, 9)));
+    const __m128 tangentSquared = _mm_mul_ps(tangent, tangent);
+    const float tangentLength = sqrtf(tangentSquared.m128_f32[0] +
+        _mm_shuffle_ps(tangentSquared, tangentSquared, 85).m128_f32[0] +
+        _mm_shuffle_ps(tangentSquared, tangentSquared, 170).m128_f32[0]);
+    Matrix->x.v = width;
+    Matrix->y.v = height;
+    Matrix->z.v = _mm_mul_ps(_mm_div_ps(tangent, _mm_set1_ps(tangentLength)),
+                             _mm_set1_ps(Intensity));
+    Matrix->w.v = origin;
+}
+
+cdFlagShaderNode::cdFlagShaderNode(nglMeshNode* iMeshNode,
+                                   nglMeshSection* iSection,
+                                   cdFlagShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
 tlFixedString cdFlagShader::GetName() { return tlFixedString("cdFlag"); }
 
 // ============================================================================

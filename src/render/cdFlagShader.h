@@ -33,6 +33,9 @@ static_assert(sizeof(cdFlagShaderMat) == 0x18, "cdFlagShaderMat size mismatch");
 // ============================================================================
 struct cdFlagShaderNode : nglShaderNode {
     cdFlagShaderMat* mMaterial;  // +0x14
+
+    cdFlagShaderNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
+                     cdFlagShaderMat* iMaterial);  // @0x7CB9F0
 };
 static_assert(sizeof(cdFlagShaderNode) == 0x18, "cdFlagShaderNode size mismatch");
 
@@ -78,5 +81,7 @@ extern cdFlagShader* gCDFlagShader;  // @0x10DE094
 
 void InitCDFlagShader();   // @0x7CA080
 void ToggleCDFlagShader(); // @0x7CA160
+void CalculateFlagMatrix(math::Mat43* Matrix, nglMeshSection* Section,
+                         float Intensity);  // @0x7CA180
 
 #endif // COD3_RENDER_CDFLAGSHADER_H
