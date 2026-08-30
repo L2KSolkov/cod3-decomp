@@ -15,18 +15,6 @@
 // Shader global pointer definitions
 cdFlagShader* gCDFlagShader = nullptr;  // ?gCDFlagShader@@3PAVcdFlagShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdFlagVertex {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-    unsigned long Shader = 0;
-}
-namespace cdFlagPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-
 // ea: 0x007CB8B0
 void cdFlagVertex::RegisterVShader()
 {
@@ -128,10 +116,12 @@ tlFixedString cdFlagShader::GetName() { return tlFixedString("cdFlag"); }
 // ============================================================================
 void cdFlagShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdFlagVertex::VS, cdFlagVertex::VShaderTable, 0);
-    cdFlagVertex::Shader = cdFlagVertex::VS != nullptr ? cdFlagVertex::VS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdFlagPixel::PS, cdFlagPixel::PShaderTable, 0);
-    cdFlagPixel::Shader = cdFlagPixel::PS != nullptr ? cdFlagPixel::PS[0] : 0;
+    nglDxRegisterVShader(cdFlagVertex::VS,
+                         reinterpret_cast<const unsigned int*>(cdFlagVertex::VShaderTable[0]));
+    cdFlagVertex::Shader = cdFlagVertex::VS[0];
+    nglDxRegisterPShader(cdFlagPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdFlagPixel::PShaderTable[0]));
+    cdFlagPixel::Shader = cdFlagPixel::PS[0];
 }
 
 // ============================================================================

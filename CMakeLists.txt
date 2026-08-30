@@ -136,6 +136,7 @@ add_library(cod3_render STATIC
     src/render/cdDebugShaderData.cpp
     src/render/cdWheelMarkShader.cpp
     src/render/cdFlagShader.cpp
+    src/render/cdFlagShaderData.cpp
     src/render/cdDynamicDecalShader.cpp
     src/render/cdPropellerShader.cpp
     src/render/cdGunSightShader.cpp
