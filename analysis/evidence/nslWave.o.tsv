@@ -1,0 +1,31 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0082A020	?nslWaveGetSourceDirectory@@YAPBDXZ	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:1988	Body returns the source-directory buffer.
+0x0082A020	?nslWaveGetSourceDirectory@@YAPBDXZ	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567770-1567772	Release returns nsl_waveSourceDirectory directly.
+0x0082A030	?nslWaveGetObjectDirectory@@YAPBDXZ	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:1990	Body returns the object-directory buffer.
+0x0082A030	?nslWaveGetObjectDirectory@@YAPBDXZ	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567774-1567776	Release returns nsl_waveObjectDirectory directly.
+0x0082A040	?nslWaveSetSourceDirectory@@YAXPBD@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:1992-1998	Body copies, normalizes, appends the release suffix, and normalizes again.
+0x0082A040	?nslWaveSetSourceDirectory@@YAXPBD@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567780-1567792	Release strncpy/txPathFix/suffix/txPathFix sequence matches source.
+0x0082A0D0	?nslWaveSetObjectDirectory@@YAXPBD@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2000-2006	Body copies, normalizes, appends the release suffix, and normalizes again.
+0x0082A0D0	?nslWaveSetObjectDirectory@@YAXPBD@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567794-1567806	Release strncpy/txPathFix/suffix/txPathFix sequence matches source.
+0x0082A160	?nslWaveGetSourceFilename@@YAPBDPBDPADH@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2008-2014	Body formats the source directory and filename, normalizes the output, and returns the caller buffer.
+0x0082A160	?nslWaveGetSourceFilename@@YAPBDPBDPADH@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567808-1567817	Release formatting, path normalization, and return match source.
+0x0082A1A0	?nslWaveGetObjectFilename@@YAPBDPBD0PADH@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2017-2025	Body ignores platform as release does, formats the object path, normalizes it, and returns the buffer.
+0x0082A1A0	?nslWaveGetObjectFilename@@YAPBDPBD0PADH@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567819-1567829	Release platform omission, formatting, normalization, and return match source.
+0x0082A1E0	?nslWaveInfoAlloc@@YAPAUnslWaveInfo@@XZ	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2028	Body zero-allocates 0x118 bytes.
+0x0082A1E0	?nslWaveInfoAlloc@@YAPAUnslWaveInfo@@XZ	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567831-1567835	Release calloc size matches source.
+0x0082A1F0	?nslWaveInfoSize@@YAIPBUnslWaveInfo@@@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2045-2049	Body returns zero for null and 4 times map bit count plus 24 otherwise.
+0x0082A1F0	?nslWaveInfoSize@@YAIPBUnslWaveInfo@@@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567837-1567844	Release null handling and size formula match source.
+0x0082A220	?nslWaveAlloc@@YAPAUnslWave@@XZ	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2052-2057	Body zero-allocates the 0x10-byte wave and its 0x118-byte info block when the wave allocation succeeds.
+0x0082A220	?nslWaveAlloc@@YAPAUnslWave@@XZ	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567846-1567855	Release allocation sizes and conditional info allocation match source.
+0x0082A250	?nslWaveInfoFree@@YAXPAUnslWaveInfo@@@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2060-2065	Body null-checks, frees both owned names, and frees the info block.
+0x0082A250	?nslWaveInfoFree@@YAXPAUnslWaveInfo@@@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567857-1567866	Release frees groupName, levelName, and the info block under the same null guard.
+0x0082A280	?nslWaveFree@@YAXPAUnslWave@@@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2068-2086	Body frees metadata names, poisons/frees sample data, poisons the 0x10-byte wave, and frees it.
+0x0082A280	?nslWaveFree@@YAXPAUnslWave@@@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567868-1567892	Release null guards, owned pointers, 0xBF poisoning, sizes, and frees match source.
+0x0082A300	?nslWaveSetSoundInfo@@YAXPAUnslWave@@PBUnslWaveInfo@@@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2088-2104	Body null-checks inputs, replaces owned names, copies soundFlags, and copies the 0x108-byte unpacked parameter area.
+0x0082A300	?nslWaveSetSoundInfo@@YAXPAUnslWave@@PBUnslWaveInfo@@@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567894-1567917	Release name frees/duplicates, flag assignment, and 0x108-byte qmemcpy match source.
+0x0082A380	?nslWaveGetInfo@@YAPBUnslWaveInfo@@PBUnslWave@@@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2106-2110	Body returns null for a null wave and otherwise returns its info pointer.
+0x0082A380	?nslWaveGetInfo@@YAPBUnslWaveInfo@@PBUnslWave@@@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567919-1567926	Release null handling and nameOffset return match source.
+0x0082A3A0	?nslWaveInfoCopy@@YAPAUnslWaveInfo@@PBU1@@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2112-2137	Body copies the fixed block, resets owned pointers, duplicates each optional name, and frees all partial state on failure.
+0x0082A3A0	?nslWaveInfoCopy@@YAPAUnslWaveInfo@@PBU1@@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567928-1567954	Release allocation/copy, pointer reset, duplicate failure cleanup, and return match source.
+0x0082A440	?nslWaveCopy@@YAPAUnslWave@@PBU1@IHHQAPBD@Z	V3	PASS	nsl-wave-manual-20260830	2026-08-30	src/sound/nsl.cpp:2139-2174	Body allocates a wave/info copy, preserves sample/data fields, conditionally copies sample data, and cleans up on failure.
+0x0082A440	?nslWaveCopy@@YAPAUnslWave@@PBU1@IHHQAPBD@Z	V4	PASS	nsl-wave-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1567956-1567989	Release wave/info allocation, sample/data field copies, 0x10000-plus-data allocation, conditional flag, memcpy, and failure path match source.
