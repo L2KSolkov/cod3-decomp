@@ -16,6 +16,17 @@
 // Shader global pointer definitions
 cdWorldColorShader* gCDWorldColorShader = nullptr;  // ?gCDWorldColorShader@@3PAVcdWorldColorShader@@A
 
+// ea: 0x007D9D70
+cdWorldColorShader::cdWorldColorShader()
+{
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[0] &= ~0x40;
+}
+
+cdWorldColorShader::~cdWorldColorShader() = default;
+
 tlFixedString cdWorldColorShader::GetName() { return tlFixedString("cdWorldColor"); }
 
 // ============================================================================
@@ -33,11 +44,6 @@ cdWorldColorShader* InitCDWorldColorShader() {
     cdWorldColorShader* result = (cdWorldColorShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdWorldColorShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdWorldColorShader
-        ShaderCommon::ShaderSwitching.__s0[0] &= ~0x40;
         gCDWorldColorShader = result;
     } else {
         gCDWorldColorShader = NULL;
@@ -67,12 +73,8 @@ void cdWorldColorShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSectio
         if (ClipResult != -1) {
             cdWorldShaderNode* node = (cdWorldShaderNode*)nglListAlloc(0x20, 0x10);
             if (node != NULL) {
-                ::new (node) cdWorldShaderNode;
-                node->MeshNode = iMeshNode;
-                node->Section = iSection;
-                // vftable = cdWorldShaderNode
-                node->mMaterial = (cdWorldShaderMat*)iMat;
-                node->hasColorVerts = true;
+                ::new (node) cdWorldShaderNode(iMeshNode, iSection,
+                                                (cdWorldShaderMat*)iMat, true);
             } else {
                 node = NULL;
             }
@@ -83,4 +85,16 @@ void cdWorldColorShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSectio
             ++nglBuildScene->OpaqueListCount;
         }
     }
+}
+
+// ea: 0x007D9EE0
+cdWorldShaderNode::cdWorldShaderNode(nglMeshNode* meshNode,
+                                     nglMeshSection* section,
+                                     cdWorldShaderMat* material,
+                                     bool colorVerts)
+{
+    this->MeshNode = meshNode;
+    this->Section = section;
+    this->mMaterial = material;
+    this->hasColorVerts = colorVerts;
 }

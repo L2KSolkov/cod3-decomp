@@ -14,7 +14,8 @@
 #include "cdWorldColorShader.h"  // cdWorldShaderNode (Clip + hasColorVerts)
 
 // IDA type cdWorldShaderMat (render_xboxr:cdWorldShader.o, size 0x1C).
-struct cdWorldShaderMat : nglMaterial {
+class cdWorldShaderMat : public nglMaterial {
+public:
     nglTexture* mDiffuse;   // +0x10
     nglTexture* mLightmap;  // +0x14
     bool        Translucent;// +0x18

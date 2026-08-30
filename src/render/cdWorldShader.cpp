@@ -293,11 +293,8 @@ void cdWorldShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (ClipResult != -1) {
             cdWorldShaderNode* node = (cdWorldShaderNode*)nglListAlloc(0x20, 0x10);
             if (node != NULL) {
-                ::new (node) cdWorldShaderNode;
-                node->MeshNode = iMeshNode;
-                node->Section = iSection;
-                node->mMaterial = (cdWorldShaderMat*)iMat;
-                node->hasColorVerts = false;
+                ::new (node) cdWorldShaderNode(iMeshNode, iSection,
+                                                (cdWorldShaderMat*)iMat, false);
             } else {
                 node = NULL;
             }

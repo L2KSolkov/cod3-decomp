@@ -15,7 +15,7 @@
 // ============================================================================
 // cdWorldShaderMat — world shader material (fwd)
 // ============================================================================
-struct cdWorldShaderMat;
+class cdWorldShaderMat;
 
 // ============================================================================
 // cdWorldShaderNode — world shader render node (32 bytes)
@@ -24,6 +24,8 @@ struct cdWorldShaderNode : nglShaderNode {
     cdWorldShaderMat* mMaterial;     // +0x14
     int               Clip;          // +0x18
     bool              hasColorVerts; // +0x1C
+
+    cdWorldShaderNode(nglMeshNode*, nglMeshSection*, cdWorldShaderMat*, bool); // @0x7D9EE0
 
     void Render() override;           // @0x7DF220
 };
@@ -34,6 +36,8 @@ static_assert(sizeof(cdWorldShaderNode) == 0x20, "cdWorldShaderNode size mismatc
 // ============================================================================
 class cdWorldColorShader : public nglShader {
 public:
+    cdWorldColorShader(); // @0x7D9D70
+    virtual ~cdWorldColorShader(); // @0x7D9F80
     virtual tlFixedString GetName(); // @0x7D9DA0
     virtual void Register();  // @0x7D9E30
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D9E40
