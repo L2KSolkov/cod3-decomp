@@ -73,33 +73,7 @@ cdGunShader::cdGunShader() {
 // ea: 0x007CF170
 cdGunShader::~cdGunShader() = default;
 
-// Shader static data definitions (render_xboxr cd*Shader.o).
-namespace cdGunRender {
-    static const unsigned int VShaderMicrocode[81] = {
-        0x00142078, 0x00000000, 0x0062601a, 0x08001468, 0xfeb00000,
-        0x00000000, 0x00a1421a, 0x18355800, 0x28000000, 0x00000000,
-        0x02a0041a, 0xb4356854, 0xa8b0c84c, 0x00000000, 0x00a1621a,
-        0x18357800, 0x24000000, 0x00000000, 0x08a1821a, 0x18359802,
-        0xd2080000, 0x00000000, 0x00a1a21a, 0x1835b800, 0x21000000,
-        0x00000000, 0x00824000, 0x14016d54, 0xb8b00000, 0x00000000,
-        0x0140201b, 0x04003800, 0x2f000000, 0x00000000, 0x00e1201b,
-        0x08373800, 0x20a01800, 0x00000000, 0x00424000, 0xb5545800,
-        0x28b00000, 0x00000000, 0x06e0c01b, 0x0836dbff, 0x10b88800,
-        0x00000000, 0x00e0e01b, 0x0836f800, 0x20a04800, 0x00000000,
-        0x00e1001b, 0x08371800, 0x20a02800, 0x00000000, 0x00824000,
-        0xb5fe5800, 0xb8b00000, 0x00000000, 0x00e1c01b, 0x0437d800,
-        0x28200000, 0x00000000, 0x00e1e01b, 0x0437f800, 0x24200000,
-        0x00000000, 0x00e2001b, 0x04361800, 0x22200000, 0x00000000,
-        0x006020aa, 0x1c001402, 0xd0b0f828, 0x00000000, 0x0062201a,
-        0x24001068, 0x70b0e818, 0x00000000, 0x0040001a, 0xc4002800,
-        0x20b0e801,
-    };
-    static const unsigned int* VShaderTableStorage[1] = { VShaderMicrocode };
-    static unsigned long VShaderHandle = 0;
-    unsigned long* VS = &VShaderHandle;
-    unsigned int const** VShaderTable = VShaderTableStorage;
-    unsigned long Shader = 0;
-}
+// Shader static data definitions are restored in cdGunShaderData.cpp.
 
 // ea: 0x007CF000
 void cdGunRender::RegisterVShader()
@@ -107,48 +81,6 @@ void cdGunRender::RegisterVShader()
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdGunRender::VS),
                          reinterpret_cast<const unsigned int*>(cdGunRender::VShaderTable[0]));
     cdGunRender::Shader = cdGunRender::VS[0];
-}
-namespace cdGunPixel {
-    static const unsigned int PShaderMicrocode[60] = {
-        0xd8d41010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x130c0300, 0x00001c80,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc8c40000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00011101, 0x00000001,
-        0x00000000, 0x00000000, 0xffffffff, 0xffffffff, 0x000001ff,
-    };
-    static const unsigned int* PShaderTableStorage[1] = { PShaderMicrocode };
-    static unsigned long* PShaderHandle = nullptr;
-    unsigned long** PS = &PShaderHandle;
-    unsigned int const** PShaderTable = PShaderTableStorage;
-    unsigned long* Shader = nullptr;
-}
-namespace cdGunFullbrightPixel {
-    static const unsigned int PShaderMicrocode[60] = {
-        0xd8301010, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x130c0300, 0x00001c80,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x000000c0, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0xc8200000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x000000c0, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-        0x00000000, 0x00000000, 0x00000000, 0x00011101, 0x00000001,
-        0x00000000, 0x00000000, 0xffffffff, 0xffffffff, 0x000001ff,
-    };
-    static const unsigned int* PShaderTableStorage[1] = { PShaderMicrocode };
-    static unsigned long* PShaderHandle = nullptr;
-    unsigned long** PS = &PShaderHandle;
-    unsigned int const** PShaderTable = PShaderTableStorage;
-    unsigned long* Shader = nullptr;
 }
 // ============================================================================
 // InitCDGunShader — allocate the shader and link into the init list.
