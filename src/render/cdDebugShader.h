@@ -18,7 +18,8 @@
 // ============================================================================
 // cdDebugShaderMat — debug shader material (16 bytes, base only)
 // ============================================================================
-struct cdDebugShaderMat : nglMaterial {
+class cdDebugShaderMat : public nglMaterial {
+public:
     cdDebugShaderMat();  // @0x7C6360
 };
 static_assert(sizeof(cdDebugShaderMat) == 0x10, "cdDebugShaderMat size mismatch");

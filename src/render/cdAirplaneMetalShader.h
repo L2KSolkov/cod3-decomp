@@ -16,7 +16,8 @@
 // ============================================================================
 // cdAirplaneMetalShaderMat — airplane metal shader material (36 bytes)
 // ============================================================================
-struct cdAirplaneMetalShaderMat : nglMaterial {
+class cdAirplaneMetalShaderMat : public nglMaterial {
+public:
     nglTexture* mDiffuse;   // +0x10
     nglTexture* mSpecFunc;  // +0x14
     float       mAlpha;     // +0x18

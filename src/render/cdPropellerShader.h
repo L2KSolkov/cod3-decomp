@@ -17,7 +17,8 @@
 // ============================================================================
 // cdPropellerShaderMat — propeller shader material (28 bytes)
 // ============================================================================
-struct cdPropellerShaderMat : nglMaterial {
+class cdPropellerShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;   // +0x10
     int         mCullMode;  // +0x14
     float       mRotation;  // +0x18

@@ -17,7 +17,8 @@
 // ============================================================================
 // cdScratchMaterial — scratch material (32 bytes)
 // ============================================================================
-struct cdScratchMaterial : nglMaterial {
+class cdScratchMaterial : public nglMaterial {
+public:
     nglTexture*   Texture;   // +0x10
     unsigned int  BlendMode; // +0x14
     int           MapFlags;  // +0x18
