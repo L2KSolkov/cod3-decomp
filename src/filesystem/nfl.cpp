@@ -2323,7 +2323,6 @@ void txPrintf(const char* channel, int level, const char* fmt, ...)
 // ea: 0x00421450
 void txPathNormalize(char* path)
 {
-    if (path == nullptr || *path == 0) return;
     int index = 0;
     do {
         const char value = path[index];
