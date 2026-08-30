@@ -2349,7 +2349,7 @@ void SP_script_model(Entity* pSelf)
     ValidatePakId((TPakId)pSelf->mDestructible.mPakId);
     if (pSelf->mDestructible.mValue != nullptr)
     {
-        Destructible::Initialize(pSelf->mDestructible.mValue, pSelf, true);
+        pSelf->mDestructible.mValue->Initialize(pSelf, true);
         if (pSelf->mTarget.mBlock != nullptr)
             PathNodeMgr::sInst->SetCoverNodeStatus(pSelf->mTarget, 0);
     }

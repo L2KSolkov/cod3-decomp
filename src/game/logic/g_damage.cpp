@@ -1333,7 +1333,7 @@ bool Destructible::DoDamage(Entity* ent, float damage,
     }
     else
     {
-        Initialize(this, ent, false);
+        this->Initialize(ent, false);
     }
     if (mThreshold > damage)
         return false;

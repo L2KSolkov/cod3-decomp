@@ -2791,7 +2791,8 @@ public:
 
 // ZoneCellBox (streamer.o; GetBounds returns this)
 // BoundingBox (32 bytes; vmin/vmax Position3, verified IDA)
-struct BoundingBox {
+class BoundingBox {
+public:
     math::Position3 vmin;  // +0x00
     math::Position3 vmax;  // +0x10
 
@@ -2844,7 +2845,7 @@ public:
 };
 static_assert(sizeof(XModelLod) == 0x0C, "XModelLod layout mismatch");
 static_assert(sizeof(XModel) == 0x50, "XModel layout mismatch");
-struct BspNode {
+class BspNode {
     uint8_t _pad[0x10];
 };
 struct BspTree {
@@ -2919,22 +2920,12 @@ T* IVPointer<T>::GetRawPtr()
 }
 
 // render.o entry points (stubs until render.o lands)
-extern void R_GetXModelBounds(XModel* m, float (*axis)[3],
+extern void R_GetXModelBounds(XModel* m, float (*const axis)[3],
                               BoundingBox& bounds);  // render.o 0xAB1DC0
-void R_GetXModelBounds(XModel* m, float (*axis)[3], BoundingBox& bounds)
-{
-    (void)m; (void)axis; (void)bounds;
-}
 extern void R_FilterModelIntoCells_r(world_t* world, BspNode* node,
                                      StaticModel* psm,
                                      const math::Position3& mins,
                                      const math::Position3& maxs);  // render.o 0xAB62C0
-void R_FilterModelIntoCells_r(world_t* world, BspNode* node,
-                              StaticModel* psm, const math::Position3& mins,
-                              const math::Position3& maxs)
-{
-    (void)world; (void)node; (void)psm; (void)mins; (void)maxs;
-}
 extern void XModelGetBasePose(IVPointer<XModel> model,
                               math::Mat43* mat);  // render.o 0xABA270
 extern int XModelGetStaticBounds(IVPointer<XModel> model, float (*const axis)[3],
@@ -2959,10 +2950,6 @@ public:
                   const char* exploderType);  // ?AddPiece@Destructible@@QAEXPAVEntity@@PBD@Z (g_physics.cpp)
     static void InvalidateCoverNode(Entity* ent);  // ?InvalidateCoverNode@Destructible@@SAXPAVEntity@@@Z (g_physics.cpp)
 };
-void Destructible::Initialize(Entity* ent, bool reInit)
-{
-    (void)ent; (void)reInit;  // stub: game.o (g_entity_misc.cpp self-version)
-}
 extern void G_FreeEntity(Entity* e, int msec);  // g.o (g_active.cpp)
 extern Entity* G_Spawn(TPakId pakId);  // g.o (g_spawn.cpp)
 extern bool ValidForGametype(void);  // g.o (g_main.cpp)

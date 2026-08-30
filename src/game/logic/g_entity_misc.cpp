@@ -1945,22 +1945,22 @@ bool IsLocalPlayer(Entity* entity)
 // Physics bank accessors are defined with their concrete bank layouts in
 // g_physics.cpp so their template symbols retain the release class tags.
 // ea: 0x006FE290
-void Destructible::Initialize(Destructible* self, Entity* ent, bool reInit)
+void Destructible::Initialize(Entity* ent, bool reInit)
 {
-    if (((self->mFlags & 1) != 0) && !reInit)
+    if (((mFlags & 1) != 0) && !reInit)
         return;
-    if ((self->mFlags & 0x80) != 0)
+    if ((mFlags & 0x80) != 0)
     {
-        ent->health = self->mHealth;
-        ent->maxHealth = self->mHealth;
+        ent->health = mHealth;
+        ent->maxHealth = mHealth;
     }
-    self->mFlags = (self->mFlags & 0xFFDFFFFE) | 1;
+    mFlags = (mFlags & 0xFFDFFFFE) | 1;
     for (int bit = 1; bit < 6; ++bit)
     {
         if ((ent->spawnflags & (1 << bit)) != 0)
-            self->mFlags |= (1u << bit);
+            mFlags |= (1u << bit);
     }
-    if (self->mScriptFunction.mStr == nullptr)
+    if (mScriptFunction.mStr == nullptr)
         return;
     ScriptEventHandler* handler = ent->mScriptEventHandler;
     if (handler == nullptr)
@@ -1972,7 +1972,7 @@ void Destructible::Initialize(Destructible* self, Entity* ent, bool reInit)
         ent->SetScriptEventHandler(handler);
     }
     if (handler != nullptr)
-        handler->AddEvent(hash_const.damage, self->mScriptFunction.mStr);
+        handler->AddEvent(hash_const.damage, mScriptFunction.mStr);
 }
 
 struct PakFileLayout {
