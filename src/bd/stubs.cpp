@@ -975,6 +975,7 @@ bool bdBitBuffer::readDataType(bdBitBufferDataType type)
     return actual == (unsigned int)type;
 }
 
+// ea: 0x0089B2F0
 bool bdBitBuffer::readBits(void* data, unsigned int bitCount)
 {
     if (bitCount == 0)
