@@ -393,6 +393,12 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE200	?Maximum@PanelQuad@@SAMMMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165302-1165319	Release computes max(c,d), max(a,b), then max of those intermediates.
 0x005AE250	?Minimum@PanelQuad@@SAMMMMM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:257-262	Source computes min of two pairs then their minimum.
 0x005AE250	?Minimum@PanelQuad@@SAMMMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165321-1165341	Release computes min(c,d), min(a,b), then min of those intermediates.
+0x005AE2E0	?SetQuad@PanelQuadFader@@QAEXPAVPanelQuad@@@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:274-277	Source stores the associated PanelQuad pointer.
+0x005AE2E0	?SetQuad@PanelQuadFader@@QAEXPAVPanelQuad@@@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165352-1165356	Release assigns mQuad from quad.
+0x005AE2F0	?Fade@PanelQuadFader@@QAEXMMM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:280-297	Source initializes fade endpoints/timing, computes absolute delta, updates the quad alpha, and disables fading without a quad.
+0x005AE2F0	?Fade@PanelQuadFader@@QAEXMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165358-1165377	Release has the same null-quad branch, state assignments, fabs delta, and initial SetAlpha call.
+0x005AE360	?Update@PanelQuadFader@@QAEXM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:298-335	Source advances alpha toward the target, handles exact-target and completion cases, and updates the quad.
+0x005AE360	?Update@PanelQuadFader@@QAEXM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165379-1165415	Release control flow, delta calculation, target clamp, fading state, and SetAlpha dispatch match source.
 0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1535-1538	Source tests the requested bit mask against FEMenu flags.
 0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165760-1165764	Release returns (flags & f) != 0.
 0x005AE960	?SetFlag@FEMenu@@QAEXH_N@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1539-1542	Source conditionally sets or clears the requested FEMenu flag bits.
