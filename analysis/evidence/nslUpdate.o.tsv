@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00823400	?nslUpdateListener@@YAXXZ	V3	PASS	ida-manual-nsl-update-20260830	2026-08-30	src/sound/nsl.cpp:3928-3984	Builds the listener basis, normalizes all axes, and writes speaker transforms for both listener and speaker matrices.
+0x00823400	?nslUpdateListener@@YAXXZ	V4	PASS	ida-manual-nsl-update-20260830	2026-08-30	IDA:0x00823400;src/sound/nsl.cpp:3928-3984	Release/source match listener-group fetch, cross products, normalization calls, matrix globals, and all six speaker transform dot products.
+0x00823700	?nslUpdate@@YAXXZ	V3	PASS	ida-manual-nsl-update-20260830	2026-08-30	src/sound/nsl.cpp:3986-4040	Updates timing/banks/sources/emitters/listener, frees invalid voices, updates driver, logs voice states, and optionally starts random playback.
+0x00823700	?nslUpdate@@YAXXZ	V4	PASS	ida-manual-nsl-update-20260830	2026-08-30	IDA:0x00823700;src/sound/nsl.cpp:3986-4040	Release/source match timing order, 320-byte voice stride and offsets, state-character logging, random-bank selection, wave metadata flag test, and source start; removed invented wave-null guard now matches immediate release dereference.
