@@ -118,13 +118,9 @@ void bdPlatformMutex::destroy(void*& h) {
     CloseHandle(h);
 }
 #else
-// ea: 0x008B5EE0
 void* bdPlatformMutex::createMutex() { return nullptr; }
-// ea: 0x008B5EF0
 void bdPlatformMutex::lock(void*&) {}
-// ea: 0x008B5F00
 void bdPlatformMutex::unlock(void*&) {}
-// ea: 0x008B5F10
 void bdPlatformMutex::destroy(void*& h) { h = nullptr; }
 #endif
 
