@@ -359,3 +359,9 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165760-1165764	Release returns (flags & f) != 0.
 0x005AE960	?SetFlag@FEMenu@@QAEXH_N@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1539-1542	Source conditionally sets or clears the requested FEMenu flag bits.
 0x005AE960	?SetFlag@FEMenu@@QAEXH_N@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165766-1165773	Release applies the same conditional set/clear operation.
+0x005AE910	?OnUp@FEMenu@@UAEXH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1466-1469	Source forwards the controller argument's action to FEMenu::Up.
+0x005AE910	?OnUp@FEMenu@@UAEXH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165742-1165746	Release calls Up and ignores the controller argument, matching source.
+0x005AE920	?OnDown@FEMenu@@UAEXH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1470-1473	Source forwards the action to FEMenu::Down.
+0x005AE920	?OnDown@FEMenu@@UAEXH@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165748-1165752	Release calls Down and ignores the controller argument, matching source.
+0x005AE930	?SetDefaultColorScheme@FEMenu@@UAEXD@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1504-1507	Source stores the default color scheme index.
+0x005AE930	?SetDefaultColorScheme@FEMenu@@UAEXD@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165754-1165758	Release assigns default_color_scheme directly.

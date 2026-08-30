@@ -1462,10 +1462,12 @@ public:
     virtual void OnSelect(int c) {}                 // slot 29 (empty inline)
     virtual void OnSquare(int c) {}                 // slot 30 (empty inline)
     virtual void OnCircle(int c) {}                 // slot 31 (empty inline)
+    // ea: 0x005AE910
     virtual void OnUp(int c)                        // slot 32 0x5AE910
     {
         Up();
     }
+    // ea: 0x005AE920
     virtual void OnDown(int c)                      // slot 33 0x5AE920
     {
         Down();
@@ -1500,6 +1502,7 @@ public:
     virtual void SetScaleThroughout(float sc);      // slot 52 0x570390
     virtual void SetZThroughout(float z,
                                 panel_layer layer);  // slot 53 0x5703C0
+    // ea: 0x005AE930
     virtual void SetDefaultColorScheme(char csi)    // slot 54 0x5AE930
     {
         default_color_scheme = csi;
