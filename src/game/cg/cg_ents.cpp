@@ -1024,7 +1024,7 @@ extern int BG_GetNumWeapons();
 // ea: 0x00689CD0
 void CG_Missile(Entity* entity)
 {
-    if (entity->s.eFlags >= 0)
+    if (static_cast<signed char>(entity->s.eFlags) >= 0)
     {
         if (entity->s.weapon > BG_GetNumWeapons())
             entity->s.weapon = 0;
@@ -1053,7 +1053,7 @@ void CG_Missile(Entity* entity)
 // ea: 0x00689E70
 void CG_Mover(Entity* entity)
 {
-    if (entity->s.eFlags >= 0)
+    if (static_cast<signed char>(entity->s.eFlags) >= 0)
     {
         bool v2 = entity->s.solid == 0xFFFFFF;
         void* mDObj = entity->mDObj;
@@ -1080,7 +1080,7 @@ void CG_Mover(Entity* entity)
 // ea: 0x00689FF0
 void CG_ScriptMover(Entity* entity)
 {
-    if (entity->s.eFlags >= 0)
+    if (static_cast<signed char>(entity->s.eFlags) >= 0)
     {
         bool v2 = entity->s.solid == 0xFFFFFF;
         void* mDObj = entity->mDObj;
@@ -1120,7 +1120,7 @@ void CG_ScriptMover(Entity* entity)
 // ea: 0x0068A540
 void CG_Vehicle(Entity* entity)
 {
-    if (entity->s.eFlags >= 0)
+    if (static_cast<signed char>(entity->s.eFlags) >= 0)
     {
         void* mDObj = entity->mDObj;
         if (mDObj != nullptr)
