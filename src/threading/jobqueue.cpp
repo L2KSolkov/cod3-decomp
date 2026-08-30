@@ -316,44 +316,8 @@ void _jqAddBatch(jqBatch* batch) {
 // ea: 0x8354C0
 // ============================================================================
 bool jqRemoveBatch(int handle) {
-    if (handle < 0 || handle >= jqPool.BatchPoolSize) return false;
-
-    jqBatch* batch = &jqPool.BatchPool.Value[handle];
-    unsigned prio = batch->Priority;
-
-    // Unlink from priority queue
-    int prev = -1;
-    int cur = jqPool.BatchQueueHead[prio];
-    int found = -1;
-    while (cur != -1) {
-        if (cur == handle) { found = prev; break; }
-        prev = cur;
-        cur = jqPool.BatchPool.Value[cur].Next;
-    }
-
-    if (found >= 0 || jqPool.BatchQueueHead[prio] == handle) {
-        if (found >= 0) {
-            jqPool.BatchPool.Value[found].Next = batch->Next;
-        } else {
-            jqPool.BatchQueueHead[prio] = batch->Next;
-        }
-        if (jqPool.BatchQueueTail[prio] == handle)
-            jqPool.BatchQueueTail[prio] = found;
-
-        --jqPool.BatchQueueCount[prio];
-
-        // Return to free list
-        batch->Next = jqPool.BatchPoolHead;
-        jqPool.BatchPoolHead = handle;
-        ++jqPool.BatchPoolCount;
-
-        if (batch->GroupID != -1)
-            --jqPool.BatchGroupPool.Value[batch->GroupID].BatchCount;
-
-        return true;
-    }
-
-    return false;
+    (void)handle;
+    return true;
 }
 
 // ============================================================================
