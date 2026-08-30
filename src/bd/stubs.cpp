@@ -964,15 +964,59 @@ bdByteBuffer::~bdByteBuffer()
         bdMemory::deallocate(m_data);
 }
 
+// ea: 0x0089B0D0
+void bdBitBuffer::typeToString(bdBitBufferDataType type, char* const buffer,
+                               unsigned int bufferSize)
+{
+    static const char* const names[] = {
+        "NoType", "Bool", "Char8", "UChar8", "WChar16", "Int16",
+        "UInt16", "Int32", "UInt32", "Int64", "UInt64", "RangedInt32",
+        "RangeUInt32", "Float32", "Float64", "RangeFloat32", "String",
+        "String", "MultiByteString", "Blob", "FullType", "Unknown Type"
+    };
+    int index = (int)type;
+    if (index < 0)
+        index = BD_BB_NO_TYPE;
+    else if (index > 21)
+        index = BD_BB_FULL_TYPE | BD_BB_BOOL_TYPE;
+
+    unsigned int length = (unsigned int)strlen(names[index]);
+    if (bufferSize != 0)
+    {
+        if (length >= bufferSize - 1)
+            length = bufferSize - 1;
+        memcpy(buffer, names[index], length);
+        buffer[length] = 0;
+    }
+}
+
+// ea: 0x0089B400
 bool bdBitBuffer::readDataType(bdBitBufferDataType type)
 {
-    if (!m_typeChecked)
-        return true;
-
-    unsigned int actual = 0;
-    if (!readRangedUInt32(actual, 0, 0x1Fu, false))
-        return false;
-    return actual == (unsigned int)type;
+    bool result = true;
+    if (m_typeChecked)
+    {
+        unsigned int actual = 0;
+        result = readRangedUInt32(actual, 0, 0x1Fu, false);
+        if (result)
+        {
+            bool matches = actual == (unsigned int)type;
+            if (!matches)
+            {
+                char expected[40];
+                char read[40];
+                typeToString(type, expected, 0x28u);
+                typeToString((bdBitBufferDataType)actual, read, 0x28u);
+                bdMessageProxy proxy(".\\bdContainers\\bdBitBuffer.cpp",
+                                     "bool __thiscall bdBitBuffer::readDataType(const enum bdBitBufferDataType)",
+                                     0x20Eu, "dw/err/");
+                proxy.log("bdCore/bitBuffer", "Expected: %s , read: %s ",
+                          expected, read);
+            }
+            return matches;
+        }
+    }
+    return result;
 }
 
 // ea: 0x0089B2F0

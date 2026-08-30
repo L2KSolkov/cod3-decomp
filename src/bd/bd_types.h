@@ -522,6 +522,8 @@ public:
     bool readString(char* s, unsigned int maxLen);         // ?readString@bdBitBuffer@@QAE_NQADI@Z
     bool testBool();                                       // ?testBool@bdBitBuffer@@QAE_NXZ
     bool readDataType(bdBitBufferDataType type);
+    static void typeToString(bdBitBufferDataType type, char* const buffer,
+                             unsigned int bufferSize);
     bool readBits(void* data, unsigned int bitCount);
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);
     bdBitBuffer(unsigned int bitCount = 0, bool typeChecked = false);
