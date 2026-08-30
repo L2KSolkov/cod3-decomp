@@ -49,3 +49,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x007EB8D0	?Init@apsCommon@@SAXIHI@Z	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EB8D0;src/aeps/apsCommon.cpp:425-470	Release/source initialization order, assertions, renderer calls, LOD values, and flag update match.
 0x007EBA40	?Term@apsCommon@@SAXXZ	V3	PASS	ida-manual-aps-common-20260829	2026-08-29	src/aeps/apsCommon.cpp:477-492	Source asserts initialization, destroys/frees apsError, and clears the initialized flag.
 0x007EBA40	?Term@apsCommon@@SAXXZ	V4	PASS	ida-manual-aps-common-20260829	2026-08-29	IDA:0x007EBA40;src/aeps/apsCommon.cpp:477-492	Release/source cleanup order, assertion metadata, allocator use, and flag clear match.
+0x007EB210	?SetEnabled@apsLOD@@QAEXI@Z	V3	PASS	ida-manual-aps-common-20260830	2026-08-30	src/aeps/apsCommon.h:68	Writes the LOD enabled flag directly.
+0x007EB210	?SetEnabled@apsLOD@@QAEXI@Z	V4	PASS	ida-manual-apsCommon-20260830	2026-08-30	IDA:0x007EB210;src/aeps/apsCommon.h:68	Release/source are identical single-member assignment bodies.
