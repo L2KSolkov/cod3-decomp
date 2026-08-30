@@ -265,6 +265,11 @@ bool bdAddressMapImpl::unregisterAddr(bdReference<bdAddrHandle>& addrHandle) {
 // bdAddressMapImpl::getTitleCommonAddr - ea: 0x8B76D0
 // ============================================================================
 bool bdAddressMapImpl::getTitleCommonAddr(bdReference<bdCommonAddr>& ca) {
+    // The release checks for the impossible alias case before touching the
+    // destination reference; preserve that guard for ABI-identical behavior.
+    if (reinterpret_cast<const void*>(this) ==
+        reinterpret_cast<const void*>(&ca))
+        return m_me.m_ptr != NULL;
     if (ca.m_ptr != NULL && ca.m_ptr->releaseRef() == 0)
         delete ca.m_ptr;
     ca.m_ptr = m_me.m_ptr;
