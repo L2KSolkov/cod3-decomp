@@ -150,6 +150,7 @@ void CalculateFlagMatrix(math::Mat43* Matrix, nglMeshSection* Section,
     Matrix->w.v = origin;
 }
 
+// ea: 0x007CB9F0
 cdFlagShaderNode::cdFlagShaderNode(nglMeshNode* iMeshNode,
                                    nglMeshSection* iSection,
                                    cdFlagShaderMat* iMaterial) {
@@ -158,6 +159,7 @@ cdFlagShaderNode::cdFlagShaderNode(nglMeshNode* iMeshNode,
     this->mMaterial = iMaterial;
 }
 
+// ea: 0x007CB870
 tlFixedString cdFlagShader::GetName() { return tlFixedString("cdFlag"); }
 
 // ============================================================================
