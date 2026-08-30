@@ -149,6 +149,7 @@ add_library(cod3_render STATIC
     src/render/cdGunSightSpecularShader.cpp
     src/render/cdGunSightSpecularShaderData.cpp
     src/render/cdCharSpecularShader.cpp
+    src/render/cdCharSpecularShaderData.cpp
     src/render/cdAirplaneMetalShader.cpp
     src/render/cdAirplaneMetalShaderData.cpp
     src/render/cdScratchShader.cpp

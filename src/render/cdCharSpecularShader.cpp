@@ -16,12 +16,6 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdCharSpecularShader* gcdCharSpecularShader = nullptr;  // ?gcdCharSpecularShader@@3PAVcdCharSpecularShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdCharSpecularShaderRender {
-    unsigned long VS[2] = {};
-    unsigned int const* VShaderTable[2] = {};
-}
-
 // ea: 0x007D26F0
 void cdCharSpecularShaderRender::RegisterShader()
 {
@@ -36,17 +30,6 @@ void cdCharSpecularShaderRender::RegisterVShader()
 {
     cdCharSpecularShaderRender::RegisterShader();
 }
-namespace cdCharSpecularPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-    unsigned long* Shader = nullptr;
-}
-namespace cdCharSpecularFullbrightPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-    unsigned long* Shader = nullptr;
-}
-
 // ============================================================================
 // InitCDCharSpecularShader — allocate the shader and link into the init list.
 // ea: 0x7D2130
