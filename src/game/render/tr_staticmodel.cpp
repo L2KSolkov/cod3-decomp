@@ -232,8 +232,7 @@ static nglMeshParams scale_params;
 extern void ValidatePakId(TPakId pakId);     // ?ValidatePakId@@YAXW4TPakId@@@Z
 extern TPakId CurPakId();                    // ?CurPakId@@YA?AW4TPakId@@XZ
 extern void XModelGetBasePose(IVPointer<XModel> model,
-                              DObjSkelMat* out,
-                              DObjSkelMat* out2);  // ?XModelGetBasePose@@YAXV?$IVPointer@VXModel@@@@PAUDObjSkelMat@@1@Z
+                              math::Mat43* out);  // render.o 0x006CAD70
 extern void R_UseCachedLightSample(const LightGridData& data);  // ?R_UseCachedLightSample@@YAXABVLightGridData@@@Z
 extern void auxSetScale(nglMeshParams* params, float x, float y, float z);  // ?auxSetScale@@YAXPAVnglMeshParams@@MMM@Z
 extern nglMeshNode* _codListAddMesh(nglMesh* mesh, const math::Mat43& localToWorld,
@@ -333,7 +332,7 @@ void R_AddStaticModelSurfaces(StaticModel* ent)
             goto skip;
     }
 
-    XModelGetBasePose(ctx, boneMtxList_0, boneMtxList_0);
+    XModelGetBasePose(ctx, reinterpret_cast<math::Mat43*>(boneMtxList_0));
 
     localToWorld.x.v = _mm_setr_ps(ent->axis[0][0], ent->axis[0][1],
                                    ent->axis[0][2], 0.0f);
