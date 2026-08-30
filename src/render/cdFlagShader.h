@@ -37,6 +37,7 @@ struct cdFlagShaderNode : nglShaderNode {
 
     cdFlagShaderNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
                      cdFlagShaderMat* iMaterial);  // @0x7CB9F0
+    virtual ~cdFlagShaderNode(); // @0x7CBA50
 };
 static_assert(sizeof(cdFlagShaderNode) == 0x18, "cdFlagShaderNode size mismatch");
 
@@ -46,6 +47,7 @@ static_assert(sizeof(cdFlagShaderNode) == 0x18, "cdFlagShaderNode size mismatch"
 class cdFlagShader : public nglShader {
 public:
     cdFlagShader();  // @0x7CB840
+    virtual ~cdFlagShader(); // @0x7CBA90
     virtual tlFixedString GetName(); // @0x7CB870
     virtual void Register();  // @0x7CA3C0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CA400
@@ -60,11 +62,15 @@ namespace cdFlagVertex {
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdFlagVertex@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdFlagVertex@@3KA
     void RegisterVShader();                  // @0x007CB8B0
+    unsigned int GetVShader();               // @0x007CB8D0
 }
 namespace cdFlagPixel {
     extern unsigned long** PS;               // ?PS@cdFlagPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdFlagPixel@@3PAPBIA
     extern unsigned long* Shader;            // ?Shader@cdFlagPixel@@3PAKA
+    void RegisterShader();                   // @0x007CB8E0
+    void RegisterPShader();                  // @0x007CB900
+    unsigned long* GetPShader();             // @0x007CB920
 }
 
 // ============================================================================

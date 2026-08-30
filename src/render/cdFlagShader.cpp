@@ -24,12 +24,41 @@ cdFlagShader::cdFlagShader() {
     *((unsigned char*)&gShaderSwitchingFlags) &= 0xF7;
 }
 
+// ea: 0x007CBA90
+cdFlagShader::~cdFlagShader() = default;
+
 // ea: 0x007CB8B0
 void cdFlagVertex::RegisterVShader()
 {
     nglDxRegisterVShader(cdFlagVertex::VS,
                          reinterpret_cast<const unsigned int*>(cdFlagVertex::VShaderTable[0]));
     cdFlagVertex::Shader = cdFlagVertex::VS[0];
+}
+
+// ea: 0x007CB8D0
+unsigned int cdFlagVertex::GetVShader()
+{
+    return static_cast<unsigned int>(cdFlagVertex::VS[0]);
+}
+
+// ea: 0x007CB8E0
+void cdFlagPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdFlagPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdFlagPixel::PShaderTable[0]));
+    cdFlagPixel::Shader = cdFlagPixel::PS[0];
+}
+
+// ea: 0x007CB900
+void cdFlagPixel::RegisterPShader()
+{
+    cdFlagPixel::RegisterShader();
+}
+
+// ea: 0x007CB920
+unsigned long* cdFlagPixel::GetPShader()
+{
+    return cdFlagPixel::PS[0];
 }
 
 namespace AeAssert {
@@ -162,6 +191,9 @@ cdFlagShaderNode::cdFlagShaderNode(nglMeshNode* iMeshNode,
     this->Section = iSection;
     this->mMaterial = iMaterial;
 }
+
+// ea: 0x007CBA50
+cdFlagShaderNode::~cdFlagShaderNode() = default;
 
 // ea: 0x007CB870
 tlFixedString cdFlagShader::GetName() { return tlFixedString("cdFlag"); }
