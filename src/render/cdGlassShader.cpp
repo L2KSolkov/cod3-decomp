@@ -16,20 +16,6 @@ nglTexture* gProjShadowTex = nullptr;  // ?gProjShadowTex@@3PAUnglTexture@@A (re
 // Shader global pointer definitions
 cdGlassShader* gCDGlassShader = nullptr;  // ?gCDGlassShader@@3PAVcdGlassShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdGlassRender {
-    unsigned long VS[2][2] = {};
-    unsigned int const* VShaderTable[2][2] = {};
-}
-namespace cdGlassPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-namespace cdGlassSolidColorPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-
 // ea: 0x7D0810
 void cdGlassRender::RegisterVShader() {
     for (int index = 0; index < 4; ++index)
