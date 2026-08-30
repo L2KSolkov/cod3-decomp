@@ -29,6 +29,11 @@ static_assert(sizeof(cdDebugShaderMat) == 0x10, "cdDebugShaderMat size mismatch"
 struct cdDebugShaderNode : nglShaderNode {
     cdDebugShaderMat* mMaterial;  // +0x14
 
+    cdDebugShaderNode(nglMeshNode* iMeshNode,
+                      nglMeshSection* iSection,
+                      cdDebugShaderMat* iMaterial); // @0x7C69F0
+    virtual ~cdDebugShaderNode(); // @0x7C6A50
+
     void GetSortInfo(nglSortInfo& si) override;  // @0x7C6470
     void Render() override;                       // @0x7C65C0
 };
@@ -39,6 +44,8 @@ static_assert(sizeof(cdDebugShaderNode) == 0x18, "cdDebugShaderNode size mismatc
 // ============================================================================
 class cdDebugShader : public nglShader {
 public:
+    cdDebugShader(); // @0x7C6890
+    virtual ~cdDebugShader(); // @0x7C6A90
     virtual void Register();  // @0x7C6440
     virtual tlFixedString GetName();  // @0x7C68C0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C6570
@@ -52,10 +59,14 @@ namespace cdDebugShaderRender {
     extern unsigned long* VS;                // ?VS@cdDebugShaderRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdDebugShaderRender@@3PAPBIA
     void RegisterVShader();                  // @0x007C68E0
+    unsigned int GetVShader();               // @0x007C6900
 }
 namespace cdDebugPixel {
     extern unsigned long** PS;               // ?PS@cdDebugPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdDebugPixel@@3PAPBIA
+    void RegisterPShader();                   // @0x007C6910
+    void InitPShader();                       // @0x007C6930
+    unsigned long* GetPShader();             // @0x007C6950
 }
 
 // ============================================================================

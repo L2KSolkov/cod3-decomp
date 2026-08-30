@@ -30,6 +30,27 @@ extern unsigned int gpuHashVertexShader;
 extern unsigned int gpuHashPixelShader;
 extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
 
+// ea: 0x007C6900
+unsigned int cdDebugShaderRender::GetVShader() {
+    return static_cast<unsigned int>(cdDebugShaderRender::VS[0]);
+}
+
+// ea: 0x007C6910
+void cdDebugPixel::RegisterPShader() {
+    nglDxRegisterPShader(cdDebugPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdDebugPixel::PShaderTable[0]));
+}
+
+// ea: 0x007C6930
+void cdDebugPixel::InitPShader() {
+    cdDebugPixel::RegisterPShader();
+}
+
+// ea: 0x007C6950
+unsigned long* cdDebugPixel::GetPShader() {
+    return cdDebugPixel::PS[0];
+}
+
 // ea: 0x007C68E0
 void cdDebugShaderRender::RegisterVShader()
 {
@@ -68,6 +89,17 @@ cdDebugShaderMat::cdDebugShaderMat() {
     this->RuntimeData = NULL;
 }
 
+// ea: 0x007C6890
+cdDebugShader::cdDebugShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[2] &= ~8;
+}
+
+// ea: 0x007C6A90
+cdDebugShader::~cdDebugShader() = default;
+
 // ============================================================================
 // InitCDDebugShader — allocate the shader and link into the init list.
 // ea: 0x7C63D0
@@ -76,11 +108,6 @@ void InitCDDebugShader() {
     cdDebugShader* result = (cdDebugShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         new (result) cdDebugShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdDebugShader
-        ShaderCommon::ShaderSwitching.__s0[2] &= ~8;
         gCDDebugShader = result;
     } else {
         gCDDebugShader = NULL;
@@ -100,6 +127,7 @@ void ToggleCDDebugShader() {
 
 }
 
+// ea: 0x007C68C0
 tlFixedString cdDebugShader::GetName() {
     return tlFixedString("cdDebug");
 }
@@ -127,7 +155,8 @@ void cdDebugShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdDebugShaderNode;
+            ::new (node) cdDebugShaderNode(iMeshNode, iSection,
+                                            (cdDebugShaderMat*)iMat);
             node->mMaterial = (cdDebugShaderMat*)iMat;
             nglListAddNode(node);
         } else {
@@ -135,6 +164,18 @@ void cdDebugShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         }
     }
 }
+
+// ea: 0x007C69F0
+cdDebugShaderNode::cdDebugShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdDebugShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
+// ea: 0x007C6A50
+cdDebugShaderNode::~cdDebugShaderNode() = default;
 
 // ============================================================================
 // cdDebugShaderNode::GetSortInfo — ea: 0x7C6470
