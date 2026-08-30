@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008730C0	?GetVersion@nalBaseSkeleton@@QBEIXZ	V3	PASS	ida-manual-nal-skeleton-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008730C0; src/animation/nal.cpp:713	Real body returns the instance Version field.
+0x008730C0	?GetVersion@nalBaseSkeleton@@QBEIXZ	V4	PASS	ida-manual-nal-skeleton-20260830	2026-08-30	IDA decompile 0x008730C0 and src/animation/nal.cpp:713-716	Release field load and return match source.
+0x00873350	?nalReleaseSkeleton@@YAHPAVnalBaseSkeleton@@@Z	V3	PASS	ida-manual-nal-skeleton-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x00873350; src/animation/nal.cpp:4036	Real body forwards the skeleton to nalSkeletonDirectory->Release with zero flags.
+0x00873350	?nalReleaseSkeleton@@YAHPAVnalBaseSkeleton@@@Z	V4	PASS	ida-manual-nal-skeleton-20260830	2026-08-30	IDA decompile 0x00873350 and src/animation/nal.cpp:4036-4039	Release directory target and Release arguments (0,false) match source.
+0x008733A0	?nalReleaseAllSkeletons@@YAXXZ	V3	PASS	ida-manual-nal-skeleton-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x008733A0; src/animation/nal.cpp:4051	Real body invokes nalSkeletonDirectory->ReleaseAll for all skeletons.
+0x008733A0	?nalReleaseAllSkeletons@@YAXXZ	V4	PASS	ida-manual-nal-skeleton-20260830	2026-08-30	IDA decompile 0x008733A0 and src/animation/nal.cpp:4051-4054	Release ReleaseAll arguments (false,false,1) match source; decorated release symbol is void despite decompiler incidental return typing.
