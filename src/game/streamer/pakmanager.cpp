@@ -1339,7 +1339,7 @@ public:
     TBankAlloc   mBankAlloc;            // +0x58
     TBankAlloc   mSerializedAlloc;      // +0x68
     TPakId       mPakId;                // +0x78
-    const PakInfoNode* mPakInfo;        // +0x7C
+    mutable const PakInfoNode* mPakInfo; // +0x7C
     PakHeader*   mHeader;               // +0x80
     int          mDefaultSectionIdx;    // +0x84
     unsigned char* mHeaderBuffer;       // +0x88
@@ -1454,16 +1454,20 @@ public:
 private:
     // ea: 0x664B90
     float GetLoadTime() const;
+public:
     // ea: 0x664BC0
     float GetProgress() const;
     // ea: 0x664C30
     bool IsCancelOk() const;
+private:
     // ea: 0x664C40
     void CopyHeader();
     // ea: 0x664CD0
     void DetermineNextFile();
+public:
     // ea: 0x664E50
-    const PakInfoNode* GetInfo();
+    const PakInfoNode* GetInfo() const;
+private:
     // ea: 0x664E80
     void ValidateRange(void* data) const;
     // ea: 0x664EC0
@@ -13015,7 +13019,7 @@ void PakFile::DetermineNextFile()
 }
 
 // ea: 0x664E50
-const PakInfoNode* PakFile::GetInfo()
+const PakInfoNode* PakFile::GetInfo() const
 {
     if (mPakType == kPakTypeCount)
         return nullptr;
