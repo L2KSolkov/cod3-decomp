@@ -99,15 +99,6 @@ void nglRenderQuad(nglQuad* Quad) {
         }
         pixelShader = nglGpuTexColPixelShader::Shader;
     } else {
-        // The Xbox color-only shader ignores any texture left bound by the
-        // previous draw.  The D3D9 fixed-function fallback must make that
-        // implicit shader input explicit before translating the packet.
-        // Keep the NGL cache in sync with the native stage. Otherwise the
-        // next quad using the same texture can be incorrectly skipped by
-        // nglDxSetTexture after this untextured draw.
-        nglDxTexCache.Prev[0].Tex = NULL;
-        nglDxTexCache.Prev[0].TexHash = (unsigned int)-1;
-        D3DDevice_SetTexture(0, NULL);
         nglDxInitShaders(false);
         if (nglGpuQuadPCVertexShader::Shader != gpuHashVertexShader) {
             gpuHashVertexShader = nglGpuQuadPCVertexShader::Shader;
