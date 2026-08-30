@@ -1357,9 +1357,6 @@ void AnimIK::ApplyFire(Entity* ent)
 // ea: 0x00504C90
 void AnimIK::ApplyVehicleSteering(Entity* ent)
 {
-    if (ent == nullptr || ent->client == nullptr || ent->sentient == nullptr
-        || pose == nullptr || skeleton == nullptr)
-        return;
     Client* client = ent->client;
     if ((client->ps.eFlags & 0x100000) == 0
         || !IsPlayerFullySeatedInVehicle(ent))
