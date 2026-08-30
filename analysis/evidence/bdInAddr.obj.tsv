@@ -1,3 +1,5 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
-0x008B5E40	??0bdInAddr@@QAE@XZ	V3	PASS	ida-manual-bdinaddr-20260827	2026-08-27	IDA:0x008B5E40;src/bd/bd_types.h:186	Release and source are both located; the default constructor writes the invalid IPv4 marker.
-0x008B5E40	??0bdInAddr@@QAE@XZ	V4	PASS	ida-manual-bdinaddr-20260827	2026-08-27	IDA:0x008B5E42-0x008B5E48;src/bd/bd_types.h:186-188	Release/source comparison matches the single 0xFF00FF00 (`-16711936`) store to inUn.m_iaddr and this-return behavior.
+0x008B5E60	?fromString@bdInAddr@@QAEXPBD@Z	V3	PASS	ida-manual-bd-inaddr-20260830	2026-08-30	src/bd/bdInAddr.cpp:24-26	Concrete address parsing body stores the inet result.
+0x008B5E60	?fromString@bdInAddr@@QAEXPBD@Z	V4	PASS	ida-manual-bd-inaddr-20260830	2026-08-30	src/bd/bdInAddr.cpp:24-26; c3_bin/codmp_xboxr.xbe.c:1693986-1693993	Release parses with inet_addr and stores the result; the mapped void ABI is preserved.
+0x008B5E80	?toString@bdInAddr@@QBEIQADI@Z	V3	PASS	ida-manual-bd-inaddr-20260830	2026-08-30	src/bd/bdInAddr.cpp:32-36	Concrete XNet address-formatting body is present.
+0x008B5E80	?toString@bdInAddr@@QBEIQADI@Z	V4	PASS	ida-manual-bd-inaddr-20260830	2026-08-30	src/bd/bdInAddr.cpp:32-36; c3_bin/codmp_xboxr.xbe.c:1693995-1694001	Release XNet formatter error path, buffer arguments, strlen success path, and return value match source.
