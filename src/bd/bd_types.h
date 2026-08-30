@@ -1545,8 +1545,8 @@ static_assert(sizeof(bdLoopbackConnection) == 0x74, "bdLoopbackConnection size m
 // ============================================================================
 class bdReceivedMessage {
 public:
-    bdReceivedMessage(const bdReference<bdMessage>& message,
-                      const bdReference<bdConnection>& connection);
+    bdReceivedMessage(bdReference<bdMessage> message,
+                      bdReference<bdConnection> connection);
     ~bdReceivedMessage();
     bdReference<bdMessage> getMessage() const;
     bdReference<bdConnection> getConnection() const;

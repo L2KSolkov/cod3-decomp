@@ -9,8 +9,8 @@
 // ============================================================================
 // bdReceivedMessage::bdReceivedMessage - ea: 0x8A10C0
 // ============================================================================
-bdReceivedMessage::bdReceivedMessage(const bdReference<bdMessage>& message,
-                                     const bdReference<bdConnection>& connection)
+bdReceivedMessage::bdReceivedMessage(bdReference<bdMessage> message,
+                                     bdReference<bdConnection> connection)
     : m_message(message.m_ptr), m_connection(connection.m_ptr) {
     if (m_message.m_ptr != NULL)
         m_message.m_ptr->addRef();

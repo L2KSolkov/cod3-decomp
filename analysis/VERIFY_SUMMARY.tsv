@@ -108,7 +108,7 @@ bdPlatformTrulyRandom-xbox.obj	1	0	0	0	1	0	0
 bdQoSProbe-xbox.obj	54	43	2	8	0	1	0
 bdQoSProbeListener.obj	4	2	0	0	0	2	0
 bdRandom.obj	7	7	0	0	0	0	0
-bdReceivedMessage.obj	4	0	1	0	0	3	0
+bdReceivedMessage.obj	4	0	0	0	0	4	0
 bdReferencable.obj	1	0	0	0	0	1	0
 bdReliableReceiveWindow.obj	19	13	1	4	0	1	0
 bdReliableSendWindow.obj	24	14	3	6	0	1	0
