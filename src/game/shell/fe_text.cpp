@@ -167,7 +167,7 @@ FEText* FEText::Clone()
 // ea: 0x005ADE90
 int FEText::ConvertColor(color32 c)
 {
-    return c.c.b | ((c.c.g | ((c.c.r | (c.c.a << 8)) << 8)) << 8);
+    return c.c.b | ((c.c.g | (c.c.r << 8)) << 8);
 }
 
 // ea: 0x0056BDC0

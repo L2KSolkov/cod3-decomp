@@ -397,6 +397,22 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE2E0	?SetQuad@PanelQuadFader@@QAEXPAVPanelQuad@@@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165352-1165356	Release assigns mQuad from quad.
 0x005AE2F0	?Fade@PanelQuadFader@@QAEXMMM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:280-297	Source initializes fade endpoints/timing, computes absolute delta, updates the quad alpha, and disables fading without a quad.
 0x005AE2F0	?Fade@PanelQuadFader@@QAEXMMM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165358-1165377	Release has the same null-quad branch, state assignments, fabs delta, and initial SetAlpha call.
+0x005ADE90	?ConvertColor@FEText@@SAIVcolor32@@@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/shell/fe_text.cpp:168-171	Source packs the color channels into the release 24-bit ordering.
+0x005ADE90	?ConvertColor@FEText@@SAIVcolor32@@@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165128-1165132	Release packs blue, green, and red and ignores alpha; source now matches exactly.
+0x005ADED0	??0MultiLineButtons@@QAE@XZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/shell/fe_text.cpp:1320-1327	Source initializes text_start_index and x_offset to zero.
+0x005ADED0	??0MultiLineButtons@@QAE@XZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165134-1165140	Release zeroes both fields and returns the object.
+0x005ADEF0	?CopyFrom@MultiLineButtons@@QAEXPAV1@@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/shell/fe_text.cpp:1329-1333	Source copies the complete MultiLineButtons aggregate.
+0x005ADEF0	?CopyFrom@MultiLineButtons@@QAEXPAV1@@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165142-1165146	Release assigns the entire object from the source object.
+0x005ADF10	?SetPos@MultiLineString@@QAEXMM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/shell/fe_text.cpp:1362-1367	Source stores x/y and clears z.
+0x005ADF10	?SetPos@MultiLineString@@QAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165148-1165157	Release writes xy x/y and zeroes z.
+0x005ADF60	?Shift@MultiLineString@@QAEXMM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/shell/fe_text.cpp:1370-1376	Source preserves z while adding x/y offsets.
+0x005ADF60	?Shift@MultiLineString@@QAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165159-1165168	Release preserves z and performs the same x/y additions.
+0x005ADFA0	?GetTotalWidth@MultiLineString@@QAEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/shell/fe_text.cpp:1379-1382	Source returns total_width.
+0x005ADFA0	?GetTotalWidth@MultiLineString@@QAEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165170-1165174	Release returns this->total_width.
+0x005ADFB0	??0PanelMaterial@@QAE@XZ	V3	PASS	ida-manual-shell-brocshell-20260830	2026-08-30	src/game/shell/broc_shell.cpp:54-58	Source initializes color to zero and texture to null.
+0x005ADFB0	??0PanelMaterial@@QAE@XZ	V4	PASS	ida-manual-shell-brocshell-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165176-1165182	Release zeroes color, nulls texture, and returns the object.
+0x005ADFE0	??0LightPanelQuad@@QAE@XZ	V3	PASS	ida-manual-shell-brocshell-20260830	2026-08-30	src/game/shell/broc_shell.cpp:48-51	Source initializes LightPanelQuad Z to zero.
+0x005ADFE0	??0LightPanelQuad@@QAE@XZ	V4	PASS	ida-manual-shell-brocshell-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165184-1165189	Release initializes Z to zero and returns the object.
 0x005AE360	?Update@PanelQuadFader@@QAEXM@Z	V3	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	src/game/shell/broc_shell.cpp:298-335	Source advances alpha toward the target, handles exact-target and completion cases, and updates the quad.
 0x005AE360	?Update@PanelQuadFader@@QAEXM@Z	V4	PASS	ida-manual-shell-panelquad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165379-1165415	Release control flow, delta calculation, target clamp, fading state, and SetAlpha dispatch match source.
 0x005AE940	?GetFlag@FEMenu@@QAE_NH@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:1535-1538	Source tests the requested bit mask against FEMenu flags.
