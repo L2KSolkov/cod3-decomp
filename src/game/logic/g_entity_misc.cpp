@@ -4740,7 +4740,18 @@ void UpdateWheelMarks(Entity* e, int a, bool b, const math::Position3& c,
 }
 void j_nullsub_50(void* self) { (void)self; }
 void View_SetViewportClipping(int a) { (void)a; }
-void WaitTilOutput_AssignData(void* a, void* b) { (void)a; (void)b; }
+void WaitTilOutput_AssignData(void* self, void* data)
+{
+    if (self == nullptr)
+        return;
+
+    // WaitTilOutput::AssignData is a virtual slot in the release object.
+    // Dispatch through the concrete instance so the typed WaitTilOutputInst
+    // implementation performs its size check and copies the payload.
+    typedef void (__thiscall *AssignDataFn)(void*, void*);
+    void** vftable = *reinterpret_cast<void***>(self);
+    reinterpret_cast<AssignDataFn>(vftable[1])(self, data);
+}
 void Weapon_MeleeHitShock(Entity* ent)
 {
     if (ent == nullptr || !ent->IsLocalPlayer())
