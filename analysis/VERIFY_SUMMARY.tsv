@@ -185,7 +185,7 @@ deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	167	14	83	0	1206	0
 game.o	1158	458	10	578	0	112	0
-game2.o	1040	409	62	31	7	531	0
+game2.o	1040	409	61	32	7	531	0
 game_xbox.o	365	149	82	116	0	18	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
@@ -279,7 +279,7 @@ phys_constraint_solver_multithreaded.o	184	137	37	7	0	3	0
 phys_contact_manifold.o	26	18	7	0	0	1	0
 phys_gjk.o	37	37	0	0	0	0	0
 phys_util.o	11	11	0	0	0	0	0
-physics.o	747	468	25	242	0	12	0
+physics.o	747	468	25	241	0	13	0
 physics_system.o	313	277	30	0	0	6	0
 physics_system_internal.o	154	112	31	11	0	0	0
 rb_ragdoll_model.o	92	58	19	15	0	0	0
@@ -288,11 +288,11 @@ rbc_def_custom.o	4	2	0	0	0	2	0
 rbc_def_generic.o	26	25	1	0	0	0	0
 rbc_def_ragdoll.o	38	33	4	0	0	1	0
 rbc_def_vehicle.o	46	41	4	0	0	1	0
-render.o	1038	671	4	287	0	76	0
+render.o	1038	671	4	285	0	78	0
 rigid_body.o	13	11	1	0	0	1	0
 scr.o	1540	488	1	22	0	1029	0
 shell.o	2214	734	24	655	0	801	0
-streamer.o	730	372	84	178	0	96	0
+streamer.o	730	372	83	178	0	97	0
 sv.o	148	29	2	93	0	24	0
 tl_initlist.o	1	0	0	0	0	1	0
 tl_instbank.o	9	0	0	0	0	9	0
