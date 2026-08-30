@@ -4230,8 +4230,11 @@ void          nslPriorityUpdate() {
                 const unsigned char* metadata = sourceWave == nullptr
                     ? nullptr
                     : *reinterpret_cast<const unsigned char* const*>(sourceWave);
-                if (sourceWave != nullptr && metadata != nullptr &&
-                    (metadata[7] & 1u) == 0) {
+                // The release treats an unresolved source wave as the
+                // default priority too; only a resolved 3D wave proceeds to
+                // distance-based attenuation when its metadata says so.
+                if (sourceWave == nullptr ||
+                    (metadata != nullptr && (metadata[7] & 1u) == 0)) {
                     priority = 100;
                 } else {
                     const float attenuation = nslSourceGetAttenuation(source);
