@@ -12489,12 +12489,8 @@ extern nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString& FileName,
                                            void* Data);      // nal.cpp
 extern void XAnimEntryInvalidate();  // anim.o 0x53E0E0
 tlFixedString GetName(const char* name);  // defined below (0x66F3C0)
-// XAnimRelease (anim.o 0x5513E0; stub)
+// XAnimRelease (anim.o 0x5513E0)
 extern void XAnimRelease(nalAnimClass<nalAnyPose>* anim);
-void XAnimRelease(nalAnimClass<nalAnyPose>* anim)
-{
-    (void)anim;
-}
 
 // ea: 0x6637E0 / 0x6637F0
 tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalGetAnimDirectory()

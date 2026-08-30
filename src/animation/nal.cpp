@@ -11216,6 +11216,119 @@ void ReleaseAllAnims()
     }
 }
 
+// ea: 0x005513E0
+void XAnimRelease(nalAnimClass<nalAnyPose>* anim)
+{
+    AnimBankLocal* bank =
+        (AnimBankLocal*)AnimBankManager_GetBank(AnimBankManager_sInst, 0);
+    unsigned int bankSize = bank->mSize;
+    unsigned int treeIndex = 1;
+    if (bankSize <= 1)
+        return;
+
+    while (true)
+    {
+        unsigned int checkedTreeIndex = treeIndex;
+        if (treeIndex >= bankSize)
+        {
+            XANIM_ASSERT("index < mSize",
+                         "../ae\\inplace/InplaceVector.h", 81,
+                         "Bounds check");
+        }
+        if (treeIndex >= bank->mSize)
+            checkedTreeIndex = 0;
+
+        AnimTree* tree = &bank->mList[checkedTreeIndex];
+        unsigned int entryCount = tree->entries.mSize;
+        if (entryCount != 0)
+        {
+            unsigned int entryIndex = 0;
+            int infoOffset = 0x18;
+            do
+            {
+                unsigned int checkedEntryIndex = entryIndex;
+                if (entryIndex >= entryCount)
+                {
+                    XANIM_ASSERT("index < mSize",
+                                 "../ae\\inplace/InplaceVector.h", 81,
+                                 "Bounds check");
+                    if (entryIndex >= entryCount)
+                        checkedEntryIndex = 0;
+                }
+
+                XAnimEntry* entry =
+                    &tree->entries.mList[checkedEntryIndex];
+                if (entry->anim == anim)
+                {
+                    reserved_dlist<XAnimTree>::dlist_node* head =
+                        g_tree_list.m_head;
+                    reserved_dlist<XAnimTree>::dlist_node* next =
+                        g_tree_list.m_head != nullptr
+                            ? g_tree_list.m_head->m_next
+                            : nullptr;
+                    if (g_tree_list.m_head
+                            != (reserved_dlist<XAnimTree>::dlist_node*)
+                                   &g_tree_list.m_end
+                        && next != nullptr)
+                    {
+                        do
+                        {
+                            XAnimTree* xanimTree = (XAnimTree*)head;
+                            if (xanimTree->anims == tree)
+                            {
+                                unsigned short* infoIndex =
+                                    (unsigned short*)((char*)xanimTree
+                                                      + infoOffset);
+                                if (*infoIndex != 0)
+                                {
+                                    XAnimFreeInfo(xanimTree, *infoIndex);
+                                    *infoIndex = 0;
+                                }
+                            }
+                            head = next;
+                            next = next->m_next;
+                        } while (next != nullptr);
+                    }
+
+                    unsigned int releaseEntryIndex = entryIndex;
+                    if (entryIndex >= entryCount)
+                    {
+                        XANIM_ASSERT("index < mSize",
+                                     "../ae\\inplace/InplaceVector.h", 81,
+                                     "Bounds check");
+                        if (entryIndex >= entryCount)
+                            releaseEntryIndex = 0;
+                    }
+                    XAnimEntry* releaseEntry =
+                        &tree->entries.mList[releaseEntryIndex];
+                    void* notifyList = releaseEntry->notify;
+                    releaseEntry->anim = nullptr;
+                    releaseEntry->numAnims = 0;
+                    if (notifyList != nullptr)
+                    {
+                        unsigned int notifyCount =
+                            ((unsigned int*)notifyList)[-1];
+                        XAnimNotifyInfo* notify =
+                            (XAnimNotifyInfo*)notifyList;
+                        for (unsigned int n = 0; n < notifyCount; ++n)
+                            notify[n].~XAnimNotifyInfo();
+                        mem_heap_free((char*)notifyList - 4);
+                    }
+                    releaseEntry->notify = nullptr;
+                    releaseEntry->lastAttempt = 0;
+                }
+                ++entryIndex;
+                infoOffset += 2;
+            } while (entryIndex < entryCount);
+        }
+
+        bankSize = bank->mSize;
+        ++treeIndex;
+        if (treeIndex >= bank->mSize)
+            break;
+    }
+}
+
 // ============================================================================
 // nalComponent<nalComponentBase,CODNoteData,CODNoteTrack> + CODNoteTrack
 // (anim.o; nal_generic.cpp COD note-track component)
