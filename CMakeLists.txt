@@ -190,6 +190,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsShrimpRenderer.cpp
     src/aeps/apsBillboardRenderer.cpp
     src/aeps/apsColorBillboardRenderer.cpp
+    src/aeps/apsColorBillboardRendererShaderData.cpp
     src/aeps/apsUVARenderer.cpp
     src/aeps/apsRectangleRenderer.cpp
     src/aeps/apsRectangleRendererShaderData.cpp

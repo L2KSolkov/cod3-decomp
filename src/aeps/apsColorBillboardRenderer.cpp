@@ -8,12 +8,6 @@
 // ============================================================================
 #include "apsColorBillboardRenderer.h"
 
-// APS shader static data definitions (aeps_xboxr)
-unsigned int* apsColorBillboardRender::VS = nullptr;
-const unsigned int** apsColorBillboardRender::VShaderTable = nullptr;
-unsigned int** apsColorBillboardRenderPixel::PS = nullptr;
-const unsigned int** apsColorBillboardRenderPixel::PShaderTable = nullptr;
-
 // apsColorBillboardRender::RegisterVShader - ea: 0x00805770
 void apsColorBillboardRender::RegisterVShader() {
     nglDxRegisterVShader(reinterpret_cast<unsigned long*>(VS), VShaderTable[0]);
@@ -43,10 +37,8 @@ apsColorBillboardRenderer::apsColorBillboardRenderer(const apsColorBillboardRend
 // ea: 0x805720
 // ============================================================================
 void apsColorBillboardRenderer::Init() {
-    if (apsColorBillboardRender::VShaderTable != NULL)
-        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorBillboardRender::VS), apsColorBillboardRender::VShaderTable[0]);
-    if (apsColorBillboardRenderPixel::PShaderTable != NULL)
-        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorBillboardRenderPixel::PS), apsColorBillboardRenderPixel::PShaderTable[0]);
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorBillboardRender::VS), apsColorBillboardRender::VShaderTable[0]);
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorBillboardRenderPixel::PS), apsColorBillboardRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================
