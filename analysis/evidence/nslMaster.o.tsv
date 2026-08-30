@@ -1,0 +1,33 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00826580	?nslMasterGetGroup@@YAPAUnslGroup@@XZ	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3330	Body resolves the NSL_MASTER group.
+0x00826580	?nslMasterGetGroup@@YAPAUnslGroup@@XZ	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564215-1564219	Release direct call to nslGroupGet matches source.
+0x00826590	?nslIsBusVolumeName@@YA_NI@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3341	Body compares the bus ID against the first configured volume bus.
+0x00826590	?nslIsBusVolumeName@@YA_NI@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564221-1564225	Release comparison matches source.
+0x008265B0	?nslSetBusVolume@@YAXIM@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3346	Body stores bus ID, volume, and single-bus count.
+0x008265B0	?nslSetBusVolume@@YAXIM@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564227-1564233	Release stores and count update match source.
+0x008265E0	?nslSetBusPitch@@YAXIM@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3354	Body stores bus ID, pitch, and single-bus count.
+0x008265E0	?nslSetBusPitch@@YAXIM@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564235-1564241	Release stores and count update match source.
+0x00826610	?nslSetBusVolume@@YAXM@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3362	Body stores the global bus volume.
+0x00826610	?nslSetBusVolume@@YAXM@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564243-1564247	Release direct global store matches source.
+0x00826630	?nslSetBusPitch@@YAXM@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3364	Body stores the global bus pitch.
+0x00826630	?nslSetBusPitch@@YAXM@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564249-1564253	Release direct global store matches source.
+0x00826650	?nslSetBusVolumeAddBus@@YAXI@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3368	Body appends a volume bus only while the ten-entry limit permits.
+0x00826650	?nslSetBusVolumeAddBus@@YAXI@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564255-1564266	Release limit, indexed store, and increment match source.
+0x00826670	?nslSetBusPitchAddBus@@YAXI@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3377	Body appends a pitch bus only while the ten-entry limit permits.
+0x00826670	?nslSetBusPitchAddBus@@YAXI@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564268-1564279	Release limit, indexed store, and increment match source.
+0x00826690	?nslGetBusIdVolumeCount@@YAHXZ	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3386	Body returns the volume-bus count.
+0x00826690	?nslGetBusIdVolumeCount@@YAHXZ	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564281-1564285	Release direct count return matches source.
+0x008266A0	?nslGetBusIdPitchCount@@YAHXZ	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3388	Body returns the pitch-bus count.
+0x008266A0	?nslGetBusIdPitchCount@@YAHXZ	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564287-1564291	Release direct count return matches source.
+0x008266B0	?nslSetBusVolumeRemoveBus@@YAXI@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3392	Body removes every matching volume bus and compacts the remaining IDs.
+0x008266B0	?nslSetBusVolumeRemoveBus@@YAXI@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564293-1564321	Release removal and compaction loop match source.
+0x00826710	?nslSetBusPitchRemoveBus@@YAXI@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3411	Body removes every matching pitch bus and compacts the remaining IDs.
+0x00826710	?nslSetBusPitchRemoveBus@@YAXI@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564323-1564351	Release removal and compaction loop match source.
+0x00826770	?nslGetBusIdVolume@@YAIH@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3430	Body returns the indexed volume bus ID.
+0x00826770	?nslGetBusIdVolume@@YAIH@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564353-1564357	Release indexed return matches source.
+0x00826780	?nslGetBusIdPitch@@YAIH@Z	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3432	Body returns the indexed pitch bus ID.
+0x00826780	?nslGetBusIdPitch@@YAIH@Z	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564359-1564363	Release indexed return matches source.
+0x00826790	?nslGetBusVolume@@YAMXZ	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3435	Body returns the global bus volume.
+0x00826790	?nslGetBusVolume@@YAMXZ	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564365-1564369	Release direct global return matches source.
+0x008267A0	?nslGetBusPitch@@YAMXZ	V3	PASS	nsl-master-manual-20260830	2026-08-30	src/sound/nsl.cpp:3437	Body returns the global bus pitch.
+0x008267A0	?nslGetBusPitch@@YAMXZ	V4	PASS	nsl-master-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1564371-1564375	Release direct global return matches source.
