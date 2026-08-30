@@ -16,7 +16,7 @@ ae_fixed_string.o	9	0	0	0	0	9	0
 ae_heap.o	12	12	0	0	0	0	0
 afmv_dx_idct.o	3	0	0	0	0	3	0
 afmv_dx_rgb.o	2	0	0	0	0	2	0
-anim.o	741	228	9	307	0	197	0
+anim.o	741	227	9	307	0	198	0
 apk.o	24	0	0	23	0	1	0
 apsAction.o	19	13	1	0	0	5	0
 apsActionList.o	26	18	1	0	0	7	0
