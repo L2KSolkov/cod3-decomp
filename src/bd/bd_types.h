@@ -366,9 +366,9 @@ struct bdFastArray {
     void increaseCapacity(unsigned int count) {
         unsigned int extra = (count <= m_capacity) ? m_capacity : count;
         unsigned int newCapacity = extra + m_capacity;
-        T* newData = (T*)bdMemory::allocate(4 * newCapacity);
+        T* newData = (T*)bdMemory::allocate(sizeof(T) * newCapacity);
         if (m_size != 0)
-            memcpy(newData, m_data, 4 * m_size);
+            memcpy(newData, m_data, sizeof(T) * m_size);
         bdMemory::deallocate(m_data);
         m_capacity = newCapacity;
         m_data = newData;
@@ -406,14 +406,14 @@ struct bdFastArray {
                 if (item == m_data[i]) {
                     unsigned int size = m_size;
                     if (i < size && j <= size && i < j)
-                        memmove(m_data + i, m_data + i + 1, 4 * (size - j));
+                        memmove(m_data + i, m_data + i + 1, sizeof(T) * (size - j));
                     unsigned int cap = m_capacity;
                     unsigned int newSize = i - j + m_size;
                     m_size = newSize;
                     if (cap > 4 * newSize) {
                         unsigned int newCap = m_capacity - (m_capacity >> 1);
                         m_capacity = newCap;
-                        m_data = (T*)bdMemory::reallocate(m_data, 4 * newCap);
+                        m_data = (T*)bdMemory::reallocate(m_data, sizeof(T) * newCap);
                     }
                     --i;
                     --j;
