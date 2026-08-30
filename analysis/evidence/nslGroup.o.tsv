@@ -1,0 +1,17 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00823950	?nslGroupGet@@YAPAUnslGroup@@I@Z	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3259	Body performs the bounds check, record lookup, and empty-name check present in release.
+0x00823950	?nslGroupGet@@YAPAUnslGroup@@I@Z	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561672-1561683	Release control flow and field accesses match source.
+0x00823980	?nslGroupGet@@YAPAUnslGroup@@PBD@Z	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3268	Body handles invalid names, existing-group lookup, capacity failure, and initialization.
+0x00823980	?nslGroupGet@@YAPAUnslGroup@@PBD@Z	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561686-1561731	Release search, capacity diagnostic, update mask, defaults, and bounded copy match source.
+0x00823A70	?nslGroupSetParam@@YAXPBDHM@Z	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3296	Body resolves the group and updates its mask and indexed parameter.
+0x00823A70	?nslGroupSetParam@@YAXPBDHM@Z	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561734-1561748	Release 64-bit mask update and parameter store match source semantics.
+0x00823AC0	?nslGroupGetParam@@YAMPBDHM@Z	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3305	Body returns the indexed group parameter or the supplied default.
+0x00823AC0	?nslGroupGetParam@@YAMPBDHM@Z	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561750-1561759	Release conditional return matches source.
+0x00823B00	?nslGroupSetVolume@@YAXPBDM@Z	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3311	Body performs the release group lookup and intentionally has no state write.
+0x00823B00	?nslGroupSetVolume@@YAXPBDM@Z	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561762-1561766	Release body is the same lookup-only implementation.
+0x00823B20	?nslGroupGetVolume@@YAMPBDM@Z	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3316	Body returns group parameter zero or the supplied default.
+0x00823B20	?nslGroupGetVolume@@YAMPBDM@Z	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561768-1561777	Release conditional return matches source.
+0x00823B60	?nslSetMasterVolume@@YAXM@Z	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3441	Body updates the master group's volume mask/value and reapplies speaker mode.
+0x00823B60	?nslSetMasterVolume@@YAXM@Z	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561780-1561795	Release group update, speaker-mode query, and speaker-mode set match source.
+0x00823BA0	?nslGetMasterVolume@@YAMXZ	V3	PASS	nsl-group-manual-20260830	2026-08-30	src/sound/nsl.cpp:3452	Body resolves NSL_MASTER and returns its volume or zero.
+0x00823BA0	?nslGetMasterVolume@@YAMXZ	V4	PASS	nsl-group-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1561797-1561807	Release conditional return matches source.
