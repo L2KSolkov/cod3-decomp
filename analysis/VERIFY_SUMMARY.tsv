@@ -198,9 +198,9 @@ mp.o	1142	375	12	355	0	400	0
 mp_actors.o	436	64	0	145	0	227	0
 mp_anim_wad.o	430	194	144	0	0	92	0
 mp_level_wad.o	1062	1040	3	14	0	5	0
-mp_shell.o	835	173	0	109	1	552	0
+mp_shell.o	835	173	0	64	1	597	0
 mp_util_wad.o	1283	620	269	0	0	394	0
-mp_xbox.o	77	20	0	5	0	52	0
+mp_xbox.o	77	20	0	0	0	57	0
 nal_anim.o	29	20	5	4	0	0	0
 nal_cache.o	7	0	4	3	0	0	0
 nal_generic.o	68	22	25	20	0	1	0
@@ -291,7 +291,7 @@ rbc_def_vehicle.o	46	41	4	1	0	0	0
 render.o	1038	672	4	288	0	74	0
 rigid_body.o	13	11	1	1	0	0	0
 scr.o	1540	488	1	22	0	1029	0
-shell.o	2214	831	27	939	0	417	0
+shell.o	2214	831	27	936	0	420	0
 streamer.o	730	372	84	271	0	3	0
 sv.o	148	29	2	93	0	24	0
 tl_initlist.o	1	0	0	0	0	1	0
