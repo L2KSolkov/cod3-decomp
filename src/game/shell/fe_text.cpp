@@ -48,7 +48,7 @@ public:
 // FEText (112 bytes - ui_types.h verified)
 // ============================================================================
 
-// ea: 0x005AD690
+// ea: 0x005AD6B0
 FEText::FEText()
     : PanelAnimObject(), flash_info(nullptr), text(), name()
 {
