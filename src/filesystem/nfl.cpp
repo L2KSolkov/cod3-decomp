@@ -2457,12 +2457,13 @@ char* txPathFix(const char* src, char* dir, int dirSize)
     char* read = dir;
     char* write = dir;
     char previous = 0;
-    while (*read != 0 && write < dir + dirSize - 1) {
+    int normalizeRemaining = remaining;
+    while (*read != 0 && normalizeRemaining > 0) {
         if ((previous == 0 || previous == ':' || previous == '/')
             && read[0] == '.' && read[1] == '/') {
             read += 2; continue;
         }
-        previous = *read; *write++ = *read++;
+        previous = *read; *write++ = *read++; --normalizeRemaining;
     }
     *write = 0;
     return dir;
