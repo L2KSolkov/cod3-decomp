@@ -595,7 +595,8 @@ struct nalAnimFileHeader {
 };
 static_assert(sizeof(nalAnimFileHeader) == 72, "NAL animation file header mismatch");
 
-struct nalAnimFile {
+class nalAnimFile {
+public:
     nalAnimFileHeader Header;
 };
 static_assert(sizeof(nalAnimFile) == 72, "NAL animation file layout mismatch");

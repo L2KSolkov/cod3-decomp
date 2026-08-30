@@ -2235,7 +2235,7 @@ static_assert(offsetof(InstanceBankSet, mInstanceBanks) == 0x08
 
 // nal resource types (nal.h; forward decls)
 class nalAnyPose;
-struct nalAnimFile;  // struct to match nal.cpp externs (PAU mangling)
+    class nalAnimFile;  // release ABI uses the V-tagged class name
 class nalSceneAnim;
 class nalBaseSkeleton;
 template <typename T> class nalAnimClass;
@@ -12521,7 +12521,7 @@ void PakManager::LoadWbk(tlFixedString audioBank, bool async)
 // nal resource directory globals + accessors (streamer.o 0x6637E0 - 0x6638D0)
 // ============================================================================
 class nalAnyPose;
-struct nalAnimFile;
+class nalAnimFile;
 class nalSceneAnim;
 class nalBaseSkeleton;
 template <typename T> class nalAnimClass;
@@ -12607,7 +12607,8 @@ public:
 static_assert(offsetof(nalAnimClass<nalAnyPose>, Name) == 0x08,
               "nalAnimClass::Name offset mismatch");
 
-struct nalAnimFile {
+class nalAnimFile {
+public:
 public:
     uint8_t _pad[0x10];
     tlFixedString Name;    // +0x10 (Header.Name)
