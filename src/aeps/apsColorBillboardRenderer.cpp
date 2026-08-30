@@ -43,10 +43,10 @@ apsColorBillboardRenderer::apsColorBillboardRenderer(const apsColorBillboardRend
 // ea: 0x805720
 // ============================================================================
 void apsColorBillboardRenderer::Init() {
-    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorBillboardRender::VS),
-                         apsColorBillboardRender::VShaderTable[0]);
-    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorBillboardRenderPixel::PS),
-                         apsColorBillboardRenderPixel::PShaderTable[0]);
+    if (apsColorBillboardRender::VShaderTable != NULL)
+        nglDxRegisterVShader(reinterpret_cast<unsigned long*>(apsColorBillboardRender::VS), apsColorBillboardRender::VShaderTable[0]);
+    if (apsColorBillboardRenderPixel::PShaderTable != NULL)
+        nglDxRegisterPShader(reinterpret_cast<unsigned long**>(apsColorBillboardRenderPixel::PS), apsColorBillboardRenderPixel::PShaderTable[0]);
 }
 
 // ============================================================================
