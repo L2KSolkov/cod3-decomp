@@ -151,7 +151,7 @@ cdHeatHazeShader.o	20	17	1	0	0	2	0
 cdOceanGlobals.o	19	5	0	14	0	0	0
 cdOceanShader.o	23	12	1	9	0	1	0
 cdPrelitShader.o	25	20	0	0	0	5	0
-cdPropellerShader.o	22	6	0	4	0	12	0
+cdPropellerShader.o	22	6	0	3	0	13	0
 cdRiverShader.o	37	26	1	8	0	2	0
 cdScratchShader.o	46	24	0	4	0	18	0
 cdScratchVertexDef.o	2	0	0	0	0	2	0
