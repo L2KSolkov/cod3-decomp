@@ -17,12 +17,6 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdGunSightSpecularShader* gCDGunSightSpecularShader = nullptr;  // ?gCDGunSightSpecularShader@@3PAVcdGunSightSpecularShader@@A
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdGunSightSpecularRender {
-    unsigned long VS[2] = {};
-    unsigned int const* VShaderTable[2] = {};
-}
-
 // ea: 0x007CDCD0
 void cdGunSightSpecularRender::RegisterVShader()
 {
@@ -31,15 +25,6 @@ void cdGunSightSpecularRender::RegisterVShader()
                              cdGunSightSpecularRender::VShaderTable[index]);
     }
 }
-namespace cdGunSightSpecularPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-namespace cdGunSightSpecularFullbrightPixel {
-    unsigned long* PS[2] = {};
-    unsigned int const* PShaderTable[2] = {};
-}
-
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
