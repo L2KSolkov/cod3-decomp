@@ -62,7 +62,7 @@ bdAddressMap-xbox.obj	7	0	3	0	0	4	0
 bdAlignedOffsetMemory.obj	4	0	0	0	0	4	0
 bdBitBuffer.obj	41	39	0	0	0	2	0
 bdBitOperations.obj	4	0	0	0	0	4	0
-bdByteBuffer.obj	5	3	0	0	0	2	0
+bdByteBuffer.obj	5	2	0	0	0	3	0
 bdBytePacker.obj	11	11	0	0	0	0	0
 bdChunk.obj	9	8	1	0	0	0	0
 bdCommonAddr-xbox.obj	28	24	2	0	0	2	0
