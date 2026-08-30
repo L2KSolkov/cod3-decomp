@@ -4,11 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
 extern const char defaultFileName[];
 
 void* bdAlignedOffsetMalloc(unsigned int size, unsigned int align,
@@ -18,39 +13,36 @@ void* bdAlignedOffsetRealloc(void* p, unsigned int oldSize,
                              unsigned int newSize, unsigned int align,
                              unsigned int offset);
 
+struct bdPlatformMutex {
+    static void* createMutex();
+    static unsigned long lock(void*& handle);
+    static int unlock(void*& handle);
+    static int destroy(void*& handle);
+};
+
 // ea: 0x008A0500
 bdMutex::bdMutex()
     : m_handle(NULL)
 {
-#ifdef _WIN32
-    m_handle = CreateMutexA(NULL, FALSE, NULL);
-#endif
+    m_handle = bdPlatformMutex::createMutex();
 }
 
 // ea: 0x008A0510
 bdMutex::~bdMutex()
 {
-#ifdef _WIN32
-    ReleaseMutex(m_handle);
-    CloseHandle(m_handle);
-#endif
-    m_handle = NULL;
+    bdPlatformMutex::destroy(m_handle);
 }
 
 // ea: 0x008A0520
 void bdMutex::lock()
 {
-#ifdef _WIN32
-    WaitForSingleObject(m_handle, INFINITE);
-#endif
+    bdPlatformMutex::lock(m_handle);
 }
 
 // ea: 0x008A0530
 void bdMutex::unlock()
 {
-#ifdef _WIN32
-    ReleaseMutex(m_handle);
-#endif
+    bdPlatformMutex::unlock(m_handle);
 }
 
 namespace bdMemory {
