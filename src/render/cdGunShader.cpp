@@ -134,12 +134,15 @@ tlFixedString cdGunShader::GetName() { return tlFixedString("cdGun"); }
 // ============================================================================
 void cdGunShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdGunRender::VS, cdGunRender::VShaderTable, 0);
-    cdGunRender::Shader = cdGunRender::VS != nullptr ? cdGunRender::VS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGunPixel::PS, cdGunPixel::PShaderTable, 0);
-    cdGunPixel::Shader = cdGunPixel::PS != nullptr ? cdGunPixel::PS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGunFullbrightPixel::PS, cdGunFullbrightPixel::PShaderTable, 0);
-    cdGunFullbrightPixel::Shader = cdGunFullbrightPixel::PS != nullptr ? cdGunFullbrightPixel::PS[0] : 0;
+    nglDxRegisterVShader(reinterpret_cast<unsigned long*>(cdGunRender::VS),
+                         cdGunRender::VShaderTable[0]);
+    cdGunRender::Shader = cdGunRender::VS[0];
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdGunPixel::PS),
+                         cdGunPixel::PShaderTable[0]);
+    cdGunPixel::Shader = cdGunPixel::PS[0];
+    nglDxRegisterPShader(reinterpret_cast<unsigned long**>(cdGunFullbrightPixel::PS),
+                         cdGunFullbrightPixel::PShaderTable[0]);
+    cdGunFullbrightPixel::Shader = cdGunFullbrightPixel::PS[0];
 }
 
 // ============================================================================
