@@ -1,2 +1,3 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
-0x009ED180	?bdGetRandomUChar8@@YAXQAEI@Z	V3	PASS	bd-random-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1914755-1914759;src/bd/bdPlatform.cpp:230-235	Release delegates the byte fill to Xbox XNetRandom; the port has the matching exported signature and a concrete host-platform byte-fill implementation using rand(). This is platform-equivalent behavior, so V3 is claimed and V4 is intentionally not claimed.
+0x009ED180	?bdGetRandomUChar8@@YAXQAEI@Z	V3	PASS	ida-manual-bd-random-20260830	2026-08-30	src/bd/bdPlatform.cpp:239-241	Concrete random-byte loop is present.
+0x009ED180	?bdGetRandomUChar8@@YAXQAEI@Z	V4	FAIL	ida-manual-bd-random-20260830	2026-08-30	src/bd/bdPlatform.cpp:239-241; c3_bin/codmp_xboxr.xbe.c:1914756-1914759	Release forwards to j_XNetRandom; source currently uses rand() per byte, so release callee and random-source behavior do not match.
