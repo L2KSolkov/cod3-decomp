@@ -40,14 +40,15 @@ static_assert(sizeof(cdSimpleShaderMat) == 0x18, "cdSimpleShaderMat size mismatc
 // ============================================================================
 class cdSimpleShader : public nglShader {
 public:
+    cdSimpleShader(); // @0x7D68C0
+    virtual ~cdSimpleShader(); // @0x7D69E0
     virtual void Register();  // @0x7D6490
     virtual tlFixedString GetName();  // @0x7D68F0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7D64C0
 };
 static_assert(sizeof(cdSimpleShader) == 0x10, "cdSimpleShader size mismatch");
 
-// Shader data tables are the exact IDA-declared objects.  Their Xbox
-// microcode payloads remain null until the Phase 6 shader translation pass.
+// Shader data tables are the exact IDA-declared objects.
 namespace cdSimpleRender {
     extern unsigned int VS[2];
     extern const unsigned int* VShaderTable[2];

@@ -23,6 +23,17 @@
 // Shader global pointer definitions
 cdSimpleShader* gCDSimpleShader = nullptr;  // ?gCDSimpleShader@@3PAVcdSimpleShader@@A
 
+// ea: 0x007D68C0
+cdSimpleShader::cdSimpleShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[1] &= ~4;
+}
+
+// ea: 0x007D69E0
+cdSimpleShader::~cdSimpleShader() = default;
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;
@@ -153,6 +164,7 @@ cdSimpleShaderMat::cdSimpleShaderMat(nglTexture* iTexture) {
     this->Shader = gCDSimpleShader;
 }
 
+// ea: 0x007D68F0
 tlFixedString cdSimpleShader::GetName() {
     return tlFixedString("cdSimple");
 }
@@ -176,11 +188,6 @@ void InitCDSimpleShader() {
     cdSimpleShader* result = (cdSimpleShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdSimpleShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdSimpleShader
-        ShaderCommon::ShaderSwitching.__s0[1] &= ~4;
         gCDSimpleShader = result;
     } else {
         gCDSimpleShader = NULL;
@@ -200,12 +207,6 @@ void ToggleCDSimpleShader() {
 
 }
 
-static void* cdSimpleShaderNodeVtable()
-{
-    static cdSimpleShaderNode Probe(nullptr, nullptr, nullptr, false);
-    return *reinterpret_cast<void**>(&Probe);
-}
-
 // ============================================================================
 // cdSimpleShader::AddNode — add a simple shader node to the opaque list.
 // ea: 0x7D64C0
@@ -215,11 +216,8 @@ void cdSimpleShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
     if ((ShaderCommon::ShaderSwitching.__s0[1] & 4) == 0) {
         cdSimpleShaderNode* node = (cdSimpleShaderNode*)nglListAlloc(0x1C, 0x10);
         if (node != NULL) {
-            node->MeshNode = iMeshNode;
-            node->Section = iSection;
-            *reinterpret_cast<void**>(node) = cdSimpleShaderNodeVtable();
-            node->mMaterial = (cdSimpleShaderMat*)iMat;
-            node->hasColorVerts = false;
+            ::new (node) cdSimpleShaderNode(iMeshNode, iSection,
+                                             (cdSimpleShaderMat*)iMat, false);
         } else {
             node = NULL;
         }
@@ -329,22 +327,27 @@ void cdSimpleRender::RegisterVShader() {
         nglDxRegisterVShader(reinterpret_cast<unsigned long*>(&VS[i]), VShaderTable[i]);
 }
 
+// ea: 0x007D6940
 unsigned int cdSimpleRender::GetVShader(unsigned int index) {
     return VS[index];
 }
 
+// ea: 0x007D6950
 void cdSimplePixel::RegisterPShader() {
     nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
 }
 
+// ea: 0x007D6970
 unsigned int* cdSimplePixel::GetPShader() {
     return PS[0];
 }
 
+// ea: 0x007D6980
 void cdSimpleFullbrightPixel::RegisterPShader() {
     nglDxRegisterPShader(reinterpret_cast<unsigned long**>(PS), PShaderTable[0]);
 }
 
+// ea: 0x007D69A0
 unsigned int* cdSimpleFullbrightPixel::GetPShader() {
     return PS[0];
 }
