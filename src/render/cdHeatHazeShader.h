@@ -33,7 +33,7 @@ namespace cdHeatHazePixel {
 extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
-void ToggleCDHeatHazeShader();   // @0x7CF460
+bool ToggleCDHeatHazeShader();   // @0x7CF460
 void InitCDHeatHazeShader();     // @0x7CF470 (empty)
 char SetupCDHeatHazeShader();    // @0x7CF480
 

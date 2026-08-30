@@ -100,7 +100,7 @@ extern void ToggleCDGunShader();
 extern void ToggleCDGunSightShader();
 extern void ToggleCDGunSightSpecularShader();
 extern void ToggleCDGlassShader();
-extern void ToggleCDHeatHazeShader();
+extern bool ToggleCDHeatHazeShader();
 extern void ToggleCDDynamicDecalShader();
 extern void ToggleCDFlagShader();
 
@@ -159,7 +159,7 @@ ShaderSwitchPair gShaderSwitches[36] = {
     { "cdgunsight",        ToggleCDGunSightShader },
     { "cdgunsightspecular",ToggleCDGunSightSpecularShader },
     { "cdglass",           ToggleCDGlassShader },
-    { "cdheathaze",        ToggleCDHeatHazeShader },
+    { "cdheathaze",        (void(*)())ToggleCDHeatHazeShader },
     { "particles",         (void(*)())ToggleParticles },
     { "fog",               (void(*)())ToggleFog },
     { "cdDynamicDecal",    ToggleCDDynamicDecalShader },

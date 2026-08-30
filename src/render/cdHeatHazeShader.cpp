@@ -40,8 +40,10 @@ static bool gEnabled = true;  // @0xE3CA30 (release default)
 // ToggleCDHeatHazeShader — flip the heat-haze enabled flag.
 // ea: 0x7CF460
 // ============================================================================
-void ToggleCDHeatHazeShader() {
-    gEnabled = !gEnabled;
+bool ToggleCDHeatHazeShader() {
+    bool result = !gEnabled;
+    gEnabled = result;
+    return result;
 }
 
 // ============================================================================
