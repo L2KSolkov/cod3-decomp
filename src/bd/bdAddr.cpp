@@ -13,11 +13,14 @@ unsigned int bdAddr::serializedSize = 0;
 
 // ea: 0x9EC8C0
 bdAddr::bdAddr() : m_port(0) {
+    m_port = 0;
 }
 
 // ea: 0x9EC8E0
 bdAddr::bdAddr(const bdAddr& other)
     : m_address(other.m_address), m_port(other.m_port) {
+    m_address = other.m_address;
+    m_port = other.m_port;
 }
 
 // ea: 0x9EC9C0
