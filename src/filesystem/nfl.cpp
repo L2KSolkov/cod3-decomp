@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cstdarg>
 #include <cctype>
+#include <ctime>
 
 #ifdef _WIN32
   #define WIN32_LEAN_AND_MEAN
@@ -2166,14 +2167,14 @@ void txInit() {}
 // ea: 0x00420D70
 unsigned long long txTime()
 {
-    const unsigned long long result = static_cast<unsigned long long>(Now());
+    const unsigned long long result =
+        1000ULL * static_cast<unsigned long long>(::clock()) / 0x3E8ULL;
     tx_time = static_cast<unsigned int>(result);
     return result;
 }
 // ea: 0x00420DA0
 int txMatch(const char* value, const char* pattern)
 {
-    if (pattern == nullptr || value == nullptr) return 0;
     if (*pattern == 0) return *value == 0;
     if (*pattern != '*') {
         if (*value == 0 || (*pattern != '?' && *pattern != *value)) return 0;
