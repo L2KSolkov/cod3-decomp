@@ -527,6 +527,9 @@ public:
     bool readBits(void* data, unsigned int bitCount);
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);
     bdBitBuffer(unsigned int bitCount = 0, bool typeChecked = false);
+    unsigned int getReadPosition() const;
+    void setReadPosition(unsigned int position);
+    void setTypeCheck(bool typeChecked);
     bool getTypeCheck() const;
     unsigned int getNumBitsWritten() const { return m_writePosition; }
     unsigned int getDataSize() const { return m_data.m_size; }

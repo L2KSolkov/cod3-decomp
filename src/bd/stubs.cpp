@@ -335,6 +335,25 @@ bdBitBuffer::bdBitBuffer(unsigned int bitCount, bool typeChecked)
     m_data.m_data = bytes ? new uint8_t[bytes] : nullptr;
 }
 
+// ea: 0x0089AFC0
+unsigned int bdBitBuffer::getReadPosition() const
+{
+    return m_readPosition;
+}
+
+// ea: 0x0089AFD0
+void bdBitBuffer::setReadPosition(unsigned int position)
+{
+    m_readPosition = position;
+}
+
+// ea: 0x0089AFF0
+void bdBitBuffer::setTypeCheck(bool typeChecked)
+{
+    m_typeChecked = typeChecked;
+}
+
+// ea: 0x0089B000
 bool bdBitBuffer::getTypeCheck() const
 {
     return m_typeChecked;
@@ -342,6 +361,7 @@ bool bdBitBuffer::getTypeCheck() const
 
 // bdBitBuffer IO primitives (bdCore:bdBitBuffer.obj), reconstructed from the
 // generated release dump (writeBits 0x89BCF0, readBits 0x89B2F0).
+// ea: 0x0089BCF0
 void bdBitBuffer::writeBits(const void* data, unsigned int bitCount)
 {
     unsigned int writePosition = m_writePosition;
