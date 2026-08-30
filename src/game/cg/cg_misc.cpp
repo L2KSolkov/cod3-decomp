@@ -927,11 +927,25 @@ public:
 };
 
 // ea: 0x006BBC20
+struct shellshock_parms_t;
+
 struct shellshock_t {
-    RumbleEffectInstanceHandle hLoopSound;  // +0x00
-    RumbleEffectInstanceHandle hExitSound;  // +0x04
+    shellshock_parms_t* parms;            // +0x00
+    int startTime;                        // +0x04
+    int duration;                         // +0x08
+    int loopEndTime;                      // +0x0C
+    float sensitivity;                    // +0x10
+    float viewDelta[2];                   // +0x14
+    int hasSavedScreen;                   // +0x1C
+    RumbleEffectInstanceHandle hLoopSound;  // +0x20
+    RumbleEffectInstanceHandle hExitSound;  // +0x24
     shellshock_t();
 };
+static_assert(offsetof(shellshock_t, hLoopSound) == 0x20,
+              "shellshock_t hLoopSound offset mismatch");
+static_assert(offsetof(shellshock_t, hExitSound) == 0x24,
+              "shellshock_t hExitSound offset mismatch");
+static_assert(sizeof(shellshock_t) == 0x28, "shellshock_t size mismatch");
 
 // Keep the release constructor as a callable export.  The original object
 // contains this symbol at 0x006BBC20; allowing the tiny body to inline erases
@@ -3610,6 +3624,8 @@ struct ADSMetaAnimData {
     virtual int IsDelayCreate();           // ea: 0x006BBEF0
     virtual void DelayCreate(void** animArray, int numAnims);
 };
+static_assert(sizeof(ADSMetaAnimData) == 0x2C,
+              "ADSMetaAnimData size mismatch");
 
 struct ADSMetaAnimPlayer {
     void* mMetaNalBaseAnimPtr;      // +0x00
@@ -3654,6 +3670,8 @@ protected:
     float* mInterpValue;     // +0x1C
     float mPrevValue;        // +0x20
 };
+static_assert(sizeof(ADSMetaAnimInstance) == 0x24,
+              "ADSMetaAnimInstance size mismatch");
 
 // AnimBank - anim tree bank (cg.o; anims InplaceVector at +0x00)
 class AnimBank {
