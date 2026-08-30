@@ -151,6 +151,7 @@ add_library(cod3_render STATIC
     src/render/cdDynamicDecalShader.cpp
     src/render/cdDynamicDecalShaderData.cpp
     src/render/cdPropellerShader.cpp
+    src/render/cdPropellerShaderData.cpp
     src/render/cdGunSightShader.cpp
     src/render/cdGunSightShaderData.cpp
     src/render/cdGunSightSpecularShader.cpp
