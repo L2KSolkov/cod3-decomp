@@ -77,16 +77,12 @@ FEMenuEntry::FEMenuEntry(const char* text, FEMenu* m, bool floating,
                                              PANEL_LAYER_PAUSE_MENU, 1.0f, 0,
                                              0, color32(0))
                  : nullptr;
-        if (v9 != nullptr)
-        {
-            ((FEMultiLineText*)v9)->SetNumLines(nlines);
-            v9->SetTextNoLocalize(text);
-        }
+        ((FEMultiLineText*)v9)->SetNumLines(nlines);
+        v9->SetTextNoLocalize(text);
     }
     CommonConstructor(v9, m);
     must_delete_text = true;
-    if (v9 != nullptr)
-        v9->AddedToMenu(false);
+    v9->AddedToMenu(false);
 }
 
 // ea: 0x005AE4B0
