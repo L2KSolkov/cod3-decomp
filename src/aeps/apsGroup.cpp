@@ -23,6 +23,9 @@ struct nglFrustum;
 #include <cfloat>
 #include <cmath>
 
+extern bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                               const math::Vector4* Clip);
+
 namespace apsMemory {
     void SetBlockAllocator();
     void ClearBlockAllocator();
@@ -544,15 +547,14 @@ void apsGroup::TestVisibility() {
             dist /= viewPort->mProjectionX;
         if (dist < 0.0f)
             dist = 0.0f;
-        if (nglIsSphereVisible((const nglFrustum*)viewPort->mClipPlanes,
-                               (const math::Vector4*)&center, smallDist)) {
+        if (nglIsSphereVisible(center, smallDist, viewPort->mClipPlanes)) {
             mFlags = mFlags | 8;
-            if (dist < FLT_MAX) {
-                mBoundSphereDistanceFromCamera = dist;
-                math::Position3 rootDelta;
-                rootDelta.v = _mm_sub_ps(mLocalToWorld.w.v, viewPort->mViewPos.v);
-                mRootDistanceFromCamera = math::Length(rootDelta);
-            }
+        }
+        if (dist < FLT_MAX) {
+            mBoundSphereDistanceFromCamera = dist;
+            math::Position3 rootDelta;
+            rootDelta.v = _mm_sub_ps(mLocalToWorld.w.v, viewPort->mViewPos.v);
+            mRootDistanceFromCamera = math::Length(rootDelta);
         }
     }
 }
