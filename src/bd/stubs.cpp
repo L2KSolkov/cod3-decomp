@@ -377,6 +377,17 @@ bdBitBuffer::bdBitBuffer(unsigned int bitCount, bool typeChecked)
     m_readPosition = 1;
 }
 
+// ea: 0x0089B500
+bdBitBuffer::~bdBitBuffer()
+{
+    // The release destructor clears the embedded fast-array after releasing
+    // its storage; the member destructor then observes a null data pointer.
+    bdMemory::deallocate(m_data.m_data);
+    m_data.m_data = NULL;
+    m_data.m_size = 0;
+    m_data.m_capacity = 0;
+}
+
 // ea: 0x0089AFC0
 unsigned int bdBitBuffer::getReadPosition() const
 {
