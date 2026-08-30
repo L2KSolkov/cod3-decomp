@@ -16200,8 +16200,19 @@ void WeaponSelectMenu::OnCross(int c)
     ActivationToggle(false);
     if (GetBrocAPI()->mBrocExports.mCallbackPlayerClassChange != nullptr)
     {
-        // player class change callback verified against IDA
+        EPlayerClass playerClass = LocalIndexToPlayerClass(highlighted);
+        Entity* Player = EntityManager::sInst->GetPlayer(mVersion);
+        GetBrocAPI()->mBrocExports.mCallbackPlayerClassChange(
+            Player->mHandle.mVal, playerClass);
     }
+    ClearButton((controller::ButtonIndex)(controller::SQUARE
+                                          | controller::DOWNBUTTON));
+    ClearButton(controller::SELECT);
+    Allow_Exit = true;
+    if (mReturnMenu < 0)
+        ((PauseMenu*)g_femanager.GetIGMS(mVersion)->menus[0])->UnPause();
+    else
+        system->ReturnToPreviousMenu(-1);
 }
 
 // ea: 0x0079B890
