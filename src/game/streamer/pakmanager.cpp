@@ -14817,10 +14817,10 @@ void InstanceBankMgr::ReleaseAnims(TPakId pakId)
     InstanceBankSet* entry = mEntries[pakId];
     if (entry != nullptr)
     {
-        InstanceBank& meshBank = entry->GetBank(INSTBANK_TYPE_MESH);
-        for (unsigned int i = 0; i < meshBank.mEntries.mSize; ++i)
+        InstanceBank& animfileBank = entry->GetBank(INSTBANK_TYPE_ANIMFILE);
+        for (unsigned int i = 0; i < animfileBank.mEntries.mSize; ++i)
         {
-            InstanceBank::IbEntry& ibe = meshBank.mEntries.mList[i];
+            InstanceBank::IbEntry& ibe = animfileBank.mEntries.mList[i];
             nalAnimFile* ptr = (nalAnimFile*)ibe.ptr;
             if (ptr != nullptr)
             {
@@ -14850,7 +14850,6 @@ void InstanceBankMgr::ReleaseAnims(TPakId pakId)
                 ibe.ptr = 0;
             }
         }
-        InstanceBank& animfileBank = entry->GetBank(INSTBANK_TYPE_ANIMFILE);
         for (unsigned int k = 0; k < animfileBank.mEntries.mSize; ++k)
             animfileBank.mEntries.mList[k].ptr = 0;
 
