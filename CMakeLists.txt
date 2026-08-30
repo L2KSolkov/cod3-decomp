@@ -134,6 +134,7 @@ add_library(cod3_render STATIC
     src/render/cdSimpleAlphaShader.cpp
     src/render/cdSimpleAlphaShaderData.cpp
     src/render/cdSimplePrelitShader.cpp
+    src/render/cdSimplePrelitShaderData.cpp
     src/render/cdSimpleSpecularShader.cpp
     src/render/cdSimpleSpecularShaderData.cpp
     src/render/cdSimpleUVAnimShader.cpp
