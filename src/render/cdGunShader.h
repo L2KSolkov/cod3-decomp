@@ -36,6 +36,7 @@ struct cdGunShaderNode : nglShaderNode {
                     nglMeshSection* iSection,
                     cdGunShaderMat* iMaterial); // @0x7CF0D0
     virtual ~cdGunShaderNode(); // @0x7CF130
+    void Render() override; // @0x7CEC40
 };
 static_assert(sizeof(cdGunShaderNode) == 0x18, "cdGunShaderNode size mismatch");
 

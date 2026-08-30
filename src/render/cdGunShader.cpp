@@ -9,6 +9,11 @@
 //   cdGunShader::AddNode @0x7CEBD0
 // ============================================================================
 #include "cdGunShader.h"
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_shader.h"
+#include "ngl/ngl_dx_state.h"
+#include "ngl/ngl_lighting.h"
 
 extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);
 
@@ -16,6 +21,99 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 
 // Shader global pointer definitions
 cdGunShader* gCDGunShader = nullptr;  // ?gCDGunShader@@3PAVcdGunShader@@A
+
+extern unsigned int dword_40300;
+extern unsigned int dword_40304;
+extern unsigned int dword_4033C;
+extern unsigned int dword_40340;
+extern unsigned int dword_BC2CFC;
+extern unsigned int dword_BC2CF8;
+extern unsigned int dword_BC2D00;
+extern unsigned int dword_BC2D04;
+extern unsigned int dword_BC2D80;
+extern unsigned int D3D__DirtyFlags;
+extern unsigned int D3D__TextureState[4][32];
+extern unsigned int gpuHashVertexShader;
+extern unsigned int gpuHashPixelShader;
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
+
+// ea: 0x007CEC40
+void cdGunShaderNode::Render()
+{
+    const unsigned int cullMode = this->mMaterial->mCullMode == 2 ? 0u : 0x900u;
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, cullMode) == 0)
+        D3DDevice_SetRenderState_CullMode(cullMode);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHABLENDENABLE, 0) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40304, 0);
+        dword_BC2CFC = 0;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHATESTENABLE, 1) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40300, 1);
+        dword_BC2D00 = 1;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAFUNC, 0x204) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_4033C, 0x204);
+        dword_BC2CF8 = 0x204;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAREF, 0x80) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40340, 0x80);
+        dword_BC2D04 = 0x80;
+    }
+    nglDxState.PrevBM = (unsigned int)-1;
+    nglDetermineLights(this->MeshNode);
+    math::Mat44 dir;
+    math::Mat44 color;
+    nglGetDirLightMatrix(this->MeshNode, &dir, &color);
+    SimpleContext context;
+    context.mLToS = this->MeshNode->LocalToScreen;
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, &context, 0x30u);
+    nglDxSetTexture(0, this->mMaterial->mTexture, 1u, 3u);
+    if (nglDxTexCache.Prev[0].WrapU != 1) {
+        nglDxTexCache.Prev[0].WrapU = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSU, 1) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSU] = 1;
+        }
+    }
+    if (nglDxTexCache.Prev[0].WrapV != 1) {
+        nglDxTexCache.Prev[0].WrapV = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 1) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSV] = 1;
+        }
+    }
+    nglDxInitShaders(false);
+    const unsigned int vertexShader = cdGunRender::VS[0];
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>(static_cast<uintptr_t>(vertexShader)), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+    const _D3DPixelShaderDef* pixelShader =
+        reinterpret_cast<const _D3DPixelShaderDef*>(cdGunFullbrightPixel::PS[0]);
+    if (ShaderCommon::GetDebugRenderMode() != ShaderCommon::kDebugRenderModeFullbright)
+        pixelShader = reinterpret_cast<const _D3DPixelShaderDef*>(cdGunPixel::PS[0]);
+    if (pixelShader != reinterpret_cast<const _D3DPixelShaderDef*>(gpuHashPixelShader)) {
+        gpuHashPixelShader = (unsigned int)pixelShader;
+        D3DDevice_SetPixelShaderProgram(pixelShader);
+    }
+    nglDxSetupVShaderFog(-78, this->MeshNode, nglBuildScene->FogNear,
+                         nglBuildScene->FogFar, nglBuildScene->FogMin,
+                         nglBuildScene->FogMax);
+    const __m128 fogScaled = _mm_mul_ps(nglBuildScene->FogColor.v, _mm_set1_ps(127.0f));
+    const unsigned int fogColor = (unsigned int)(int)fogScaled.m128_f32[2]
+        | ((unsigned int)(int)fogScaled.m128_f32[1] << 8)
+        | ((unsigned int)(int)fogScaled.m128_f32[0] << 16)
+        | ((unsigned int)(int)fogScaled.m128_f32[3] << 24);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_FOGCOLOR, fogColor) == 0)
+        D3DDevice_SetRenderState_FogColor(fogColor);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_SIMPLE_MAX, 1u) == 0) {
+        D3D__DirtyFlags |= 0x2000u;
+        dword_BC2D80 = 1;
+    }
+    nglGpuDrawSection(this->Section);
+}
 
 // ea: 0x007CEA70
 cdGunShaderMat::cdGunShaderMat(nglTexture* iTexture)
