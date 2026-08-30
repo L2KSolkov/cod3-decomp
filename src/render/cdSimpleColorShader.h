@@ -24,7 +24,7 @@
 class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
-struct cdSimpleShaderMat;
+class cdSimpleShaderMat;
 
 // ============================================================================
 // nglShaderNode — shader render node (20 bytes)

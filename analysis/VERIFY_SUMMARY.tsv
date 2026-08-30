@@ -156,7 +156,7 @@ cdRiverShader.o	37	26	1	8	0	2	0
 cdScratchShader.o	46	28	1	4	0	13	0
 cdScratchVertexDef.o	2	0	0	0	0	2	0
 cdSimpleAlphaShader.o	31	15	1	7	0	8	0
-cdSimpleColorShader.o	13	6	1	4	0	2	0
+cdSimpleColorShader.o	13	6	0	4	0	3	0
 cdSimpleInstance.o	17	6	0	5	0	6	0
 cdSimplePrelitShader.o	19	12	0	1	0	6	0
 cdSimpleShader.o	17	3	0	6	0	8	0

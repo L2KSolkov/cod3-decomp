@@ -23,7 +23,8 @@
 // ============================================================================
 // cdSimpleShaderMat — simple shader material (24 bytes)
 // ============================================================================
-struct cdSimpleShaderMat : nglMaterial {
+class cdSimpleShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;   // +0x10
     int         mCullMode;  // +0x14
 
