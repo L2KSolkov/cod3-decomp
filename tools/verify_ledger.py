@@ -1027,6 +1027,10 @@ def symbol_variants(name: str) -> set[str]:
          "?getInAddr@bdInetAddr@@QAEPAUbdInAddr@@XZ"),
         ("?getInAddr@bdInetAddr@@QBEPBVbdInAddr@@XZ",
          "?getInAddr@bdInetAddr@@QBEPBUbdInAddr@@XZ"),
+        ("?typeToString@bdBitBuffer@@SAXW4bdBitBufferDataType@@QADI@Z",
+         "?typeToString@bdBitBuffer@@SAXW4bdBitBufferDataType@1@QADI@Z"),
+        ("?readDataType@bdBitBuffer@@IAE_NW4bdBitBufferDataType@@@Z",
+         "?readDataType@bdBitBuffer@@QAE_NW4bdBitBufferDataType@1@@Z"),
     ):
         if name == release_name:
             values.add(current_name)
