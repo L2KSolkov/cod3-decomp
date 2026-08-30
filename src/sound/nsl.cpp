@@ -3143,6 +3143,7 @@ void nslWaveBankRestoreNames(nslWaveBank* waveBank) {
 // ============================================================================
 // nslWaveBankLoader — async wave bank loading
 // ============================================================================
+// ea: 0x00829240
 void          nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader,
                                     unsigned waveBankLoadFlags, nflFileID file,
                                     unsigned fileOffset) {
@@ -3155,6 +3156,7 @@ void          nslWaveBankLoaderInit(nslWaveBankLoader* waveBankLoader,
     waveBankLoader->waveBank = reinterpret_cast<nslWaveBank*>(nsl_waveBankLoaderBuffer);
     waveBankLoader->stid = -1;
 }
+// ea: 0x00829280
 nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader) {
     if (waveBankLoader->state == NSL_WAVE_BANK_LOADER_STATE_CANCELING) {
         if (waveBankLoader->rid != NFL_REQUEST_ID_INVALID &&
@@ -3284,6 +3286,7 @@ nslWaveBankLoaderState nslWaveBankLoaderUpdate(nslWaveBankLoader* waveBankLoader
     }
     return waveBankLoader->state;
 }
+// ea: 0x008295E0
 void          nslWaveBankLoaderCancel(nslWaveBankLoader* waveBankLoader) {
     if (waveBankLoader->state != NSL_WAVE_BANK_LOADER_STATE_CANCELED &&
         waveBankLoader->state != NSL_WAVE_BANK_LOADER_STATE_CANCELING) {
@@ -5845,7 +5848,9 @@ void          nslAramCompact() {}
 // ============================================================================
 // nslMemory — audio heap wrappers
 // ============================================================================
+// ea: 0x00829210
 void*         nslMemoryAlloc(unsigned size) { return tlMemAlloc(size, 0x40u, 0u); }
+// ea: 0x00829230
 void          nslMemoryFree(void* ptr) { tlMemFree(ptr); }
 
 // ============================================================================
