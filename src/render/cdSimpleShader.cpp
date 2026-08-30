@@ -23,6 +23,16 @@
 // Shader global pointer definitions
 cdSimpleShader* gCDSimpleShader = nullptr;  // ?gCDSimpleShader@@3PAVcdSimpleShader@@A
 
+namespace AeAssert {
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    extern ECoderId gCurrentAuthor;
+    extern const char* gCurrentFile;
+    extern int gCurrentLine;
+    extern const char* gCurrentExpr;
+    bool IsIgnored();
+    bool Assert(const char* msg, ...);
+}
+
 // Shader static data definitions (render_xboxr cdSimpleShader.o).  The
 // payloads are the exact Xbox microcode data objects recovered from IDA;
 // the Win32 shim retains them as registration handles while using its
@@ -127,6 +137,19 @@ extern unsigned int gpuHashPixelShader;
 // ============================================================================
 cdSimpleShaderMat::cdSimpleShaderMat(nglTexture* iTexture) {
     this->mTexture = iTexture;
+    cdSimpleShader* shader = gCDSimpleShader;
+    if (shader != NULL) {
+        this->Shader = shader;
+        return;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "cdSimpleShader.cpp";
+    AeAssert::gCurrentLine = 15;
+    AeAssert::gCurrentExpr = "gCDSimpleShader";
+    if (!AeAssert::IsIgnored() &&
+        AeAssert::Assert("Material is being created before the shader; the pointers won't be set up properly")) {
+        __debugbreak();
+    }
     this->Shader = gCDSimpleShader;
 }
 
