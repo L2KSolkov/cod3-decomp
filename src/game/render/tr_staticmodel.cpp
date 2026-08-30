@@ -395,8 +395,15 @@ lit:
         haveScale = true;
     }
 
+    // The release keeps the parameter-set wrapper on the stack and points its
+    // Array member at the list allocation.  Treating the list allocation as
+    // the wrapper itself leaves Array uninitialised (CD fill), which turns the
+    // first parameter write into an invalid access.
+    alignas(nglShaderParamSet) unsigned char shaderParamStorage[sizeof(nglShaderParamSet)];
     nglShaderParamSet* shaderParams =
-        (nglShaderParamSet*)nglListAlloc(4 * nglShaderParamSet::NumParams + 8, 8u);
+        reinterpret_cast<nglShaderParamSet*>(shaderParamStorage);
+    shaderParams->Array = static_cast<unsigned int*>(
+        nglListAlloc(4 * nglShaderParamSet::NumParams + 8, 8u));
     shaderParams->Array[0] = 0;
     shaderParams->Array[1] = 0;
     unsigned int id = nglLightContextParamID;
