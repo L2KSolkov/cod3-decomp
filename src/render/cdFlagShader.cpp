@@ -109,7 +109,7 @@ void ToggleCDFlagShader() {
 }
 
 // ea: 0x007CA180
-void CalculateFlagMatrix(math::Mat43* Matrix, nglMeshSection* Section,
+void CalculateFlagMatrix(math::Mat43& Matrix, nglMeshSection* Section,
                          float Intensity) {
     math::Dir3 Up;
     Up.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
@@ -143,11 +143,11 @@ void CalculateFlagMatrix(math::Mat43* Matrix, nglMeshSection* Section,
     const float tangentLength = sqrtf(tangentSquared.m128_f32[0] +
         _mm_shuffle_ps(tangentSquared, tangentSquared, 85).m128_f32[0] +
         _mm_shuffle_ps(tangentSquared, tangentSquared, 170).m128_f32[0]);
-    Matrix->x.v = width;
-    Matrix->y.v = height;
-    Matrix->z.v = _mm_mul_ps(_mm_div_ps(tangent, _mm_set1_ps(tangentLength)),
-                             _mm_set1_ps(Intensity));
-    Matrix->w.v = origin;
+    Matrix.x.v = width;
+    Matrix.y.v = height;
+    Matrix.z.v = _mm_mul_ps(_mm_div_ps(tangent, _mm_set1_ps(tangentLength)),
+                            _mm_set1_ps(Intensity));
+    Matrix.w.v = origin;
 }
 
 // ea: 0x007CB9F0

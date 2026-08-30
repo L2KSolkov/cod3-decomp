@@ -81,7 +81,7 @@ extern cdFlagShader* gCDFlagShader;  // @0x10DE094
 
 void InitCDFlagShader();   // @0x7CA080
 void ToggleCDFlagShader(); // @0x7CA160
-void CalculateFlagMatrix(math::Mat43* Matrix, nglMeshSection* Section,
+void CalculateFlagMatrix(math::Mat43& Matrix, nglMeshSection* Section,
                          float Intensity);  // @0x7CA180
 
 #endif // COD3_RENDER_CDFLAGSHADER_H
