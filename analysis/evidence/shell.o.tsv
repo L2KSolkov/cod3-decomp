@@ -227,3 +227,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005ADB50	?SetPos@FEText@@UAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164952-1164961	Release writes xy x/y and zeroes z, matching source.
 0x005ADBA0	?SetX@FEText@@UAEXM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:825-827	Source stores the supplied x coordinate.
 0x005ADBA0	?SetX@FEText@@UAEXM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164963-1164967	Release assigns xy.x directly.
+0x005ADBC0	?SetY@FEText@@UAEXM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:827-829	Source stores the supplied y coordinate.
+0x005ADBC0	?SetY@FEText@@UAEXM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164969-1164973	Release assigns xy.y directly.
+0x005ADBE0	?SetAlpha@FEText@@UAEXM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:830-835	Source converts alpha to a byte and stores it in both selected and unselected colors.
+0x005ADBE0	?SetAlpha@FEText@@UAEXM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164975-1164983	Release computes alpha times 255 and stores the result in both color alpha channels.
+0x005ADC10	?SetPanelTextIndex@FEText@@UAEXH@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:836-839	Source stores the panel text index.
+0x005ADC10	?SetPanelTextIndex@FEText@@UAEXH@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164985-1164989	Release assigns panel_text_index directly.
+0x005ADC20	?SetColor@FEText@@UAEXVcolor32@@@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:756-757	Source forwards SetColor to SetNoFlash.
+0x005ADC20	?SetColor@FEText@@UAEXVcolor32@@@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164991-1164995	Release dispatches SetNoFlash with the supplied color value.
+0x005ADC30	?SetColorMenuItem@FEText@@UAEXVcolor32@@0@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:848-852	Source stores normal and selected colors in color1 and color_unselected.
+0x005ADC30	?SetColorMenuItem@FEText@@UAEXVcolor32@@0@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164997-1165002	Release performs the same two color assignments.
+0x005ADC50	?GetName@FEText@@UAE?AVstring@Broc@@XZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:854-855	Source returns the stored name string by value.
+0x005ADC50	?GetName@FEText@@UAE?AVstring@Broc@@XZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165004-1165008	Release copy-constructs the result from this->name, matching source semantics.
+0x005ADC80	?GetText@FEText@@UAE?AVstring@Broc@@XZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:856-857	Source returns the stored text string by value.
+0x005ADC80	?GetText@FEText@@UAE?AVstring@Broc@@XZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165011-1165015	Release copy-constructs the result from this->text, matching source semantics.
+0x005ADCB0	?GetScaleX@FEText@@UBEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:858-859	Source returns scale.x.
+0x005ADCB0	?GetScaleX@FEText@@UBEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165018-1165022	Release returns this->scale.x.
+0x005ADCC0	?GetScaleInitX@FEText@@UBEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:860	Source returns scale_init.x.
+0x005ADCC0	?GetScaleInitX@FEText@@UBEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165024-1165028	Release returns this->scale_init.x.
+0x005ADCD0	?GetScaleInitY@FEText@@UBEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:861	Source returns scale_init.y.
+0x005ADCD0	?GetScaleInitY@FEText@@UBEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165030-1165034	Release returns this->scale_init.y.
+0x005ADCE0	?GetScaleY@FEText@@UBEMXZ	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:862	Source returns scale.y.
+0x005ADCE0	?GetScaleY@FEText@@UBEMXZ	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165036-1165040	Release returns this->scale.y.
