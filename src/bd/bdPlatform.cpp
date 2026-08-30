@@ -130,7 +130,9 @@ void bdPlatformMutex::destroy(void*& h) { h = nullptr; }
 struct bdInAddr {
     union { bdUInt m_iaddr; struct { unsigned char b1,b2,b3,b4; } m_bytes; } inUn;
     bdInAddr() { inUn.m_iaddr = 0xFF00FF00; }   // ea: 0x008B5E40
+    // ea: 0x008B5E50
     bdInAddr(bdUInt a) { inUn.m_iaddr = a; }
+    // ea: 0x008B5EC0
     explicit bdInAddr(const char* s) { fromString(s); }
     void fromString(const char* s) { inUn.m_iaddr = inet_addr(s); }
     bdUInt toString(char* buf, bdUInt bufSize) const {

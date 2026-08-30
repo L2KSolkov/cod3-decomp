@@ -15,29 +15,24 @@
 #include <stdio.h>
 #include <string.h>
 
+extern "C" int __stdcall XNetInAddrToString(struct in_addr ina, char* pchBuf,
+                                              int cchBuf);
+
 // ============================================================================
 // bdInAddr::fromString - ea: 0x8B5E60
 // ============================================================================
-unsigned int bdInAddr::fromString(const char* cp) {
-    unsigned int result = inet_addr(cp);
-    inUn.m_iaddr = result;
-    return result;
+void bdInAddr::fromString(const char* cp) {
+    inUn.m_iaddr = inet_addr(cp);
 }
 
 // ============================================================================
 // bdInAddr::toString - ea: 0x8B5E80
 // COD3 calls XNetInAddrToString; the Win32 equivalent is a dotted-quad print.
 // ============================================================================
-unsigned int bdInAddr::toString(char* const pchBuf, int cchBuf) const {
+unsigned int bdInAddr::toString(char* const pchBuf, unsigned int cchBuf) const {
     struct in_addr a;
     a.s_addr = inUn.m_iaddr;
-    const char* s = inet_ntoa(a);
-    if (s == NULL)
+    if (XNetInAddrToString(a, pchBuf, (int)cchBuf) != 0)
         return 0;
-    unsigned int len = (unsigned int)strlen(s);
-    if ((int)len + 1 <= cchBuf) {
-        strcpy(pchBuf, s);
-        return len;
-    }
-    return 0;
+    return (unsigned int)strlen(pchBuf);
 }

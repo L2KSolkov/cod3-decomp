@@ -189,8 +189,8 @@ struct bdInAddr {
     bdInAddr() { inUn.m_iaddr = 0xFF00FF00; }
     bdInAddr(unsigned int addr) { inUn.m_iaddr = addr; }
     bdInAddr(const char* str) { inUn.m_iaddr = 0; fromString(str); }
-    unsigned int fromString(const char* cp);
-    unsigned int toString(char* const pchBuf, int cchBuf) const;
+    void fromString(const char* cp);
+    unsigned int toString(char* const pchBuf, unsigned int cchBuf) const;
 };
 static_assert(sizeof(bdInAddr) == 4, "bdInAddr size mismatch");
 
