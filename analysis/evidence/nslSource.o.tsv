@@ -1,0 +1,49 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008207A0	?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:970-978	Body resolves the slot index and applies the release 0x148-byte source stride.
+0x008207A0	?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559230-1559240	Release slot validation and 328-byte source address calculation match source.
+0x008207D0	?nslEmitterPtr@@YAPAUnslEmitter@@W4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:980-988	Body resolves the slot index and applies the release 0x110-byte emitter stride.
+0x008207D0	?nslEmitterPtr@@YAPAUnslEmitter@@W4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559242-1559252	Release slot validation and 272-byte emitter address calculation match source.
+0x00820800	?nslNewEmitter@@YA?AW4nslEmitterID@@PBM@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:816-838	Body allocates a slot, clears 0x110 bytes, optionally copies position and marks the position parameters, and reports exhaustion.
+0x00820800	?nslNewEmitter@@YA?AW4nslEmitterID@@PBM@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559254-1559288	Release slot/clear/position/parameter-mask logic and failure return match source.
+0x008208A0	?nslFreeEmitter@@YAXW4nslEmitterID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:840-842	Body frees the emitter slot.
+0x008208A0	?nslFreeEmitter@@YAXW4nslEmitterID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559290-1559294	Release directly frees the emitter slot.
+0x008208C0	?nslFreeSourceVoice@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1449-1462	Body resolves the source, frees an assigned voice, clears the voice ID, and resets allocation failures.
+0x008208C0	?nslFreeSourceVoice@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559296-1559319	Release source/voice checks and raw field resets match source.
+0x00820920	?nslFreeSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1407-1427	Body validates the source slot, frees an assigned voice, and frees the source slot.
+0x00820920	?nslFreeSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559321-1559340	Release source validation, voice free, and slot free match source.
+0x00820980	?nslQueueSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1770-1774	Body resolves the source and sets the queue flag.
+0x00820980	?nslQueueSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559342-1559355	Release source check and flag update match source.
+0x008209C0	?nslPlaySource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1813-1827	Body validates priority admission, sets play/queue flags, and resets the playback offset.
+0x008209C0	?nslPlaySource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559357-1559453	Release priority gate, flags, and offset reset match source.
+0x00820B50	?nslStopSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1890	Body delegates to nslFreeSource.
+0x00820B50	?nslStopSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559455-1559459	Release directly delegates to nslFreeSource.
+0x00820B60	?nslSetSourceCallback@@YAXW4nslSourceID@@IP6AXPAX10I1H@Z11@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1455-1472	Body sets callback flags and stores callback/object/data at the release raw offsets.
+0x00820B60	?nslSetSourceCallback@@YAXW4nslSourceID@@IP6AXPAX10I1H@Z11@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559461-1559484	Release callback flag and pointer writes match source.
+0x00820BC0	?nslPauseSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1776-1789	Body increments pause count and applies the release paused-state flag transition on the first pause.
+0x00820BC0	?nslPauseSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559486-1559512	Release pause count, state test, and flag updates match source.
+0x00820C30	?nslUnpauseSource@@YAXW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1791-1811	Body validates the wave, decrements pause count, and applies the release unpaused-state transition.
+0x00820C30	?nslUnpauseSource@@YAXW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559514-1559551	Release wave validation, pause decrement, and flag updates match source.
+0x00820CB0	?nslGetSourceWaveID@@YA?AW4nslWaveID@@W4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1059-1067	Body returns the source wave ID or the invalid sentinel.
+0x00820CB0	?nslGetSourceWaveID@@YA?AW4nslWaveID@@W4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559553-1559567	Release source validation and wave-ID field read match source.
+0x00820CF0	?nslGetSourceWave@@YA?AW4nslWaveID@@W4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1069-1077	Body returns the source wave ID or the invalid sentinel.
+0x00820CF0	?nslGetSourceWave@@YA?AW4nslWaveID@@W4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559569-1559583	Release source validation and wave-ID field read match source.
+0x00820D30	?nslGetSourceName@@YAPBDW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1374-1379	Body resolves the source wave and delegates to nslWaveGetName.
+0x00820D30	?nslGetSourceName@@YAPBDW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559585-1559599	Release source validation and name delegation match source.
+0x00820D70	?nslGetSourceGroup@@YAPBDW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1007-1017	Body resolves the source wave and delegates group-name extraction.
+0x00820D70	?nslGetSourceGroup@@YAPBDW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559601-1559619	Release source/wave validation and group-name pointer result match source.
+0x00820DD0	?nslGetSourceLength@@YAIW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1757-1764	Body returns the source length field or zero for an invalid source.
+0x00820DD0	?nslGetSourceLength@@YAIW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559621-1559635	Release source validation and length-field read match source.
+0x00820E10	?nslGetSourceState@@YA?AW4nslSourceState@@W4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1064-1088	Body reproduces paused, playing, queued, and base state precedence from the release raw fields.
+0x00820E10	?nslGetSourceState@@YA?AW4nslSourceState@@W4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559637-1559660	Release state/flag precedence and values match source.
+0x00820E90	?nslSetSourceOffset@@YAXW4nslSourceID@@I@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1110-1118	Body sets the offset-dirty flag and writes the source offset.
+0x00820E90	?nslSetSourceOffset@@YAXW4nslSourceID@@I@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559662-1559678	Release dirty flag and offset write match source.
+0x00820ED0	?nslGetSourceOffset@@YAIW4nslSourceID@@@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1122-1129	Body returns the source offset or zero for an invalid source.
+0x00820ED0	?nslGetSourceOffset@@YAIW4nslSourceID@@@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559680-1559694	Release source validation and offset-field read match source.
+0x00820F10	?nslSetSourceParam@@YAXW4nslSourceID@@HM@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1000-1005	Body validates the source and index, sets the parameter-update bit, and writes the value.
+0x00820F10	?nslSetSourceParam@@YAXW4nslSourceID@@HM@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559696-1559715	Release index check, 64-bit update mask, and parameter write match source.
+0x00820F80	?nslSetEmitterParam@@YAXW4nslEmitterID@@HM@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1010-1024	Body validates the emitter and index, sets the parameter-update bit, and writes the value.
+0x00820F80	?nslSetEmitterParam@@YAXW4nslEmitterID@@HM@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559717-1559736	Release index check, 64-bit update mask, and parameter write match source.
+0x00820FF0	?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1363-1370	Body returns the requested source parameter or the caller default.
+0x00820FF0	?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559738-1559752	Release source/index validation and parameter read/default match source.
+0x00821050	?nslGetEmitterParam@@YAMW4nslEmitterID@@HM@Z	V3	PASS	nsl-source-manual-20260830	2026-08-30	src/sound/nsl.cpp:1027-1037	Body returns the requested emitter parameter or the caller default.
+0x00821050	?nslGetEmitterParam@@YAMW4nslEmitterID@@HM@Z	V4	PASS	nsl-source-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1559754-1559768	Release emitter/index validation and parameter read/default match source.
