@@ -2,11 +2,24 @@
 // in the owning bd sources.
 
 #include <stdio.h>
+#include <math.h>
 
 #include "bd_types.h"
 #include "bd/bdUtilities/bdBitOperations.h"
 
 extern const char defaultFileName[];
+
+// ea: 0x0089AFA0
+unsigned int bdStrlen(const char* value)
+{
+    return (unsigned int)strlen(value);
+}
+
+// ea: 0x0089AFE0
+float bdFabsf32(float value)
+{
+    return (float)fabs(value);
+}
 
 // bdLogSubscriber — base logging callbacks (bdCore @ 0x89D240).
 bdLogSubscriber::bdLogSubscriber() = default;

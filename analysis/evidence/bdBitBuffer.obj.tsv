@@ -1,4 +1,8 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x0089AFA0	?bdStrlen@@YAIQBD@Z	V3	PASS	bd-bitbuffer-helpers-manual-20260830	2026-08-30	src/bd/stubs.cpp:15-18	Release helper is present as a concrete wrapper around strlen.
+0x0089AFA0	?bdStrlen@@YAIQBD@Z	V4	PASS	bd-bitbuffer-helpers-manual-20260830	2026-08-30	IDA:0x0089AFA0;release C dump:0x0089AFA0;src/bd/stubs.cpp:15-18	The release body returns strlen(value), matching the restored source wrapper.
+0x0089AFE0	?bdFabsf32@@YAMM@Z	V3	PASS	bd-bitbuffer-helpers-manual-20260830	2026-08-30	src/bd/stubs.cpp:21-24	Release helper is present as a concrete floating absolute-value wrapper.
+0x0089AFE0	?bdFabsf32@@YAMM@Z	V4	PASS	bd-bitbuffer-helpers-manual-20260830	2026-08-30	IDA:0x0089AFE0;release C dump:0x0089AFE0;src/bd/stubs.cpp:21-24	The release body returns fabs(value), with the observed long-double ABI return type restored.
 0x0089AF70	??0bdReferencable@@QAE@XZ	V3	PASS	bd-referencable-manual-20260830	2026-08-30	src/bd/bdReference/bdReferencable.h:22	The release weak constructor initializes the virtual base, clears m_refCount, and is represented by the inline source constructor.
 0x0089AF70	??0bdReferencable@@QAE@XZ	V4	PASS	bd-referencable-manual-20260830	2026-08-30	IDA:0x0089AF70;release C dump:0x0089AF70;src/bd/bdReference/bdReferencable.h:22	Release writes the bdReferencable vftable and zeroes m_refCount, matching the inline constructor's observable ABI.
 0x0089AF80	??_GbdReferencable@@UAEPAXI@Z	V3	PASS	bd-referencable-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1665597-1665604;src/bd/bdReference/bdReferencable.h:24	The release scalar deleting destructor calls the real virtual destructor and conditionally deallocates the object.
