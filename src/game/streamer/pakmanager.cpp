@@ -6378,9 +6378,9 @@ void DecodeHeap(const char* name, unsigned char* data, unsigned int size,
 PakHeapContext::PakHeapContext(TPakId id, bool once)
 {
     mPakId = id;
-    if (IsValidPakId(id))
+    if (id != PAK_ID_INVALID)
     {
-        if (PakManager::sInst->GetPakFile(id) == nullptr)
+        if (PakManager::sInst->mSlots[id] == nullptr)
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
