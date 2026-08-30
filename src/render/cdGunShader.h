@@ -30,6 +30,11 @@ static_assert(sizeof(cdGunShaderMat) == 0x18, "cdGunShaderMat size mismatch");
 // ============================================================================
 struct cdGunShaderNode : nglShaderNode {
     cdGunShaderMat* mMaterial;  // +0x14
+
+    cdGunShaderNode(nglMeshNode* iMeshNode,
+                    nglMeshSection* iSection,
+                    cdGunShaderMat* iMaterial); // @0x7CF0D0
+    virtual ~cdGunShaderNode(); // @0x7CF130
 };
 static_assert(sizeof(cdGunShaderNode) == 0x18, "cdGunShaderNode size mismatch");
 
@@ -38,6 +43,8 @@ static_assert(sizeof(cdGunShaderNode) == 0x18, "cdGunShaderNode size mismatch");
 // ============================================================================
 class cdGunShader : public nglShader {
 public:
+    cdGunShader(); // @0x7CEF90
+    virtual ~cdGunShader(); // @0x7CF170
     virtual tlFixedString GetName(); // @0x7CEFC0
     virtual void Register();  // @0x7CEB70
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CEBD0
@@ -52,16 +59,23 @@ namespace cdGunRender {
     extern unsigned int const** VShaderTable;  // ?VShaderTable@cdGunRender@@3PAPBIA
     extern unsigned long Shader;              // ?Shader@cdGunRender@@3KA
     void RegisterVShader();                   // @0x007CF000
+    unsigned int GetVShader();                // @0x007CF020
 }
 namespace cdGunPixel {
     extern unsigned long** PS;                // ?PS@cdGunPixel@@3PAPAKA
     extern unsigned int const** PShaderTable;  // ?PShaderTable@cdGunPixel@@3PAPBIA
     extern unsigned long* Shader;             // ?Shader@cdGunPixel@@3PAKA
+    void RegisterShader();                    // @0x007CF030
+    void RegisterPShader();                   // @0x007CF050
+    unsigned int* GetPShader();               // @0x007CF070
 }
 namespace cdGunFullbrightPixel {
     extern unsigned long** PS;                // ?PS@cdGunFullbrightPixel@@3PAPAKA
     extern unsigned int const** PShaderTable;  // ?PShaderTable@cdGunFullbrightPixel@@3PAPBIA
     extern unsigned long* Shader;             // ?Shader@cdGunFullbrightPixel@@3PAKA
+    void RegisterShader();                    // @0x007CF080
+    void RegisterPShader();                   // @0x007CF0A0
+    unsigned int* GetPShader();               // @0x007CF0C0
 }
 
 // ============================================================================

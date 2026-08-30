@@ -17,6 +17,62 @@ extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcod
 // Shader global pointer definitions
 cdGunShader* gCDGunShader = nullptr;  // ?gCDGunShader@@3PAVcdGunShader@@A
 
+// ea: 0x007CF020
+unsigned int cdGunRender::GetVShader()
+{
+    return static_cast<unsigned int>(cdGunRender::VS[0]);
+}
+
+// ea: 0x007CF030
+void cdGunPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdGunPixel::PS, cdGunPixel::PShaderTable[0]);
+    cdGunPixel::Shader = cdGunPixel::PS[0];
+}
+
+// ea: 0x007CF050
+void cdGunPixel::RegisterPShader()
+{
+    cdGunPixel::RegisterShader();
+}
+
+// ea: 0x007CF070
+unsigned int* cdGunPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdGunPixel::PS[0]);
+}
+
+// ea: 0x007CF080
+void cdGunFullbrightPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdGunFullbrightPixel::PS,
+                         cdGunFullbrightPixel::PShaderTable[0]);
+    cdGunFullbrightPixel::Shader = cdGunFullbrightPixel::PS[0];
+}
+
+// ea: 0x007CF0A0
+void cdGunFullbrightPixel::RegisterPShader()
+{
+    cdGunFullbrightPixel::RegisterShader();
+}
+
+// ea: 0x007CF0C0
+unsigned int* cdGunFullbrightPixel::GetPShader()
+{
+    return reinterpret_cast<unsigned int*>(cdGunFullbrightPixel::PS[0]);
+}
+
+// ea: 0x007CEF90
+cdGunShader::cdGunShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[3] &= ~8;
+}
+
+// ea: 0x007CF170
+cdGunShader::~cdGunShader() = default;
+
 // Shader static data definitions (render_xboxr cd*Shader.o).
 namespace cdGunRender {
     static const unsigned int VShaderMicrocode[81] = {
@@ -102,11 +158,6 @@ void InitCDGunShader() {
     cdGunShader* result = (cdGunShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdGunShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdGunShader
-        ShaderCommon::ShaderSwitching.__s0[3] &= ~8;
         gCDGunShader = result;
     } else {
         gCDGunShader = NULL;
@@ -126,6 +177,7 @@ void ToggleCDGunShader() {
 
 }
 
+// ea: 0x007CEFC0
 tlFixedString cdGunShader::GetName() { return tlFixedString("cdGun"); }
 
 // ============================================================================
@@ -167,3 +219,15 @@ void cdGunShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+// ea: 0x007CF0D0
+cdGunShaderNode::cdGunShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdGunShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
+// ea: 0x007CF130
+cdGunShaderNode::~cdGunShaderNode() = default;
