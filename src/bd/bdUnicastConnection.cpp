@@ -165,7 +165,7 @@ bool bdUnicastConnection::send(const bdReference<bdMessage>& message, bool relia
                              0x106u, "dw/warn/");
         proxy.log("bdConnection/connections", "message size (%u) > BD_MAX_MESSAGE_SIZE.", payloadSize);
     } else if (m_state == BD_UC_ESTABLISHED) {
-        bdDataFlags flags = reliable ? BD_DC_NONE : BD_DC_UNRELIABLE;
+        bdDataChunk::bdDataFlags flags = reliable ? bdDataChunk::BD_DC_NONE : bdDataChunk::BD_DC_UNRELIABLE;
         bdReference<bdDataChunk> chunk(
             new (bdMemory::allocate(sizeof(bdDataChunk))) bdDataChunk(message, flags));
         if (reliable) {
@@ -604,7 +604,7 @@ bool bdUnicastConnection::handleCookieAck(bdReference<bdChunk>&, unsigned int vt
 bool bdUnicastConnection::handleData(bdReference<bdChunk>& chunk) {
     bdDataChunk* data = (bdDataChunk*)chunk.m_ptr;
     bool result = false;
-    if (data->getFlags() & BD_DC_UNRELIABLE) {
+    if (data->getFlags() & bdDataChunk::BD_DC_UNRELIABLE) {
         result = m_unreliableReceiveWindow.add(bdReference<bdDataChunk>(data));
     } else {
         if (m_reliableRecvWindow == NULL)

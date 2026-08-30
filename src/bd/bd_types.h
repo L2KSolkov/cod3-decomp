@@ -1187,15 +1187,15 @@ static_assert(sizeof(bdPacket) == 0x24, "bdPacket size mismatch");
 // bdDataChunk - data chunk (24 bytes). Layout verified against IDA
 // (bdDataChunk.obj): m_message +0x10, m_flags +0x14, m_sequenceNumber +0x16.
 // ============================================================================
-enum bdDataFlags {
-    BD_DC_NONE = 0,
-    BD_DC_UNRELIABLE = 1,
-    BD_DC_ENC_DATA = 2,
-    BD_DC_UNENC_DATA = 4,
-};
-
 class bdDataChunk : public bdChunk {
 public:
+    enum bdDataFlags {
+        BD_DC_NONE = 0,
+        BD_DC_UNRELIABLE = 1,
+        BD_DC_ENC_DATA = 2,
+        BD_DC_UNENC_DATA = 4,
+    };
+
     uint8_t _pad0C[4];                 // +0x0C (never written)
     bdReference<bdMessage> m_message;  // +0x10
     uint8_t  m_flags;                  // +0x14
@@ -1203,7 +1203,7 @@ public:
     uint16_t m_sequenceNumber;         // +0x16
 
     bdDataChunk();
-    bdDataChunk(const bdReference<bdMessage>& message, bdDataFlags flags);
+    bdDataChunk(bdReference<bdMessage> message, bdDataFlags flags);
     virtual ~bdDataChunk();
     void setSequenceNumber(unsigned short sequenceNumber);
     unsigned short getSequenceNumber() const;

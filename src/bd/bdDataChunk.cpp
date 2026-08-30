@@ -42,7 +42,7 @@ bdDataChunk::bdDataChunk()
 // ============================================================================
 // bdDataChunk::bdDataChunk (message, flags) - ea: 0x8AA1F0
 // ============================================================================
-bdDataChunk::bdDataChunk(const bdReference<bdMessage>& message, bdDataFlags flags)
+bdDataChunk::bdDataChunk(bdReference<bdMessage> message, bdDataFlags flags)
     : bdChunk(BD_CHUNK_DATA),
       m_message(message.m_ptr),
       m_flags((uint8_t)flags),
