@@ -100,24 +100,32 @@ struct bdPlatformTiming {
 // ============================================================================
 struct bdPlatformMutex {
     static void* createMutex();
-    static unsigned long lock(void*& handle);
-    static int unlock(void*& handle);
-    static int destroy(void*& handle);
+    static void lock(void*& handle);
+    static void unlock(void*& handle);
+    static void destroy(void*& handle);
 };
 
 #ifdef _WIN32
+// ea: 0x008B5EE0
 void* bdPlatformMutex::createMutex() { return CreateMutexA(nullptr, 0, nullptr); }
-unsigned long bdPlatformMutex::lock(void*& h) { return WaitForSingleObject(h, 0xFFFFFFFF); }
-int bdPlatformMutex::unlock(void*& h) { return ReleaseMutex(h); }
-int bdPlatformMutex::destroy(void*& h) {
+// ea: 0x008B5EF0
+void bdPlatformMutex::lock(void*& h) { WaitForSingleObject(h, 0xFFFFFFFF); }
+// ea: 0x008B5F00
+void bdPlatformMutex::unlock(void*& h) { ReleaseMutex(h); }
+// ea: 0x008B5F10
+void bdPlatformMutex::destroy(void*& h) {
     ReleaseMutex(h);
-    return CloseHandle(h);
+    CloseHandle(h);
 }
 #else
+// ea: 0x008B5EE0
 void* bdPlatformMutex::createMutex() { return nullptr; }
-unsigned long bdPlatformMutex::lock(void*&) { return 0; }
-int bdPlatformMutex::unlock(void*&) { return 0; }
-int bdPlatformMutex::destroy(void*& h) { h = nullptr; return 0; }
+// ea: 0x008B5EF0
+void bdPlatformMutex::lock(void*&) {}
+// ea: 0x008B5F00
+void bdPlatformMutex::unlock(void*&) {}
+// ea: 0x008B5F10
+void bdPlatformMutex::destroy(void*& h) { h = nullptr; }
 #endif
 
 // ============================================================================

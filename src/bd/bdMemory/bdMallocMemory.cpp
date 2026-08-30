@@ -15,9 +15,9 @@ void* bdAlignedOffsetRealloc(void* p, unsigned int oldSize,
 
 struct bdPlatformMutex {
     static void* createMutex();
-    static unsigned long lock(void*& handle);
-    static int unlock(void*& handle);
-    static int destroy(void*& handle);
+    static void lock(void*& handle);
+    static void unlock(void*& handle);
+    static void destroy(void*& handle);
 };
 
 // ea: 0x008A0500
