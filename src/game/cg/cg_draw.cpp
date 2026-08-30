@@ -1234,12 +1234,14 @@ void CG_DrawDamageDirectionIndicators()
 void CG_DrawReticleCenter(void* weapDefArg, int weapIndex, int* baseColor,
                           float centerX, float centerY)
 {
-    if (weapDefArg == nullptr || baseColor == nullptr || weapIndex < 0)
-        return;
+    if (weapDefArg == nullptr)
+        CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1186);
+    if (weapIndex < 0)
+        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1187);
 
     char* weapDef = reinterpret_cast<char*>(weapDefArg);
     const char* reticleName = *reinterpret_cast<const char**>(weapDef + 0x4D8);
-    if (reticleName == nullptr || reticleName[0] == '\0')
+    if (reticleName[0] == '\0')
         return;
 
     float reticleColor[4] = {
@@ -1274,13 +1276,15 @@ void CG_DrawReticleHitIndicator(void* weapDefArg, int weapIndex, int* baseColor,
                                 float centerX, float centerY,
                                 float transScale)
 {
-    if (weapDefArg == nullptr || baseColor == nullptr || weapIndex < 0)
-        return;
+    if (weapDefArg == nullptr)
+        CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1496);
+    if (weapIndex < 0)
+        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1497);
 
     const char* weapDef = reinterpret_cast<const char*>(weapDefArg);
     const char* reticleSide = *reinterpret_cast<const char* const*>(
         weapDef + 0x4DC);
-    if (reticleSide == nullptr || reticleSide[0] == '\0')
+    if (reticleSide[0] == '\0')
         return;
 
     const int base = 1580 * currCl;
@@ -1360,8 +1364,6 @@ float CG_DrawWeapReticle()
     const int base = 1580 * currCl;
     weaponFileInfo_t* weapDef = reinterpret_cast<weaponFileInfo_t*>(
         dword_F63B8C[base]);
-    if (weapDef == nullptr)
-        return 1.0f;
     const int weapIndex = BG_GetWeaponForInfo(weapDef);
 
     float centerX;
@@ -1385,7 +1387,7 @@ float CG_DrawWeapReticle()
     trap_R_SetColor(white);
     const char* overlayShader = *reinterpret_cast<const char* const*>(
         reinterpret_cast<const char*>(weapDef) + 0x650);
-    if (overlayShader != nullptr && overlayShader[0] != '\0')
+    if (overlayShader[0] != '\0')
     {
         const float x = screenCenterX - overlayWidth * 0.5f;
         const float y = screenCenterY - overlayHeight * 0.5f;
@@ -1466,6 +1468,14 @@ float CG_DrawWeapReticle()
     case 4:
         break;
     default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 968;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "Unidentified cg[currCl].pCurrentWeapInfo->overlayReticle value"))
+            __debugbreak();
         break;
     }
     trap_R_SetColor(nullptr);
@@ -1476,8 +1486,6 @@ float CG_DrawWeapReticle()
 void CG_CalcReticleColor(const float* baseColor, float* reticleColor,
                          float alpha)
 {
-    if (baseColor == nullptr || reticleColor == nullptr)
-        return;
     if (alpha < 0.0f || alpha > 1.0f)
         CG_ASSERT("alpha >= 0 && alpha <= 1.0f",
                   "c:\\cod\\code\\game\\cg_draw.cpp", 1171);
@@ -1485,13 +1493,9 @@ void CG_CalcReticleColor(const float* baseColor, float* reticleColor,
     reticleColor[0] = baseColor[0];
     reticleColor[1] = baseColor[1];
     reticleColor[2] = baseColor[2];
-    Entity* player = EntityManager::sInst != nullptr
-                         ? EntityManager::sInst->GetPlayer(currCl)
-                         : nullptr;
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
     const float aimSpreadScale =
-        (player != nullptr && player->client != nullptr)
-            ? *(const float*)((const char*)&player->client->ps + 0x534)
-            : 0.0f;
+        *(const float*)((const char*)&player->client->ps + 0x534);
     const float crosshairAlpha =
         *reinterpret_cast<const float*>(&s_cgCvarStorage[32].value);
     const float crosshairAlphaMin =
@@ -1508,18 +1512,11 @@ void CG_CalcReticleSpread(const void* weapDefArg, int weapIndex,
                           const float* drawSize, float transScale,
                           float* spread)
 {
-    if (weapDefArg == nullptr || drawSize == nullptr || spread == nullptr
-        || weapIndex < 0)
-        return;
-    Entity* player = EntityManager::sInst != nullptr
-                         ? EntityManager::sInst->GetPlayer(currCl)
-                         : nullptr;
-    if (player == nullptr || player->client == nullptr)
-    {
-        spread[0] = 0.0f;
-        spread[1] = 0.0f;
-        return;
-    }
+    if (weapDefArg == nullptr)
+        CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1248);
+    if (weapIndex < 0)
+        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1249);
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
 
     float minSpread;
     float maxSpread;
@@ -1552,11 +1549,13 @@ void CG_CalcReticleSpread(const void* weapDefArg, int weapIndex,
 void CG_DrawReticleSides(void* weapDefArg, int weapIndex, int* baseColor,
                          float centerX, float centerY, float transScale)
 {
-    if (weapDefArg == nullptr || baseColor == nullptr || weapIndex < 0)
-        return;
+    if (weapDefArg == nullptr)
+        CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1422);
+    if (weapIndex < 0)
+        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1423);
     const char* weapDef = reinterpret_cast<const char*>(weapDefArg);
     const char* reticleSide = *(const char**)(weapDef + 0x4DC);
-    if (reticleSide == nullptr || reticleSide[0] == 0)
+    if (reticleSide[0] == 0)
         return;
 
     const float reticleAlpha = CG_DrawWeapReticle();
@@ -1591,16 +1590,14 @@ void CG_DrawReticleSides(void* weapDefArg, int weapIndex, int* baseColor,
         {
             const float x =
                 screenX + screenW * 0.5f
-                + (((spreadSignX[i] * spread[0] + centerX)
-                    + edgeOffsetX[i] * drawSize + baseOffsetX[i])
-                   - (hipSidePos * drawSize * spreadSignX[i]))
-                      * scaleX;
+                + ((spreadSignX[i] * spread[0] + centerX) * scaleX
+                   + edgeOffsetX[i] * drawSize + baseOffsetX[i]
+                   - (hipSidePos * drawSize * spreadSignX[i]));
             const float y =
                 screenY + screenH * 0.5f
-                + (((spreadSignY[i] * spread[1] + centerY)
-                    + edgeOffsetY[i] * drawSize + baseOffsetY[i])
-                   - (hipSidePos * drawSize * spreadSignY[i]))
-                      * scaleY;
+                + ((spreadSignY[i] * spread[1] + centerY) * scaleY
+                   + edgeOffsetY[i] * drawSize + baseOffsetY[i]
+                   - (hipSidePos * drawSize * spreadSignY[i]));
             trap_R_DrawStretchPicRotate(
                 x, y, scaleX * drawSize, scaleY * drawSize,
                 (float)((i >> 1) & 1), 1.0f,
@@ -1615,8 +1612,10 @@ void CG_DrawReticleSides(void* weapDefArg, int weapIndex, int* baseColor,
 void CG_DrawAdsAimIndicator(void* weapDefArg, int weapIndex, int* color,
                             float centerX, float centerY, float transScale)
 {
-    if (weapDefArg == nullptr || color == nullptr || weapIndex < 0)
-        return;
+    if (weapDefArg == nullptr)
+        CG_ASSERT("weapDef", "c:\\cod\\code\\game\\cg_draw.cpp", 1127);
+    if (weapIndex < 0)
+        CG_ASSERT("weapIndex >= 0", "c:\\cod\\code\\game\\cg_draw.cpp", 1128);
     if (s_cgCvarStorage[0].integer != 0 || transScale >= 1.0f)
         return;
 
@@ -1653,11 +1652,6 @@ void CG_DrawAdsAimIndicator(void* weapDefArg, int weapIndex, int* color,
 // ea: 0x006A03F0 (release cg.o)
 void CG_DrawReticleName(int* color)
 {
-    if (color == nullptr || EntityManager::sInst == nullptr
-        || MultiplayerMgr::sInst == nullptr
-        || MultiplayerMgr::sInst->mPeer == nullptr)
-        return;
-
     Entity* target = GetPlayerTarget();
     Client* client = EntityManager::sInst->GetPlayer(currCl)->client;
     const int targetTime = *reinterpret_cast<const int*>(
@@ -1673,7 +1667,7 @@ void CG_DrawReticleName(int* color)
     }
     Entity* player = EntityManager::sInst->GetPlayer(currCl);
     if (target == nullptr || !cgGlobal.teamGame || target->sentient == nullptr
-        || player == nullptr || player->sentient == nullptr
+        || player->sentient == nullptr
         || target->sentient->eTeam != player->sentient->eTeam)
         return;
 
@@ -1982,10 +1976,6 @@ void CG_GetHudElemInfo(const hudelem_s* elem, cg_hudelem_t* cghe,
         break;
     default:
         CG_HudElemInvalidCase(367);
-        cghe->font = 0;
-        cghe->fontScale = elem->fontScale * 0.25f;
-        cghe->fontHeight = (float)trap_R_Text_Height(0, cghe->fontScale);
-        cghe->charWidth = 0.0f;
         break;
     }
 
@@ -2495,10 +2485,9 @@ float CG_FadeLowHealthOverlay()
         const float from = CG_HealthOverlayFloat(&dword_F641AC[index]);
         alpha = from + (alpha - from) * (float)elapsed / (float)duration;
     }
-    if (alpha < 0.0f)
-        alpha = 0.0f;
-    else if (alpha > 1.0f)
-        alpha = 1.0f;
+    if (alpha < 0.0f || alpha > 1.0f)
+        CG_ASSERT("curAlpha >= 0.0f && curAlpha <= 1.0f",
+                  "c:\\cod\\code\\game\\cg_draw.cpp", 2867);
     return alpha;
 }
 
@@ -2537,7 +2526,7 @@ void CG_PulseLowHealthOverlay(float healthRatio)
         return;
     }
 
-    const int phase = dword_F641BC[index];
+    const unsigned int phase = (unsigned int)dword_F641BC[index];
     float target = pulseMags[pulse];
     int phaseDuration = 0;
     if (phase == 0)
@@ -2556,8 +2545,17 @@ void CG_PulseLowHealthOverlay(float healthRatio)
     }
     else
     {
-        // The release only reaches this state on corrupt cvar/state data.
-        dword_F641BC[index] = 0;
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_draw.cpp";
+        AeAssert::gCurrentLine = 2925;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            char* message = va("Invalid health overlay pulse phase: %i",
+                               dword_F641BC[index]);
+            if (AeAssert::Warning(message))
+                __debugbreak();
+        }
         return;
     }
     if (target < 0.0f)
@@ -2586,8 +2584,8 @@ void CG_DrawPlayerLowHealthOverlay()
         return;
 
     CG_PulseLowHealthOverlay(health);
-    float col[4] = {1.0f, 1.0f, 1.0f, CG_FadeLowHealthOverlay()};
-    col[3] *= cg_hudAlpha.value;
+    float col[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+    CG_FadeLowHealthOverlay();
 
     const float sx = unk_F6A278[802 * currCl];
     const float sy = unk_F6A27C[802 * currCl];
