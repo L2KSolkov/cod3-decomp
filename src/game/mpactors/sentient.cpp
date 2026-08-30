@@ -48,7 +48,7 @@ extern const float VectorDistanceSquared(const float* const p1,
 extern int g_doDontLinkCheck;              // ?g_doDontLinkCheck@@3HA @ 0xE37A1C (pathnodemgr.cpp)
 
 // ea: 0x004A9BB0
-// ea: 0x8990B0 (g.o inline) - returns the null hash (0)
+// release g.o inline address 0x8990B0 - returns the null hash (0)
 unsigned int HashString::NullHash()
 {
     static unsigned int sNull = 0;  // ?sNull@?1??NullHash@HashString@@SAIXZ@4IA
