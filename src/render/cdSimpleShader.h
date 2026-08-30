@@ -53,7 +53,7 @@ namespace cdSimpleRender {
     extern unsigned int VS[2];
     extern const unsigned int* VShaderTable[2];
     void RegisterVShader();  // @0x7D6910
-    unsigned int GetVShader(unsigned int index);  // @0x7D6940
+    unsigned long GetVShader(unsigned int index);  // @0x7D6940
 }
 namespace cdSimplePixel {
     extern unsigned int* PS[1];

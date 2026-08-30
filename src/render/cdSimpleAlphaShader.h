@@ -70,7 +70,7 @@ namespace cdSimpleAlphaRender {
     extern unsigned long VS[2];               // ?VS@cdSimpleAlphaRender@@3PAKA
     extern unsigned int const* VShaderTable[2];  // ?VShaderTable@cdSimpleAlphaRender@@3PAPBIA
     void RegisterVShader();                   // @0x007C8D80
-    unsigned int GetVShader(unsigned int index); // @0x007C8DB0
+    unsigned long GetVShader(unsigned int index); // @0x007C8DB0
     struct Params {
         unsigned int data[0x34];
         Params();                              // @0x007C8FD0

@@ -59,7 +59,7 @@ namespace cdDebugShaderRender {
     extern unsigned long* VS;                // ?VS@cdDebugShaderRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdDebugShaderRender@@3PAPBIA
     void RegisterVShader();                  // @0x007C68E0
-    unsigned int GetVShader();               // @0x007C6900
+    unsigned long GetVShader();               // @0x007C6900
 }
 namespace cdDebugPixel {
     extern unsigned long** PS;               // ?PS@cdDebugPixel@@3PAPAKA

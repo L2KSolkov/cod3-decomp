@@ -31,8 +31,8 @@ extern unsigned int gpuHashPixelShader;
 extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
 
 // ea: 0x007C6900
-unsigned int cdDebugShaderRender::GetVShader() {
-    return static_cast<unsigned int>(cdDebugShaderRender::VS[0]);
+unsigned long cdDebugShaderRender::GetVShader() {
+    return cdDebugShaderRender::VS[0];
 }
 
 // ea: 0x007C6910

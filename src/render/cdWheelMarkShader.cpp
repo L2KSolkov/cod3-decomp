@@ -36,8 +36,8 @@ void cdWheelMarkShaderVertex::RegisterShader()
 }
 
 // ea: 0x007C9B50
-unsigned int cdWheelMarkShaderVertex::GetVShader() {
-    return static_cast<unsigned int>(cdWheelMarkShaderVertex::VS[0]);
+unsigned long cdWheelMarkShaderVertex::GetVShader() {
+    return cdWheelMarkShaderVertex::VS[0];
 }
 
 // ea: 0x007C9B30

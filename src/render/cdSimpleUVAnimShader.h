@@ -76,7 +76,7 @@ namespace cdSimpleUVAnimRender {
     extern unsigned long Shader;             // ?Shader@cdSimpleUVAnimRender@@3KA
     void RegisterShader();                   // @0x007C7890
     void RegisterVShader();                  // @0x007C78B0
-    unsigned int GetVShader();               // @0x007C78D0
+    unsigned long GetVShader();               // @0x007C78D0
 }
 namespace cdSimpleUVAnimPixel {
     extern unsigned long** PS;               // ?PS@cdSimpleUVAnimPixel@@3PAPAKA

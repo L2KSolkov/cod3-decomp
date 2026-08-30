@@ -52,8 +52,8 @@ void cdSimpleUVAnimRender::RegisterShader()
 }
 
 // ea: 0x007C78D0
-unsigned int cdSimpleUVAnimRender::GetVShader() {
-    return static_cast<unsigned int>(cdSimpleUVAnimRender::VS[0]);
+unsigned long cdSimpleUVAnimRender::GetVShader() {
+    return cdSimpleUVAnimRender::VS[0];
 }
 
 // ea: 0x007C78B0

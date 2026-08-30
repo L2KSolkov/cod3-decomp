@@ -73,7 +73,7 @@ namespace cdWheelMarkShaderVertex {
     extern unsigned long Shader;             // ?Shader@cdWheelMarkShaderVertex@@3KA
     void RegisterVShader();                  // @0x007C9B30
     void RegisterShader();                   // @0x007C9B10
-    unsigned int GetVShader();               // @0x007C9B50
+    unsigned long GetVShader();               // @0x007C9B50
     struct Params {
         math::Mat44 mLocalToScreen;
         math::Vector4 cFadeScale;

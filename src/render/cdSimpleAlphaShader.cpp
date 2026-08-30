@@ -16,8 +16,8 @@
 cdSimpleAlphaShader* gCDSimpleAlphaShader = nullptr;  // ?gCDSimpleAlphaShader@@3PAVcdSimpleAlphaShader@@A
 
 // ea: 0x007C8DB0
-unsigned int cdSimpleAlphaRender::GetVShader(unsigned int index) {
-    return static_cast<unsigned int>(cdSimpleAlphaRender::VS[index]);
+unsigned long cdSimpleAlphaRender::GetVShader(unsigned int index) {
+    return cdSimpleAlphaRender::VS[index];
 }
 
 // ea: 0x007C8DF0

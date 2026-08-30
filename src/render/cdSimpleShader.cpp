@@ -328,7 +328,7 @@ void cdSimpleRender::RegisterVShader() {
 }
 
 // ea: 0x007D6940
-unsigned int cdSimpleRender::GetVShader(unsigned int index) {
+unsigned long cdSimpleRender::GetVShader(unsigned int index) {
     return VS[index];
 }
 
