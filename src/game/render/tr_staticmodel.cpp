@@ -52,6 +52,7 @@ struct trStaticModelList_t {
 class PoolAllocator {
 public:
     void* Allocate(unsigned int s, bool forceHeapAlloc);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
+    void Release(void* ptr);                              // ?Release@PoolAllocator@@QAEXPAX@Z
 };
 
 // BspCell view (staticModels +0x34)
@@ -61,7 +62,7 @@ struct BspCell {
 };
 
 // BspTree view (mCells +0x18)
-class BspTree {
+struct BspTree {
 public:
     uint8_t _pad[0x18];
     unsigned int mCellsSize;   // +0x18
@@ -86,6 +87,7 @@ void trStaticModelList_SetAllocator(PoolAllocator* a)
 {
     trStaticModelList_t::SetAllocator(a);
 }
+
 int g_staticCount;                            // ?g_staticCount@@3HA @ 0xEAECD0
 
 // ============================================================================
@@ -132,6 +134,42 @@ static_assert(offsetof(StaticModel, scale) == 0x9C,
               "StaticModel::scale offset mismatch");
 static_assert(sizeof(StaticModel) == 0xF0,
               "StaticModel size mismatch");
+
+extern BspTree* g_bspTree;
+
+// ea: 0x006C7130
+void R_DestroyStaticModels(TPakId pakId)
+{
+    if (g_bspTree == nullptr)
+        return;
+
+    for (unsigned int cellIdx = 0; cellIdx < g_bspTree->mCellsSize;
+         ++cellIdx)
+    {
+        BspCell* cell = &g_bspTree->mCellsList[cellIdx];
+        trStaticModelList_t* previous = nullptr;
+        trStaticModelList_t* current = cell->staticModels;
+        while (current != nullptr)
+        {
+            trStaticModelList_t* released = nullptr;
+            if (current->model->pakId == pakId)
+            {
+                released = current;
+                if (previous != nullptr)
+                    previous->next = current->next;
+                else
+                    cell->staticModels = current->next;
+            }
+            else
+            {
+                previous = current;
+            }
+            current = current->next;
+            trStaticModelList_t::sAllocator->Release(released);
+        }
+    }
+}
+
 class XModelParts {
 public:
     uint8_t _pad[0x10];

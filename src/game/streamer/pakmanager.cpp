@@ -664,10 +664,6 @@ extern Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                         const bool important);
 extern float flrand(float min, float max);  // q_math.cpp ?flrand@@YAMMM@Z
 extern void R_DestroyStaticModels(TPakId pakId);  // render.o
-void R_DestroyStaticModels(TPakId pakId)
-{
-    (void)pakId;  // stub: render.o
-}
 extern void CM_DestroyStaticModels(TPakId pakId);  // render.o
 typedef void (*PakDecoder)(const char* name, unsigned char* data,
                            unsigned int size, TPakId pakId, PakFile* pak);
