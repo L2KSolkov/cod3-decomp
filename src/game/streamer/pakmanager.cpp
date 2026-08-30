@@ -11271,8 +11271,10 @@ NumBanks::NumBanks(float count, float aram)
     gc.aram = aram;
 }
 
-// ea: 0x663230 / 0x663240
+// ea: 0x663230
 float& NumBanks::to_float() { return xbox; }
+
+// ea: 0x663240
 float NumBanks::to_float() const { return xbox; }
 
 // ea: 0x663250
@@ -12538,41 +12540,45 @@ tlFixedString GetName(const char* name);  // defined below (0x66F3C0)
 // XAnimRelease (anim.o 0x5513E0)
 extern void XAnimRelease(nalAnimClass<nalAnyPose>* anim);
 
-// ea: 0x6637E0 / 0x6637F0
+// ea: 0x6637E0
 tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalGetAnimDirectory()
 {
     return nalAnimDirectory;
 }
+// ea: 0x6637F0
 void nalSetAnimDirectory(tlResourceDirectory<nalAnimClass<nalAnyPose>>* dir)
 {
     nalAnimDirectory = dir;
 }
 
-// ea: 0x663800 / 0x663810
+// ea: 0x663800
 tlResourceDirectory<nalAnimFile>* nalGetAnimFileDirectory()
 {
     return nalAnimFileDirectory;
 }
+// ea: 0x663810
 void nalSetAnimFileDirectory(tlResourceDirectory<nalAnimFile>* dir)
 {
     nalAnimFileDirectory = dir;
 }
 
-// ea: 0x663820 / 0x663830
+// ea: 0x663820
 tlResourceDirectory<nalBaseSkeleton>* nalGetSkeletonDirectory()
 {
     return nalSkeletonDirectory;
 }
+// ea: 0x663830
 void nalSetSkeletonDirectory(tlResourceDirectory<nalBaseSkeleton>* dir)
 {
     nalSkeletonDirectory = dir;
 }
 
-// ea: 0x663840 / 0x663850
+// ea: 0x663840
 tlResourceDirectory<nalSceneAnim>* nalGetSceneAnimDirectory()
 {
     return nalSceneAnimDirectory;
 }
+// ea: 0x663850
 void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim>* dir)
 {
     nalSceneAnimDirectory = dir;
@@ -12727,10 +12733,13 @@ Mat44::Mat44(const Vector4& _x, const Vector4& _y, const Vector4& _z,
     w.v = _w.v;
 }
 
-// ea: 0x663AC0 / 0x663AD0 / 0x663AE0 / 0x663AF0
+// ea: 0x663AC0
 Vector4& Mat44::GetX() { return x; }
+// ea: 0x663AD0
 Vector4& Mat44::GetY() { return y; }
+// ea: 0x663AE0
 Vector4& Mat44::GetZ() { return z; }
+// ea: 0x663AF0
 Vector4& Mat44::GetW() { return w; }
 
 // ea: 0x663B00

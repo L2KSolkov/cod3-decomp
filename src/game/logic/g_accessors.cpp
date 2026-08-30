@@ -210,13 +210,13 @@ Color32::Color32(unsigned char _r, unsigned char _g, unsigned char _b,
     c.a = _a;
 }
 
-// streamer.o 0x663200
+// ea: 0x663200
 Color32::Color32(unsigned int packed)
 {
     i = packed;
 }
 
-// streamer.o 0x663220
+// ea: 0x663220
 unsigned int Color32::to_ulong() const
 {
     return i;
