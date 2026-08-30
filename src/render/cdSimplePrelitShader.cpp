@@ -133,9 +133,9 @@ void cdSimplePrelitShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
     if ((ShaderCommon::ShaderSwitching.__s0[1] & 0x20) == 0) {
         cdSimplePrelitShaderNode* node = (cdSimplePrelitShaderNode*)nglListAlloc(0x18, 0x10);
         if (node != NULL) {
+            ::new (node) cdSimplePrelitShaderNode;
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdSimplePrelitShaderNode;
             node->mMaterial = (cdSimplePrelitShaderMat*)iMat;
         } else {
             node = NULL;
