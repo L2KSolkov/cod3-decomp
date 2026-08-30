@@ -14,6 +14,15 @@
 
 // Shader global pointer definitions
 cdFlagShader* gCDFlagShader = nullptr;  // ?gCDFlagShader@@3PAVcdFlagShader@@A
+extern unsigned int gShaderSwitchingFlags;
+
+// ea: 0x007CB840
+cdFlagShader::cdFlagShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    *((unsigned char*)&gShaderSwitchingFlags) &= 0xF7;
+}
 
 // ea: 0x007CB8B0
 void cdFlagVertex::RegisterVShader()
@@ -71,7 +80,6 @@ cdFlagShaderMat::cdFlagShaderMat(nglTexture* iTexture) {
 void InitCDFlagShader() {
     cdFlagShader* v0 = (cdFlagShader*)mem_heap_malloc(0x10);
     if (v0 != NULL) {
-        ::new (v0) cdFlagShader;
         v0->next = tlInitList::head;
         tlInitList::head = v0;
         v0->Disabled = false;

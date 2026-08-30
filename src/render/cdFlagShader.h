@@ -45,6 +45,7 @@ static_assert(sizeof(cdFlagShaderNode) == 0x18, "cdFlagShaderNode size mismatch"
 // ============================================================================
 class cdFlagShader : public nglShader {
 public:
+    cdFlagShader();  // @0x7CB840
     virtual tlFixedString GetName(); // @0x7CB870
     virtual void Register();  // @0x7CA3C0
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7CA400
