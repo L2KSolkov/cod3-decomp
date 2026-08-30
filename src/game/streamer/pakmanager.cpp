@@ -1974,7 +1974,9 @@ public:
     // - ea: 0x687700
     static void SingletonDebugRender();
 
+public:
     // - ea: 0x666C50
+    ae_sized_array<TPakId, 128>& GetContextStack();
     const ae_sized_array<TPakId, 128>& GetContextStack() const;
     // - ea: 0x666D00
     void PushContext(TPakId pakId);
@@ -1999,12 +2001,16 @@ public:
     void SetSoundProgress(float t);
     // - ea: 0x665760
     void SetBrocProgress(float t);
+private:
     // - ea: 0x665570
-    float GetDistance(PakInfoNode* node) const;
+    float GetDistance(const PakInfoNode* node) const;
+public:
     // - ea: 0x666950
     void SetDistance(const PakInfoNode* cpak, float dist, bool force);
     // - ea: 0x6669E0
+private:
     PakInfoNode* GetUnloadedPrereq(const PakInfoNode* pak) const;
+public:
     // - ea: 0x66C8B0
     PakInfoNode* GetBestUnloadedPak();
     // - ea: 0x6635E0
@@ -3650,16 +3656,16 @@ float PakManager::sWbkPercentage = 0.1f;
 PoolAllocator* gPakMemHeapAllocator = nullptr;  // ?gPakMemHeapAllocator@@3PAVPoolAllocator@@A @ 0xF592F0
 
 // ea: 0x666C50
-const ae_sized_array<TPakId, 128>& PakManager::GetContextStack() const
+ae_sized_array<TPakId, 128>& PakManager::GetContextStack()
 {
     uint32_t CurrentThreadId = GetCurrentThreadId();
     int v3 = -1;
     int v4 = 0;
-    const int* p_m_size = &mContextStack[0].m_size;
+    int* p_m_size = &mContextStack[0].m_size;
     do
     {
         if (*(p_m_size - 129) == (int)CurrentThreadId)
-            return *(const ae_sized_array<TPakId, 128>*)(p_m_size - 128);
+            return *(ae_sized_array<TPakId, 128>*)(p_m_size - 128);
         if (v3 == -1 && *p_m_size == 0)
             v3 = v4;
         ++v4;
@@ -3676,7 +3682,12 @@ const ae_sized_array<TPakId, 128>& PakManager::GetContextStack() const
             __debugbreak();
     }
     const_cast<TThreadedPakContextStack*>(&mContextStack[v3])->key = CurrentThreadId;
-    return *(const ae_sized_array<TPakId, 128>*)&mContextStack[v3].stack;
+    return *(ae_sized_array<TPakId, 128>*)&mContextStack[v3].stack;
+}
+
+const ae_sized_array<TPakId, 128>& PakManager::GetContextStack() const
+{
+    return const_cast<PakManager*>(this)->GetContextStack();
 }
 
 // ea: 0x666D00
@@ -3702,7 +3713,8 @@ TPakId PakManager::PopContext()
 // ea: 0x66CB60
 TPakId PakManager::GetTopContext() const
 {
-    const ae_sized_array<TPakId, 128>& stack = GetContextStack();
+    const ae_sized_array<TPakId, 128>& stack =
+        const_cast<PakManager*>(this)->GetContextStack();
     int m_size = stack.m_size;
     if (m_size != 0)
         return stack.m_elements[m_size - 1 <= 0 ? PAK_ID_MIN : m_size - 1];
@@ -16146,7 +16158,7 @@ unsigned long PakGetThreadId()
 }
 
 // ea: 0x665570
-float PakManager::GetDistance(PakInfoNode* node) const
+float PakManager::GetDistance(const PakInfoNode* node) const
 {
     if (node->visited == sComputeDistanceKey)
         return node->computedDistance;
@@ -16181,8 +16193,8 @@ float PakManager::GetDistance(PakInfoNode* node) const
         userDistance = 0.0f;
         distance = 0.0f;
     }
-    node->visited = sComputeDistanceKey;
-    node->computedDistance = userDistance;
+    const_cast<PakInfoNode*>(node)->visited = sComputeDistanceKey;
+    const_cast<PakInfoNode*>(node)->computedDistance = userDistance;
     return distance;
 }
 void DecodeDCGBankPak(const char* name, unsigned char* data, unsigned int size,
