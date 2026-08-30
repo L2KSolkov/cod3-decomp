@@ -1,0 +1,5 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007EE300	?GetBounds@apsEffect@@QAEXAAUapsBounds@@@Z	V3	PASS	ida-manual-aps-effect-20260829	2026-08-29	src/aeps/apsEffect.cpp:620-636	Source initializes bounds, folds nonempty group bounds with SIMD min/max, and assigns the result to the output reference.
+0x007EE300	?GetBounds@apsEffect@@QAEXAAUapsBounds@@@Z	V4	PASS	ida-manual-aps-effect-20260829	2026-08-29	IDA:0x007EE300;src/aeps/apsEffect.cpp:620-636	Release/source match bounds initialization, group-table iteration, null/particle-count gate, min/max stores, and output assignment.
+0x007EF460	?IsDone@apsEffect@@QAEIXZ	V3	PASS	ida-manual-aps-effect-20260829	2026-08-29	src/aeps/apsEffect.cpp:835-870	Source handles stop-emitting particle exhaustion, validates the template, scans element end times, and returns the release completion status.
+0x007EF460	?IsDone@apsEffect@@QAEIXZ	V4	PASS	ida-manual-aps-effect-20260829	2026-08-29	IDA:0x007EF460;src/aeps/apsEffect.cpp:835-870	Release/source match stop-emitting group sum, empty-group completion, both null-template assertions, template-size zero path, element end-time comparison, loop bounds, and return values.
