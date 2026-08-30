@@ -979,7 +979,8 @@ int cg_vmMain(int command, int arg0, void* arg1, int* arg2, int arg3,
     case 18:
         goto LABEL_707;
     case 8:
-        result = 0;
+        result = static_cast<bool>(
+            *reinterpret_cast<IVPointer<XModel>*>(&cgsGlobal.gameModels[arg0]));
         break;
     case 9:
         CG_DObjCalcPose((Entity*)arg0, arg1, arg2);
