@@ -205,3 +205,25 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005AE600	?SetTextNoLocalize@FEMenuEntry@@UAEXPAD@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1165554-1165558	Release forwards this->text and txt to FEText::SetTextNoLocalize, matching source.
 0x005B1D80	?SetTextNoLocalize@FEMenuEntry@@UAEXVstring@Broc@@@Z	V3	PASS	ida-manual-shell-femenu-20260830	2026-08-30	src/game/ui_types.h:999-1003	Source selects the string block payload or empty fallback, forwards it, and relies on value cleanup.
 0x005B1D80	?SetTextNoLocalize@FEMenuEntry@@UAEXVstring@Broc@@@Z	V4	PASS	ida-manual-shell-femenu-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1168769-1168780	Release selects mBlock payload/defaultFileName, forwards to FEText, and destroys the by-value Broc::string exactly as source semantics require.
+0x005AD8B0	?SetFont@FEText@@UAEXW4font_index@@@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:766-769	Source stores the supplied font enum.
+0x005AD8B0	?SetFont@FEText@@UAEXW4font_index@@@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164856-1164859	Release assigns this->font directly, matching source.
+0x005AD8C0	?SetEvenNumberSpacing@FEText@@UAEX_N@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:768-771	Source sets or clears the flags bit 4 according to the boolean.
+0x005AD8C0	?SetEvenNumberSpacing@FEText@@UAEX_N@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164861-1164867	Release applies the same bitwise set/clear operation.
+0x005AD950	?SetScale@FEText@@UAEXMM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:771-778	Source writes selected x/y and unselected x/y/z scale fields.
+0x005AD950	?SetScale@FEText@@UAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164883-1164897	Release stores sx/sy into the same selected and unselected fields.
+0x005AD8E0	?SetScale@FEText@@UAEXM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:779-785	Source writes the uniform scale to selected and unselected x/y fields.
+0x005AD8E0	?SetScale@FEText@@UAEXM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164869-1164881	Release performs the same four uniform scale stores.
+0x005AD9D0	?SetScaleMenuItem@FEText@@UAEXMM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:787-796	Source writes selected/unselected scales, clears both z components, and stores the unselected scale-init z.
+0x005AD9D0	?SetScaleMenuItem@FEText@@UAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164899-1164908	Release performs the same selected, unselected, and scale_init.z assignments.
+0x005ADA50	?SetScaleInit@FEText@@UAEXMM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:798-802	Source stores initial x/y scale and clears z.
+0x005ADA50	?SetScaleInit@FEText@@UAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164909-1164917	Release writes sx, sy, and zero to scale_init x/y/z.
+0x005ADAA0	?SetName@FEText@@UAEXPBD@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:803-805	Source assigns the supplied name through Broc::string.
+0x005ADAA0	?SetName@FEText@@UAEXPBD@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164919-1164923	Release calls Broc::string::operator= on name with the same pointer.
+0x005ADAB0	?Shift@FEText@@UAEXMM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:807-809	Source computes shifted coordinates through virtual GetX/GetY and SetPos.
+0x005ADAB0	?Shift@FEText@@UAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164925-1164936	Release reads virtual Y/X, adds offsets, and dispatches virtual SetPos identically.
+0x005ADAF0	?ShiftXYInitial@FEText@@UAEXUvector@Broc@@@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:811-814	Source adds all three offset components to xy_initial.
+0x005ADAF0	?ShiftXYInitial@FEText@@UAEXUvector@Broc@@@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164938-1164944	Release performs the same x/y/z additions.
+0x005ADB50	?SetPos@FEText@@UAEXMM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:820-824	Source stores x/y position and clears z.
+0x005ADB50	?SetPos@FEText@@UAEXMM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164952-1164961	Release writes xy x/y and zeroes z, matching source.
+0x005ADBA0	?SetX@FEText@@UAEXM@Z	V3	PASS	ida-manual-shell-fetext-20260830	2026-08-30	src/game/ui_types.h:825-827	Source stores the supplied x coordinate.
+0x005ADBA0	?SetX@FEText@@UAEXM@Z	V4	PASS	ida-manual-shell-fetext-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1164963-1164967	Release assigns xy.x directly.
