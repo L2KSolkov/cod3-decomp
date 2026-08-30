@@ -1041,6 +1041,7 @@ struct ThroughputMeasurer {
     float mStart;       // +0x08
     float mTotalTime;   // +0x0C
 
+    ThroughputMeasurer();           // ?ThroughputMeasurer@@QAE@XZ
     float safeGetTime() const;  // ?safeGetTime@ThroughputMeasurer@@QBEMXZ
     void Update(int bytes);     // ?Update@ThroughputMeasurer@@QAEXH@Z
     void stop(int bytes);       // ?stop@ThroughputMeasurer@@QAEXH@Z
@@ -1051,6 +1052,17 @@ ThroughputMeasurer gThroughputMeasurer;  // ?gThroughputMeasurer@@3UThroughputMe
 unsigned int g_bytes_read = 0;           // ?g_bytes_read@@3IA @ 0xF592E4
 float g_throughput = 0.0f;               // ?g_throughput@@3MA @ 0xF592E0
 int max_work = 20;                       // ?max_work@@3HA @ 0xDF91C0
+
+// ea: 0x684F80
+ThroughputMeasurer::ThroughputMeasurer()
+{
+    g_throughput = 0.0f;
+    g_bytes_read = 0;
+    mBytes = 0;
+    mTotalBytes = 0;
+    mStart = 0.0f;
+    mTotalTime = 0.0f;
+}
 
 // ea: 0x681110
 float ThroughputMeasurer::safeGetTime() const
@@ -2476,7 +2488,7 @@ extern vehicle_node_t* s_nodes[];  // g.o 0xEAEDF8
 class PathNodeMgr {
 public:
     static PathNodeMgr* sInst;  // defined in sv_globals.cpp
-    int GetVehicleNodeIndex(vehicle_node_t* pNode);  // ?GetVehicleNodeIndex@PathNodeMgr@@QAEHPAUvehicle_node_t@@@Z (stub)
+    int GetVehicleNodeIndex(vehicle_node_t* pNode);  // ?GetVehicleNodeIndex@PathNodeMgr@@QAEHPAUvehicle_node_t@@@Z
     void SetCoverNodeStatus(const Broc::string& name,
                             int inValid);  // ?SetCoverNodeStatus@PathNodeMgr@@QAEXABV?$string@Broc@@H@Z (sv_misc.cpp)
     void DecodeLevelBank(const char* name, unsigned char* data, int size,
@@ -2678,6 +2690,7 @@ void PathNodeMgr::DecodeLevelBank(const char* name, unsigned char* data,
 void PathNodeMgr::DecodeZoneBank(const char* name, unsigned char* data,
                                  int size, TPakId pakId)
 { (void)name; (void)data; (void)size; (void)pakId; }
+// ea: 0x0077F3D0
 int PathNodeMgr::GetVehicleNodeIndex(vehicle_node_t* pNode)
 {
     // ea: 0x0077F3D0
