@@ -147,7 +147,7 @@ cdGlowShader.o	50	39	6	3	0	2	0
 cdGunShader.o	24	19	0	4	0	1	0
 cdGunSightShader.o	22	15	0	6	0	1	0
 cdGunSightSpecularShader.o	22	16	0	5	0	1	0
-cdHeatHazeShader.o	20	17	0	1	0	2	0
+cdHeatHazeShader.o	20	17	1	0	0	2	0
 cdOceanGlobals.o	19	5	0	14	0	0	0
 cdOceanShader.o	23	12	1	9	0	1	0
 cdPrelitShader.o	25	20	0	4	0	1	0

@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x007CF460	?ToggleCDHeatHazeShader@@YAXXZ	V3	PASS	ida-manual-cd-heathaze-20260829	2026-08-29	src/render/cdHeatHazeShader.cpp:40-47	Source returns the inverted enabled state while storing that same value as the new flag.
+0x007CF460	?ToggleCDHeatHazeShader@@YAXXZ	V4	PASS	ida-manual-cd-heathaze-20260829	2026-08-29	IDA:0x007CF460;src/render/cdHeatHazeShader.cpp:40-47	Release/source both compute !gEnabled, assign gEnabled, and return the resulting boolean; callback use explicitly discards the return as in the toggle table.
