@@ -27,6 +27,8 @@ static_assert(sizeof(cdWorldShaderMat) == 0x1C, "cdWorldShaderMat size mismatch"
 // ============================================================================
 class cdWorldShader : public nglShader {
 public:
+    cdWorldShader(); // @0x7E0190
+    virtual ~cdWorldShader(); // @0x7E0240
     virtual tlFixedString GetName(); // @0x7E01C0
     virtual void Register();  // @0x7DF140
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7DF180

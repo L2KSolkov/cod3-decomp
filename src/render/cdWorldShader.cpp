@@ -202,6 +202,18 @@ unsigned long* cdWorldSolidColorPixel::GetPShader() {
     return cdWorldSolidColorPixel::PS[0];
 }
 
+// ea: 0x007E0190
+cdWorldShader::cdWorldShader()
+{
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[0] &= ~2;
+}
+
+// ea: 0x007E0240
+cdWorldShader::~cdWorldShader() = default;
+
 // ============================================================================
 // InitCDWorldShader — allocate the shader and link into the init list.
 // ea: 0x7DF0D0
@@ -210,11 +222,6 @@ void InitCDWorldShader() {
     cdWorldShader* result = (cdWorldShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdWorldShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdWorldShader
-        ShaderCommon::ShaderSwitching.__s0[0] &= ~2;
         gCDWorldShader = result;
     } else {
         gCDWorldShader = NULL;
@@ -234,6 +241,7 @@ void ToggleCDWorldShader() {
 
 }
 
+// ea: 0x007E01C0
 tlFixedString cdWorldShader::GetName() { return tlFixedString("cdWorld"); }
 
 // ============================================================================
