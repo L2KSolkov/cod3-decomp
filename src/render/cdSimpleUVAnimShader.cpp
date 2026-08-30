@@ -43,12 +43,55 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 // Shader global pointer definitions
 cdSimpleUVAnimShader* gCDSimpleUVAnimShader = nullptr;  // ?gCDSimpleUVAnimShader@@3PAVcdSimpleUVAnimShader@@A
 
-// ea: 0x007C78B0
-void cdSimpleUVAnimRender::RegisterVShader()
+// ea: 0x007C7890
+void cdSimpleUVAnimRender::RegisterShader()
 {
     nglDxRegisterVShader(cdSimpleUVAnimRender::VS,
                          reinterpret_cast<const unsigned int*>(cdSimpleUVAnimRender::VShaderTable[0]));
     cdSimpleUVAnimRender::Shader = cdSimpleUVAnimRender::VS[0];
+}
+
+// ea: 0x007C78D0
+unsigned int cdSimpleUVAnimRender::GetVShader() {
+    return static_cast<unsigned int>(cdSimpleUVAnimRender::VS[0]);
+}
+
+// ea: 0x007C78B0
+void cdSimpleUVAnimRender::RegisterVShader()
+{
+    cdSimpleUVAnimRender::RegisterShader();
+}
+
+// ea: 0x007C78E0
+void cdSimpleUVAnimPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdSimpleUVAnimPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdSimpleUVAnimPixel::PShaderTable[0]));
+    cdSimpleUVAnimPixel::Shader = cdSimpleUVAnimPixel::PS[0];
+}
+
+// ea: 0x007C7900
+void cdSimpleUVAnimPixel::RegisterPShader() { cdSimpleUVAnimPixel::RegisterShader(); }
+
+// ea: 0x007C7920
+unsigned long* cdSimpleUVAnimPixel::GetPShader() { return cdSimpleUVAnimPixel::PS[0]; }
+
+// ea: 0x007C7930
+void cdSimpleUVAnimFullbrightPixel::RegisterShader()
+{
+    nglDxRegisterPShader(cdSimpleUVAnimFullbrightPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdSimpleUVAnimFullbrightPixel::PShaderTable[0]));
+    cdSimpleUVAnimFullbrightPixel::Shader = cdSimpleUVAnimFullbrightPixel::PS[0];
+}
+
+// ea: 0x007C7950
+void cdSimpleUVAnimFullbrightPixel::RegisterPShader() {
+    cdSimpleUVAnimFullbrightPixel::RegisterShader();
+}
+
+// ea: 0x007C7970
+unsigned long* cdSimpleUVAnimFullbrightPixel::GetPShader() {
+    return cdSimpleUVAnimFullbrightPixel::PS[0];
 }
 
 namespace AeAssert {
@@ -85,6 +128,17 @@ cdSimpleUVAnimShaderMat::cdSimpleUVAnimShaderMat(nglTexture* iTexture) {
     this->Shader = gCDSimpleUVAnimShader;
 }
 
+// ea: 0x007C7820
+cdSimpleUVAnimShader::cdSimpleUVAnimShader() {
+    this->next = tlInitList::head;
+    tlInitList::head = this;
+    this->Disabled = false;
+    ShaderCommon::ShaderSwitching.__s0[1] &= ~0x40;
+}
+
+// ea: 0x007C7B10
+cdSimpleUVAnimShader::~cdSimpleUVAnimShader() = default;
+
 // ============================================================================
 // InitCDSimpleUVAnimShader — allocate the shader and link into the init list.
 // ea: 0x7C6E00
@@ -93,11 +147,6 @@ void InitCDSimpleUVAnimShader() {
     cdSimpleUVAnimShader* result = (cdSimpleUVAnimShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         ::new (result) cdSimpleUVAnimShader;
-        result->next = tlInitList::head;
-        tlInitList::head = result;
-        result->Disabled = false;
-        // vftable = cdSimpleUVAnimShader
-        ShaderCommon::ShaderSwitching.__s0[1] &= ~0x40;
         gCDSimpleUVAnimShader = result;
     } else {
         gCDSimpleUVAnimShader = NULL;
@@ -144,10 +193,9 @@ void cdSimpleUVAnimShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
                                    nglMaterial* iMat) {
     if ((ShaderCommon::ShaderSwitching.__s0[1] & 0x40) == 0) {
         cdSimpleUVAnimShaderNode* node = (cdSimpleUVAnimShaderNode*)nglListAlloc(0x60, 0x10);
-        if (node != NULL) {
+    if (node != NULL) {
             node->MeshNode = iMeshNode;
             node->Section = iSection;
-            ::new (node) cdSimpleUVAnimShaderNode;
             node->mMaterial = (cdSimpleUVAnimShaderMat*)iMat;
         } else {
             node = NULL;
@@ -158,6 +206,18 @@ void cdSimpleUVAnimShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSect
         ++nglBuildScene->OpaqueListCount;
     }
 }
+
+// ea: 0x007C7A70
+cdSimpleUVAnimShaderNode::cdSimpleUVAnimShaderNode(
+    nglMeshNode* iMeshNode, nglMeshSection* iSection,
+    cdSimpleUVAnimShaderMat* iMaterial) {
+    this->MeshNode = iMeshNode;
+    this->Section = iSection;
+    this->mMaterial = iMaterial;
+}
+
+// ea: 0x007C7AD0
+cdSimpleUVAnimShaderNode::~cdSimpleUVAnimShaderNode() = default;
 
 // ============================================================================
 // cdSimpleUVAnimShaderNode::SetTextureMatrix — fetch and transpose the

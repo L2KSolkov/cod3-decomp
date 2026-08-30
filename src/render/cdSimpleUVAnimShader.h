@@ -18,7 +18,8 @@
 // ============================================================================
 // cdSimpleUVAnimShaderMat — simple UV anim shader material (96 bytes)
 // ============================================================================
-struct cdSimpleUVAnimShaderMat : nglMaterial {
+class cdSimpleUVAnimShaderMat : public nglMaterial {
+public:
     nglTexture* mTexture;   // +0x10
     int         mCullMode;  // +0x14
     // +0x18: padding to 0x20
@@ -31,10 +32,16 @@ static_assert(sizeof(cdSimpleUVAnimShaderMat) == 0x60, "cdSimpleUVAnimShaderMat 
 // ============================================================================
 // cdSimpleUVAnimShaderNode — simple UV anim shader render node (96 bytes)
 // ============================================================================
-struct cdSimpleUVAnimShaderNode : nglShaderNode {
+class cdSimpleUVAnimShaderNode : public nglShaderNode {
+public:
     cdSimpleUVAnimShaderMat* mMaterial;     // +0x14
     // +0x18: padding to 0x20
     math::Mat44 mTextureMatrix;             // +0x20
+
+    cdSimpleUVAnimShaderNode(nglMeshNode* iMeshNode,
+                             nglMeshSection* iSection,
+                             cdSimpleUVAnimShaderMat* iMaterial); // @0x7C7A70
+    virtual ~cdSimpleUVAnimShaderNode(); // @0x7C7AD0
 
     void SetTextureMatrix(math::Mat44& matOut);  // @0x7C6F40
     void Render() override;                      // @0x7C70E0
@@ -46,6 +53,8 @@ static_assert(sizeof(cdSimpleUVAnimShaderNode) == 0x60, "cdSimpleUVAnimShaderNod
 // ============================================================================
 class cdSimpleUVAnimShader : public nglShader {
 public:
+    cdSimpleUVAnimShader(); // @0x7C7820
+    virtual ~cdSimpleUVAnimShader(); // @0x7C7B10
     virtual tlFixedString GetName(); // @0x7C7850
     virtual void Register();  // @0x7C6E70
     virtual void AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection, nglMaterial* iMat);  // @0x7C6ED0
@@ -59,24 +68,32 @@ namespace cdSimpleUVAnimRender {
     extern unsigned long* VS;                // ?VS@cdSimpleUVAnimRender@@3PAKA
     extern unsigned int const** VShaderTable; // ?VShaderTable@cdSimpleUVAnimRender@@3PAPBIA
     extern unsigned long Shader;             // ?Shader@cdSimpleUVAnimRender@@3KA
+    void RegisterShader();                   // @0x007C7890
     void RegisterVShader();                  // @0x007C78B0
+    unsigned int GetVShader();               // @0x007C78D0
 }
 namespace cdSimpleUVAnimPixel {
     extern unsigned long** PS;               // ?PS@cdSimpleUVAnimPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdSimpleUVAnimPixel@@3PAPBIA
     extern unsigned long* Shader;            // ?Shader@cdSimpleUVAnimPixel@@3PAKA
+    void RegisterShader();                   // @0x007C78E0
+    void RegisterPShader();                  // @0x007C7900
+    unsigned long* GetPShader();             // @0x007C7920
 }
 namespace cdSimpleUVAnimFullbrightPixel {
     extern unsigned long** PS;               // ?PS@cdSimpleUVAnimFullbrightPixel@@3PAPAKA
     extern unsigned int const** PShaderTable; // ?PShaderTable@cdSimpleUVAnimFullbrightPixel@@3PAPBIA
     extern unsigned long* Shader;            // ?Shader@cdSimpleUVAnimFullbrightPixel@@3PAKA
+    void RegisterShader();                   // @0x007C7930
+    void RegisterPShader();                  // @0x007C7950
+    unsigned long* GetPShader();             // @0x007C7970
 }
 
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 
 extern cdSimpleUVAnimShader* gCDSimpleUVAnimShader;  // @0x10DE044
 
