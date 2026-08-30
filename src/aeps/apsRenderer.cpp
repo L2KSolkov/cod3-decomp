@@ -14,6 +14,10 @@
 // ngl.o (data): the active build scene. Unresolved here.
 extern nglScene* nglBuildScene;
 
+// render.o overload used by the release apsRenderer::SphereIsVisible body.
+extern bool nglIsSphereVisible(const math::Position3& Center, float Radius,
+                               const math::Vector4* Clip);
+
 // core / tl_system.cpp (non-inline): fatal error (varargs). Defined already.
 extern void tlFatal(const char* iFormat, ...);
 
@@ -62,9 +66,8 @@ unsigned int apsRenderer::SphereIsVisible(const apsSphere& iSphere, nglScene* iS
     center.v.m128_f32[2] = iSphere.mSphere.v.m128_f32[2];
     center.v.m128_f32[3] = 0.0f;
     const nglSceneView* scene = reinterpret_cast<const nglSceneView*>(iScene);
-    return nglIsSphereVisible((const nglFrustum*)scene->ClipPlanes,
-                              (const math::Vector4*)&center,
-                              iSphere.mSphere.v.m128_f32[3])
+    return nglIsSphereVisible(center, iSphere.mSphere.v.m128_f32[3],
+                              scene->ClipPlanes)
                ? 1
                : 0;
 }
