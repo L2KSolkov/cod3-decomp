@@ -1,0 +1,7 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008541A0	?nglHostPrintf@@YAXPAXPBDZZ	V3	PASS	ida-manual-ngl-scenedump-20260829	2026-08-29	src/ngl/ngl_dx_scenedump.cpp:23-39	Source contains formatting, guarded WriteFile, error close, and warning behavior.
+0x008541A0	?nglHostPrintf@@YAXPAXPBDZZ	V4	PASS	ida-manual-ngl-scenedump-20260829	2026-08-29	IDA:0x008541A0;src/ngl/ngl_dx_scenedump.cpp:23-39	Release/source vsprintf buffer, File null guard, strlen byte count, WriteFile failure close, and warning string match.
+0x00854210	?nglHostOpen@@YAPAXPBD@Z	V3	PASS	ida-manual-ngl-scenedump-20260829	2026-08-29	src/ngl/ngl_dx_scenedump.cpp:43-56	Source contains path construction, CREATE_ALWAYS handle open, failure warning, and null return.
+0x00854210	?nglHostOpen@@YAPAXPBD@Z	V4	PASS	ida-manual-ngl-scenedump-20260829	2026-08-29	IDA:0x00854210;src/ngl/ngl_dx_scenedump.cpp:43-56	Release/source d:\ path prefix, filename append, GENERIC_WRITE/share/creation/flags arguments, INVALID_HANDLE_VALUE handling, warning, and return match.
+0x008542B0	?nglHostClose@@YAXPAX@Z	V3	PASS	ida-manual-ngl-scenedump-20260829	2026-08-29	src/ngl/ngl_dx_scenedump.cpp:60-62	Source contains the complete CloseHandle forwarding body.
+0x008542B0	?nglHostClose@@YAXPAX@Z	V4	PASS	ida-manual-ngl-scenedump-20260829	2026-08-29	IDA:0x008542B0;src/ngl/ngl_dx_scenedump.cpp:60-62	Release thunk and source both call CloseHandle on the supplied file handle.
