@@ -30,6 +30,8 @@ struct XModelLod;
 class XModelParts;
 class LightGridMgr;
 struct nglMesh;
+class BspPortal;
+struct trModelCellRef_t;
 
 namespace LightGrid {
 struct TOC;
@@ -55,11 +57,24 @@ public:
     void Release(void* ptr);                              // ?Release@PoolAllocator@@QAEXPAX@Z
 };
 
-// BspCell view (staticModels +0x34)
+// BspCell view (IDA layout, 0x50-byte stride)
 struct BspCell {
-    uint8_t _pad[0x34];
+    uint8_t _pad0[0x20];
+    BspPortal* firstCellPortal;       // +0x20
+    int numCellPortals;               // +0x24
+    uint8_t _pad28[0x08];
+    int viewCount;                    // +0x30
     trStaticModelList_t* staticModels;  // +0x34
+    trModelCellRef_t* modelRefs;      // +0x38
+    void* mMeshFile;                  // +0x3C
+    struct {
+        unsigned int mSize;           // +0x40
+        nglMesh** mList;              // +0x44
+    } mMeshes;
+    void* mLgridToc;                  // +0x48
+    void* mCapturedScene;             // +0x4C
 };
+static_assert(sizeof(BspCell) == 0x50, "BspCell size mismatch");
 
 // BspTree view (mCells +0x18)
 struct BspTree {
