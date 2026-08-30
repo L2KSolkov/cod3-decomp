@@ -13257,8 +13257,7 @@ void InstantActionMenu::SetPanelFile(PanelFile* pf)
                             0.0f, 0, 0, col);
     }
     helpbar1 = v23;
-    if (v23 != nullptr)
-        v23->SetNumLines(1);
+    v23->SetNumLines(1);
     helpbar1->SetText("MPFRONTEND_HELP_SELECT_BACK_MOVEUD");
 }
 
