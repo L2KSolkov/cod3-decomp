@@ -1,0 +1,15 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x00828D50	?nslVoiceGetAttenuation@@YAMPAUnslVoice@@@Z	V3	PASS	nsl-priority-manual-20260830	2026-08-30	src/sound/nsl.cpp:4088	Body computes listener-relative voice distance, resolves the wave, and applies wave attenuation when present.
+0x00828D50	?nslVoiceGetAttenuation@@YAMPAUnslVoice@@@Z	V4	PASS	nsl-priority-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566486-1566516	Release distance calculation, wave lookup, and default return match source.
+0x00828DD0	?nslSourceGetAttenuation@@YAMPAUnslSource@@@Z	V3	PASS	nsl-priority-manual-20260830	2026-08-30	src/sound/nsl.cpp:4106	Body computes listener-relative source distance and delegates to the wave attenuation curve.
+0x00828DD0	?nslSourceGetAttenuation@@YAMPAUnslSource@@@Z	V4	PASS	nsl-priority-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566518-1566545	Release source-position arithmetic, wave lookup, and attenuation delegation match source.
+0x00828E70	?nslSourceIs3D@@YAHPAUnslSource@@@Z	V3	PASS	nsl-priority-manual-20260830	2026-08-30	src/sound/nsl.cpp:4121	Body handles null sources, resolves wave metadata, and returns the 3D flag or default one.
+0x00828E70	?nslSourceIs3D@@YAHPAUnslSource@@@Z	V4	PASS	nsl-priority-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566553-1566566	Release null/source metadata branches and flag extraction match source.
+0x00828EF0	?nslPriorityCanPlay@@YAHH@Z	V3	PASS	nsl-priority-manual-20260830	2026-08-30	src/sound/nsl.cpp:4138	Body performs the release voice-touch side effect and priority/count admission checks.
+0x00828EF0	?nslPriorityCanPlay@@YAHH@Z	V4	PASS	nsl-priority-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566587-1566596	Release threshold logic matches source.
+0x00828F30	?nslSourceGetPriority@@YAHPAUnslSource@@@Z	V3	PASS	nsl-priority-manual-20260830	2026-08-30	src/sound/nsl.cpp:4148	Body handles null/unresolved/non-3D waves, computes attenuation, clamps it, and maps it to priority.
+0x00828F30	?nslSourceGetPriority@@YAHPAUnslSource@@@Z	V4	PASS	nsl-priority-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566598-1566626	Release wave classification, clamp, and linear priority mapping match source.
+0x00828FC0	?nslVoiceGetPriority@@YAHAAUnslVoice@@@Z	V3	PASS	nsl-priority-manual-20260830	2026-08-30	src/sound/nsl.cpp:4178	Body resolves the voice source ID and delegates priority calculation.
+0x00828FC0	?nslVoiceGetPriority@@YAHAAUnslVoice@@@Z	V4	PASS	nsl-priority-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566628-1566635	Release source-ID extraction and delegation match source.
+0x00828FE0	?nslPriorityUpdate@@YAXXZ	V3	PASS	nsl-priority-manual-20260830	2026-08-30	src/sound/nsl.cpp:4186	Body scans active voices, ranks the five lowest priorities, updates the count, and stops excess voices.
+0x00828FE0	?nslPriorityUpdate@@YAXXZ	V4	PASS	nsl-priority-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1566637-1566720	Release scan/filter/ranking/compaction/stop logic matches source, including unresolved-wave default priority.
