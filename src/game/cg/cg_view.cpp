@@ -863,10 +863,7 @@ extern const float LerpAngle(float from, float to, float frac);
 // ea: 0x00698650 (release cg.o)
 void CG_EndShellShock(const void*, int)
 {
-    // SoundDevice::UndampenAllSounds is the existing Win32 sound bridge for
-    // the release audio cleanup; the remaining state writes are direct IDA
-    // matches from CG_EndShellShock.
-    SoundDevice_UndampenAllSounds(SoundDevice::sInst);
+    CG_EndShellShockSound();
     const int base = 1580 * currCl;
     *(float*)&dword_F64174[base] = 1.0f;
     CL_CapTurnRate(0.0f, 0.0f);
