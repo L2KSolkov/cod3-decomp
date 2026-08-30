@@ -30,16 +30,6 @@ extern unsigned int gpuHashVertexShader;
 extern unsigned int gpuHashPixelShader;
 extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdScratchShaderVertex {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-}
-namespace cdScratchShaderPixel {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-}
-
 // ea: 0x007C5DB0
 void cdScratchShaderVertex::RegisterVShader()
 {
@@ -78,8 +68,10 @@ tlFixedString cdScratchShader::GetName() { return tlFixedString("PCUV"); }
 // ============================================================================
 void cdScratchShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShaderSafe((unsigned int*)cdScratchShaderVertex::VS, cdScratchShaderVertex::VShaderTable, 0);
-    nglDxRegisterPShaderSafe((unsigned int**)cdScratchShaderPixel::PS, cdScratchShaderPixel::PShaderTable, 0);
+    nglDxRegisterVShader(cdScratchShaderVertex::VS,
+                         reinterpret_cast<const unsigned int*>(cdScratchShaderVertex::VShaderTable[0]));
+    nglDxRegisterPShader(cdScratchShaderPixel::PS,
+                         reinterpret_cast<const unsigned int*>(cdScratchShaderPixel::PShaderTable[0]));
 }
 
 // ============================================================================

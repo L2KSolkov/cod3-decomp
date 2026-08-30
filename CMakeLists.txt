@@ -145,6 +145,7 @@ add_library(cod3_render STATIC
     src/render/cdAirplaneMetalShader.cpp
     src/render/cdAirplaneMetalShaderData.cpp
     src/render/cdScratchShader.cpp
+    src/render/cdScratchShaderData.cpp
     src/render/cdWorldVertexLitShader.cpp
     src/render/cdWorldPointLitShader.cpp
     src/render/cdWorldBlendShader.cpp
