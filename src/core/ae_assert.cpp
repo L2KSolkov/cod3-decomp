@@ -102,7 +102,7 @@ bool IsIgnored() {
 // ea: 0x7BE500
 // ============================================================================
 // ea: 0x007BE500
-static bool OnScreenMessageHandler(ONSCREEN_MESSAGE_TYPE type, const char* text) {
+static bool OnScreenMessageHandler(ONSCREEN_MESSAGE_TYPE type, char* text) {
     const char* prefix = "ASSERT";
     if (type == ONSCREEN_MESSAGE_ERROR) prefix = "ERROR";
     else if (type == ONSCREEN_MESSAGE_WARNING) prefix = "WARNING";
