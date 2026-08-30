@@ -61,6 +61,12 @@ public:
 };
 static_assert(sizeof(cdSimpleUVAnimShader) == 0x10, "cdSimpleUVAnimShader size mismatch");
 
+// IDA local type used by the render constant upload. Its release constructor
+// is intentionally empty; the render path keeps the byte layout explicitly.
+struct SimpleUVAnimContext {
+    SimpleUVAnimContext(); // @0x7C7B20
+};
+
 // ============================================================================
 // Shader data externs (defined in render_xboxr:cdSimpleUVAnimShaderVertex.o)
 // ============================================================================

@@ -219,6 +219,9 @@ cdSimpleUVAnimShaderNode::cdSimpleUVAnimShaderNode(
 // ea: 0x007C7AD0
 cdSimpleUVAnimShaderNode::~cdSimpleUVAnimShaderNode() = default;
 
+// ea: 0x007C7B20
+SimpleUVAnimContext::SimpleUVAnimContext() = default;
+
 // ============================================================================
 // cdSimpleUVAnimShaderNode::SetTextureMatrix — fetch and transpose the
 // texture-matrix parameter, or use the identity matrix when it is unset.
