@@ -26,33 +26,6 @@ cdGlowShader* gCDGlowShader = nullptr;  // ?gCDGlowShader@@3PAVcdGlowShader@@A
 
 tlFixedString cdGlowShader::GetName() { return tlFixedString("Glow"); }
 
-// Shader static data definitions (render_xboxr cd*Shader.o)
-namespace cdGlowRender1 {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-    unsigned long Shader = 0;
-}
-namespace cdGlowRender4 {
-    unsigned long* VS = nullptr;
-    unsigned int const** VShaderTable = nullptr;
-    unsigned long Shader = 0;
-}
-namespace cdGlowShrink {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-namespace cdGlowBlur {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-namespace cdGlowApply {
-    unsigned long** PS = nullptr;
-    unsigned int const** PShaderTable = nullptr;
-    unsigned long* Shader = nullptr;
-}
-
 // ea: 0x007C2A80
 void cdGlowRender4::RegisterVShader()
 {
@@ -104,16 +77,21 @@ void InitCDGlowShader() {
         v0 = NULL;
     }
     gCDGlowShader = v0;
-    nglDxRegisterVShaderSafe((unsigned int*)cdGlowRender1::VS, cdGlowRender1::VShaderTable, 0);
-    cdGlowRender1::Shader = cdGlowRender1::VS != nullptr ? cdGlowRender1::VS[0] : 0;
-    nglDxRegisterVShaderSafe((unsigned int*)cdGlowRender4::VS, cdGlowRender4::VShaderTable, 0);
-    cdGlowRender4::Shader = cdGlowRender4::VS != nullptr ? cdGlowRender4::VS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGlowShrink::PS, cdGlowShrink::PShaderTable, 0);
-    cdGlowShrink::Shader = cdGlowShrink::PS != nullptr ? cdGlowShrink::PS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGlowBlur::PS, cdGlowBlur::PShaderTable, 0);
-    cdGlowBlur::Shader = cdGlowBlur::PS != nullptr ? cdGlowBlur::PS[0] : 0;
-    nglDxRegisterPShaderSafe((unsigned int**)cdGlowApply::PS, cdGlowApply::PShaderTable, 0);
-    cdGlowApply::Shader = cdGlowApply::PS != nullptr ? cdGlowApply::PS[0] : 0;
+    nglDxRegisterVShader(cdGlowRender1::VS,
+                         reinterpret_cast<const unsigned int*>(cdGlowRender1::VShaderTable[0]));
+    cdGlowRender1::Shader = cdGlowRender1::VS[0];
+    nglDxRegisterVShader(cdGlowRender4::VS,
+                         reinterpret_cast<const unsigned int*>(cdGlowRender4::VShaderTable[0]));
+    cdGlowRender4::Shader = cdGlowRender4::VS[0];
+    nglDxRegisterPShader(cdGlowShrink::PS,
+                         reinterpret_cast<const unsigned int*>(cdGlowShrink::PShaderTable[0]));
+    cdGlowShrink::Shader = cdGlowShrink::PS[0];
+    nglDxRegisterPShader(cdGlowBlur::PS,
+                         reinterpret_cast<const unsigned int*>(cdGlowBlur::PShaderTable[0]));
+    cdGlowBlur::Shader = cdGlowBlur::PS[0];
+    nglDxRegisterPShader(cdGlowApply::PS,
+                         reinterpret_cast<const unsigned int*>(cdGlowApply::PShaderTable[0]));
+    cdGlowApply::Shader = cdGlowApply::PS[0];
 }
 
 // ============================================================================
