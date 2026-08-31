@@ -1001,6 +1001,9 @@ template ae_sized_array_base<ae_pair<void*, unsigned int>, 15>::
 ae_sized_array_base();
 template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(int);
 template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(Handle);
+template DbLinkedHandle<TaskSys, Task>::DbLinkedHandle(int);
+template DbLinkedHandle<TaskSys, Task>&
+DbLinkedHandle<TaskSys, Task>::operator=(Handle);
 template unsigned int
 InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>::size() const;
 template const InplaceTreeElement<InplaceString, InplaceString>&
