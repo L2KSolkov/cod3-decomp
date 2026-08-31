@@ -584,6 +584,28 @@ static void nalMatrix4x4_FromPositionOrientation(
     mat->w[3] = 1.0f;
 }
 
+static nalMatrix4x4 AnimIK_MatrixFromDObjTag(const DObjSkelMat& tag)
+{
+    nalMatrix4x4 result;
+    result.x[0] = tag.axis[0][0];
+    result.x[1] = tag.axis[0][1];
+    result.x[2] = tag.axis[0][2];
+    result.x[3] = 0.0f;
+    result.y[0] = tag.axis[1][0];
+    result.y[1] = tag.axis[1][1];
+    result.y[2] = tag.axis[1][2];
+    result.y[3] = 0.0f;
+    result.z[0] = tag.axis[2][0];
+    result.z[1] = tag.axis[2][1];
+    result.z[2] = tag.axis[2][2];
+    result.z[3] = 0.0f;
+    result.w[0] = tag.origin[0];
+    result.w[1] = tag.origin[1];
+    result.w[2] = tag.origin[2];
+    result.w[3] = 1.0f;
+    return result;
+}
+
 static math::Quaternion AnimIK_QuaternionFromMatrix(const nalMatrix4x4& matrix)
 {
     math::Mat44 view;
@@ -616,6 +638,8 @@ extern void nalGenericSkeleton_GetBoneHandle(
     const tlFixedString* boneName);
 extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
     void* pose, const nalGenericBoneHandle* handle);
+extern const DObjSkelMat* G_DObjGetLocalTagMatrix(
+    Entity* ent, unsigned int tag_name_hash);
 extern void nalIKMap2DTo3D(float a1, float a2, float a3, float a4, float a5,
                            const math::Dir3& d1, const math::Dir3& d2,
                            const math::Dir3& d3, float a8, float a9,
@@ -2046,6 +2070,34 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
         if (viewYaw != 0.0f)
             RotateBone(AnimIKViewBones[i], math::Dir3(0.0f, lateral, 0.0f));
         RotateBone(AnimIKViewBones[i], math::Dir3(pitch, 0.0f, 0.0f));
+    }
+
+    // The release then maps the vehicle's left-hand tag into the active seat
+    // tag's local space and solves the left arm against that relative matrix.
+    static const unsigned int handTag = HashString::CalcHash("tag_hand_left");
+    static const unsigned int gunnerHandTag =
+        HashString::CalcHash("tag_gunner_hand_left");
+    static const unsigned int driverSeatTag = HashString::CalcHash("tag_driver");
+    static const unsigned int gunnerSeatTag = HashString::CalcHash("tag_gunner");
+    const unsigned int handHash = client->ps.vehPos == 1
+        ? gunnerHandTag : handTag;
+    const unsigned int seatHash = client->ps.vehPos == 1
+        ? gunnerSeatTag : driverSeatTag;
+    const DObjSkelMat* vehicleHandTag =
+        G_DObjGetLocalTagMatrix(vehicle, handHash);
+    const DObjSkelMat* vehicleSeatTag =
+        G_DObjGetLocalTagMatrix(vehicle, seatHash);
+    if (vehicleHandTag != nullptr && vehicleSeatTag != nullptr)
+    {
+        const nalMatrix4x4 handTagMatrix =
+            AnimIK_MatrixFromDObjTag(*vehicleHandTag);
+        const nalMatrix4x4 seatTagMatrix =
+            AnimIK_MatrixFromDObjTag(*vehicleSeatTag);
+        const nalMatrix4x4 seatInverse = seatTagMatrix.Inverse();
+        nalMatrix4x4 target;
+        AnimIK_Multiply(handTagMatrix, seatInverse, &target);
+        AnimIK_ApplyTwoBoneIK(this, 0, BoneNames[9], BoneNames[8],
+                              BoneNames[7], BoneNames[6], target, nullptr);
     }
 }
 // ea: 0x005068F0
