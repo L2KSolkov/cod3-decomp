@@ -32,7 +32,6 @@ extern unsigned int dword_BC2CF8;
 extern unsigned int dword_BC2D04;
 extern unsigned int D3D__DirtyFlags;
 extern unsigned int D3D__TextureState[4][32];
-extern unsigned int dword_BC2A14[4];
 extern unsigned int gpuHashVertexShader;
 extern unsigned int gpuHashPixelShader;
 extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
@@ -84,7 +83,7 @@ void cdFlagShaderNode::Render()
         nglDxTexCache.Prev[0].WrapV = 1;
         if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 1u) == 0) {
             D3D__DirtyFlags |= 1u;
-            dword_BC2A14[0] = 1;
+            D3D__TextureState[0][D3DTSS_ADDRESSV] = 1;
         }
     }
 

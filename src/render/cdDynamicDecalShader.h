@@ -34,6 +34,8 @@ class cdDynamicDecalShaderNode : public nglShaderNode {
 public:
     cdDynamicDecalShaderMat* mMaterial;  // +0x14
     int                     Clip;       // +0x18
+
+    void Render() override;             // @0x7CBF10
 };
 static_assert(sizeof(cdDynamicDecalShaderNode) == 0x1C, "cdDynamicDecalShaderNode size mismatch");
 
