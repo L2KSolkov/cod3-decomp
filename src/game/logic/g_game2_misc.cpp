@@ -1565,22 +1565,8 @@ void AnimIK::ApplyTorsoRotations(Entity* ent)
         }
 
         nalMatrix4x4 rotationMatrix;
-        rotationMatrix.x[0] = 1.0f;
-        rotationMatrix.x[1] = 0.0f;
-        rotationMatrix.x[2] = 0.0f;
-        rotationMatrix.x[3] = 0.0f;
-        rotationMatrix.y[0] = 0.0f;
-        rotationMatrix.y[1] = 1.0f;
-        rotationMatrix.y[2] = 0.0f;
-        rotationMatrix.y[3] = 0.0f;
-        rotationMatrix.z[0] = 0.0f;
-        rotationMatrix.z[1] = 0.0f;
-        rotationMatrix.z[2] = 1.0f;
-        rotationMatrix.z[3] = 0.0f;
-        rotationMatrix.w[0] = 0.0f;
-        rotationMatrix.w[1] = 0.0f;
-        rotationMatrix.w[2] = 0.0f;
-        rotationMatrix.w[3] = 1.0f;
+        nalMatrix4x4_FromPositionOrientation(modelPositionOrientation,
+                                              &rotationMatrix);
         for (int order = 0; order < 3; ++order)
         {
             const int axis = rotationOrder[order];
