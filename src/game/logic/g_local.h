@@ -4274,7 +4274,7 @@ public:
     int m_alloc_count;  // +0x04
 
     // ea: 0x004AC860
-    // ea: 0x004AC8F0
+    // alias-ea: 0x004AC8F0
     phys_static_array()  // ??0?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ (g.o 0x4AC860)
     {
         m_slot_array = (T*)this;

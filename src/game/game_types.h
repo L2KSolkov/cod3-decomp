@@ -199,10 +199,10 @@ public:
     T*           mList;  // +0x04
 
     // ea: 0x005EA2B0
-    // ea: 0x004AC980
-    // ea: 0x004ACA20
-    // ea: 0x004ACB20
-    // ea: 0x004ACBA0
+    // alias-ea: 0x004AC980
+    // alias-ea: 0x004ACA20
+    // alias-ea: 0x004ACB20
+    // alias-ea: 0x004ACBA0
     T& operator[](unsigned int i)
     {
         unsigned int index = i;
@@ -220,8 +220,8 @@ public:
         return mList[index];
     }
     // ea: 0x005EA7A0 (const InplaceTreeElement<InplaceString,InplaceString>)
-    // ea: 0x004ACAA0
-    // ea: 0x004AD350
+    // alias-ea: 0x004ACAA0
+    // alias-ea: 0x004AD350
     const T& operator[](unsigned int i) const
     {
         unsigned int index = i;
@@ -239,10 +239,10 @@ public:
         return mList[index];
     }
     // ea: 0x005EA790
-    // ea: 0x004ACA10
-    // ea: 0x004ACE60
-    // ea: 0x004ACE70
-    // ea: 0x004AD340
+    // alias-ea: 0x004ACA10
+    // alias-ea: 0x004ACE60
+    // alias-ea: 0x004ACE70
+    // alias-ea: 0x004AD340
     unsigned int size() const { return mSize; }
 };
 static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");
@@ -256,8 +256,8 @@ public:
     unsigned int mPakId;   // +0x04 — pak id (TPakId)
 
     // ea: 0x004ACE00
-    // ea: 0x004ACE80
-    // ea: 0x005EA340
+    // alias-ea: 0x004ACE80
+    // alias-ea: 0x005EA340
     IVPointer() : mValue(nullptr), mPakId(PAK_ID_INVALID) {}  // ??0?$IVPointer@VPhysData@@@@QAE@XZ (g.o 0x4ACE80)
     // ea: 0x004ACE20
     void clear() { mValue = nullptr; mPakId = PAK_ID_INVALID; }  // ?clear@?$IVPointer@VXModel@@@@QAEXXZ (g.o 0x4ACE20)
@@ -265,19 +265,19 @@ public:
     // ea: 0x004B1240
     T* operator*() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??D?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1240)
     // ea: 0x004B12B0
-    // ea: 0x004B1300
-    // ea: 0x004B1260
+    // alias-ea: 0x004B1300
+    // alias-ea: 0x004B1260
     T* operator->() { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (g.o 0x4B1260)
     // ea: 0x004B18C0
-    // ea: 0x004B18E0
-    // ea: 0x004B1900
+    // alias-ea: 0x004B18E0
+    // alias-ea: 0x004B1900
     const T* operator->() const { ValidatePakId((TPakId)mPakId); return mValue; }  // ??C?$IVPointer@VXModel@@@@QBEPBVXModel@@XZ (g.o 0x4B18C0)
     // ea: 0x004B27B0
-    // ea: 0x004B27F0
-    // ea: 0x004B2830
+    // alias-ea: 0x004B27F0
+    // alias-ea: 0x004B2830
     operator bool() const { ValidatePakId((TPakId)mPakId); return mValue != nullptr; }  // ??B?$IVPointer@VXModel@@@@QBE_NXZ (g.o 0x4B27B0)
     // ea: 0x004B27D0
-    // ea: 0x004B2810
+    // alias-ea: 0x004B2810
     bool operator!() const { ValidatePakId((TPakId)mPakId); return mValue == nullptr; }  // ??7?$IVPointer@VXModel@@@@QBE_NXZ (g.o 0x4B27D0)
 
 private:
@@ -288,9 +288,9 @@ extern void ValidatePakId(TPakId pakId);  // core.o
 
 template <typename T>
 // ea: 0x005EACA0
-// ea: 0x004AE4C0
-// ea: 0x004AE4F0
-// ea: 0x004AE540
+// alias-ea: 0x004AE4C0
+// alias-ea: 0x004AE4F0
+// alias-ea: 0x004AE540
 T* IVPointer<T>::Deref() const
 {
     ValidatePakId((TPakId)mPakId);
