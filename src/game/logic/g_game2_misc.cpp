@@ -551,6 +551,15 @@ static math::Quaternion AnimIK_QuaternionFromMatrix(const nalMatrix4x4& matrix)
     return nalQuaternionFromMatrix(view);
 }
 
+static nalPositionOrientation AnimIK_PositionOrientationFromMatrix(
+    const nalMatrix4x4& matrix)
+{
+    nalPositionOrientation result;
+    result.orient = AnimIK_QuaternionFromMatrix(matrix);
+    result.pos.v = _mm_loadu_ps(matrix.w);
+    return result;
+}
+
 class AnimIK;
 struct AnimIKRawView {
     float joints[4][5];
@@ -1221,6 +1230,28 @@ void AnimIK::RotateBone(int boneIndex, const math::Dir3& rotation)
 // ea: 0x004FCA40
 void AnimIK::ApplyPainFlinch(Entity* ent)
 {
+    nalGenericBoneHandle leftHandHandle{nullptr, 0};
+    nalGenericBoneHandle rightHandHandle{nullptr, 0};
+    nalGenericSkeleton_GetBoneHandle(skeleton, &leftHandHandle,
+                                     &stru_F05238);
+    nalGenericSkeleton_GetBoneHandle(skeleton, &rightHandHandle,
+                                     &boneName[0]);
+    const bool haveHandHandles = leftHandHandle.Skeleton != nullptr
+        && rightHandHandle.Skeleton != nullptr;
+    nalMatrix4x4 startHandMatrices[2];
+    if (haveHandHandles)
+    {
+        const nalPositionOrientation leftHand =
+            nalGenericPose_GetModelPositionOrientation(pose,
+                                                       &leftHandHandle);
+        const nalPositionOrientation rightHand =
+            nalGenericPose_GetModelPositionOrientation(pose,
+                                                       &rightHandHandle);
+        nalMatrix4x4_FromPositionOrientation(leftHand,
+                                              &startHandMatrices[0]);
+        nalMatrix4x4_FromPositionOrientation(rightHand,
+                                              &startHandMatrices[1]);
+    }
     struct PainAggregate {
         int index;
         float age;
@@ -1272,11 +1303,13 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
         &entityAxis);
     const nalMatrix4x4 inverseEntityAxis = entityAxis.Inverse();
 
+    bool didPainFlinch = false;
     for (int type = 0; type < 2; ++type)
     {
         PainAggregate& aggregate = best[type];
         if (aggregate.amplitude <= 0.0f)
             continue;
+        didPainFlinch = true;
 
         float painDir4[4] = {
             aggregate.totalPainDir[0], aggregate.totalPainDir[1],
@@ -1356,6 +1389,39 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
             static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
                 pelvisHandle, pelvis);
         }
+    }
+
+    if (didPainFlinch && haveHandHandles)
+    {
+        const nalPositionOrientation leftHand =
+            nalGenericPose_GetModelPositionOrientation(pose,
+                                                       &leftHandHandle);
+        const nalPositionOrientation rightHand =
+            nalGenericPose_GetModelPositionOrientation(pose,
+                                                       &rightHandHandle);
+        const nalPositionOrientation startLeft =
+            AnimIK_PositionOrientationFromMatrix(startHandMatrices[0]);
+        const nalPositionOrientation startRight =
+            AnimIK_PositionOrientationFromMatrix(startHandMatrices[1]);
+        nalPositionOrientation blendedLeft;
+        nalPositionOrientation blendedRight;
+        blendedLeft.pos.v = _mm_add_ps(
+            _mm_mul_ps(startLeft.pos.v, _mm_set1_ps(0.7f)),
+            _mm_mul_ps(leftHand.pos.v, _mm_set1_ps(0.3f)));
+        blendedRight.pos.v = _mm_add_ps(
+            _mm_mul_ps(startRight.pos.v, _mm_set1_ps(0.7f)),
+            _mm_mul_ps(rightHand.pos.v, _mm_set1_ps(0.3f)));
+        blendedLeft.orient = slerp(startLeft.orient, leftHand.orient,
+                                   0.3f);
+        blendedRight.orient = slerp(startRight.orient, rightHand.orient,
+                                    0.3f);
+        nalMatrix4x4 blendedLeftMatrix;
+        nalMatrix4x4 blendedRightMatrix;
+        nalMatrix4x4_FromPositionOrientation(blendedLeft,
+                                              &blendedLeftMatrix);
+        nalMatrix4x4_FromPositionOrientation(blendedRight,
+                                              &blendedRightMatrix);
+        ApplyHandIK(ent, blendedLeftMatrix, blendedRightMatrix);
     }
 }
 // ea: 0x004FDDC0
