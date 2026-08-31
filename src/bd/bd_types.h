@@ -360,15 +360,18 @@ struct bdFastArray {
         m_size = 0;
     }
 
+    // ea: 0x0089B1E0 (bdFastArray<unsigned char> capacity constructor)
     bdFastArray(unsigned int capacity)
         : m_data(NULL), m_capacity(capacity), m_size(0) {
         if (capacity != 0)
             m_data = (T*)bdMemory::allocate(sizeof(T) * capacity);
     }
 
+    // ea: 0x0089B020 (bdFastArray<unsigned char> rangeCheck)
     bool rangeCheck(unsigned int index) const { return index < m_size; }
 
     unsigned int getSize() const { return m_size; }
+    // ea: 0x0089B210 (bdFastArray<unsigned char> operator[])
     T& operator[](unsigned int index) { return m_data[index]; }
     const T& operator[](unsigned int index) const { return m_data[index]; }
 
@@ -401,9 +404,22 @@ struct bdFastArray {
         return m_size;
     }
 
+    // ea: 0x0089B4E0 (bdFastArray<unsigned char> ensureCapacity)
     void ensureCapacity(unsigned int capacity) {
         if (m_capacity < capacity)
             increaseCapacity(capacity - m_capacity);
+    }
+
+    // ea: 0x0089BC40 (bdFastArray<unsigned char> setGrow)
+    T* setGrow(unsigned int index, T* value) {
+        if (index >= m_size) {
+            const unsigned int newSize = index + 1;
+            if (m_capacity < newSize)
+                increaseCapacity(newSize - m_capacity);
+            m_size = newSize;
+        }
+        m_data[index] = *value;
+        return value;
     }
 
     // ea: 0x0089B270 (bdFastArray<unsigned char> clear)
