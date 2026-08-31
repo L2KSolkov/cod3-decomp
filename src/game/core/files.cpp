@@ -1959,8 +1959,8 @@ addNew:
 static void FS_AddLocalizedGameDirectory(const char* dir, const char* path)
 {
     for (int i = 13; i >= 0; --i)
-        FS_AddGameDirectory(path, dir, 1, i);
-    FS_AddGameDirectory(path, dir, 0, 0);
+        FS_AddGameDirectory(dir, path, 1, i);
+    FS_AddGameDirectory(dir, path, 0, 0);
 }
 
 // ea: 0x004C1EB0
