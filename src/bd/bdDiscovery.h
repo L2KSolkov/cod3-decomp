@@ -30,7 +30,8 @@ static_assert(sizeof(bdDiscoveryListener) == 0x4,
 // Layout verified against IDA (ctor @0x8B0230): m_gameInfo +0, m_socket +4,
 // m_listeners +0x0C, m_status +0x18.
 // ============================================================================
-enum bdDiscoveryStatus {
+typedef int bdDiscoveryStatus;
+enum {
     BD_DISCOVERY_IDLE = 0,
     BD_DISCOVERY_PENDING = 1,
     BD_DISCOVERY_ERROR = 2,
@@ -38,21 +39,26 @@ enum bdDiscoveryStatus {
 
 class bdDiscoveryServer {
 public:
+    enum bdStatus {
+        BD_IDLE = 0,
+        BD_PENDING = 1,
+        BD_ERROR = 2,
+    };
     bdDiscoveryServer();
     ~bdDiscoveryServer();
-    bool start(const bdReference<bdGameInfo>& gameInfo, const bdInetAddr& localAddr);
+    bool start(bdReference<bdGameInfo> gameInfo, const bdInetAddr& localAddr);
     void update();
     void stop();
     void registerListener(bdDiscoveryListener* listener);
     void unregisterListener(bdDiscoveryListener* listener);
-    bdDiscoveryStatus getStatus() const;
+    bdStatus getStatus() const;
     bdReference<bdGameInfo> getGameInfo();
 
 protected:
     bdReference<bdGameInfo> m_gameInfo;   // +0x00
     bdSocket m_socket;                    // +0x04
     bdFastArray<bdDiscoveryListener*> m_listeners;  // +0x0C
-    bdDiscoveryStatus m_status;           // +0x18
+    bdStatus m_status;                    // +0x18
 };
 static_assert(sizeof(bdDiscoveryServer) == 0x1C, "bdDiscoveryServer size mismatch");
 
@@ -63,11 +69,16 @@ static_assert(sizeof(bdDiscoveryServer) == 0x1C, "bdDiscoveryServer size mismatc
 // ============================================================================
 class bdDiscoveryClient {
 public:
+    enum bdStatus {
+        BD_IDLE = 0,
+        BD_PENDING = 1,
+        BD_ERROR = 2,
+    };
     bdDiscoveryClient();
     virtual ~bdDiscoveryClient();
     bool discover(unsigned int titleID, float timeout, const bdInetAddr& addr);
     void update();
-    bdDiscoveryStatus getStatus() const;
+    bdStatus getStatus() const;
     void registerListener(bdDiscoveryListener* listener);
     void unregisterListener(bdDiscoveryListener* listener);
     void fireOnDiscoveryListeners(bdReference<bdGameInfo> gameInfo) const;
@@ -81,7 +92,7 @@ protected:
     bdSocket m_socket;                    // +0x20
     uint8_t m_nonce[8];                   // +0x28
     bdFastArray<bdDiscoveryListener*> m_listeners;  // +0x30
-    bdDiscoveryStatus m_status;           // +0x3C
+    bdStatus m_status;                    // +0x3C
 #pragma pack(pop)
 };
 static_assert(sizeof(bdDiscoveryClient) == 0x40, "bdDiscoveryClient size mismatch");

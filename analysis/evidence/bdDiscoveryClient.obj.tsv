@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008ADE00	?getStatus@bdDiscoveryClient@@QBE?AW4bdStatus@1@XZ	V3	PASS	discovery-status-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1687440-1687460;src/bd/bdDiscoveryClient.cpp:181-185	Release returns the client status field unchanged; source returns m_status unchanged.
+0x008ADE00	?getStatus@bdDiscoveryClient@@QBE?AW4bdStatus@1@XZ	V4	PASS	discovery-status-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.map:23299;build/Debug/cod3_bd.lib;src/bd/bdDiscovery.h:69-95	Nested bdStatus enum return ABI, const accessor, field value, and no side effects match release exactly.

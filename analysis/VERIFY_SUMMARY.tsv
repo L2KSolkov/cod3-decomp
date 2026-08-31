@@ -75,9 +75,9 @@ bdCookieAckChunk.obj	8	0	1	0	0	7	0
 bdCookieEchoChunk.obj	14	4	1	0	0	9	0
 bdCore.obj	12	12	0	0	0	0	0
 bdDataChunk.obj	20	8	1	7	0	4	0
-bdDiscoveryClient.obj	35	27	1	7	0	0	0
+bdDiscoveryClient.obj	35	27	0	7	0	1	0
 bdDiscoveryListener.obj	7	2	0	0	0	5	0
-bdDiscoveryServer.obj	9	0	2	6	0	1	0
+bdDiscoveryServer.obj	9	0	0	6	0	3	0
 bdDispatchInterceptor.obj	4	2	0	0	0	2	0
 bdDispatcher.obj	17	13	1	0	0	3	0
 bdGameInfo.obj	19	6	2	0	0	11	0

@@ -13,7 +13,7 @@
 // bdDiscoveryServer::bdDiscoveryServer - ea: 0x8B0230
 // ============================================================================
 bdDiscoveryServer::bdDiscoveryServer()
-    : m_gameInfo(), m_socket(), m_listeners(), m_status(BD_DISCOVERY_IDLE) {
+    : m_gameInfo(), m_socket(), m_listeners(), m_status(BD_IDLE) {
 }
 
 // ============================================================================
@@ -21,7 +21,7 @@ bdDiscoveryServer::bdDiscoveryServer()
 // ============================================================================
 bdDiscoveryServer::~bdDiscoveryServer() {
     m_socket.close();
-    m_status = BD_DISCOVERY_IDLE;
+    m_status = BD_IDLE;
     bdMemory::deallocate(m_listeners.m_data);
     m_listeners.m_data = NULL;
     m_listeners.m_size = 0;
@@ -34,26 +34,27 @@ bdDiscoveryServer::~bdDiscoveryServer() {
 // ============================================================================
 // bdDiscoveryServer::start - ea: 0x8AFE40
 // ============================================================================
-bool bdDiscoveryServer::start(const bdReference<bdGameInfo>& gameInfo,
+bool bdDiscoveryServer::start(bdReference<bdGameInfo> gameInfo,
                               const bdInetAddr& localAddr) {
     bool ok = true;
     if (!m_socket.create(true)) {
-        m_status = BD_DISCOVERY_ERROR;
+        m_status = BD_ERROR;
         ok = false;
     } else {
         bdAddr bindAddr(localAddr, BD_DEFAULT_DISCOVERY_PORT);
         if (m_socket.bind(bindAddr) == BD_NET_SUCCESS) {
-            m_status = BD_DISCOVERY_PENDING;
+            m_status = BD_PENDING;
             if (m_gameInfo.m_ptr != NULL && m_gameInfo.m_ptr->releaseRef() == 0)
                 delete m_gameInfo.m_ptr;
             m_gameInfo.m_ptr = gameInfo.m_ptr;
             if (m_gameInfo.m_ptr != NULL)
                 m_gameInfo.m_ptr->addRef();
         } else {
-            m_status = BD_DISCOVERY_ERROR;
+            m_status = BD_ERROR;
             ok = false;
         }
     }
+    bdListRelease(gameInfo);
     return ok;
 }
 
@@ -117,7 +118,7 @@ void bdDiscoveryServer::update() {
 // ============================================================================
 void bdDiscoveryServer::stop() {
     m_socket.close();
-    m_status = BD_DISCOVERY_IDLE;
+    m_status = BD_IDLE;
 }
 
 // ============================================================================
@@ -137,7 +138,7 @@ void bdDiscoveryServer::unregisterListener(bdDiscoveryListener* listener) {
 // ============================================================================
 // bdDiscoveryServer::getStatus - ea: 0x8AFE30
 // ============================================================================
-bdDiscoveryStatus bdDiscoveryServer::getStatus() const {
+bdDiscoveryServer::bdStatus bdDiscoveryServer::getStatus() const {
     return m_status;
 }
 

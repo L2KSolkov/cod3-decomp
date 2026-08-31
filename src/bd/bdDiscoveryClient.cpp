@@ -24,7 +24,7 @@ public:
 // bdDiscoveryClient::bdDiscoveryClient - ea: 0x8AE1C0
 // ============================================================================
 bdDiscoveryClient::bdDiscoveryClient()
-    : m_status(BD_DISCOVERY_IDLE), m_timeout(0), m_timer(), m_socket(),
+    : m_status(BD_IDLE), m_timeout(0), m_timer(), m_socket(),
       m_listeners() {
     memset(m_nonce, 0, sizeof(m_nonce));
 }
@@ -80,14 +80,14 @@ bool bdDiscoveryClient::discover(unsigned int titleID, float timeout,
     bool result = false;
     if (m_socket.sendTo(bcAddr, payload->getData(), payload->getDataSize()) >= 0) {
         m_timer.start();
-        m_status = BD_DISCOVERY_PENDING;
+        m_status = BD_PENDING;
         result = true;
         bdMessageProxy proxy(".\\bdDiscovery\\bdDiscoveryClient.cpp",
                              "bool __thiscall bdDiscoveryClient::discover(const unsigned int,const float,const class bdInetAddr &)",
                              0x3Cu, "dw/info/");
         proxy.log("bdNet/discovery", "Starting: will run for %f seconds.", timeout);
     } else {
-        m_status = BD_DISCOVERY_ERROR;
+        m_status = BD_ERROR;
         bdMessageProxy proxy(".\\bdDiscovery\\bdDiscoveryClient.cpp",
                              "bool __thiscall bdDiscoveryClient::discover(const unsigned int,const float,const class bdInetAddr &)",
                              0x35u, "dw/err/");
@@ -172,7 +172,7 @@ void bdDiscoveryClient::update() {
     if (m_timer.getElapsedTimeInSeconds() > m_timeout) {
         for (unsigned int i = 0; i < m_listeners.m_size; i++)
             m_listeners[i]->onDiscoveryFinished();
-        m_status = BD_DISCOVERY_IDLE;
+        m_status = BD_IDLE;
         m_socket.close();
     }
 }
@@ -180,7 +180,7 @@ void bdDiscoveryClient::update() {
 // ============================================================================
 // bdDiscoveryClient::getStatus - ea: 0x8ADE00
 // ============================================================================
-bdDiscoveryStatus bdDiscoveryClient::getStatus() const {
+bdDiscoveryClient::bdStatus bdDiscoveryClient::getStatus() const {
     return m_status;
 }
 
