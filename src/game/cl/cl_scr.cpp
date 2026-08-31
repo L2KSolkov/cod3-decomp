@@ -7,6 +7,7 @@
 #include "cl_console.h"
 #include "game/game_types.h"
 #include "ngl/nglTexture.h"
+#include "ngl/ngl_dx_quad.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -32,6 +33,7 @@ struct IGOFrontEnd {
 class InGameMenuSystem {
 public:
     virtual void ReturnToPreviousMenu(int fallback);
+    void ActivateMenu(int menu);
     bool IsSystemActive() const
     {
         return *reinterpret_cast<const bool*>(
@@ -74,6 +76,7 @@ public:
     void DrawFrontEnd();
     void DrawAARMenus();
     void DrawInGameMenus();
+    void ReleaseFrontEnd();
     InGameMenuSystem* GetIGMS(int client);
     DialogMenuSystem* GetDMS(int client);
 };
@@ -137,6 +140,7 @@ bool gDisableRendering;
 extern bool gSkipFrontEnd;
 extern float Com_GetScreenTimeDelta();
 extern void nullsub_35();
+extern void GlobalPakLoadCallback(float progress);
 int scr_initialized;
 extern void Cmd_ExecuteServerString(const char* text);
 extern void CL_CGameRendering();
@@ -179,12 +183,19 @@ public:
     void* mProgressCallback;
     const PakInfoNode* GetPakInfo(const char* long_name) const;
     bool IsLoaded(TPakId id) const;
+    void ClearUserDistance(const PakInfoNode* cpak);
+    void SyncUnloadPak(TPakId id);
     void SetUserDistance(const PakInfoNode* cpak, float dist);
     TPakId SyncLoadPak(const PakInfoNode* cpak);
 };
 
 const PakInfoNode* sFrontEndInfo = nullptr;
 extern const PakInfoNode* sLoadingScreenInfo;
+extern void nglWaitForRendering();
+extern void nglSetClearFlags(unsigned int flags);
+extern void nglListAddQuad(nglQuad* quad);
+extern void nglPresent();
+extern void SpinnerDrawFrame(bool bEndFrame);
 class GamePause {
 public:
     static void SetGamePaused(int client, bool paused);
@@ -778,10 +789,33 @@ int CL_UISystemCalls(int* args)
 void CL_ShutdownUI()
 {
     cls.keyCatchers &= ~2;
-    if (cls.state == 2)
+    if (g_femanager.fems != nullptr && g_femanager.fems->IsSystemActive())
     {
-        cls.keyCatchers &= ~2;
+        g_femanager.fems->is_active = false;
+        if (!gSkipFrontEnd)
+        {
+            PakManager::sInst->ClearUserDistance(sFrontEndInfo);
+            PakManager::sInst->SyncUnloadPak(sFrontEndInfo->pakId);
+        }
+        PakManager::sInst->SetUserDistance(sLoadingScreenInfo, 0.0f);
+        PakManager::sInst->SyncLoadPak(sLoadingScreenInfo);
+        g_femanager.ReleaseFrontEnd();
+        InGameMenuSystem* igms = g_femanager.GetIGMS(currCl);
+        igms->ActivateMenu(4);
+        nullsub_35();
     }
+    nglQuad q;
+    for (int i = 2; i != 0; --i)
+    {
+        nglWaitForRendering();
+        nglSetClearFlags(0xF3u);
+        nglInitQuad(&q);
+        nglSetQuadColor(&q, 0xFFFFFFFFu);
+        nglListAddQuad(&q);
+        SpinnerDrawFrame(false);
+        nglPresent();
+    }
+    PakManager::sInst->mProgressCallback = (void*)GlobalPakLoadCallback;
 }
 
 // ea: 0x52E500
