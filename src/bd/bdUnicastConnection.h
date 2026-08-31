@@ -79,7 +79,6 @@ public:
     virtual void close();
     virtual Status getStatus() const;
     virtual bool send(const bdReference<bdMessage>& message, bool reliable = false);
-    virtual bool getMessageToDispatch(bdReference<bdMessage>& message);
 
 protected:
     friend class bdConnectionStore;
@@ -87,6 +86,7 @@ protected:
     bdUnicastConnection(bdReference<bdCommonAddr> dest);
 
     virtual bool receive(unsigned char* buffer, unsigned int bufferSize);
+    virtual bool getMessageToDispatch(bdReference<bdMessage>& message);
     virtual unsigned int getDataToSend(unsigned char* const buffer, unsigned int bufferSize);
 
     bool handleInit(bdReference<bdChunk>& chunk);
