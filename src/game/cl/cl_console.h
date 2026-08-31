@@ -5,22 +5,73 @@
 
 #pragma once
 
+#include <stddef.h>
 #include <stdint.h>
 #include "engine/broc_types.h"
 #include "game/cvar_types.h"
 
+struct nglTexture;
+struct trDebugString_t;
+struct trDebugLine_t;
+
 // ============================================================================
-// clientStatic_t - client static state (cl.o; cls @ 0x13054D0)
-// The ctor/dtor vector-construct/destroy the 1024-element configstrings
-// array at +0x10 (Broc::string, 4 bytes each).
+// clientStatic_t - client static state (cl.o; cls @ 0x13054D0).
+// Field order and the 0x19C size follow the release IDA UDT.  The release
+// constructor/destructor operate on the adjacent config-string storage; that
+// storage is kept as a separate cl_configstrings mirror in this port.
 // ============================================================================
 struct clientStatic_t {
-    uint8_t     _pad[0x10];
-    Broc::string configstrings[1024];  // +0x10
+    int         state;             // +0x00 (connstate_t)
+    int         keyCatchers;      // +0x04
+    int         cddialog;         // +0x08
+    int         endgamemenu;      // +0x0C
+    char        servername[128];  // +0x10
+    int         rendererStarted;  // +0x90
+    int         soundStarted;     // +0x94
+    int         uiStarted;        // +0x98
+    int         framecount;       // +0x9C
+    int         frametime;        // +0xA0
+    int         animFrametime;    // +0xA4
+    int         realtime;         // +0xA8
+    int         realFrametime;    // +0xAC
+    struct {
+        int startTime;
+        int duration;
+        int fadein;
+        int fadeout;
+        nglTexture* shader[2];
+    } logo;                        // +0xB0 (clientLogo_t)
+    uint8_t     glconfig[0xA0];   // +0xC8 (glconfig_t)
+    nglTexture* whiteShader;      // +0x168
+    nglTexture* consoleShader;    // +0x16C
+    struct {
+        int maxStrings;
+        int numStrings;
+        trDebugString_t* strings;
+        uint8_t* stringSource;
+        int maxLines;
+        int numLines;
+        trDebugLine_t* lines;
+        uint8_t* lineSource;
+        int* lineDuration;
+        float* lineFadeStep;
+        uint8_t serverSource;
+        uint8_t _pad[3];
+    } debug;                       // +0x170 (clientDebug_t)
 
     clientStatic_t();  // ??0clientStatic_t@@QAE@XZ (cl.o 0x928F10)
     ~clientStatic_t(); // ??1clientStatic_t@@QAE@XZ (cl.o 0x928CD0)
 };
+static_assert(sizeof(clientStatic_t) == 0x19C,
+              "clientStatic_t size mismatch");
+static_assert(offsetof(clientStatic_t, servername) == 0x10,
+              "clientStatic_t servername offset mismatch");
+static_assert(offsetof(clientStatic_t, logo) == 0xB0,
+              "clientStatic_t logo offset mismatch");
+static_assert(offsetof(clientStatic_t, glconfig) == 0xC8,
+              "clientStatic_t glconfig offset mismatch");
+static_assert(offsetof(clientStatic_t, debug) == 0x170,
+              "clientStatic_t debug offset mismatch");
 
 // ============================================================================
 // print_msg_type_t / msgwnd_mode_t
