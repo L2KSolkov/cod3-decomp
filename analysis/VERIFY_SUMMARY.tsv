@@ -84,8 +84,8 @@ bdGameInfo.obj	19	17	1	0	0	1	0
 bdGameInfoFactory.obj	6	6	0	0	0	0	0
 bdHMac.obj	1	1	0	0	0	0	0
 bdHMacSHA1.obj	9	1	3	0	0	5	0
-bdHeartbeatAckChunk.obj	8	8	0	0	0	0	0
-bdHeartbeatChunk.obj	8	8	0	0	0	0	0
+bdHeartbeatAckChunk.obj	8	4	2	0	0	2	0
+bdHeartbeatChunk.obj	8	4	2	0	0	2	0
 bdInAddr.obj	5	0	2	1	0	2	0
 bdInetAddr.obj	25	0	0	1	0	24	0
 bdInitAckChunk.obj	15	13	0	0	0	2	0

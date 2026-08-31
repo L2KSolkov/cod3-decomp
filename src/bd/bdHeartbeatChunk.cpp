@@ -23,6 +23,7 @@ bdHeartbeatChunk::~bdHeartbeatChunk() {
 
 // ============================================================================
 // bdHeartbeatChunk::getFlags â€” ea: 0x8AC070
+// ea: 0x008AC070
 // ============================================================================
 bdHeartbeatChunk::bdHeartbeatFlags bdHeartbeatChunk::getFlags() const {
     return this->m_flags;
@@ -30,6 +31,7 @@ bdHeartbeatChunk::bdHeartbeatFlags bdHeartbeatChunk::getFlags() const {
 
 // ============================================================================
 // bdHeartbeatChunk::getSerializedSize â€” ea: 0x8AC080
+// ea: 0x008AC080
 // ============================================================================
 unsigned int bdHeartbeatChunk::getSerializedSize() {
     return 4;
@@ -37,6 +39,7 @@ unsigned int bdHeartbeatChunk::getSerializedSize() {
 
 // ============================================================================
 // bdHeartbeatChunk::serialize â€” ea: 0x8AC0B0
+// ea: 0x008AC0B0
 // ============================================================================
 unsigned int bdHeartbeatChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -53,6 +56,7 @@ unsigned int bdHeartbeatChunk::serialize(unsigned char* data, unsigned int size)
 
 // ============================================================================
 // bdHeartbeatChunk::deserialize â€” ea: 0x8AC130
+// ea: 0x008AC130
 // ============================================================================
 bool bdHeartbeatChunk::deserialize(const unsigned char* data, unsigned int size,
                                    unsigned int* offset) {
@@ -89,6 +93,7 @@ bdHeartbeatAckChunk::~bdHeartbeatAckChunk() {
 
 // ============================================================================
 // bdHeartbeatAckChunk::getFlags â€” ea: 0x8AC200
+// ea: 0x008AC200
 // ============================================================================
 bdHeartbeatAckChunk::bdHeartbeatAckFlags bdHeartbeatAckChunk::getFlags() const {
     return this->m_flags;
@@ -96,6 +101,7 @@ bdHeartbeatAckChunk::bdHeartbeatAckFlags bdHeartbeatAckChunk::getFlags() const {
 
 // ============================================================================
 // bdHeartbeatAckChunk::getSerializedSize â€” ea: 0x8AC210
+// ea: 0x008AC210
 // ============================================================================
 unsigned int bdHeartbeatAckChunk::getSerializedSize() {
     return 4;
@@ -103,6 +109,7 @@ unsigned int bdHeartbeatAckChunk::getSerializedSize() {
 
 // ============================================================================
 // bdHeartbeatAckChunk::serialize â€” ea: 0x8AC240
+// ea: 0x008AC240
 // ============================================================================
 unsigned int bdHeartbeatAckChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -119,6 +126,7 @@ unsigned int bdHeartbeatAckChunk::serialize(unsigned char* data, unsigned int si
 
 // ============================================================================
 // bdHeartbeatAckChunk::deserialize â€” ea: 0x8AC2C0
+// ea: 0x008AC2C0
 // ============================================================================
 bool bdHeartbeatAckChunk::deserialize(const unsigned char* data, unsigned int size,
                                       unsigned int* offset) {
