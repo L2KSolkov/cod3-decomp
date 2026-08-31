@@ -1305,8 +1305,8 @@ void AnimIK::ApplyFire(Entity* ent)
         float torsoTime = weapon->fAnimIKTorsoRecoilPitchTime;
         float torsoForce = weapon->fAnimIKTorsoRecoilPitchForce;
         float torsoAngle = weapon->fAnimIKTorsoRecoilPitchAngle;
-        if (offsetTime == 0.0f && pitchTime == 0.0f
-            && torsoTime == 0.0f)
+        if (weapon->type == 0 && offsetTime == 0.0f
+            && pitchTime == 0.0f && torsoTime == 0.0f)
         {
             offsetTime = 0.35f;
             offsetForce = 2.0f;
