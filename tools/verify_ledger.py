@@ -641,6 +641,30 @@ def symbol_variants(name: str) -> set[str]:
             "?appendEncodedUInt16@bdBytePacker@@YA_NPAXIIPAIG@Z",
         "?removeEncodedUInt16@bdBytePacker@@SA_NPBEIIAAIAAG@Z":
             "?removeEncodedUInt16@bdBytePacker@@YA_NPBEIIPAIPAG@Z",
+        # Release chunk overrides retain protected-member (`MAE`) access
+        # decorations, while the port exposes the same virtual entry points
+        # publicly (`UAE`). Access does not change the x86 call contract or
+        # the verified deserialize bodies.
+        "?deserialize@bdDataChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdDataChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdDataChunk@@IAE_NQBEIAAI0I1@Z":
+            "?deserialize@bdDataChunk@@QAE_NQBEIAAI0I1@Z",
+        "?deserialize@bdCookieEchoChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdCookieEchoChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdCookieAckChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdCookieAckChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdHeartbeatChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdHeartbeatChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdHeartbeatAckChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdHeartbeatAckChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdShutdownChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdShutdownChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdShutdownAckChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdShutdownAckChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdShutdownCompleteChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdShutdownCompleteChunk@@UAE_NQBEIAAI@Z",
+        "?deserialize@bdSAckChunk@@MAE_NQBEIAAI@Z":
+            "?deserialize@bdSAckChunk@@UAE_NQBEIAAI@Z",
         "??$endianSwap@E@bdBitBuffer@@SAXABEAAE@Z":
             "??$endianSwap@E@bdBitBuffer@@SAPAEABEAAE@Z",
         "??$appendBasicType@E@bdBytePacker@@SA_NPAXIIAAIABE@Z":
