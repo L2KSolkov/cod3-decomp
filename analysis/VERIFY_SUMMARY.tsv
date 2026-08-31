@@ -98,13 +98,13 @@ bdMallocMemory.obj	6	6	0	0	0	0	0
 bdMemory.obj	23	23	0	0	0	0	0
 bdMessage.obj	25	22	0	0	0	3	0
 bdMutex.obj	4	0	0	0	0	4	0
-bdNet-xbox.obj	49	35	0	0	2	12	0
+bdNet-xbox.obj	49	35	0	0	0	14	0
 bdPacket.obj	32	23	0	0	0	9	0
 bdPlatformMutex-xbox.obj	4	0	0	0	0	4	0
 bdPlatformSocket-win32.obj	8	0	0	1	0	7	0
 bdPlatformSocket.obj	5	0	0	0	0	5	0
 bdPlatformTiming-xbox.obj	5	0	0	0	0	5	0
-bdPlatformTrulyRandom-xbox.obj	1	0	0	0	1	0	0
+bdPlatformTrulyRandom-xbox.obj	1	0	0	0	0	1	0
 bdQoSProbe-xbox.obj	54	43	0	8	0	3	0
 bdQoSProbeListener.obj	4	2	0	0	0	2	0
 bdRandom.obj	7	7	0	0	0	0	0
@@ -145,7 +145,7 @@ cdFlagShader.o	42	28	0	0	0	14	0
 cdGlassShader.o	25	9	0	0	0	16	0
 cdGlowShader.o	50	23	8	0	0	19	0
 cdGunShader.o	24	7	0	4	0	13	0
-cdGunSightShader.o	22	6	0	0	1	15	0
+cdGunSightShader.o	22	6	0	0	0	16	0
 cdGunSightSpecularShader.o	22	8	0	3	0	11	0
 cdHeatHazeShader.o	20	17	1	0	0	2	0
 cdOceanGlobals.o	19	5	0	14	0	0	0
@@ -160,7 +160,7 @@ cdSimpleColorShader.o	13	6	0	0	0	7	0
 cdSimpleInstance.o	17	6	0	5	0	6	0
 cdSimplePrelitShader.o	19	12	0	1	0	6	0
 cdSimpleShader.o	17	3	0	6	0	8	0
-cdSimpleSpecularShader.o	24	8	0	0	3	13	0
+cdSimpleSpecularShader.o	24	8	0	0	0	16	0
 cdSimpleUVAnimShader.o	40	21	0	7	0	12	0
 cdSkyShader.o	22	17	0	2	0	3	0
 cdWaterShader.o	21	16	0	2	0	3	0
@@ -185,7 +185,7 @@ deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	168	0	83	0	1219	0
 game.o	1158	458	10	578	0	112	0
-game2.o	1040	409	38	35	7	551	0
+game2.o	1040	409	34	36	6	555	0
 game_xbox.o	365	149	82	116	0	18	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
@@ -203,7 +203,7 @@ mp_util_wad.o	1283	620	269	0	0	394	0
 mp_xbox.o	77	20	0	0	0	57	0
 nal_anim.o	29	20	1	8	0	0	0
 nal_cache.o	7	0	4	0	0	3	0
-nal_generic.o	68	22	21	23	0	2	0
+nal_generic.o	68	22	17	27	0	2	0
 nal_generic_component.o	36	31	0	5	0	0	0
 nal_ik.o	2	2	0	0	0	0	0
 nal_init.o	899	635	229	28	0	7	0
@@ -292,7 +292,7 @@ render.o	1038	671	4	285	0	78	0
 rigid_body.o	13	11	1	0	0	1	0
 scr.o	1540	488	0	22	0	1030	0
 shell.o	2214	734	24	655	0	801	0
-streamer.o	730	359	53	157	5	156	0
+streamer.o	730	359	53	157	0	161	0
 sv.o	148	29	1	93	0	25	0
 tl_initlist.o	1	0	0	0	0	1	0
 tl_instbank.o	9	0	0	0	0	9	0
