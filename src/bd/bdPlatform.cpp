@@ -250,12 +250,12 @@ struct bdTrulyRandomImpl {
 public:
     // ea: 0x009EC010
     bdTrulyRandomImpl() {}
-    void getRandomUByte8(unsigned char* out, int count);
+    void getRandomUByte8(unsigned char* const out, int count);
     unsigned int getRandomUInt();
 };
 
 // bdTrulyRandomImpl::getRandomUByte8 - ea: 0x9EBFF0
-void bdTrulyRandomImpl::getRandomUByte8(unsigned char* out, int count) {
+void bdTrulyRandomImpl::getRandomUByte8(unsigned char* const out, int count) {
     bdGetRandomUChar8(out, (bdUInt)count);
 }
 

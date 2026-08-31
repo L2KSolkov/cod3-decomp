@@ -17,7 +17,7 @@
 // Cross-object externs (bdNet/bdCore units; unresolved until ported).
 struct bdTrulyRandomImpl {
 public:
-    void getRandomUByte8(unsigned char* buf, int count);
+    void getRandomUByte8(unsigned char* const buf, int count);
 };
 
 // ============================================================================

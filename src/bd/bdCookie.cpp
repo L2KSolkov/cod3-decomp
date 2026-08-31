@@ -72,7 +72,7 @@ bool bdHMacSHA1::getData(unsigned char* out, unsigned int& outLen)
 }
 
 struct bdTrulyRandomImpl {
-    void getRandomUByte8(unsigned char* out, int count);
+    void getRandomUByte8(unsigned char* const out, int count);
 };
 
 
