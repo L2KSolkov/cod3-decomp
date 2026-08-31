@@ -3658,18 +3658,15 @@ int UpdateDroneAEMap(Entity* e, unsigned int animIndex)
 // CheckAEMapValidation - ea: 0x50B730
 // Remove dead drone entries and clean flags on surviving ones.
 // ============================================================================
-extern void ae_vector_erase_handle(DroneHandleVec* self,
-    DbLinkedHandle<EntityHandleDb, Entity>* elem);
-
 void CheckAEMapValidation()
 {
     for (int i = 0; i < gDroneAEMap.m_size; ++i)
     {
         ae_pair<unsigned int, DroneHandleVec*>* entry = gDroneAEMap.m_elements[i];
         DroneHandleVec* vec = entry->second;
-        if (vec != nullptr && vec->mElements != nullptr && vec->mSize > 0)
+        if (vec != nullptr && vec->mElements != nullptr)
         {
-            for (int j = 0; j < vec->mSize;)
+            for (unsigned int j = 0; j < vec->mSize;)
             {
                 unsigned int v4 = vec->mElements[j].mHandle.mVal & 0xFFF;
                 Entity* mObject = nullptr;
@@ -3677,32 +3674,37 @@ void CheckAEMapValidation()
                     && vec->mElements[j].mHandle.mVal >> 12
                         == EntityHandleDb::sInst.mElements[v4].mKey)
                     mObject = EntityHandleDb::sInst.mElements[v4].mObject;
-                if (mObject != nullptr)
+                if (mObject != nullptr && (mObject->flags & 0x400000) != 0)
                 {
-                    if ((0x400000 & mObject->flags) == 0)
-                    {
-                        mObject->mFlags &= ~8u;
-                        for (int k = j; k < vec->mSize - 1; ++k)
-                            vec->mElements[k] = vec->mElements[k + 1];
-                        --vec->mSize;
-                        continue;
-                    }
                     mObject->mFlags = (mObject->mFlags & ~8u) | 4u;
+                    ++j;
                 }
-                ++j;
+                else
+                {
+                    vec->erase(&vec->mElements[j]);
+                }
             }
-        }
-        else if (gDroneAEMap.m_size > 1)
-        {
-            gDroneAEMap.m_elements[i] =
-                gDroneAEMap.m_elements[gDroneAEMap.m_size - 1];
-            --gDroneAEMap.m_size;
-            --i;
+
+            if (vec->mSize != 0)
+            {
+                unsigned int first = vec->mElements[0].mHandle.mVal & 0xFFF;
+                if (first < 0x540
+                    && vec->mElements[0].mHandle.mVal >> 12
+                        == EntityHandleDb::sInst.mElements[first].mKey)
+                {
+                    Entity* mObject = EntityHandleDb::sInst.mElements[first].mObject;
+                    if (mObject != nullptr)
+                        mObject->mFlags = (mObject->mFlags & ~8u) | 4u;
+                }
+            }
         }
         else
         {
+            if (gDroneAEMap.m_size > 1 && i < gDroneAEMap.m_size)
+                gDroneAEMap.m_elements[i] =
+                    gDroneAEMap.m_elements[gDroneAEMap.m_size - 1];
             --gDroneAEMap.m_size;
-            break;
+            --i;
         }
     }
 }
