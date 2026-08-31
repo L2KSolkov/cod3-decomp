@@ -18,7 +18,7 @@ bdDispatcher::bdDispatcher()
 // ============================================================================
 // bdDispatcher::process - ea: 0x8B04F0
 // ============================================================================
-void bdDispatcher::process(const bdReference<bdConnection>& connection) {
+void bdDispatcher::process(bdReference<bdConnection> connection) {
     bdReference<bdMessage> message;
     while (connection.m_ptr->getMessageToDispatch(message)) {
         bdReceivedMessage received(message, connection);
@@ -27,6 +27,8 @@ void bdDispatcher::process(const bdReference<bdConnection>& connection) {
             accepted = m_interceptors[i]->accept(received);
         }
     }
+    bdListRelease(message);
+    bdListRelease(connection);
 }
 
 // ============================================================================

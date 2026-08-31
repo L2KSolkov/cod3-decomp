@@ -1661,7 +1661,7 @@ class bdDispatcher {
 public:
     bdDispatcher();
     void clear() { m_interceptors.clear(); }
-    void process(const bdReference<bdConnection>& connection);
+    void process(bdReference<bdConnection> connection);
     void registerInterceptor(bdDispatchInterceptor* const interceptor);
     void unregisterInterceptor(bdDispatchInterceptor* const interceptor);
 
