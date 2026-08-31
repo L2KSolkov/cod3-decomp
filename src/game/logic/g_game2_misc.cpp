@@ -1288,6 +1288,8 @@ void AnimIK::ApplyTorsoRotations(Entity* ent)
 // ea: 0x004FFC30
 void AnimIK::ApplyFire(Entity* ent)
 {
+    if (ent->client == nullptr)
+        return;
     float offsetScale = 0.0f;
     float pitchScale = 0.0f;
     float torsoScale = 0.0f;
