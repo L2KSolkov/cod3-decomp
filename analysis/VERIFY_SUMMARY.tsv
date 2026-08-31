@@ -123,7 +123,7 @@ bdSessionListener.obj	12	2	0	0	0	10	0
 bdShortTimer.obj	4	0	0	0	0	4	0
 bdShutdownAckChunk.obj	8	4	1	0	0	3	0
 bdShutdownChunk.obj	8	4	1	0	0	3	0
-bdShutdownCompleteChunk.obj	8	4	1	1	0	2	0
+bdShutdownCompleteChunk.obj	8	4	1	0	0	3	0
 bdSocket.obj	12	2	3	6	0	1	0
 bdSocketRouter-xbox.obj	25	15	3	6	0	1	0
 bdStopwatch.obj	7	0	0	0	0	7	0
