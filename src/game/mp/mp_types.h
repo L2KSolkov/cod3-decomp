@@ -1096,6 +1096,7 @@ protected:
     virtual void ButtonHeldAction();
 public:
     static void operator delete(void* ptr);
+    static void operator delete(void* ptr, size_t size);
     static void operator delete(void*, void*);
     FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve, int flg);  // ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z (shell.o)
 };

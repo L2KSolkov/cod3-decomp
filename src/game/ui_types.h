@@ -1540,6 +1540,7 @@ protected:
 public:
     static void* operator new(size_t size);         // shell.o 0x5AE8C0
     static void operator delete(void* ptr);         // shell.o heap allocation pair
+    static void operator delete(void* ptr, size_t size);
     static void* operator new(size_t, void* place) { return place; }
     static void operator delete(void*, void*) {}    // placement-delete pair
     int GetReturnMenu();                            // shell.o 0x5AE8E0
