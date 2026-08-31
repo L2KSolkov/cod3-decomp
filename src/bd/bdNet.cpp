@@ -13,6 +13,44 @@ extern "C" {
 unsigned int __stdcall XNetGetTitleXnAddr(XNADDR* pxna);
 }
 
+static void replaceStringArray(bdArray<bdString>& destination,
+                               const bdArray<bdString>& source) {
+    for (unsigned int i = 0; i < destination.m_size; ++i)
+        destination.m_data[i].~bdString();
+    bdMemory::deallocate(destination.m_data);
+    destination.m_data = NULL;
+    destination.m_size = 0;
+    destination.m_capacity = 0;
+    if (source.m_size == 0)
+        return;
+    destination.m_data = (bdString*)bdMemory::allocate(sizeof(bdString) * source.m_size);
+    if (destination.m_data == NULL)
+        return;
+    destination.m_capacity = source.m_size;
+    for (unsigned int i = 0; i < source.m_size; ++i)
+        new (&destination.m_data[i]) bdString(source.m_data[i]);
+    destination.m_size = source.m_size;
+}
+
+static void replaceInetArray(bdArray<bdInetAddr>& destination,
+                             const bdArray<bdInetAddr>& source) {
+    for (unsigned int i = 0; i < destination.m_size; ++i)
+        destination.m_data[i].~bdInetAddr();
+    bdMemory::deallocate(destination.m_data);
+    destination.m_data = NULL;
+    destination.m_size = 0;
+    destination.m_capacity = 0;
+    if (source.m_size == 0)
+        return;
+    destination.m_data = (bdInetAddr*)bdMemory::allocate(sizeof(bdInetAddr) * source.m_size);
+    if (destination.m_data == NULL)
+        return;
+    destination.m_capacity = source.m_size;
+    for (unsigned int i = 0; i < source.m_size; ++i)
+        new (&destination.m_data[i]) bdInetAddr(source.m_data[i]);
+    destination.m_size = source.m_size;
+}
+
 // ============================================================================
 // bdNetStartParams - ea: 0x777E30 / 0x778070
 // ============================================================================
@@ -237,9 +275,9 @@ bool bdNetImpl::start(const bdNetStartParams& params) {
     m_params.m_onlineGame = params.m_onlineGame;
     m_params.m_gamePort = params.m_gamePort;
     m_params.m_socket = params.m_socket;
-    m_params.m_natTravHosts = params.m_natTravHosts;
+    replaceStringArray(m_params.m_natTravHosts, params.m_natTravHosts);
     m_params.m_natTravPort = params.m_natTravPort;
-    m_params.m_localAddresses = params.m_localAddresses;
+    replaceInetArray(m_params.m_localAddresses, params.m_localAddresses);
     m_params.m_timeout = params.m_timeout;
     m_params.m_upnpTimeout = params.m_upnpTimeout;
 
@@ -270,8 +308,10 @@ void bdNetImpl::pump() {
             proxy.log("bdNet/net", "XNetGetTitleXnAddr failed.");
             m_status = BD_NET_INIT_FAILED;
         } else {
-            bdCommonAddr* ca = new (bdMemory::allocate(sizeof(bdCommonAddr)))
-                bdCommonAddr(addr, m_params.m_gamePort);
+            void* memory = bdMemory::allocate(sizeof(bdCommonAddr));
+            bdCommonAddr* ca = memory != NULL
+                ? new (memory) bdCommonAddr(addr, m_params.m_gamePort)
+                : NULL;
             if (m_localCommonAddr.m_ptr != NULL && m_localCommonAddr.m_ptr->releaseRef() == 0)
                 delete m_localCommonAddr.m_ptr;
             m_localCommonAddr.m_ptr = ca;
