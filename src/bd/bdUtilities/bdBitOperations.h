@@ -16,6 +16,9 @@ public:
     static float getNaNValue32();
 };
 
+static_assert(sizeof(bdBitOperations) == 0x1,
+              "bdBitOperations release layout mismatch");
+
 inline bdUInt bdNextPowerOf2(bdUInt v) {
     return bdBitOperations::nextPowerOf2(v);
 }

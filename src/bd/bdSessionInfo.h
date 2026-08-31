@@ -30,6 +30,9 @@ public:
                                       unsigned int a4);  // @0x8B5970
 };
 
+static_assert(sizeof(bdSessionInfo) == 0x1,
+              "bdSessionInfo release layout mismatch");
+
 // ============================================================================
 // Free helpers (inline COMDATs)
 // ============================================================================
