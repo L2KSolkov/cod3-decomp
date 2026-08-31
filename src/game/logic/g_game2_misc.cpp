@@ -1770,6 +1770,58 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
     const float steering = vehicle->scr_vehicle->current.mSteeringAngle;
     vehicle_info_t* vehicleInfo =
         VEH_GetInfo(vehicle->scr_vehicle->infoIdx);
+    if (vehicle->scr_vehicle->mRBVeh != nullptr)
+    {
+        float forward[3];
+        float right[3];
+        const float yaw = client->ps.vehPos == 1
+            ? AngleNormalize360(client->ps.viewangles[1])
+            : vehicle->r.currentAngles.v.m128_f32[1];
+        YawVectors(yaw, forward, right);
+        const math::Position3& rigidPosition = vehicle->pos3;
+        float rigidForward = (rigidPosition.v.m128_f32[0] * forward[0]
+                              + rigidPosition.v.m128_f32[1] * forward[1]
+                              + rigidPosition.v.m128_f32[2] * forward[2])
+            * 0.1f;
+        rigidForward = max(-15.0f, min(15.0f, rigidForward));
+        float rigidRight = (rigidPosition.v.m128_f32[0] * right[0]
+                            + rigidPosition.v.m128_f32[1] * right[1]
+                            + rigidPosition.v.m128_f32[2] * right[2])
+            * 0.3f;
+        rigidRight = max(-15.0f, min(15.0f, rigidRight));
+        float rigidOffsetYaw = -rigidForward;
+        float rigidBonePitch = -rigidRight;
+        if (client->ps.vehPos == 1)
+        {
+            rigidBonePitch *= 1.5f;
+            if (vehicleInfo != nullptr && vehicleInfo->type == 2)
+            {
+                nalGenericBoneHandle pelvisHandle{nullptr, 0};
+                nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle,
+                                                  &BoneNames[0]);
+                if (pelvisHandle.Skeleton != nullptr)
+                {
+                    nalPositionOrientation pelvis =
+                        nalGenericPose_GetModelPositionOrientation(
+                            pose, &pelvisHandle);
+                    pelvis.pos.v.m128_f32[0] -= 5.0f;
+                    static_cast<nalGeneric::nalGenericPose*>(pose)
+                        ->SetPositionOrientation(pelvisHandle, pelvis);
+                }
+                RotateBone(2, math::Dir3(-10.0f, 0.0f, 0.0f));
+                RotateBone(4, math::Dir3(10.0f, 0.0f, 0.0f));
+                rigidOffsetYaw *= 0.3f;
+                rigidBonePitch *= 0.3f;
+            }
+        }
+        else
+        {
+            RotateBone(2, math::Dir3(rigidOffsetYaw, 0.0f,
+                                     rigidBonePitch));
+            RotateBone(4, math::Dir3(-rigidOffsetYaw, 0.0f,
+                                     -rigidBonePitch));
+        }
+    }
     const bool specialVehicle =
         (client->ps.vehType == 1 && client->ps.vehSubType == 2)
         || (ent->actor != nullptr && vehicleInfo != nullptr
