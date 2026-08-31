@@ -1584,8 +1584,7 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         {
             collision_context_t context(ent->mHandle, 42008593);
             g_Trace(&trace, start, mins, maxs, end, context);
-            if (trace.fraction < 1.0f
-                && trace.normal.v.m128_f32[2] > 0.0f)
+            if (trace.normal.v.m128_f32[1] < 1.0f)
             {
                 targetOffset = trace.endpos.v.m128_f32[2]
                     - footPos.v.m128_f32[2];
@@ -1595,6 +1594,10 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
                 memcpy(&surfaceBits, &trace.normal.v.m128_f32[2],
                        sizeof(surfaceBits));
                 ent->client->mFootStepsSurface[i] = surfaceBits;
+            }
+            else
+            {
+                sentient->mLastTerrainMappingTraceZ[i] = 0.0f;
             }
         }
         const float blend = min(1.0f, elapsedMs * 0.001f * 8.0f);
