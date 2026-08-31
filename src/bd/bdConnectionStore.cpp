@@ -66,8 +66,9 @@ bdSocketRouter* bdConnectionStore::getSocketRouter() {
 // ============================================================================
 // bdConnectionStore::flush - ea: 0x8A1680
 // ============================================================================
-unsigned int bdConnectionStore::flush(bdReference<bdConnection>& connection) {
+unsigned int bdConnectionStore::flush(bdReference<bdConnection> connection) {
     bdReference<bdAddrHandle> addrHandle = connection.m_ptr->getAddressHandle();
+    bdListAddRef(addrHandle);
     unsigned char data[1304];
     unsigned int size = connection.m_ptr->getDataToSend(data, sizeof(data));
     if (size != 0) {
@@ -116,6 +117,8 @@ unsigned int bdConnectionStore::flush(bdReference<bdConnection>& connection) {
             }
         }
     }
+    bdListRelease(addrHandle);
+    bdListRelease(connection);
     return size;
 }
 

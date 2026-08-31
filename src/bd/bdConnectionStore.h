@@ -33,7 +33,7 @@ public:
     ~bdConnectionStore();
 
     bdSocketRouter* getSocketRouter();
-    unsigned int flush(bdReference<bdConnection>& connection);
+    unsigned int flush(bdReference<bdConnection> connection);
     bool flushAll();
     bool receiveFrom(bdReference<bdConnection>& connection);
     void disconnectAll();
