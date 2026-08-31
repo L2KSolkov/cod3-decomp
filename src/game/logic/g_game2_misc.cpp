@@ -1690,7 +1690,20 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         sentient->mLastTerrainMappingFootOffsetZ[1] += originDelta;
     }
     sentient->mLastTerrainMappingOriginZ = originZ;
-    float pelvisTarget = 0.0f;
+    const float initialLeftFootZ = leftFootMat.w[2];
+    const float initialRightFootZ = rightFootMat.w[2];
+    const float initialMinFootZ = min(initialLeftFootZ, initialRightFootZ);
+    nalGenericBoneHandle pelvisHandle{nullptr, 0};
+    nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle,
+                                     &BoneNames[0]);
+    float initialPelvisZ = originZ;
+    if (pelvisHandle.Skeleton != nullptr)
+    {
+        const nalPositionOrientation pelvis =
+            nalGenericPose_GetModelPositionOrientation(pose, &pelvisHandle);
+        initialPelvisZ = pelvis.pos.v.m128_f32[2];
+    }
+    const float pelvisFootGap = initialPelvisZ - initialMinFootZ;
     for (int i = 0; i < 2; ++i)
     {
         nalMatrix4x4* foot = footMatrices[i];
@@ -1777,26 +1790,43 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         offset += (targetOffset - offset) * blend;
         foot->w[2] += offset;
         sentient->mLastTerrainMappingToePos[i] = footPos;
-        pelvisTarget = min(pelvisTarget, offset);
     }
 
     if (sentient->mLastTerrainMappingPelvisZ >= -9998.0f)
         sentient->mLastTerrainMappingPelvisZ -= originDelta;
+    const float finalLeftFootZ = leftFootMat.w[2];
+    const float finalRightFootZ = rightFootMat.w[2];
+    const float finalMaxFootZ = max(finalLeftFootZ, finalRightFootZ);
+    const float pelvisTarget = finalMaxFootZ + pelvisFootGap;
     if (sentient->mLastTerrainMappingPelvisZ < -9998.0f)
-        sentient->mLastTerrainMappingPelvisZ = originZ;
-    const float maxChange = max(3.0f, elapsedMs * 0.001f * 60.0f);
-    const float pelvisDelta = pelvisTarget
-        - (sentient->mLastTerrainMappingPelvisZ - originZ);
-    const float clampedDelta = max(-maxChange, min(maxChange, pelvisDelta));
-    sentient->mLastTerrainMappingPelvisZ += clampedDelta;
-
-    nalGenericBoneHandle pelvisHandle{nullptr, 0};
-    nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle, &BoneNames[0]);
+        sentient->mLastTerrainMappingPelvisZ = pelvisTarget;
+    const float pelvisRate = sentient->mEnableTerrainMappingIK
+        ? max(3.0f, speed * 0.02f) * 20.0f : 200.0f;
+    const float maxPelvisStep = pelvisRate * terrainFrameTime;
+    float pelvisDelta = pelvisTarget
+        - sentient->mLastTerrainMappingPelvisZ;
+    if (fabsf(pelvisDelta) > maxPelvisStep)
+        pelvisDelta = pelvisDelta < 0.0f ? -maxPelvisStep : maxPelvisStep;
+    sentient->mLastTerrainMappingPelvisZ += pelvisDelta;
+    float maxPelvisOffset = 16.0f;
+    if (speed > 100.0f)
+        maxPelvisOffset = max(0.0f,
+                              (1.0f - (speed - 100.0f) * 0.0125f)
+                                  * 16.0f);
+    float pelvisFromInitial = sentient->mLastTerrainMappingPelvisZ
+        - initialPelvisZ;
+    if (fabsf(pelvisFromInitial) > maxPelvisOffset)
+    {
+        pelvisFromInitial = pelvisFromInitial < 0.0f
+            ? -maxPelvisOffset : maxPelvisOffset;
+        sentient->mLastTerrainMappingPelvisZ = initialPelvisZ
+            + pelvisFromInitial;
+    }
     if (pelvisHandle.Skeleton != nullptr)
     {
         nalPositionOrientation pelvis =
             nalGenericPose_GetModelPositionOrientation(pose, &pelvisHandle);
-        pelvis.pos.v.m128_f32[2] += clampedDelta;
+        pelvis.pos.v.m128_f32[2] = sentient->mLastTerrainMappingPelvisZ;
         static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
             pelvisHandle, pelvis);
     }
