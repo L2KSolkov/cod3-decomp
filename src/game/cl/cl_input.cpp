@@ -27,6 +27,7 @@ extern unsigned int frame_msec;
 extern int currCl;
 extern int dword_106000;
 extern cvar_t* cl_freelook;
+extern cvar_t* cl_analogStickLean;
 extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A
 extern int dword_F6A28C[4 * 802];     // ?dword_F6A28C (per-client port array)
 namespace BrocSys { void GiveWeapon(Entity* pSelf, const char* pszWeaponName); }
@@ -148,7 +149,6 @@ extern bool CL_IsADS(int client);
 extern void GamePause_SetGamePaused(int client, bool paused);
 bool gGrenadeCanBePickedUp;
 bool gCookingLiveGrenade;
-int cl_analogStickLean_integer;
 int cl_binocButtonDown_integer;
 
 class EntityManager {
@@ -697,13 +697,13 @@ void IN_ToggleADS(int /*key*/, int /*time*/)
 // ea: 0x52B9F0
 void IN_AnalogStickLeanDown()
 {
-    cl_analogStickLean_integer = 1;
+    cl_analogStickLean->integer = 1;
 }
 
 // ea: 0x52BA00
 void IN_AnalogStickLeanUp()
 {
-    cl_analogStickLean_integer = 0;
+    cl_analogStickLean->integer = 0;
 }
 
 // ea: 0x52C2B0
