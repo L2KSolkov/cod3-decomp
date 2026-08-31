@@ -1942,6 +1942,9 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         sentient->mLastTerrainMappingFootOffsetZ[1] += originDelta;
     }
     sentient->mLastTerrainMappingOriginZ = originZ;
+    float entityAngles[3] = {0.0f, ent->r.currentAngles.v.m128_f32[1], 0.0f};
+    float entityAxis[3][3];
+    AnglesToAxis(entityAngles, entityAxis);
     const float initialLeftFootZ = leftFootMat.w[2];
     const float initialRightFootZ = rightFootMat.w[2];
     const float initialMinFootZ = min(initialLeftFootZ, initialRightFootZ);
@@ -2038,8 +2041,8 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
             }
             if (trace.normal.v.m128_f32[1] < 1.0f)
             {
-                targetOffset = trace.endpos.v.m128_f32[2]
-                    - footPos.v.m128_f32[2];
+                targetOffset = originZ
+                    - (entityAxis[2][2] + trace.endpos.v.m128_f32[2]);
                 sentient->mLastTerrainMappingTraceZ[i] =
                     trace.endpos.v.m128_f32[2];
                 int surfaceBits = 0;
