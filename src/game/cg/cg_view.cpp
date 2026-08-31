@@ -850,6 +850,8 @@ struct shellshock_parms_t {
         float sensitivity;
     } mouse;
 };
+static_assert(sizeof(shellshock_parms_t) == 0x7C,
+              "shellshock_parms_t size mismatch");
 extern void CG_UpdateShellShockCamera(const void* parms, int time,
                                       int duration);
 extern void CL_SetUserCmdInShellshock(int shocked);
@@ -2031,6 +2033,8 @@ struct playerEntity_t {
     float vLastMoveOrg[3];     // +0x44
     float vLastMoveAng[3];     // +0x50
 };
+static_assert(sizeof(playerEntity_t) == 0x5C,
+              "playerEntity_t size mismatch");
 
 static playerEntity_t* GetPlayerEntity(int client)
 {
