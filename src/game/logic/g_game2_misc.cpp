@@ -1921,7 +1921,7 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
     const int elapsedMs = level.time
         - sentient->mLastTerrainMappingFootOffsetZTime;
     sentient->mLastTerrainMappingFootOffsetZTime = level.time;
-    if (elapsedMs <= 0)
+    if (elapsedMs <= 0 || ent->client->ps.eFlags < 0)
         return;
     if (!sentient->mEnableTerrainMappingIK
         && fabsf(sentient->mLastTerrainMappingFootOffsetZ[0]) < 1.0f
