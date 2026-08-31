@@ -1524,5 +1524,49 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0052AD10	?IN_Button5Down@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AD10;src/game/cl/cl_input.cpp:569-573	Release and source both call IN_KeyDown on the button-5 record.
 0x0052AD30	?IN_Button5Up@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:575-579	Source contains the complete button-5 release forwarder.
 0x0052AD30	?IN_Button5Up@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AD30;src/game/cl/cl_input.cpp:575-579	Release and source both call IN_KeyUp on the button-5 record.
+0x0052AD50	?IN_ActivateDown@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:581-585	Source contains the complete activate-button down forwarder.
+0x0052AD50	?IN_ActivateDown@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AD50;src/game/cl/cl_input.cpp:581-585	Release and source both call IN_KeyDown on the activate button record.
+0x0052AD70	?IN_ActivateUp@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:587-591	Source contains the complete activate-button release forwarder.
+0x0052AD70	?IN_ActivateUp@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AD70;src/game/cl/cl_input.cpp:587-591	Release and source both call IN_KeyUp on the activate button record.
+0x0052AD90	?IN_ActivateReloadDown@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:593-597	Source contains the complete activate-reload down forwarder.
+0x0052AD90	?IN_ActivateReloadDown@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AD90;src/game/cl/cl_input.cpp:593-597	Release and source both call IN_KeyDown on the activate-reload button record.
+0x0052ADB0	?IN_ActivateReloadUp@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:599-603	Source contains the complete activate-reload release forwarder.
+0x0052ADB0	?IN_ActivateReloadUp@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052ADB0;src/game/cl/cl_input.cpp:599-603	Release and source both call IN_KeyUp on the activate-reload button record.
+0x0052ADD0	?IN_Wbutton0Down@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:605-609	Source contains the complete W-button-0 down forwarder.
+0x0052ADD0	?IN_Wbutton0Down@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052ADD0;src/game/cl/cl_input.cpp:605-609	Release and source both call IN_KeyDown on the class/W-button-0 record.
+0x0052ADF0	?IN_Wbutton0Up@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:611-615	Source contains the complete W-button-0 release forwarder.
+0x0052ADF0	?IN_Wbutton0Up@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052ADF0;src/game/cl/cl_input.cpp:611-615	Release and source both call IN_KeyUp on the class/W-button-0 record.
+0x0052AE10	?IN_Wbutton2Down@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:617-621	Source contains the complete W-button-2 down forwarder.
+0x0052AE10	?IN_Wbutton2Down@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AE10;src/game/cl/cl_input.cpp:617-621	Release and source both call IN_KeyDown on the W-button-2 record.
+0x0052AE30	?IN_Wbutton2Up@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:623-627	Source contains the complete W-button-2 release forwarder.
+0x0052AE30	?IN_Wbutton2Up@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AE30;src/game/cl/cl_input.cpp:623-627	Release and source both call IN_KeyUp on the W-button-2 record.
+0x0052AE50	?IN_ReloadDown@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:629-633	Source contains the complete reload-button down forwarder.
+0x0052AE50	?IN_ReloadDown@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AE50;src/game/cl/cl_input.cpp:629-633	Release and source both call IN_KeyDown on the reload button record.
+0x0052AE70	?IN_ReloadUp@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:635-639	Source contains the complete reload-button release forwarder.
+0x0052AE70	?IN_ReloadUp@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AE70;src/game/cl/cl_input.cpp:635-639	Release and source both call IN_KeyUp on the reload button record.
+0x0052AE90	?IN_LeanLeftDown@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:641-645	Source contains the complete lean-left down forwarder.
+0x0052AE90	?IN_LeanLeftDown@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AE90;src/game/cl/cl_input.cpp:641-645	Release and source both call IN_KeyDown on the lean-left record.
+0x0052AEB0	?IN_LeanLeftUp@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:647-651	Source contains the complete lean-left release forwarder.
+0x0052AEB0	?IN_LeanLeftUp@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AEB0;src/game/cl/cl_input.cpp:647-651	Release and source both call IN_KeyUp on the lean-left record.
+0x0052AED0	?IN_LeanRightDown@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:653-657	Source contains the complete lean-right down forwarder.
+0x0052AED0	?IN_LeanRightDown@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AED0;src/game/cl/cl_input.cpp:653-657	Release and source both call IN_KeyDown on the lean-right record.
+0x0052AEF0	?IN_LeanRightUp@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:659-663	Source contains the complete lean-right release forwarder.
+0x0052AEF0	?IN_LeanRightUp@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AEF0;src/game/cl/cl_input.cpp:659-663	Release and source both call IN_KeyUp on the lean-right record.
+0x0052AF10	?IN_Wbutton6Down@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:665-670	Source contains the complete W-button-6 down forwarder and stance update.
+0x0052AF10	?IN_Wbutton6Down@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AF10;src/game/cl/cl_input.cpp:665-670	Release and source match on W-button-6 IN_KeyDown and stance flag recomputation.
+0x0052AF60	?IN_Wbutton6Up@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:672-677	Source contains the complete W-button-6 release forwarder and stance update.
+0x0052AF60	?IN_Wbutton6Up@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AF60;src/game/cl/cl_input.cpp:672-677	Release and source match on W-button-6 IN_KeyUp and stance flag recomputation.
+0x0052AFB0	?IN_Wbutton7Down@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:679-683	Source contains the complete W-button-7 down forwarder.
+0x0052AFB0	?IN_Wbutton7Down@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AFB0;src/game/cl/cl_input.cpp:679-683	Release and source both call IN_KeyDown on the W-button-7 record.
+0x0052AFD0	?IN_Wbutton7Up@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:685-689	Source contains the complete W-button-7 release forwarder.
+0x0052AFD0	?IN_Wbutton7Up@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052AFD0;src/game/cl/cl_input.cpp:685-689	Release and source both call IN_KeyUp on the W-button-7 record.
+0x0052B010	?IN_SprintDown@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:1052-1055	Source contains the complete sprint-button down forwarder.
+0x0052B010	?IN_SprintDown@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052B010;src/game/cl/cl_input.cpp:1052-1055	Release and source both call IN_KeyDown on the sprint button record.
+0x0052B030	?IN_SprintUp@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:1058-1061	Source contains the complete sprint-button release forwarder.
+0x0052B030	?IN_SprintUp@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052B030;src/game/cl/cl_input.cpp:1058-1061	Release and source both call IN_KeyUp on the sprint button record.
+0x0052B050	?IN_ButtonDown@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:1040-1044	Source contains the complete generic button-down forwarder.
+0x0052B050	?IN_ButtonDown@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052B050;src/game/cl/cl_input.cpp:1040-1044	Release and source both call IN_KeyDown on the button-1 record.
+0x0052B070	?IN_ButtonUp@@YAXHH@Z	V3	PASS	ida-manual-input-buttons-20260831	2026-08-31	src/game/cl/cl_input.cpp:1046-1050	Source contains the complete generic button-up forwarder.
+0x0052B070	?IN_ButtonUp@@YAXHH@Z	V4	PASS	ida-manual-input-buttons-20260831	2026-08-31	IDA:0x0052B070;src/game/cl/cl_input.cpp:1046-1050	Release and source both call IN_KeyUp on the button-1 record.
 0x004B3E80	??0PoolConfig@PoolAllocator@@QAE@IIIPAX@Z	V3	PASS	poolconfig-constructor-manual-20260831	2026-08-31	src/core/PoolAllocator.cpp:9-17	Source contains the complete constructor, assigning blockSize, blockAlign, numBlocks, and block from the four arguments.
 0x004B3E80	??0PoolConfig@PoolAllocator@@QAE@IIIPAX@Z	V4	PASS	poolconfig-constructor-manual-20260831	2026-08-31	IDA:0x004B3E80;src/core/PoolAllocator.cpp:9-17	Release and source perform the same four field stores in the same order and return this.
