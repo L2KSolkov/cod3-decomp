@@ -15,6 +15,26 @@
 
 #include <intrin.h>
 
+// ea: 0x006F0D00
+const math::Mat43& rigid_body::get_mat() const
+{
+    if ((~(m_flags >> 6) & 1) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 79,
+                     "debug_flag_is_not_in_collision()", defaultFileName))
+        __debugbreak();
+    return m_mat;
+}
+
+// ea: 0x006F0D50
+math::Mat43& rigid_body::dangerous_get_mat()
+{
+    if ((~(m_flags >> 6) & 1) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 85,
+                     "debug_flag_is_not_in_collision()", defaultFileName))
+        __debugbreak();
+    return m_mat;
+}
+
 // ============================================================================
 // SSE constants (rdata COMDATs; referenced across the physics lib)
 // ============================================================================

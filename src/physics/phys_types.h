@@ -357,8 +357,8 @@ public:
     void update_col_mat();
 
     // get_mat / dangerous_get_mat - ea: 0x006F0D00 / 0x006F0D50 (inline COMDATs)
-    const math::Mat43& get_mat() const { return m_mat; }  // ?get_mat@rigid_body@@QBEABVMat43@math@@XZ
-    math::Mat43& dangerous_get_mat() { return m_mat; }    // ?dangerous_get_mat@rigid_body@@QAEAAVMat43@math@@XZ
+    const math::Mat43& get_mat() const;  // ?get_mat@rigid_body@@QBEABVMat43@math@@XZ
+    math::Mat43& dangerous_get_mat();    // ?dangerous_get_mat@rigid_body@@QAEAAVMat43@math@@XZ
 
     // translate_col_mat - ea: 0x718B90 (physics.o inline COMDAT)
     void translate_col_mat(const math::Dir3& t)  // ?translate_col_mat@rigid_body@@QAEXABVDir3@math@@@Z
