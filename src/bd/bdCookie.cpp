@@ -36,15 +36,15 @@ bdHMac::~bdHMac()
 }
 
 struct bdHMacSHA1 : bdHMac {
-    bdHMacSHA1(const unsigned char* key, unsigned int keyLen);
-    virtual bool process(const unsigned char* data, unsigned int len);
-    virtual bool getData(unsigned char* out, unsigned int* outLen);
+    bdHMacSHA1(const unsigned char* const key, unsigned int keyLen);
+    virtual bool process(const unsigned char* const data, unsigned int len);
+    virtual bool getData(unsigned char* out, unsigned int& outLen);
     virtual ~bdHMacSHA1();
 };
 
 // bdHMacSHA1 - ea: 0x9EC450-0x9EC4A0 (bdCrypto:bdHMacSHA1.obj)
 // ea: 0x009EC4A0
-bdHMacSHA1::bdHMacSHA1(const unsigned char* key, unsigned int keyLen)
+bdHMacSHA1::bdHMacSHA1(const unsigned char* const key, unsigned int keyLen)
 {
     (void)key;
     (void)keyLen;
@@ -57,7 +57,7 @@ bdHMacSHA1::~bdHMacSHA1()
 }
 
 // ea: 0x009EC460
-bool bdHMacSHA1::process(const unsigned char* data, unsigned int len)
+bool bdHMacSHA1::process(const unsigned char* const data, unsigned int len)
 {
     (void)data;
     (void)len;
@@ -65,9 +65,9 @@ bool bdHMacSHA1::process(const unsigned char* data, unsigned int len)
 }
 
 // ea: 0x009EC470
-bool bdHMacSHA1::getData(unsigned char* out, unsigned int* outLen)
+bool bdHMacSHA1::getData(unsigned char* out, unsigned int& outLen)
 {
-    memset(out, 0, *outLen);
+    memset(out, 0, outLen);
     return true;
 }
 
@@ -178,7 +178,7 @@ unsigned int bdCookie::serialize(unsigned char* data, unsigned int size) {
         bdHMacSHA1 hmac(bdCookie::m_secret, 0x14u);
         hmac.process(v4 + 20, v7 - 20);
         unsigned int len = 20;
-        hmac.getData(v4, &len);
+        hmac.getData(v4, len);
     }
     return v7;
 }
@@ -202,7 +202,7 @@ bool bdCookie::deserialize(const unsigned char* const data, unsigned int size,
     hmac.process(v8 + 20, v6 - 20);
     unsigned char v16[20];
     unsigned int len = 20;
-    hmac.getData(v16, &len);
+    hmac.getData(v16, len);
     if (memcmp(v8, v16, 0x14u) == 0) {
         unsigned int a3 = v4 + 20;
         unsigned char v14[4];
