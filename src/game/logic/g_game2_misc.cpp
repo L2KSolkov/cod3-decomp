@@ -2130,9 +2130,12 @@ void AnimIK::ApplyADS(Entity* ent)
 
     nalGenericBoneHandle headHandle{nullptr, 0};
     nalGenericBoneHandle gunHandle{nullptr, 0};
+    nalGenericBoneHandle handHandle{nullptr, 0};
     nalGenericSkeleton_GetBoneHandle(skeleton, &headHandle, &BoneNames[5]);
     nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &BoneNames[13]);
-    if (headHandle.Skeleton == nullptr || gunHandle.Skeleton == nullptr)
+    nalGenericSkeleton_GetBoneHandle(skeleton, &handHandle, &BoneNames[9]);
+    if (headHandle.Skeleton == nullptr || gunHandle.Skeleton == nullptr
+        || handHandle.Skeleton == nullptr)
         return;
 
     // Release derives one common ADS weapon-facing orientation from the head
@@ -2147,8 +2150,24 @@ void AnimIK::ApplyADS(Entity* ent)
         slerp(headOrientation, identityOrientation, ads);
     const nalPositionOrientation gunPO =
         nalGenericPose_GetModelPositionOrientation(pose, &gunHandle);
+    const nalPositionOrientation headPO =
+        nalGenericPose_GetModelPositionOrientation(pose, &headHandle);
+    const nalPositionOrientation handPO =
+        nalGenericPose_GetModelPositionOrientation(pose, &handHandle);
     nalPositionOrientation targetPO = gunPO;
     targetPO.orient = adsOrientation;
+    const float handToHeadX = headPO.pos.v.m128_f32[0] + 15.0f
+        - handPO.pos.v.m128_f32[0];
+    const float handToHeadY = headPO.pos.v.m128_f32[1]
+        - handPO.pos.v.m128_f32[1];
+    const float handToHeadZ = headPO.pos.v.m128_f32[2]
+        - handPO.pos.v.m128_f32[2];
+    targetPO.pos.v.m128_f32[0] = handPO.pos.v.m128_f32[0]
+        + handToHeadX * ads;
+    targetPO.pos.v.m128_f32[1] = handPO.pos.v.m128_f32[1]
+        + handToHeadY * ads;
+    targetPO.pos.v.m128_f32[2] = handPO.pos.v.m128_f32[2]
+        + handToHeadZ * ads;
     nalMatrix4x4 target;
     nalMatrix4x4_FromPositionOrientation(targetPO, &target);
 
