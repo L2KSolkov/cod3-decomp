@@ -1715,8 +1715,8 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         math::Position3 end(footPos.v.m128_f32[0],
                            footPos.v.m128_f32[1],
                            footPos.v.m128_f32[2] - 24.0f);
-        const math::Position3 mins(-3.0f, -3.0f, -3.0f);
-        const math::Position3 maxs(3.0f, 3.0f, 3.0f);
+        const math::Position3 mins(-8.0f, -8.0f, -2.0f);
+        const math::Position3 maxs(8.0f, 8.0f, 4.0f);
         trace_t trace{};
         float targetOffset = 0.0f;
         if (doTerrainTrace)
