@@ -2001,6 +2001,16 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
             / (groundedFootRange[1] - groundedFootRange[0]);
         groundedness = max(0.0f, min(1.0f, groundedness));
         const math::Position3 footPos(foot->w[0], foot->w[1], foot->w[2]);
+        const float originX = ent->r.currentOrigin.v.m128_f32[0];
+        const float originY = ent->r.currentOrigin.v.m128_f32[1];
+        const float worldFootX = originX
+            + entityAxis[0][0] * footPos.v.m128_f32[0]
+            + entityAxis[1][0] * footPos.v.m128_f32[1]
+            + entityAxis[2][0] * footPos.v.m128_f32[2];
+        const float worldFootY = originY
+            + entityAxis[0][1] * footPos.v.m128_f32[0]
+            + entityAxis[1][1] * footPos.v.m128_f32[1]
+            + entityAxis[2][1] * footPos.v.m128_f32[2];
         nalGenericBoneHandle toeHandle{nullptr, 0};
         const int toeBoneIndex = i == 0 ? 22 : 21;
         nalGenericSkeleton_GetBoneHandle(skeleton, &toeHandle,
@@ -2012,12 +2022,8 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
                 nalGenericPose_GetModelPositionOrientation(pose, &toeHandle);
             toePos = toeOrientation.pos;
         }
-        math::Position3 start(footPos.v.m128_f32[0],
-                             footPos.v.m128_f32[1],
-                             footPos.v.m128_f32[2] + 18.0f);
-        math::Position3 end(footPos.v.m128_f32[0],
-                           footPos.v.m128_f32[1],
-                           footPos.v.m128_f32[2] - 24.0f);
+        math::Position3 start(worldFootX, worldFootY, originZ + 18.0f);
+        math::Position3 end(worldFootX, worldFootY, originZ - 27.0f);
         const math::Position3 mins(-8.0f, -8.0f, -2.0f);
         const math::Position3 maxs(8.0f, 8.0f, 4.0f);
         trace_t trace{};
