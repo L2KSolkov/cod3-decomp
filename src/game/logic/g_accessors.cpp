@@ -3211,7 +3211,7 @@ public:
 
 template <typename T, int CAPACITY>
 // ea: 0x004AC880
-// ea: 0x004AC910
+// alias-ea: 0x004AC910
 const T& phys_static_array<T, CAPACITY>::operator[](int i) const
 {
     if ((i < 0 || i >= m_alloc_count)
