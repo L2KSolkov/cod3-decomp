@@ -826,13 +826,13 @@ struct ANIMIK_SPINE_ADJUST_BONES {
 };
 
 static ANIMIK_SPINE_ADJUST_BONES spineAdjustBones[5] = {
-    {tlFixedString("bip01 pelvis"), {25.0f, 25.0f, 25.0f},
-     {0.4f, 0.4f, 0.4f}},
-    {tlFixedString("bip01 spine"), {35.0f, 32.0f, 43.0f},
-     {0.85f, 0.6f, 0.6f}},
-    {tlFixedString("bip01 spine1"), {40.0f, 45.0f, 60.0f},
-     {0.6f, 0.85f, 0.6f}},
-    {tlFixedString("bip01 spine2"), {70.0f, 45.0f, 50.0f},
+    {tlFixedString("bip01 pelvis"), {25.0f, 40.0f, 25.0f},
+     {0.3f, 0.8f, 0.4f}},
+    {tlFixedString("bip01 spine"), {35.0f, 45.0f, 32.0f},
+     {0.4f, 0.85f, 0.6f}},
+    {tlFixedString("bip01 spine1"), {43.0f, 60.0f, 40.0f},
+     {0.7f, 0.9f, 0.7f}},
+    {tlFixedString("bip01 spine2"), {50.0f, 70.0f, 45.0f},
      {1.0f, 1.0f, 1.0f}},
     {tlFixedString("bip01 neck"), {60.0f, 90.0f, 50.0f},
      {1.0f, 1.0f, 1.0f}},
