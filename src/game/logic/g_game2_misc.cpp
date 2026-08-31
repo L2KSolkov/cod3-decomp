@@ -1552,7 +1552,7 @@ void AnimIK::ApplyTorsoRotations(Entity* ent)
             {
                 const float targetMagnitude = fabsf(targetRotation[axis]);
                 const float maxAngle = max(90.0f, targetMagnitude);
-                const float excess = targetMagnitude - limit;
+                const float excess = fabsf(delta + rotationSum[axis]) - limit;
                 const float normalized = excess / (maxAngle - limit);
                 const float eased = 1.0f - powf(1.0f - normalized, 1.5f);
                 const float sign = targetRotation[axis] <= 0.0f
