@@ -87,7 +87,7 @@ protected:
     bdUnicastConnection(bdReference<bdCommonAddr> dest);
 
     virtual bool receive(unsigned char* buffer, unsigned int bufferSize);
-    virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize);
+    virtual unsigned int getDataToSend(unsigned char* const buffer, unsigned int bufferSize);
 
     bool handleInit(bdReference<bdChunk>& chunk);
     bool handleInitAck(bdReference<bdChunk>& chunk, unsigned int vtag);

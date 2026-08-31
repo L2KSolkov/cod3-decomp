@@ -309,7 +309,7 @@ bool bdUnicastConnection::receive(unsigned char* buffer, unsigned int bufferSize
 // ============================================================================
 // bdUnicastConnection::getDataToSend - ea: 0x8A6F00
 // ============================================================================
-unsigned int bdUnicastConnection::getDataToSend(unsigned char* buffer, unsigned int bufferSize) {
+unsigned int bdUnicastConnection::getDataToSend(unsigned char* const buffer, unsigned int bufferSize) {
     bdPacket packet(m_peerTag, bufferSize);
     unsigned int dataToSend = 0;
 
