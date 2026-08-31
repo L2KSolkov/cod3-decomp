@@ -1,5 +1,5 @@
 obj	rows	V0	V1	V2	V3	V4	V5
-AeAssert.o	12	1	0	1	0	10	0
+AeAssert.o	12	0	1	1	0	10	0
 AeHash.o	1	0	0	0	0	1	0
 Broc.o	161	97	24	38	0	2	0
 CallFunctor.o	1	0	0	0	0	1	0
@@ -60,19 +60,19 @@ apsVertexBuffer.o	13	9	2	0	0	2	0
 bdAddr.obj	19	1	0	2	0	16	0
 bdAddressMap-xbox.obj	7	0	3	0	0	4	0
 bdAlignedOffsetMemory.obj	4	0	0	0	0	4	0
-bdBitBuffer.obj	41	12	5	4	0	20	0
+bdBitBuffer.obj	41	14	5	4	0	18	0
 bdBitOperations.obj	4	0	0	0	0	4	0
 bdByteBuffer.obj	5	2	0	0	0	3	0
 bdBytePacker.obj	11	11	0	0	0	0	0
-bdChunk.obj	9	8	0	0	0	1	0
+bdChunk.obj	9	2	1	0	0	6	0
 bdCommonAddr-xbox.obj	28	24	2	0	0	2	0
 bdConnection.obj	35	33	0	0	0	2	0
 bdConnectionListener.obj	5	0	1	0	0	4	0
 bdConnectionStatistics.obj	16	16	0	0	0	0	0
 bdConnectionStore.obj	87	75	4	8	0	0	0
 bdCookie.obj	12	2	1	0	0	9	0
-bdCookieAckChunk.obj	8	8	0	0	0	0	0
-bdCookieEchoChunk.obj	14	12	0	0	0	2	0
+bdCookieAckChunk.obj	8	2	2	0	0	4	0
+bdCookieEchoChunk.obj	14	6	3	0	0	5	0
 bdCore.obj	12	12	0	0	0	0	0
 bdDataChunk.obj	20	8	3	7	0	2	0
 bdDiscoveryClient.obj	35	27	1	7	0	0	0
@@ -83,7 +83,7 @@ bdDispatcher.obj	17	13	1	0	0	3	0
 bdGameInfo.obj	19	17	1	0	0	1	0
 bdGameInfoFactory.obj	6	6	0	0	0	0	0
 bdHMac.obj	1	0	0	0	0	1	0
-bdHMacSHA1.obj	9	5	3	0	0	1	0
+bdHMacSHA1.obj	9	4	3	0	0	2	0
 bdHeartbeatAckChunk.obj	8	8	0	0	0	0	0
 bdHeartbeatChunk.obj	8	8	0	0	0	0	0
 bdInAddr.obj	5	0	2	1	0	2	0
@@ -109,7 +109,7 @@ bdQoSProbe-xbox.obj	54	43	2	8	0	1	0
 bdQoSProbeListener.obj	4	2	0	0	0	2	0
 bdRandom.obj	7	7	0	0	0	0	0
 bdReceivedMessage.obj	4	0	0	0	0	4	0
-bdReferencable.obj	1	1	0	0	0	0	0
+bdReferencable.obj	1	0	0	0	0	1	0
 bdReliableReceiveWindow.obj	19	13	1	4	0	1	0
 bdReliableSendWindow.obj	24	14	3	6	0	1	0
 bdSAckChunk.obj	26	24	0	0	0	2	0
@@ -128,7 +128,7 @@ bdSocket.obj	12	2	3	6	0	1	0
 bdSocketRouter-xbox.obj	25	15	3	6	0	1	0
 bdStopwatch.obj	7	0	0	0	0	7	0
 bdString.obj	30	25	0	4	0	1	0
-bdTrulyRandom.obj	3	1	1	0	0	1	0
+bdTrulyRandom.obj	3	0	1	0	0	2	0
 bdUnicastConnection.obj	152	141	5	5	0	1	0
 bdUnreliableReceiveWindow.obj	7	2	1	0	0	4	0
 bdUnreliableSendWindow.obj	32	27	1	0	0	4	0
@@ -183,7 +183,7 @@ core.o	1437	599	28	283	0	527	0
 crc32.o	3	3	0	0	0	0	0
 deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
-g.o	1470	167	14	83	0	1206	0
+g.o	1470	168	14	83	0	1205	0
 game.o	1158	458	10	578	0	112	0
 game2.o	1040	409	61	32	7	531	0
 game_xbox.o	365	149	82	116	0	18	0
