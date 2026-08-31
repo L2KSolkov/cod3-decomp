@@ -726,6 +726,8 @@ void DecodeAnimBank(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* pak);
 void DecodeAnimBank(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak);
+void DecodeAnimMatrix(const char* name, unsigned char* data, int size,
+                      TPakId pakId, PakFile* pak);
 void DecodeHeap(const char* name, unsigned char* data, unsigned int size,
                 TPakId pakId, PakFile* pak);
 void DecodeSEED(const char* name, unsigned char* data, int size,
@@ -15330,7 +15332,7 @@ void DecodeAnimBank(const char* name, unsigned char* data, unsigned int size,
 void DecodeAnimMatrix(const char* name, unsigned char* data, unsigned int size,
                       TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    DecodeAnimMatrix(name, data, (int)size, pakId, pak);
 }
 void DecodeFont(const char* name, unsigned char* data, unsigned int size,
                 TPakId pakId, PakFile* pak)
