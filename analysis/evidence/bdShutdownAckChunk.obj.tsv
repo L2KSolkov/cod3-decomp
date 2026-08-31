@@ -1,2 +1,6 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x008AC520	?getFlags@bdShutdownAckChunk@@QBE?AW4bdShutdownAckFlags@1@XZ	V3	PASS	bdshutdown-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682455-1682460;src/bd/bdShutdownChunk.cpp:84-86	Release returns the stored shutdown-ack flags; source returns m_flags.
+0x008AC520	?getFlags@bdShutdownAckChunk@@QBE?AW4bdShutdownAckFlags@1@XZ	V4	PASS	bdshutdown-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682455-1682460;src/bd/bdShutdownChunk.cpp:84-86	Equivalent const enum accessor behavior.
+0x008AC530	?getSerializedSize@bdShutdownAckChunk@@UAEIXZ	V3	PASS	bdshutdown-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682462-1682467;src/bd/bdShutdownChunk.cpp:91-93	Release returns fixed serialized size 4; source returns 4.
+0x008AC530	?getSerializedSize@bdShutdownAckChunk@@UAEIXZ	V4	PASS	bdshutdown-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682462-1682467;src/bdShutdownChunk.cpp:91-93	Equivalent fixed-size return.
 0x008AC510	??1bdShutdownAckChunk@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:85	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdShutdownAckChunk::~bdShutdownAckChunk); no user logic is omitted.
