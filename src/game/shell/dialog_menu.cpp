@@ -14,7 +14,7 @@ extern void* mem_heap_malloc(int alignment, unsigned int size);  // core.o
 extern void mem_heap_free(void* ptr);  // core.o
 extern float unk_F6A284[];             // @ 0xF6A284
 extern float unk_F6A280[];             // @ 0xF6A280
-extern int unk_F6A28C[];               // @ 0xF6A28C
+extern int dword_F6A28C[4 * 802];      // @ 0xF6A28C
 extern int dword_F64158[4 * 1580];             // @ 0xF64158
 extern float g_time_inc;               // ?g_time_inc@@3MA
 extern bool gStillDrawMenus;           // ?gStillDrawMenus@@3_NA
@@ -1126,7 +1126,7 @@ int DialogMenuSystem::GetCurrentClientController()
     if (g_femanager.fems != nullptr
         && g_femanager.fems->IsSystemActive())
         return 0;
-    return unk_F6A28C[802 * mClient];
+    return dword_F6A28C[802 * mClient];
 }
 
 // ea: 0x00572930
@@ -1135,7 +1135,7 @@ bool DialogMenuSystem::GetAnalogPressed(int button, int* p_controller)
     if (g_femanager.fems != nullptr
         && g_femanager.fems->IsSystemActive())
         return FEMenuSystem::GetAnalogPressed(button, p_controller);
-    int v5 = unk_F6A28C[802 * mClient];
+    int v5 = dword_F6A28C[802 * mClient];
     int x = 0;
     int y = 0;
     controller* v6 = controller::inst();
@@ -1189,8 +1189,8 @@ bool DialogMenuSystem::GetButtonPressed(int button, int* p_controller)
                                   p_controller);
     }
     if (p_controller != nullptr)
-        *p_controller = unk_F6A28C[802 * mClient];
-    int v7 = unk_F6A28C[802 * mClient];
+        *p_controller = dword_F6A28C[802 * mClient];
+    int v7 = dword_F6A28C[802 * mClient];
     controller* v6 = controller::inst();
     return v6->button_pressed(v7, (controller::ButtonIndex)button);
 }
@@ -1206,8 +1206,8 @@ int DialogMenuSystem::GetStickValueX(int stick, int* p_controller)
                                  p_controller);
     }
     if (p_controller != nullptr)
-        *p_controller = unk_F6A28C[802 * currCl];
-    int v6 = unk_F6A28C[802 * currCl];
+        *p_controller = dword_F6A28C[802 * currCl];
+    int v6 = dword_F6A28C[802 * currCl];
     controller* v5 = controller::inst();
     return v5->stick_value_x(v6, (controller::StickIndex)stick);
 }
@@ -1223,8 +1223,8 @@ int DialogMenuSystem::GetStickValueY(int stick, int* p_controller)
                                  p_controller);
     }
     if (p_controller != nullptr)
-        *p_controller = unk_F6A28C[802 * currCl];
-    int v6 = unk_F6A28C[802 * currCl];
+        *p_controller = dword_F6A28C[802 * currCl];
+    int v6 = dword_F6A28C[802 * currCl];
     controller* v5 = controller::inst();
     return v5->stick_value_y(v6, (controller::StickIndex)stick);
 }

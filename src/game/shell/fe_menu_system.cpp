@@ -31,7 +31,7 @@ enum FULLSCREENBLUR_STATE {
 extern FULLSCREENBLUR_STATE g_doFullScreenBlur[];
 extern float g_fullScreenBlurAmount[]; // ?g_fullScreenBlurAmount@@3PAMA
 extern bool gSkipFrontEnd;             // ?gSkipFrontEnd@@3_NA
-extern int unk_F6A28C[];               // @ 0xF6A28C (per-client controller)
+extern int dword_F6A28C[4 * 802];      // @ 0xF6A28C (per-client controller)
 extern nglTexture* nglDefaultTex;      // ?nglDefaultTex@@3PAUnglTexture@@A
 
 namespace View {
@@ -586,7 +586,7 @@ void InGameMenuSystem::ActivateHotJoinMenu()
 {
     is_active = true;
     MakeActive(14);
-    int v3 = unk_F6A28C[802 * mClient];
+    int v3 = dword_F6A28C[802 * mClient];
     controller* v4 = controller::inst();
     for (int i = controller::LEFTBUTTON; i < 16; ++i)
         v4->button_pressed_clear(v3, (controller::ButtonIndex)i);
@@ -651,7 +651,7 @@ void InGameMenuSystem::Update(float time_inc)
 // ea: 0x005731A0
 bool InGameMenuSystem::GetAnalogPressed(int button, int* p_controller)
 {
-    int v3 = unk_F6A28C[802 * currCl];
+    int v3 = dword_F6A28C[802 * currCl];
     int x = 0;
     int y = 0;
     controller* v4 = controller::inst();
@@ -705,8 +705,8 @@ void InGameMenuSystem::UpdateSplitScreen()
 bool InGameMenuSystem::GetButtonPressed(int button, int* p_controller)
 {
     if (p_controller != nullptr)
-        *p_controller = unk_F6A28C[802 * currCl];
-    int v5 = unk_F6A28C[802 * currCl];
+        *p_controller = dword_F6A28C[802 * currCl];
+    int v5 = dword_F6A28C[802 * currCl];
     controller* v3 = controller::inst();
     return v3->button_pressed(v5, (controller::ButtonIndex)button);
 }
@@ -715,8 +715,8 @@ bool InGameMenuSystem::GetButtonPressed(int button, int* p_controller)
 int InGameMenuSystem::GetStickValueX(int stick, int* p_controller)
 {
     if (p_controller != nullptr)
-        *p_controller = unk_F6A28C[802 * currCl];
-    int v5 = unk_F6A28C[802 * currCl];
+        *p_controller = dword_F6A28C[802 * currCl];
+    int v5 = dword_F6A28C[802 * currCl];
     controller* v3 = controller::inst();
     return v3->stick_value_x(v5, (controller::StickIndex)stick);
 }
@@ -725,8 +725,8 @@ int InGameMenuSystem::GetStickValueX(int stick, int* p_controller)
 int InGameMenuSystem::GetStickValueY(int stick, int* p_controller)
 {
     if (p_controller != nullptr)
-        *p_controller = unk_F6A28C[802 * currCl];
-    int v5 = unk_F6A28C[802 * currCl];
+        *p_controller = dword_F6A28C[802 * currCl];
+    int v5 = dword_F6A28C[802 * currCl];
     controller* v3 = controller::inst();
     return v3->stick_value_y(v5, (controller::StickIndex)stick);
 }
@@ -740,7 +740,7 @@ int InGameMenuSystem::GetCurrentClient()
 // ea: 0x00573400
 int InGameMenuSystem::GetCurrentClientController()
 {
-    return unk_F6A28C[802 * mClient];
+    return dword_F6A28C[802 * mClient];
 }
 
 // ea: 0x00573410

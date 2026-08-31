@@ -66,7 +66,6 @@ public:
     static PauseMenu* Me(int version);
     void UnPause();
 };
-extern int unk_F6A28C[];  // per-client controller ports
 extern int dword_F6A28C[4 * 802]; // per-client controller ports
 
 // msg_t (message buffer, from server_types)
@@ -124,7 +123,7 @@ bool QuitClientOutOfGame(int client);
 // ea: 0x52EF50
 void LocalClient::InitializeClientControllers()
 {
-    unk_F6A28C[0] = 0;
+    dword_F6A28C[0] = 0;
 }
 void LocalClient_InitializeClientControllers()
 {
@@ -206,7 +205,7 @@ int LocalClient::ClientToPort(int client)
 {
     if (client != 0)
         return 0;
-    return unk_F6A28C[0];
+    return dword_F6A28C[0];
 }
 int LocalClient_ClientToPort(int client)
 {
@@ -243,13 +242,13 @@ int LocalClient_PortIsState(int port, int state)
 int LocalClient::PortToValidClient(int port)
 {
     int result = 0;
-    int* v2 = &unk_F6A28C[0];
+    int* v2 = &dword_F6A28C[0];
     FEManagerView& manager = *(FEManagerView*)&g_femanager;
     while ((manager.inGame && v2[1] == 0) || *v2 != port)
     {
         v2 += 802;
         ++result;
-        if (v2 >= &unk_F6A28C[802 * 4])
+        if (v2 >= &dword_F6A28C[802 * 4])
             return 0;
     }
     return result;
@@ -263,7 +262,7 @@ int LocalClient_PortToValidClient(int port)
 void LocalClient::SetClientPort(int client, int port)
 {
     if (client == 0)
-        unk_F6A28C[0] = port;
+        dword_F6A28C[0] = port;
 }
 void LocalClient_SetClientPort(int client, int port)
 {
