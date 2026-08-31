@@ -1,3 +1,4 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x009ED180	?bdGetRandomUChar8@@YAXQAEI@Z	V3	PASS	ida-manual-bd-random-20260830	2026-08-30	src/bd/bdPlatform.cpp:239-241	Concrete random-byte loop is present.
 0x009ED180	?bdGetRandomUChar8@@YAXQAEI@Z	V4	FAIL	ida-manual-bd-random-20260830	2026-08-30	src/bd/bdPlatform.cpp:239-241; c3_bin/codmp_xboxr.xbe.c:1914756-1914759	Release forwards to j_XNetRandom; source currently uses rand() per byte, so release callee and random-source behavior do not match.
+0x009ED180	?bdGetRandomUChar8@@YAXQAEI@Z	V4	PASS	manual-abi-equivalence-20260831	2026-08-31	src/bd/bdPlatform.cpp:247-249; platform/xbox_shim/xnet_stubs.cpp:14-22; c3_bin/codmp_xboxr.xbe.c:1914756-1914759	Source now delegates to XNetRandom at the same platform boundary as release; the Win32 shim provides the local implementation used by this port.

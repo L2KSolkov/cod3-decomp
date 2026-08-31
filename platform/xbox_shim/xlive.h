@@ -251,6 +251,7 @@ HRESULT __stdcall XOnlineMutelistGet(
 // ============================================================================
 // XNet QoS / key registry
 // ============================================================================
+int __stdcall XNetRandom(BYTE* pb, DWORD cb);
 int __stdcall XNetQosListen(const XNKID* pxnkid, BYTE* pb, DWORD cb,
                             DWORD dwBitsPerSec, DWORD dwFlags);
 int __stdcall XNetQosLookup(

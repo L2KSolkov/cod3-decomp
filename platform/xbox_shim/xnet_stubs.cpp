@@ -6,8 +6,18 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <cstdlib>
 
 extern "C" {
+
+int __stdcall XNetRandom(BYTE* pb, DWORD cb)
+{
+    if (pb == NULL)
+        return 1;
+    for (DWORD i = 0; i < cb; ++i)
+        pb[i] = static_cast<BYTE>(rand() & 0xFF);
+    return 0;
+}
 
 unsigned int __stdcall XNetGetTitleXnAddr(XNADDR* pxna)
 {

@@ -33,6 +33,10 @@
   typedef float    bdFloat32;
 #endif
 
+#ifdef _WIN32
+extern "C" int __stdcall XNetRandom(unsigned char* pb, unsigned long cb);
+#endif
+
 #include <new>
 
 namespace bdMemory {
@@ -243,7 +247,7 @@ bdUInt64 bdPlatformSocket::s_packetsRecvd=0;
 // bdGetRandomUChar8 — platform random bytes
 // ============================================================================
 void bdGetRandomUChar8(unsigned char* const d, bdUInt n) {
-    for (bdUInt i = 0; i < n; ++i) d[i] = (unsigned char)(rand() & 0xFF);
+    XNetRandom(d, n);
 }
 
 struct bdTrulyRandomImpl {
