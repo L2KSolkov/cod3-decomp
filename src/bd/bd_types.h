@@ -211,9 +211,9 @@ struct bdInAddr {
         } inUn;
     };
 
-    bdInAddr() { inUn.m_iaddr = 0xFF00FF00; }
-    bdInAddr(unsigned int addr) { inUn.m_iaddr = addr; }
-    bdInAddr(const char* str) { inUn.m_iaddr = 0; fromString(str); }
+    bdInAddr();
+    bdInAddr(unsigned int addr);
+    bdInAddr(const char* str);
     void fromString(const char* cp);
     unsigned int toString(char* const pchBuf, unsigned int cchBuf) const;
 };

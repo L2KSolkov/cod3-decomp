@@ -18,6 +18,22 @@
 extern "C" int __stdcall XNetInAddrToString(struct in_addr ina, char* pchBuf,
                                               int cchBuf);
 
+// ea: 0x008B5E40
+bdInAddr::bdInAddr() {
+    inUn.m_iaddr = 0xFF00FF00;
+}
+
+// ea: 0x008B5E50
+bdInAddr::bdInAddr(unsigned int addr) {
+    inUn.m_iaddr = addr;
+}
+
+// ea: 0x008B5EC0
+bdInAddr::bdInAddr(const char* str) {
+    inUn.m_iaddr = 0;
+    fromString(str);
+}
+
 // ============================================================================
 // bdInAddr::fromString - ea: 0x8B5E60
 // ============================================================================
