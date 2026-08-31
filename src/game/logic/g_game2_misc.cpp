@@ -1444,8 +1444,26 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
                                  steering * 0.1f, steering * 0.2f));
     }
 
-    float viewYaw = AngleNormalize180(client->ps.viewangles[1]);
-    float viewPitch = AngleNormalize180(client->ps.viewangles[0]);
+    float viewYaw;
+    float viewPitch;
+    if (IsLocalPlayer(ent))
+    {
+        const unsigned char* cameraBase =
+            reinterpret_cast<const unsigned char*>(gCamera);
+        const float* previousAngles = reinterpret_cast<const float*>(
+            cameraBase + 0x1F0 * GetPlayerIndex(ent) + 0x40);
+        viewYaw = AngleNormalize180(
+            previousAngles[1]
+            - vehicle->r.currentAngles.v.m128_f32[1]);
+        viewPitch = AngleNormalize180(
+            previousAngles[0]
+            - vehicle->r.currentAngles.v.m128_f32[0]);
+    }
+    else
+    {
+        viewYaw = AngleNormalize180(client->ps.viewangles[1]);
+        viewPitch = AngleNormalize180(client->ps.viewangles[0]);
+    }
     if (client->ps.vehPos == 1)
     {
         viewYaw = max(-40.0f, min(0.0f, viewYaw));
