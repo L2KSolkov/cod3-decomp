@@ -41,7 +41,7 @@ bool bdSocket::create(bool blocking) {
 // bdSocket::bind (bdAddr) - ea: 0x9EC5A0
 // ============================================================================
 bdSocketStatusCode bdSocket::bind(const bdAddr& addr) {
-    return bdPlatformSocket::bind(m_handle, addr.getAddress().getInAddr(),
+    return bdPlatformSocket::bind(m_handle, *addr.getAddress().getInAddr(),
                                   addr.getPort());
 }
 
@@ -57,7 +57,7 @@ bdSocketStatusCode bdSocket::bind(unsigned short port) {
 // bdSocket::sendTo - ea: 0x9EC5E0
 // ============================================================================
 int bdSocket::sendTo(const bdAddr& addr, const void* data, unsigned int length) {
-    return bdPlatformSocket::sendTo(m_handle, addr.getAddress().getInAddr(),
+    return bdPlatformSocket::sendTo(m_handle, *addr.getAddress().getInAddr(),
                                     addr.getPort(), data, length);
 }
 
