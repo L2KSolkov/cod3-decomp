@@ -37,7 +37,7 @@ extern void Cvar_SetValue(const char* var_name, float value);
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern void VM_Free(struct vm_s* vm);
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
-extern int com_timescale_value;
+extern cvar_t* com_timescale;
 extern int dword_F170F0;
 int com_skelTimeStamp = 0;  // ?com_skelTimeStamp@@3HA (core.o)
 int bCL_AllowedAllocSkel = 0;  // cl.o BSS
@@ -87,7 +87,6 @@ int dword_F171DC = 0;  // cl.o BSS (line source)
 int dword_F171E0 = 0;  // cl.o BSS (line depth)
 int dword_F171E4 = 0;  // cl.o BSS
 char byte_F171E8 = 0;  // cl.o BSS (server string source)
-int com_timescale_value = 0;  // ?com_timescale_value@@3HA (cl.o)
 // --- plain int data sweep (cl.o family) ---
 int animFrametime;        // ?animFrametime@@3HA (cl.o)
 int anykeydown;           // ?anykeydown@@3HA (cl.o)
@@ -226,7 +225,7 @@ nglFont* CL_GetFontInfo(int font, float scale)
 // ea: 0x52D080
 void CL_IncAnimWeight_f()
 {
-    float value = (float)com_timescale_value;
+    float value = com_timescale->value;
     if (value == 0.0f)
         value = 1.0f;
     float test_anim_weight = ((float)dword_F170F0 / value) * 0.0020000001f
@@ -240,7 +239,7 @@ void CL_IncAnimWeight_f()
 // ea: 0x52D110
 void CL_DecAnimWeight_f()
 {
-    float value = (float)com_timescale_value;
+    float value = com_timescale->value;
     if (value == 0.0f)
         value = 1.0f;
     float test_anim_weight = cl_testAnimWeight->value
