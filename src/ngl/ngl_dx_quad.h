@@ -237,6 +237,7 @@ extern void  tlWarning(const char* Format, ...);
 // nglDxViewToScreenZ — project a view-space Z to screen Z (inline COMDAT)
 // ea: 0x847B70
 // ============================================================================
+// ea: 0x00847B70
 inline float nglDxViewToScreenZ(float z, nglScene* Scene) {
     float zc = z;
     if (Scene->NearZ <= z) {

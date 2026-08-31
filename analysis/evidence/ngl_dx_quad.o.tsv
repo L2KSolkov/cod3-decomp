@@ -5,3 +5,19 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008479B0	?Render@nglQuadNode@@UAEXXZ	V4	PASS	ida-manual-ngl-quad-20260830	2026-08-30	IDA decompile 0x008479B0 and src/ngl/ngl_dx_quad.cpp:183-186	Release debug flag test and call target match source.
 0x00847B70	?nglDxViewToScreenZ@@YAMMPAUnglScene@@@Z	V3	PASS	ida-manual-ngl-quad-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe @ 0x00847B70; src/ngl/ngl_dx_quad.h:238	Real body clamps z to NearZ/FarZ, projects through ViewToScreen, and clamps the resulting depth to [0, 16777215].
 0x00847B70	?nglDxViewToScreenZ@@YAMMPAUnglScene@@@Z	V4	PASS	ida-manual-ngl-quad-20260830	2026-08-30	IDA decompile 0x00847B70 and src/ngl/ngl_dx_quad.h:238-255	Release clamp branches, SIMD multiply/add, z/w shuffle division, and output bounds match source.
+0x008479D0	?BeginPush@D3DDevice@@SGJKPAPAK@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_dx_gpu.h:370-373	Body forwards Count to D3DDevice_BeginPush through the output pointer and returns S_OK.
+0x008479D0	?BeginPush@D3DDevice@@SGJKPAPAK@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x8479D0	Release/source wrapper call, output assignment, and zero HRESULT match.
+0x008479F0	?EndPush@D3DDevice@@SGJPAK@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_dx_gpu.h:375-378	Body forwards the push pointer to D3DDevice_EndPush and returns S_OK.
+0x008479F0	?EndPush@D3DDevice@@SGJPAK@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x8479F0	Release/source wrapper call and zero HRESULT match.
+0x00847A10	?End@nglXbPushQuadClass@@QAEHXZ	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_xb_internal.h:28-34	Body writes the push terminator, advances PB by two DWORDs, and ends the push.
+0x00847A10	?End@nglXbPushQuadClass@@QAEHXZ	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x847A10	Release/source terminator values, PB update, and D3DDevice_EndPush call match.
+0x00847A40	?Pos@nglXbPushQuadClass@@QAEXMMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_xb_internal.h:36-41	Body writes x, y, and z as consecutive DWORDs and advances PB.
+0x00847A40	?Pos@nglXbPushQuadClass@@QAEXMMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x847A40	Release/source three-float stores and pointer increments match.
+0x00847A80	?Color@nglXbPushQuadClass@@QAEXI@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_xb_internal.h:43-46	Body writes one color DWORD and advances PB.
+0x00847A80	?Color@nglXbPushQuadClass@@QAEXI@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x847A80	Release/source single store and pointer increment match.
+0x00847AA0	?UV@nglXbPushQuadClass@@QAEXMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_xb_internal.h:48-52	Body writes u and v as consecutive DWORDs and advances PB.
+0x00847AA0	?UV@nglXbPushQuadClass@@QAEXMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x847AA0	Release/source two-float stores and pointer increments match.
+0x00847AD0	?SetYUV@nglDxRenderState@@QAEX_N@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_dx_state.h:23-27	Body performs the YUV render-state parameter check and conditionally writes the state.
+0x00847AD0	?SetYUV@nglDxRenderState@@QAEX_N@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x847AD0	Release/source state constant, bool value, conditional check, and setter call match.
+0x00847B00	?Begin@nglXbPushQuadClass@@QAEHI@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_xb_internal.h:54-66	Body clears cached vertex/index state, begins a push, writes the header, advances PB, and returns the original pointer.
+0x00847B00	?Begin@nglXbPushQuadClass@@QAEHI@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x847B00	Release/source cache resets, push count/header constants, PB increments, and return pointer match.

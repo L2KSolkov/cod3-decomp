@@ -25,6 +25,7 @@ public:
 
     nglXbPushQuadClass() : PB(0) {}
 
+    // ea: 0x00847A10
     void End() {
         *PB = dword_417FC;
         PB[1] = 0;
@@ -32,21 +33,25 @@ public:
         D3DDevice_EndPush(PB);
     }
 
+    // ea: 0x00847A40
     void Pos(float x, float y, float z) {
         *PB++ = *(unsigned int*)&x;
         *PB++ = *(unsigned int*)&y;
         *PB++ = *(unsigned int*)&z;
     }
 
+    // ea: 0x00847A80
     void Color(unsigned int ColorValue) {
         *PB++ = ColorValue;
     }
 
+    // ea: 0x00847AA0
     void UV(float u, float v) {
         *PB++ = *(unsigned int*)&u;
         *PB++ = *(unsigned int*)&v;
     }
 
+    // ea: 0x00847B00
     unsigned int* Begin(unsigned int VertexSize) {
         gpuHashVertexBuffer = 0;
         gpuHashVertexFormat = 0;

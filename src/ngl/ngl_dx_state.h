@@ -20,6 +20,7 @@ struct nglDxRenderState {
     void FSAAFixup();                   // ea: 0x84FED0
     void Init();                        // ea: 0x84FEE0
     void SetBlendColor(unsigned int v); // ea: 0x850000; map/stack ABI is unsigned 32-bit
+    // ea: 0x00847AD0
     void SetYUV(bool v) {
         if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_YUVENABLE,
                                                      static_cast<unsigned int>(v)) == 0)
