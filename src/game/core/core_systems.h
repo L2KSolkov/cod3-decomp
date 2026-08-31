@@ -168,7 +168,8 @@ class EndOnScriptNode;
 struct DbStringHashTable;
 class DbTable;
 struct DbQuery;
-struct DbQueryString {
+class DbQueryString {
+public:
     char buf[128];
     DbQueryString();
     DbQueryString(const char* data);
@@ -1657,7 +1658,7 @@ static_assert(sizeof(DbFieldSet) == 0x250, "DbFieldSet size mismatch");
 
 struct DbQuery {
     friend class EffectEventSys;
-    DbQuery(const DbTable* db);       // ea: 0x004E7F20
+    DbQuery(const DbTable& db);       // ea: 0x004E7F20
     virtual ~DbQuery();
     const DbTable* mDb;            // +0x04
     DbFieldSet     mConstraints;   // +0x08
