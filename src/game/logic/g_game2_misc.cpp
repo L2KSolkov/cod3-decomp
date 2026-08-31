@@ -135,6 +135,8 @@ public:
                                 const ::nalPositionOrientation& po);
     void SetPoseBoneOrientation(const nalGenericBoneHandle& handle,
                                 const math::Quaternion& orientation);
+    math::Quaternion GetPoseBoneOrientation(
+        const nalGenericBoneHandle& handle) const;
 };
 }
 using nalGenericBoneHandle = nalGeneric::nalGenericBoneHandle;
@@ -2125,6 +2127,38 @@ void AnimIK::ApplyADS(Entity* ent)
         return;
     RotateBone(4, math::Dir3(-5.0f * ads, 0.0f, 15.0f * ads));
     RotateBone(3, math::Dir3(-5.0f * ads, 0.0f, 10.0f * ads));
+
+    nalGenericBoneHandle headHandle{nullptr, 0};
+    nalGenericBoneHandle gunHandle{nullptr, 0};
+    nalGenericSkeleton_GetBoneHandle(skeleton, &headHandle, &BoneNames[5]);
+    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &BoneNames[13]);
+    if (headHandle.Skeleton == nullptr || gunHandle.Skeleton == nullptr)
+        return;
+
+    // Release derives one common ADS weapon-facing orientation from the head
+    // pose and reuses it for both arm passes.  Its second quaternion is the
+    // identity, so the interpolation is the direct head-to-identity slerp.
+    const math::Quaternion headOrientation =
+        static_cast<nalGeneric::nalGenericPose*>(pose)
+            ->GetPoseBoneOrientation(headHandle);
+    math::Quaternion identityOrientation;
+    identityOrientation.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    const math::Quaternion adsOrientation =
+        slerp(headOrientation, identityOrientation, ads);
+    const nalPositionOrientation gunPO =
+        nalGenericPose_GetModelPositionOrientation(pose, &gunHandle);
+    nalPositionOrientation targetPO = gunPO;
+    targetPO.orient = adsOrientation;
+    nalMatrix4x4 target;
+    nalMatrix4x4_FromPositionOrientation(targetPO, &target);
+
+    // The release resolves the left and right four-name groups separately;
+    // the shared solver preserves their parent-space writeback and release
+    // precomputed IK constants.
+    AnimIK_ApplyTwoBoneIK(this, 0, BoneNames[9], BoneNames[8],
+                          BoneNames[7], BoneNames[6], target, nullptr);
+    AnimIK_ApplyTwoBoneIK(this, 1, BoneNames[13], BoneNames[12],
+                          BoneNames[11], BoneNames[10], target, nullptr);
 }
 // ea: 0x00507EC0
 void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
