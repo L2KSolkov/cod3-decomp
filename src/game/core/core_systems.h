@@ -842,6 +842,11 @@ public:
     int                          mHashStr;      // +0x2C
     int                          mDialogNotify; // +0x30
     const char*                  mSubtitle;     // +0x34
+    // ea: 0x004E2560
+    SoundParams()
+    {
+        mEnt.mHandle.mVal = 0;
+    }
 };
 static_assert(sizeof(SoundParams) == 0x38, "SoundParams size mismatch");
 static_assert(offsetof(SoundParams, mDuration) == 0x18,
@@ -2443,6 +2448,13 @@ struct ParticleParams {
     int                          mParticleId;  // +0x40
     int                          mQueue;       // +0x44
     bool                         mUpdatePosOnly;  // +0x48
+    // ea: 0x004E2570
+    ParticleParams()
+    {
+        mEnt.mHandle.mVal = 0;
+        mBoneName.hash = 0;
+        memset(mBoneName.str, 0, sizeof(mBoneName.str));
+    }
 };
 static_assert(sizeof(ParticleParams) == 0x4C, "ParticleParams size mismatch");
 static_assert(offsetof(ParticleParams, mBoneName) == 0x18,
