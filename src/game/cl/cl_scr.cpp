@@ -694,9 +694,14 @@ struct GpadAxesGlob {
     int axesValues[6];
 };
 GpadAxesGlob gaGlobs[2];  // ?gaGlobs@@3PAUGpadAxesGlob@@A (cl.o)
-const char* virtualAxisNames[6];  // cl.o
+const char* virtualAxisNames[6] = {
+    "VA_SIDE", "VA_FORWARD", "VA_UP", "VA_YAW", "VA_PITCH", "VA_ATTACK"};
 const char* szShotName[6];        // cl.o
-int axisSameStick[6];  // cl.o BSS
+int axisSameStick[6] = { 1, 0, 3, 2, -1, -1 };
+const char* physicalAxisNames[6] = {
+    "A_RSTICK_X", "A_RSTICK_Y", "A_LSTICK_X",
+    "A_LSTICK_Y", "A_RTRIGGER", "A_LTRIGGER"};
+const char* inputTypeNames[2] = { "MAP_LINEAR", "MAP_SQUARED" };
 enum { GPAD_PHYSAXIS_NONE = -1 };
 
 // ea: 0x52E660
@@ -769,8 +774,28 @@ void Gamepad_WriteBindings(int f)
     {
         int idx = 16 * currCl + 2 * currCl + 2 * i;
         if (dword_F13368[idx] != -1)
-            FS_Printf(f, "bindaxis %s %i\n", virtualAxisNames[i],
-                      dword_F13368[idx]);
+        {
+            int axis = dword_F13368[idx];
+            if (axis >= 6)
+            {
+                ASSERT("axis >= 0 && axis < GPAD_PHYSAXIS_COUNT",
+                       "c:\\cod\\code\\game\\cl_gamepad.cpp", 140);
+            }
+            int mapType = dword_F1336C[idx];
+            if (mapType >= 2)
+            {
+                ASSERT("mapType >= 0 && mapType < GPAD_MAP_COUNT",
+                       "c:\\cod\\code\\game\\cl_gamepad.cpp", 167);
+            }
+            if (physicalAxisNames[axis] == nullptr)
+                ASSERT("realAxisName", "c:\\cod\\code\\game\\cl_gamepad.cpp", 273);
+            if (virtualAxisNames[i] == nullptr)
+                ASSERT("virtualAxisName", "c:\\cod\\code\\game\\cl_gamepad.cpp", 274);
+            if (inputTypeNames[mapType] == nullptr)
+                ASSERT("inputTypeName", "c:\\cod\\code\\game\\cl_gamepad.cpp", 275);
+            FS_Printf(f, "bindaxis %s %s %s\n", physicalAxisNames[axis],
+                      virtualAxisNames[i], inputTypeNames[mapType]);
+        }
     }
 }
 
