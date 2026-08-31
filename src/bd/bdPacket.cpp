@@ -17,6 +17,7 @@ void* allocate(unsigned int size);
 
 // ============================================================================
 // bdPacket::getVerificationTag â€” ea: 0x8AC810
+// ea: 0x008AC810
 // ============================================================================
 unsigned int bdPacket::getVerificationTag() const {
     return this->m_verificationTag;
@@ -50,6 +51,7 @@ bdPacket::bdPacket(unsigned int verificationTag, unsigned int maxSize)
 
 // ============================================================================
 // bdPacket::~bdPacket â€” ea: 0x8AD410
+// ea: 0x008AD410
 // ============================================================================
 bdPacket::~bdPacket() {
     if (this->m_nextChunk.m_ptr != NULL && this->m_nextChunk.m_ptr->releaseRef() == 0)
@@ -69,6 +71,7 @@ bdPacket::~bdPacket() {
 
 // ============================================================================
 // bdPacket::serialize â€” ea: 0x8AC9B0
+// ea: 0x008AC9B0
 // ============================================================================
 unsigned int bdPacket::serialize(unsigned char* data, unsigned int size) {
     unsigned int v27 = 2;
@@ -129,6 +132,7 @@ unsigned int bdPacket::serialize(unsigned char* data, unsigned int size) {
 
 // ============================================================================
 // bdPacket::isEmpty â€” ea: 0x8ACC40
+// ea: 0x008ACC40
 // ============================================================================
 bool bdPacket::isEmpty() const {
     return this->m_size == 0;
@@ -136,6 +140,7 @@ bool bdPacket::isEmpty() const {
 
 // ============================================================================
 // bdPacket::deserialize â€” ea: 0x8ACE20
+// ea: 0x008ACE20
 // ============================================================================
 bool bdPacket::deserialize(const unsigned char* data, unsigned int size) {
     bool valid = data != NULL && size > 6;
@@ -222,6 +227,7 @@ bool bdPacket::deserialize(const unsigned char* data, unsigned int size) {
 
 // ============================================================================
 // bdPacket::addChunk â€” ea: 0x8AD2E0
+// ea: 0x008AD2E0
 // ============================================================================
 bool bdPacket::addChunk(const bdReference<bdChunk>& chunk) {
     unsigned int v5 = chunk.m_ptr->getSerializedSize();
@@ -251,6 +257,7 @@ bool bdPacket::addChunk(const bdReference<bdChunk>& chunk) {
 
 // ============================================================================
 // bdPacket::getNextChunk â€” ea: 0x8AD490
+// ea: 0x008AD490
 // ============================================================================
 bool bdPacket::getNextChunk(bdReference<bdChunk>& chunk) {
     if (this->m_head != NULL) {
