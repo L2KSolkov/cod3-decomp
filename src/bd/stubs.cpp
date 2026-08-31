@@ -75,6 +75,55 @@ struct bdEmptyStringStorage {
 bdEmptyStringStorage g_emptyStringStorage = {{1, 0, 0}, {0}};
 }
 
+// ea: 0x0089C890
+bdStringData* bdStringData::getString()
+{
+    return this + 1;
+}
+
+// ea: 0x0089C8A0
+int bdStrcmp(const char* left, const char* right)
+{
+    return strcmp(left, right);
+}
+
+// ea: 0x0089C8F0
+bdStringData* getEmptyStringData()
+{
+    g_emptyStringStorage.data.m_length = 0;
+    return &g_emptyStringStorage.data;
+}
+
+// ea: 0x0089C900
+bool bdString::operator==(const bdString& value) const
+{
+    return bdStrcmp(m_string, value.m_string) == 0;
+}
+
+// ea: 0x0089C950
+bool bdString::operator==(const char* value) const
+{
+    return bdStrcmp(m_string, value) == 0;
+}
+
+// ea: 0x0089C9A0
+bool bdString::operator!=(const bdString& value) const
+{
+    return bdStrcmp(m_string, value.m_string) != 0;
+}
+
+// ea: 0x0089C9F0
+bool bdString::operator!=(const char* value) const
+{
+    return bdStrcmp(m_string, value) != 0;
+}
+
+// ea: 0x0089CA40
+bdString::operator const char*() const
+{
+    return m_string;
+}
+
 // ea: 0x0089CB30
 bdString::bdString()
     : m_string(g_emptyStringStorage.string)
@@ -119,6 +168,7 @@ bdString::~bdString()
         bdMemory::deallocate(referenceCount);
 }
 
+// ea: 0x0089CC80
 bdString& bdString::operator=(const char* value)
 {
     const unsigned int length = (unsigned int)strlen(value);
@@ -148,10 +198,155 @@ bdString& bdString::operator=(const char* value)
     return *this;
 }
 
+// ea: 0x0089CAC0
+void bdString::initialize()
+{
+    m_string = g_emptyStringStorage.string;
+    g_emptyStringStorage.data.m_length = 0;
+    ++g_emptyStringStorage.data.m_referenceCount;
+}
+
 // ea: 0x0089CA50
 const char* bdString::getBuffer() const
 {
     return m_string;
+}
+
+// ea: 0x0089CA60
+bdStringData* bdString::getStringData() const
+{
+    return reinterpret_cast<bdStringData*>(m_string) - 1;
+}
+
+// ea: 0x0089CA70
+bdStringData* bdString::addReference(bdStringData* data)
+{
+    ++data->m_referenceCount;
+    return data;
+}
+
+// ea: 0x0089CA80
+bool bdString::enoughCapacity(unsigned int length) const
+{
+    return getStringData()->m_capacity >= length + 1;
+}
+
+// ea: 0x0089CAE0
+char* bdString::allocateBuffer(unsigned int length)
+{
+    const unsigned int capacity = ((length + 1 + 0x3F) >> 6) << 6;
+    bdStringData* data = reinterpret_cast<bdStringData*>(
+        bdMemory::allocate(capacity + sizeof(bdStringData)));
+    data->m_referenceCount = 1;
+    data->m_length = length;
+    data->m_capacity = capacity;
+    m_string = reinterpret_cast<char*>(data + 1);
+    return m_string;
+}
+
+// ea: 0x0089CB20
+void bdString::freeBuffer(bdStringData* data)
+{
+    bdMemory::deallocate(data);
+}
+
+// ea: 0x0089CBE0
+bool bdString::findFirst(char value, unsigned int* index) const
+{
+    for (unsigned int i = 0; i < getLength(); ++i) {
+        if (m_string[i] == value) {
+            *index = i;
+            return true;
+        }
+    }
+    return false;
+}
+
+// ea: 0x0089CC10
+void bdString::removeReference(bdStringData* data)
+{
+    if (data->m_referenceCount-- == 1)
+        freeBuffer(data);
+}
+
+// ea: 0x0089CC50
+bdString& bdString::operator=(const bdString& value)
+{
+    if (m_string != value.m_string) {
+        bdStringData* oldData = getStringData();
+        removeReference(oldData);
+        m_string = value.m_string;
+        addReference(getStringData());
+    }
+    return *this;
+}
+
+// ea: 0x0089CD20
+bdString bdString::operator+(const bdString& value) const
+{
+    bdString result(*this);
+    result += value;
+    return result;
+}
+
+// ea: 0x0089CE30
+bdString bdString::operator+(const char* value) const
+{
+    bdString result(*this);
+    result += value;
+    return result;
+}
+
+// ea: 0x0089CF40
+bdString& bdString::operator+=(const bdString& value)
+{
+    const unsigned int oldLength = getLength();
+    const unsigned int addLength = value.getLength();
+    const unsigned int newLength = oldLength + addLength;
+    if (addLength == 0)
+        return *this;
+    if (getStringData()->m_referenceCount <= 1 && enoughCapacity(newLength)) {
+        memcpy(m_string + oldLength, value.m_string, addLength + 1);
+        getStringData()->m_length = newLength;
+        return *this;
+    }
+    bdStringData* oldData = getStringData();
+    char* oldString = m_string;
+    allocateBuffer(newLength);
+    memcpy(m_string, oldString, oldLength);
+    memcpy(m_string + oldLength, value.m_string, addLength + 1);
+    removeReference(oldData);
+    return *this;
+}
+
+// ea: 0x0089D030
+bdString& bdString::operator+=(const char* value)
+{
+    bdString suffix(value);
+    return *this += suffix;
+}
+
+// ea: 0x0089D130
+bdString& bdString::operator+=(char value)
+{
+    char suffix[2] = {value, 0};
+    return *this += suffix;
+}
+
+// ea: 0x0089D150
+bdString bdString::getSection(unsigned int first, unsigned int last) const
+{
+    const unsigned int length = getLength();
+    const unsigned int end = last > length ? length : last;
+    if (first >= end)
+        return bdString();
+    bdString result;
+    bdStringData* emptyData = result.getStringData();
+    result.allocateBuffer(end - first);
+    result.removeReference(emptyData);
+    memcpy(result.m_string, m_string + first, end - first);
+    result.m_string[end - first] = 0;
+    return result;
 }
 
 namespace bdBytePacker {

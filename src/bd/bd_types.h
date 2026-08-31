@@ -32,6 +32,8 @@ struct bdStringData {
     unsigned int m_referenceCount;
     unsigned int m_length;
     unsigned int m_capacity;
+
+    bdStringData* getString();
 };
 static_assert(sizeof(bdStringData) == 12, "bdStringData size mismatch");
 
@@ -44,10 +46,33 @@ public:
     bdString(const bdString& value);
     ~bdString();
     bdString& operator=(const char* value);
+    bdString& operator=(const bdString& value);
+    bool operator==(const bdString& value) const;
+    bool operator==(const char* value) const;
+    bool operator!=(const bdString& value) const;
+    bool operator!=(const char* value) const;
+    operator const char*() const;
     unsigned int getLength() const;
     const char* getBuffer() const;
+    bdStringData* getStringData() const;
+    bdStringData* addReference(bdStringData* data);
+    bool enoughCapacity(unsigned int length) const;
+    char* allocateBuffer(unsigned int length);
+    void freeBuffer(bdStringData* data);
+    bool findFirst(char value, unsigned int* index) const;
+    void removeReference(bdStringData* data);
+    bdString operator+(const bdString& value) const;
+    bdString operator+(const char* value) const;
+    bdString& operator+=(const bdString& value);
+    bdString& operator+=(const char* value);
+    bdString& operator+=(char value);
+    bdString getSection(unsigned int first, unsigned int last) const;
+    void initialize();
 };
 static_assert(sizeof(bdString) == 4, "bdString size mismatch");
+
+int bdStrcmp(const char* left, const char* right);
+bdStringData* getEmptyStringData();
 
 extern bool g_assertFalse;
 
