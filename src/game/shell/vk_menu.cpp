@@ -104,14 +104,14 @@ void VKMenu::SetPanelFile(PanelFile* pf)
         FEMultiLineText* v15;
         if (v14 != nullptr)
         {
-            int v23 = TextPointer->GetColor().i;
+            color32 col = TextPointer->GetColor();
             float layer = TextPointer->GetScaleX();
             float x1 = TextPointer->GetY();
             float v20 = TextPointer->GetX();
             font_index v16 = TextPointer->GetFont();
             v15 = new (v14) FEMultiLineText(
-                v16, x1, 0.0f, 0, (panel_layer)(int)layer, 0.0f, 0, v23,
-                color32());
+                v16, x1, 0.0f, 0, (panel_layer)(int)layer, 0.0f, 0, 0,
+                col);
         }
         else
         {

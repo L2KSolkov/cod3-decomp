@@ -1656,15 +1656,13 @@ void ProfileMainMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v6 != nullptr)
     {
-        color32 col;
-        int v19 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v16 = TextPointer->GetX();
         font_index v7 = TextPointer->GetFont();
         v6 = new (v6) FEMultiLineText(v7, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v19,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v6;
     v6->SetNumLines(1);
@@ -2076,16 +2074,13 @@ void ProfileEditMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v5 != nullptr)
     {
-        color32 col;
-        int v17 = TextPointer->GetColor().i;
-        col.i = (unsigned int)v17;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v14 = TextPointer->GetX();
         font_index v6 = TextPointer->GetFont();
         v5 = new (v5) FEMultiLineText(v6, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v17,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v5;
     v5->SetNumLines(1);
