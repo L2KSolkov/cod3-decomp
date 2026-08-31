@@ -105,7 +105,7 @@ bdPlatformSocket-win32.obj	8	0	0	1	0	7	0
 bdPlatformSocket.obj	5	0	0	0	0	5	0
 bdPlatformTiming-xbox.obj	5	0	0	0	0	5	0
 bdPlatformTrulyRandom-xbox.obj	1	0	0	0	1	0	0
-bdQoSProbe-xbox.obj	54	43	2	8	0	1	0
+bdQoSProbe-xbox.obj	54	43	0	8	0	3	0
 bdQoSProbeListener.obj	4	2	0	0	0	2	0
 bdRandom.obj	7	7	0	0	0	0	0
 bdReceivedMessage.obj	4	0	0	0	0	4	0

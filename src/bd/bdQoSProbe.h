@@ -16,7 +16,8 @@ class bdQoSProbeListener;
 // ============================================================================
 // bdQoSRemoteAddr - remote endpoint for QoS (28 bytes).
 // ============================================================================
-struct bdQoSRemoteAddr {
+class bdQoSRemoteAddr {
+public:
     bdReference<bdCommonAddr> m_addr;   // +0x00
     XNKID m_id;                         // +0x04
     XNKEY m_key;                        // +0x0C
@@ -24,6 +25,7 @@ struct bdQoSRemoteAddr {
     bdQoSRemoteAddr();
     bdQoSRemoteAddr(const bdReference<bdCommonAddr>& addr, const XNKID& id,
                     const XNKEY& key);
+    ~bdQoSRemoteAddr();
     bdQoSRemoteAddr& operator=(const bdQoSRemoteAddr& other);
 };
 static_assert(sizeof(bdQoSRemoteAddr) == 0x1C, "bdQoSRemoteAddr size mismatch");
@@ -64,7 +66,7 @@ public:
     void enableListener();
     void shutdownListener();
     bool probe(bdQoSRemoteAddr& addr, bdQoSProbeListener* listener);
-    bool probe(bdFastArray<bdQoSRemoteAddr>& addrs, bdQoSProbeListener* listener);
+    bool probe(const bdFastArray<bdQoSRemoteAddr>& addrs, bdQoSProbeListener* listener);
     void pump();
     void cancelProbes();
 

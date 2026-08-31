@@ -373,7 +373,8 @@ static_assert(sizeof(bdBuffer) == 0x0C, "bdBuffer size mismatch");
 // bdFastArray<T> — raw capacity/size array (12 bytes) — verified against IDA
 // ============================================================================
 template <typename T>
-struct bdFastArray {
+class bdFastArray {
+public:
     T*           m_data;     // +0x00
     unsigned int m_capacity; // +0x04
     unsigned int m_size;     // +0x08

@@ -28,6 +28,12 @@ bdQoSRemoteAddr::bdQoSRemoteAddr(const bdReference<bdCommonAddr>& addr,
     memcpy(&m_key, &key, sizeof(XNKEY));
 }
 
+bdQoSRemoteAddr::~bdQoSRemoteAddr() {
+    if (m_addr.m_ptr != NULL && m_addr.m_ptr->releaseRef() == 0)
+        delete m_addr.m_ptr;
+    m_addr.m_ptr = NULL;
+}
+
 bdQoSRemoteAddr& bdQoSRemoteAddr::operator=(const bdQoSRemoteAddr& other)
 {
     bdReference<bdCommonAddr> newAddr;
@@ -220,7 +226,7 @@ bool bdQoSProbe::probe(bdQoSRemoteAddr& addr, bdQoSProbeListener* listener) {
 // ============================================================================
 // bdQoSProbe::probe (array) - ea: 0x8B68B0
 // ============================================================================
-bool bdQoSProbe::probe(bdFastArray<bdQoSRemoteAddr>& addrs,
+bool bdQoSProbe::probe(const bdFastArray<bdQoSRemoteAddr>& addrs,
                        bdQoSProbeListener* listener) {
     const XNADDR** apxna = new const XNADDR*[addrs.m_size];
     const XNKID** apxnkid = new const XNKID*[addrs.m_size];
