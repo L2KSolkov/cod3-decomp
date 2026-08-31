@@ -317,7 +317,7 @@ void MsaQuat::QuaternionToMatrix(math::Position3* pos, math::Mat43* mat)
 }
 
 // ea: 0x4F9110
-void MsaQuat::AngleToQuaternion(float fAngle, const float (*vAxis)[3])
+void MsaQuat::AngleToQuaternion(float fAngle, const float (&vAxis)[3])
 {
     if (fAngle == 0.0f)
     {
@@ -330,9 +330,9 @@ void MsaQuat::AngleToQuaternion(float fAngle, const float (*vAxis)[3])
     {
         float half = fAngle * 0.5f;
         float sinang = sinf(half);
-        x = ((*vAxis)[0] * (1.0f / fAngle)) * sinang;
-        y = ((*vAxis)[1] * (1.0f / fAngle)) * sinang;
-        float vz = ((*vAxis)[2] * (1.0f / fAngle)) * sinang;
+        x = (vAxis[0] * (1.0f / fAngle)) * sinang;
+        y = (vAxis[1] * (1.0f / fAngle)) * sinang;
+        float vz = (vAxis[2] * (1.0f / fAngle)) * sinang;
         z = vz;
         float cosang = cosf(half);
         float len = sqrtf(x * x + y * y + cosang * cosang + vz * vz);

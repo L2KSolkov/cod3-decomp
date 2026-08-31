@@ -11,7 +11,8 @@
 // ============================================================================
 // MsaQuat - quaternion (16 bytes, verified)
 // ============================================================================
-struct MsaQuat {
+class MsaQuat {
+public:
     float x;  // +0x00
     float y;  // +0x04
     float z;  // +0x08
@@ -26,7 +27,7 @@ struct MsaQuat {
                             math::Mat43* mat);    // ea: 0x4F5360
     float Magnitude() const;                            // ea: 0x4F5570
     void AngleToQuaternion(float fAngle,
-                           const float (*vAxis)[3]);    // ea: 0x4F9110
+                           const float (&vAxis)[3]);    // ea: 0x4F9110
     int MatrixToQuaternion(math::Mat43* mat,
                            math::Position3* pos); // ea: 0x4F94B0
     void ExpMapToQuaternion(const math::Vector4& v);  // ea: 0x4F9340
@@ -54,7 +55,8 @@ static_assert(sizeof(NoiseFloat) == 0x10, "NoiseFloat size mismatch");
 // ============================================================================
 // CameraShakeInstance - 0x40 (verified)
 // ============================================================================
-struct CameraShakeInstance {
+class CameraShakeInstance {
+public:
     int m_type;          // +0x00
     float m_magnitude;   // +0x04
     float m_magnitudeInc;// +0x08
@@ -78,7 +80,8 @@ static_assert(sizeof(CameraShakeInstance) == 0x40,
 // ============================================================================
 // CameraShakeType - 0x20 (verified)
 // ============================================================================
-struct CameraShakeType {
+class CameraShakeType {
+public:
     short m_type;              // +0x00
     short m_internalExternal;  // +0x02
     float m_time;              // +0x04
