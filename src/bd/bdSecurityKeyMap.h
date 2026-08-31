@@ -21,4 +21,7 @@ public:
     bool contains(const XNKID& xnkid);
 };
 
+static_assert(sizeof(bdSecurityKeyMap) == 0x1,
+              "bdSecurityKeyMap release layout mismatch");
+
 #endif // COD3_BD_BDSECURITYKEYMAP_H

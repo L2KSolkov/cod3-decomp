@@ -36,3 +36,6 @@ public:
     }
     bdInt m_refCount;
 };
+
+static_assert(sizeof(bdReferencable) == 0x8,
+              "bdReferencable release layout mismatch");
