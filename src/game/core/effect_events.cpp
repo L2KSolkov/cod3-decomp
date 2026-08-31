@@ -766,7 +766,7 @@ void EffectEventSys::PendingQuery::Clear()
 }
 
 // ea: 0x004E8120
-void EffectEventSys::CachedQuery::Where(int id, const int* val, bool weak)
+void EffectEventSys::CachedQuery::Where(int id, const int& val, bool weak)
 {
     mSpecifiedFields.Add(id);
     if (weak)
@@ -775,14 +775,14 @@ void EffectEventSys::CachedQuery::Where(int id, const int* val, bool weak)
         mWeakFields.Rmv(id);
     switch (id)
     {
-    case 0: mCONTEXT = *val; break;
-    case 1: mFOOTSTEP = *val; break;
-    case 2: mSTANCE = *val; break;
-    case 3: mMATERIAL = *val; break;
-    case 4: mMYMATERIAL = *val; break;
-    case 10: mACTION = *val; break;
-    case 11: mWEAPON_CLASS = *val; break;
-    case 12: mBARREL = *val; break;
+    case 0: mCONTEXT = val; break;
+    case 1: mFOOTSTEP = val; break;
+    case 2: mSTANCE = val; break;
+    case 3: mMATERIAL = val; break;
+    case 4: mMYMATERIAL = val; break;
+    case 10: mACTION = val; break;
+    case 11: mWEAPON_CLASS = val; break;
+    case 12: mBARREL = val; break;
     default:
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CachedQuery.h";
@@ -826,7 +826,7 @@ static void EffectEventWhereInt(EffectEventSys* self, int id, const T& val,
     int value = (int)val;
     if (id == 0)
         self->mCurrentQuery->mType = (EEffectContext)value;
-    self->mCurrentQuery->mCachedQuery.Where(id, &value, weak);
+    self->mCurrentQuery->mCachedQuery.Where(id, value, weak);
 }
 
 template <>
