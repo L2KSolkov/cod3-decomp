@@ -544,10 +544,20 @@ void bdSession::cleanup() {
 
     for (unsigned int i = 0; i < m_peers.m_size; i++) {
         bdPeerData& peer = m_peers.m_data[i];
-        if (peer.m_connection.m_ptr != NULL)
-            peer.m_connection.m_ptr->unregisterListener(this);
-        if (peer.m_connection.m_ptr != NULL)
-            peer.m_connection.m_ptr->disconnect();
+        bdConnection* connection = peer.m_connection.m_ptr;
+        if (connection != NULL) {
+            connection->addRef();
+            connection->unregisterListener(this);
+            connection->disconnect();
+            if (connection->releaseRef() == 0)
+                delete connection;
+        }
+    }
+    for (unsigned int i = 0; i < m_peers.m_size; i++) {
+        bdReference<bdConnection>& connection = m_peers.m_data[i].m_connection;
+        if (connection.m_ptr != NULL && connection.m_ptr->releaseRef() == 0)
+            delete connection.m_ptr;
+        connection.m_ptr = NULL;
     }
     bdMemory::deallocate(m_peers.m_data);
     m_peers.m_data = NULL;
@@ -559,10 +569,20 @@ void bdSession::cleanup() {
     m_localPeerIndex = 0;
 
     for (unsigned int i = 0; i < m_pendingConnections.m_size; i++) {
-        if (m_pendingConnections.m_data[i].m_ptr != NULL)
-            m_pendingConnections.m_data[i].m_ptr->unregisterListener(this);
-        if (m_pendingConnections.m_data[i].m_ptr != NULL)
-            m_pendingConnections.m_data[i].m_ptr->disconnect();
+        bdConnection* connection = m_pendingConnections.m_data[i].m_ptr;
+        if (connection != NULL) {
+            connection->addRef();
+            connection->unregisterListener(this);
+            connection->disconnect();
+            if (connection->releaseRef() == 0)
+                delete connection;
+        }
+    }
+    for (unsigned int i = 0; i < m_pendingConnections.m_size; i++) {
+        bdReference<bdConnection>& connection = m_pendingConnections.m_data[i];
+        if (connection.m_ptr != NULL && connection.m_ptr->releaseRef() == 0)
+            delete connection.m_ptr;
+        connection.m_ptr = NULL;
     }
     bdMemory::deallocate(m_pendingConnections.m_data);
     m_pendingConnections.m_data = NULL;
