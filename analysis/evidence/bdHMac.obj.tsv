@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x009ECFE0	??1bdHMac@@UAE@XZ	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:25-27	Body is the polymorphic base destructor for bdHMac.
+0x009ECFE0	??1bdHMac@@UAE@XZ	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9ECFE0	Release resets the base vtable and returns; the restored virtual base destructor is the same lifecycle operation.

@@ -1,0 +1,9 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x009EC450	??1bdHMacSHA1@@UAE@XZ	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:45-47	Body is the polymorphic bdHMacSHA1 destructor; compiler-emitted vtable/base cleanup supplies the release lifecycle.
+0x009EC450	??1bdHMacSHA1@@UAE@XZ	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC450	Release writes the bdHMacSHA1 vtable then calls bdHMac::~bdHMac; the restored inheritance gives the same destructor chain.
+0x009EC460	?process@bdHMacSHA1@@UAE_NQBEI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:50-54	Body intentionally returns true and ignores its input, matching the release implementation.
+0x009EC460	?process@bdHMacSHA1@@UAE_NQBEI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC460	Release returns 1 without reads or writes; source matches.
+0x009EC470	?getData@bdHMacSHA1@@UAE_NPAEAAI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:58-62	Body zeroes the requested output length and returns true.
+0x009EC470	?getData@bdHMacSHA1@@UAE_NPAEAAI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC470	Release memset length/output pointer and true return match source.
+0x009EC4A0	??0bdHMacSHA1@@QAE@QBEI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:38-42	Body is the polymorphic constructor; compiler-emitted vtable initialization supplies the release object setup.
+0x009EC4A0	??0bdHMacSHA1@@QAE@QBEI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC4A0	Release writes the bdHMacSHA1 vtable and returns this; restored polymorphic class construction matches.

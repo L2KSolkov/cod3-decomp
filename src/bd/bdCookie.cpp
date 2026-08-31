@@ -18,24 +18,36 @@ namespace bdMemory {
 void* allocate(unsigned int size);
 }
 
-struct bdHMacSHA1 {
+struct bdHMac {
+    virtual ~bdHMac();
+};
+
+// ea: 0x009ECFE0
+bdHMac::~bdHMac()
+{
+}
+
+struct bdHMacSHA1 : bdHMac {
     bdHMacSHA1(const unsigned char* key, unsigned int keyLen);
-    bool process(const unsigned char* data, unsigned int len);
-    bool getData(unsigned char* out, unsigned int* outLen);
-    ~bdHMacSHA1();
+    virtual bool process(const unsigned char* data, unsigned int len);
+    virtual bool getData(unsigned char* out, unsigned int* outLen);
+    virtual ~bdHMacSHA1();
 };
 
 // bdHMacSHA1 - ea: 0x9EC450-0x9EC4A0 (bdCrypto:bdHMacSHA1.obj)
+// ea: 0x009EC4A0
 bdHMacSHA1::bdHMacSHA1(const unsigned char* key, unsigned int keyLen)
 {
     (void)key;
     (void)keyLen;
 }
 
+// ea: 0x009EC450
 bdHMacSHA1::~bdHMacSHA1()
 {
 }
 
+// ea: 0x009EC460
 bool bdHMacSHA1::process(const unsigned char* data, unsigned int len)
 {
     (void)data;
@@ -43,6 +55,7 @@ bool bdHMacSHA1::process(const unsigned char* data, unsigned int len)
     return true;
 }
 
+// ea: 0x009EC470
 bool bdHMacSHA1::getData(unsigned char* out, unsigned int* outLen)
 {
     memset(out, 0, *outLen);

@@ -82,8 +82,8 @@ bdDispatchInterceptor.obj	4	2	0	0	0	2	0
 bdDispatcher.obj	17	13	1	0	0	3	0
 bdGameInfo.obj	19	17	1	0	0	1	0
 bdGameInfoFactory.obj	6	6	0	0	0	0	0
-bdHMac.obj	1	1	0	0	0	0	0
-bdHMacSHA1.obj	9	9	0	0	0	0	0
+bdHMac.obj	1	0	0	0	0	1	0
+bdHMacSHA1.obj	9	5	3	0	0	1	0
 bdHeartbeatAckChunk.obj	8	8	0	0	0	0	0
 bdHeartbeatChunk.obj	8	8	0	0	0	0	0
 bdInAddr.obj	5	0	2	1	0	2	0
