@@ -185,7 +185,7 @@ deflate.o	12	12	0	0	0	0	0
 dlmalloc.o	15	15	0	0	0	0	0
 g.o	1470	168	0	83	0	1219	0
 game.o	1158	458	10	578	0	112	0
-game2.o	1040	409	60	33	7	531	0
+game2.o	1040	409	57	33	7	534	0
 game_xbox.o	365	149	82	116	0	18	0
 inffast.o	1	1	0	0	0	0	0
 inflate.o	11	11	0	0	0	0	0
@@ -293,7 +293,7 @@ rigid_body.o	13	11	1	0	0	1	0
 scr.o	1540	488	0	22	0	1030	0
 shell.o	2214	734	24	655	0	801	0
 streamer.o	730	359	53	157	5	156	0
-sv.o	148	29	2	93	0	24	0
+sv.o	148	29	1	93	0	25	0
 tl_initlist.o	1	0	0	0	0	1	0
 tl_instbank.o	9	0	0	0	0	9	0
 tl_system.o	25	0	0	0	0	25	0
