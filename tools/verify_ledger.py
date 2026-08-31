@@ -619,6 +619,31 @@ def symbol_variants(name: str) -> set[str]:
         # destructor decoration for the same function body.
         "??1bdNetImpl@@MAE@XZ":
             "??1bdNetImpl@@UAE@XZ",
+        # bdBytePacker's release helpers use protected/static decorations and
+        # reference parameters; the current port emits public/cdecl pointer
+        # spellings for the same x86 contracts and byte-copy bodies.
+        "?appendBasicType@bdBytePacker@@KA_NPAXIIAAIPBEI@Z":
+            "?appendBasicType@bdBytePacker@@YA_NPAXIIPAIPBXI@Z",
+        "?appendBuffer@bdBytePacker@@SA_NPAXIIAAIPBEI@Z":
+            "?appendBuffer@bdBytePacker@@YA_NPAXIIPAIPBEI@Z",
+        "?removeBasicType@bdBytePacker@@KA_NPBXIIAAIPAEI@Z":
+            "?removeBasicType@bdBytePacker@@YA_NPBEIIPAIPAXI@Z",
+        "?removeBuffer@bdBytePacker@@SA_NPBXIIAAIPAEI@Z":
+            "?removeBuffer@bdBytePacker@@YA_NPBEIIPAIPAEI@Z",
+        "?skipBytes@bdBytePacker@@SA_NPBXIIAAII@Z":
+            "?skipBytes@bdBytePacker@@YA_NPBXIIPAII@Z",
+        "?rewindBytes@bdBytePacker@@SA_NPBXIIAAII@Z":
+            "?rewindBytes@bdBytePacker@@YA_NPBXIIPAII@Z",
+        "?appendEncodedUInt16@bdBytePacker@@SA_NPAXIIAAIG@Z":
+            "?appendEncodedUInt16@bdBytePacker@@YA_NPAXIIPAIG@Z",
+        "?removeEncodedUInt16@bdBytePacker@@SA_NPBEIIAAIAAG@Z":
+            "?removeEncodedUInt16@bdBytePacker@@YA_NPBEIIPAIPAG@Z",
+        "??$endianSwap@E@bdBitBuffer@@SAXABEAAE@Z":
+            "??$endianSwap@E@bdBitBuffer@@SAPAEABEAAE@Z",
+        "??$appendBasicType@E@bdBytePacker@@SA_NPAXIIAAIABE@Z":
+            "??$appendBasicType@E@bdBytePacker@@YA_NPAXIIPAIABE@Z",
+        "??$removeBasicType@E@bdBytePacker@@SA_NPBXIIAAIAAE@Z":
+            "??$removeBasicType@E@bdBytePacker@@YA_NPBXIIPAIAAE@Z",
         # Release marks nuge::tensor_transform_principle as a static member
         # (`SAX`), while the port keeps the same callable in the nuge namespace
         # (`YAX`). The referenced parameters and body are identical.

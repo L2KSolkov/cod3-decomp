@@ -621,6 +621,8 @@ public:
         return ok;
     }
     bool append(bdBitBuffer& other);
+    template <typename T>
+    static T* endianSwap(const T& src, T& dst);
 };
 static_assert(sizeof(bdBitBuffer) == 0x24, "bdBitBuffer size mismatch");
 static_assert(offsetof(bdBitBuffer, m_data) == 0x08, "bdBitBuffer::m_data offset mismatch");

@@ -498,18 +498,20 @@ bool removeBasicType(const void* src, unsigned int srcSize, unsigned int offset,
 template bool removeBasicType<unsigned char>(const void*, unsigned int, unsigned int,
                                              unsigned int*, unsigned char&);
 
-namespace bdBitBuffer {
+}
+
 // ea: 0x0089EE70
 template <typename T>
-T* endianSwap(const T& src, T& dst)
+T* bdBitBuffer::endianSwap(const T& src, T& dst)
 {
     dst = src;
     return (T*)&src;
 }
 
-template unsigned char* endianSwap<unsigned char>(const unsigned char&, unsigned char&);
-}
+template unsigned char* bdBitBuffer::endianSwap<unsigned char>(const unsigned char&, unsigned char&);
 
+namespace bdBytePacker {
+// ea: 0x0089EE70
 // 0x0089EEF0 / 0x0089F000 (bdCore)
 // ea: 0x0089EEF0
 bool appendEncodedUInt16(void* dest, unsigned int destSize,
