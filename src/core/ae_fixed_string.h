@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <type_traits>
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
@@ -37,13 +38,17 @@ bool Assert(const char* fmt, ...);
 template <int CAPACITY, typename CHAR = char>
 class ae_fixed_string {
 public:
+    using length_type = typename std::conditional<(sizeof(CHAR) == 2),
+                                                   unsigned short,
+                                                   unsigned char>::type;
     CHAR            mBuff[(CAPACITY - 1) / sizeof(CHAR)];  // +0x00
-    unsigned char   mLength;                               // +sizeof(mBuff)
+    length_type     mLength;                               // +sizeof(mBuff)
 
     // ea: 0x004AD300
     // ea: 0x004AE400
     // ea: 0x004AE630
     // ea: 0x004AE6F0
+    // ea: 0x007BED60 (ae_fixed_string<4096,unsigned short>)
     ae_fixed_string() : mLength(0) {
         mBuff[0] = 0;
     }
@@ -58,7 +63,7 @@ public:
     ae_fixed_string(const char* txt) {
         int length = 0;
         AeStringSupport::CStrToAeStr((char*)mBuff, &length, capacity(), txt);
-        mLength = (unsigned char)length;
+        mLength = (length_type)length;
     }
 
     const char* c_str() const { return (const char*)mBuff; }
@@ -129,7 +134,7 @@ public:
         int out = len;
         AeStringSupport::SubStr((char*)dst.mBuff, &out, (const char*)mBuff,
                                  begin, len, capacity());
-        dst.mLength = (unsigned char)out;
+        dst.mLength = (length_type)out;
         return dst;
     }
 
@@ -138,7 +143,7 @@ public:
         int len = (int)mLength;
         AeStringSupport::Concat((char*)mBuff, &len, capacity(),
                                  (const char*)rhs);
-        mLength = (unsigned char)len;
+        mLength = (length_type)len;
         return *this;
     }
 
@@ -147,7 +152,7 @@ public:
     ae_fixed_string& operator+=(const char* rhs) {
         int len = (int)mLength;
         AeStringSupport::Concat((char*)mBuff, &len, capacity(), rhs);
-        mLength = (unsigned char)len;
+        mLength = (length_type)len;
         return *this;
     }
 
@@ -181,7 +186,7 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
             if (l > (CAPACITY - 1) / sizeof(CHAR))
                 l = (CAPACITY - 1) / sizeof(CHAR);
         }
-        this->mLength = (unsigned char)l;
+        this->mLength = (typename ae_fixed_string<CAPACITY, CHAR>::length_type)l;
     }
 
     // ea: 0x004B0FB0
@@ -201,7 +206,7 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
         for (int i = 0; i < l; ++i)
             this->mBuff[i] = (CHAR)(unsigned char)tmp[i];
         this->mBuff[l] = 0;
-        this->mLength = (unsigned char)l;
+        this->mLength = (typename ae_fixed_string<CAPACITY, CHAR>::length_type)l;
     }
 };
 
