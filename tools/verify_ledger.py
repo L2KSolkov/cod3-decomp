@@ -193,7 +193,9 @@ def function_candidate(lines: list[str], start: int) -> tuple[str, int] | None:
         # Do not let a multi-entry EA inventory banner consume the first
         # implementation after the banner.  Each annotation must resolve
         # against the definition before the next annotation begins.
-        if index > start and re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", piece):
+        if (index > start
+                and re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", piece)
+                and not re.search(r"\balias-ea:\s*0x[0-9A-Fa-f]+\b", piece)):
             return None
         # A marker may trail the actual definition.  Keep code before the
         # marker, while treating a comment-only marker as a normal lead-in.
@@ -415,6 +417,7 @@ def scan_markers() -> list[Marker]:
                 continue
             if (number + 1 < len(lines)
                     and re.search(r"\bea:\s*0x[0-9A-Fa-f]+\b", lines[number + 1])
+                    and not re.search(r"\balias-ea:\s*0x[0-9A-Fa-f]+\b", lines[number + 1])
                     and "{" not in code_before_comment):
                 # A descriptive alias/range line immediately followed by a
                 # canonical EA annotation is metadata for the next marker,
