@@ -148,7 +148,7 @@ public:
     }
 
     // ea: 0x005EE7F0
-    // ea: 0x005EEB80
+    // alias-ea: 0x005EEB80
     ae_fixed_string& operator+=(const char* rhs) {
         int len = (int)mLength;
         AeStringSupport::Concat((char*)mBuff, &len, capacity(), rhs);
