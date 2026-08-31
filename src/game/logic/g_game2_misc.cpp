@@ -861,6 +861,19 @@ extern void nalGenericSkeleton_GetBoneHandle(void* skeleton,
                                             const tlFixedString* boneName);
 extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
     void* pose, const nalGenericBoneHandle* handle);  // ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z
+extern void TraceSphereFull(const proximity_data_t* proximity_data,
+                            trace_t* results, const math::Position3* start,
+                            const math::Position3* mins,
+                            const math::Position3* maxs,
+                            const math::Position3* end,
+                            const collision_context_t* context);
+extern void query_proximity_data(const math::Position3& lo,
+                                 const math::Position3& hi,
+                                 proximity_data_t& out);
+extern void filter_proximity_data(const math::Position3& lo,
+                                  const math::Position3& hi, int contents,
+                                  const proximity_data_t& in,
+                                  proximity_data_t& out);
 extern void Axis4_to_nalMatrix4x4(const float (*axis)[3],
                                   nalMatrix4x4* mat);  // ea: 0x4F6220
 tlFixedString boneName[8];               // ?boneName (game2.o @ 0xF052B8)
@@ -1696,7 +1709,53 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         if (doTerrainTrace)
         {
             collision_context_t context(ent->mHandle, 42008593);
-            g_Trace(&trace, start, mins, maxs, end, context);
+            if (ent->proximity_data != nullptr)
+            {
+                proximity_data_t filtered;
+                math::Position3 lo;
+                lo.v = _mm_min_ps(start.v, end.v);
+                math::Position3 hi;
+                hi.v = _mm_max_ps(start.v, end.v);
+                math::Position3 size;
+                size.v = _mm_sub_ps(
+                    maxs.v,
+                    _mm_mul_ps(_mm_add_ps(mins.v, maxs.v),
+                               _mm_set1_ps(0.5f)));
+                float radius = size.v.m128_f32[0];
+                if (size.v.m128_f32[2] < radius)
+                    radius = size.v.m128_f32[2];
+                size.v = _mm_set1_ps(radius);
+                math::Position3 boxMin;
+                boxMin.v = _mm_sub_ps(lo.v, size.v);
+                math::Position3 boxMax;
+                boxMax.v = _mm_add_ps(hi.v, size.v);
+                const proximity_data_t& proximity = *ent->proximity_data;
+                if ((_mm_movemask_ps(_mm_cmplt_ps(
+                         _mm_max_ps(
+                             _mm_sub_ps(proximity.lo.v, boxMin.v),
+                             _mm_sub_ps(boxMax.v, proximity.hi.v)),
+                         _mm_setzero_ps())) & 7) != 7)
+                {
+                    const math::Position3 queryMin(
+                        boxMin.v.m128_f32[0] - 50.0f,
+                        boxMin.v.m128_f32[1] - 50.0f,
+                        boxMin.v.m128_f32[2] - 50.0f);
+                    const math::Position3 queryMax(
+                        boxMax.v.m128_f32[0] + 50.0f,
+                        boxMax.v.m128_f32[1] + 50.0f,
+                        boxMax.v.m128_f32[2] + 50.0f);
+                    query_proximity_data(queryMin, queryMax,
+                                         *ent->proximity_data);
+                }
+                filter_proximity_data(lo, hi, context.contentmask,
+                                      proximity, filtered);
+                TraceSphereFull(&filtered, &trace, &start, &mins, &maxs,
+                                &end, &context);
+            }
+            else
+            {
+                g_Trace(&trace, start, mins, maxs, end, context);
+            }
             if (trace.normal.v.m128_f32[1] < 1.0f)
             {
                 targetOffset = trace.endpos.v.m128_f32[2]
