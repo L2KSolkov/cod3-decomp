@@ -1263,7 +1263,7 @@ public:
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
     bool isEmpty() const;
     bool deserialize(const unsigned char* data, unsigned int size);
-    bool addChunk(const bdReference<bdChunk>& chunk);
+    bool addChunk(bdReference<bdChunk> chunk);
     bool getNextChunk(bdReference<bdChunk>& chunk);
 };
 static_assert(sizeof(bdPacket) == 0x24, "bdPacket size mismatch");

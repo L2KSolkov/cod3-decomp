@@ -229,7 +229,7 @@ bool bdPacket::deserialize(const unsigned char* data, unsigned int size) {
 // bdPacket::addChunk â€” ea: 0x8AD2E0
 // ea: 0x008AD2E0
 // ============================================================================
-bool bdPacket::addChunk(const bdReference<bdChunk>& chunk) {
+bool bdPacket::addChunk(bdReference<bdChunk> chunk) {
     unsigned int v5 = chunk.m_ptr->getSerializedSize();
     if (chunk.m_ptr->isControl()) {
         if (v5 <= 0x7F)
