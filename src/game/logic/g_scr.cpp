@@ -25947,15 +25947,15 @@ namespace BrocSys {
 // hud_set_field<T,OFF> (binary 0x5EB090+) - writes g_hudelems[handle]
 // elem byte offset OFF
 // ea: 0x005EB090
-// ea: 0x005EB190
-// ea: 0x005EB290
-// ea: 0x005EB390
-// ea: 0x005EB490
-// ea: 0x005EB590
-// ea: 0x005EB690
-// ea: 0x005EB790
-// ea: 0x005EB890
-// ea: 0x005EB990
+// alias-ea: 0x005EB190
+// alias-ea: 0x005EB290
+// alias-ea: 0x005EB390
+// alias-ea: 0x005EB490
+// alias-ea: 0x005EB590
+// alias-ea: 0x005EB690
+// alias-ea: 0x005EB790
+// alias-ea: 0x005EB890
+// alias-ea: 0x005EB990
 template <typename T, int OFF>
 void hud_set_field(int handle, T val)
 {
@@ -25975,15 +25975,15 @@ void hud_set_field(int handle, T val)
 }
 
 // ea: 0x005EB110
-// ea: 0x005EB210
-// ea: 0x005EB310
-// ea: 0x005EB410
-// ea: 0x005EB510
-// ea: 0x005EB610
-// ea: 0x005EB710
-// ea: 0x005EB810
-// ea: 0x005EB910
-// ea: 0x005EBA10
+// alias-ea: 0x005EB210
+// alias-ea: 0x005EB310
+// alias-ea: 0x005EB410
+// alias-ea: 0x005EB510
+// alias-ea: 0x005EB610
+// alias-ea: 0x005EB710
+// alias-ea: 0x005EB810
+// alias-ea: 0x005EB910
+// alias-ea: 0x005EBA10
 template <typename T, int OFF>
 T hud_get_field(int handle)
 {
@@ -26010,17 +26010,17 @@ static Entity* BrocSysApiHandleToEntity(unsigned int handle)
 }
 
 // ea: 0x005F0190
-// ea: 0x005F0420
-// ea: 0x005F0660
-// ea: 0x005F08F0
-// ea: 0x005F0A80
-// ea: 0x005F0C10
-// ea: 0x005F12C0
-// ea: 0x005F1550
-// ea: 0x005F16E0
-// ea: 0x005F1870
-// ea: 0x005F0DA0
-// ea: 0x005F1030
+// alias-ea: 0x005F0420
+// alias-ea: 0x005F0660
+// alias-ea: 0x005F08F0
+// alias-ea: 0x005F0A80
+// alias-ea: 0x005F0C10
+// alias-ea: 0x005F12C0
+// alias-ea: 0x005F1550
+// alias-ea: 0x005F16E0
+// alias-ea: 0x005F1870
+// alias-ea: 0x005F0DA0
+// alias-ea: 0x005F1030
 template <typename T, int OFF, int IDX>
 void entity_set_field(unsigned int handle, T val)
 {
@@ -26044,17 +26044,17 @@ void entity_set_field(unsigned int handle, T val)
 }
 
 // ea: 0x005F02B0
-// ea: 0x005F0500
-// ea: 0x005F0780
-// ea: 0x005F09C0
-// ea: 0x005F0B50
-// ea: 0x005F0CE0
-// ea: 0x005F13E0
-// ea: 0x005F1620
-// ea: 0x005F17B0
-// ea: 0x005F1940
-// ea: 0x005F0EC0
-// ea: 0x005F1150
+// alias-ea: 0x005F0500
+// alias-ea: 0x005F0780
+// alias-ea: 0x005F09C0
+// alias-ea: 0x005F0B50
+// alias-ea: 0x005F0CE0
+// alias-ea: 0x005F13E0
+// alias-ea: 0x005F1620
+// alias-ea: 0x005F17B0
+// alias-ea: 0x005F1940
+// alias-ea: 0x005F0EC0
+// alias-ea: 0x005F1150
 template <typename T, int OFF, int IDX>
 T entity_get_field(unsigned int handle)
 {
