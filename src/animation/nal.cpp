@@ -1291,6 +1291,7 @@ nalMatrix3x3::nalMatrix3x3()
 {
 }
 
+// ea: 0x0086FC30
 nalMatrix3x3::nalMatrix3x3(const math::Dir3& x, const math::Dir3& y,
                            const math::Dir3& z)
 {

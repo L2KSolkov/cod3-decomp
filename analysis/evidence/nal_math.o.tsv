@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0086FC30	??0nalMatrix3x3@@QAE@ABVDir3@math@@00@Z	V3	PASS	nal-matrix3x3-manual-20260831	2026-08-31	c3_bin/codmp_xboxr.xbe.c:1627328-1627339;src/animation/nal.cpp:1295-1301	The source contains the complete three-row SIMD copy constructor; it is not empty, a cast-only body, or a placeholder.
+0x0086FC30	??0nalMatrix3x3@@QAE@ABVDir3@math@@00@Z	V4	PASS	nal-matrix3x3-manual-20260831	2026-08-31	c3_bin/codmp_xboxr.xbe.c:1627328-1627339;src/animation/nal.cpp:1295-1301	Manual comparison matches release parameter order, assignment of _x->v to this->x, _y->v to this->y, _z->v to this->z, and constructor return semantics.
