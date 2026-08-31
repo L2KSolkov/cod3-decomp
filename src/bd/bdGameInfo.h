@@ -82,7 +82,7 @@ static_assert(sizeof(bdGameInfoFactoryImpl) == 4, "bdGameInfoFactoryImpl size mi
 // ============================================================================
 class bdGameInfoFactory {
 public:
-    bdGameInfoFactoryImpl m_impl;  // +0x00
-
     bdGameInfoFactory();
 };
+static_assert(sizeof(bdGameInfoFactory) == 0x1,
+              "bdGameInfoFactory release layout mismatch");
