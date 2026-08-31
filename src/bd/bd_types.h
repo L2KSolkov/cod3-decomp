@@ -388,8 +388,7 @@ struct bdFastArray {
     // ea: 0x0089B1E0 (bdFastArray<unsigned char> capacity constructor)
     bdFastArray(unsigned int capacity)
         : m_data(NULL), m_capacity(capacity), m_size(0) {
-        if (capacity != 0)
-            m_data = (T*)bdMemory::allocate(sizeof(T) * capacity);
+        m_data = (T*)bdMemory::allocate(sizeof(T) * capacity);
     }
 
     // ea: 0x0089B020 (bdFastArray<unsigned char> rangeCheck)
@@ -419,14 +418,13 @@ struct bdFastArray {
     }
 
     // ea: 0x0089BC80 (bdFastArray<unsigned char> bulk pushBack)
-    unsigned int pushBack(const void* values, unsigned int count) {
+    void pushBack(const T* values, unsigned int count) {
         const unsigned int newSize = m_size + count;
         if (m_capacity < newSize)
             increaseCapacity(newSize - m_capacity);
         if (count != 0)
             memcpy(m_data + m_size, values, sizeof(T) * count);
         m_size = newSize;
-        return m_size;
     }
 
     // ea: 0x0089B4E0 (bdFastArray<unsigned char> ensureCapacity)
@@ -436,15 +434,14 @@ struct bdFastArray {
     }
 
     // ea: 0x0089BC40 (bdFastArray<unsigned char> setGrow)
-    T* setGrow(unsigned int index, T* value) {
+    void setGrow(unsigned int index, const T& value) {
         if (index >= m_size) {
             const unsigned int newSize = index + 1;
             if (m_capacity < newSize)
                 increaseCapacity(newSize - m_capacity);
             m_size = newSize;
         }
-        m_data[index] = *value;
-        return value;
+        m_data[index] = value;
     }
 
     // ea: 0x0089B270 (bdFastArray<unsigned char> clear)

@@ -510,6 +510,17 @@ T* bdBitBuffer::endianSwap(const T& src, T& dst)
 
 template unsigned char* bdBitBuffer::endianSwap<unsigned char>(const unsigned char&, unsigned char&);
 
+// The release bdBitBuffer object contains out-of-line unsigned-byte
+// bdFastArray helpers.  Keep these explicit instantiations so the port emits
+// the same callable symbols instead of relying on whichever callers happen to
+// inline them.
+template bdFastArray<unsigned char>::bdFastArray(unsigned int);
+template bool bdFastArray<unsigned char>::rangeCheck(unsigned int) const;
+template unsigned char& bdFastArray<unsigned char>::operator[](unsigned int);
+template void bdFastArray<unsigned char>::clear();
+template void bdFastArray<unsigned char>::ensureCapacity(unsigned int);
+template void bdFastArray<unsigned char>::setGrow(unsigned int, const unsigned char&);
+
 namespace bdBytePacker {
 // ea: 0x0089EE70
 // 0x0089EEF0 / 0x0089F000 (bdCore)

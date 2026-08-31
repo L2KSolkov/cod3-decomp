@@ -1100,6 +1100,8 @@ def symbol_variants(name: str) -> set[str]:
          "?typeToString@bdBitBuffer@@SAXW4bdBitBufferDataType@1@QADI@Z"),
         ("?readDataType@bdBitBuffer@@IAE_NW4bdBitBufferDataType@@@Z",
          "?readDataType@bdBitBuffer@@QAE_NW4bdBitBufferDataType@1@@Z"),
+        ("?readDataType@bdBitBuffer@@QAE?AW4bdBitBufferDataType@@XZ",
+         "?readDataType@bdBitBuffer@@QAE?AW4bdBitBufferDataType@1@XZ"),
     ):
         if name == release_name:
             values.add(current_name)
