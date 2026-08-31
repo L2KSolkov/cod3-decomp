@@ -495,6 +495,49 @@ static __m128 AnimIK_MultiplyRow(const float* lhs,
             _mm_mul_ps(_mm_shuffle_ps(row, row, 255), w)));
 }
 
+// The release inlines this normalized asin polynomial while deriving the
+// pain direction angle. Keep its branch constants and quadrant handling so
+// the port does not depend on a different CRT atan2 implementation.
+static float AnimIK_ReleaseAtan2(float y, float x)
+{
+    const float absY = fabsf(y);
+    const float absX = fabsf(x);
+    const float length = sqrtf((y * y) + (x * x));
+    if (length == 0.0f)
+        return 0.0f;
+
+    const float ratio = (absY <= absX ? absY : absX) / length;
+    float asinAbs;
+    if (ratio >= 0.5f)
+    {
+        const float root = sqrtf(fabsf((1.0f - ratio) * 0.5f));
+        const float root2 = root * root;
+        const float root3 = root2 * root;
+        const float root5 = root3 * root2;
+        const float root7 = root5 * root2;
+        asinAbs = 1.570796f - (root * 2.0f
+                                + root3 * 0.33333331f
+                                + root5 * 0.15000001f
+                                + root7 * 0.1079625f);
+    }
+    else
+    {
+        const float ratio2 = ratio * ratio;
+        const float ratio3 = ratio2 * ratio;
+        const float ratio5 = ratio3 * ratio2;
+        const float ratio7 = ratio5 * ratio2;
+        asinAbs = ratio + ratio3 * 0.1666667f
+            + ratio5 * 0.075000003f + ratio7 * 0.053981241f;
+    }
+
+    float angle = absY <= absX ? asinAbs : 1.5707964f - asinAbs;
+    if (x < 0.0f)
+        angle = 3.1415927f - angle;
+    if (y < 0.0f)
+        angle = -angle;
+    return angle;
+}
+
 static void AnimIK_Multiply(const nalMatrix4x4& lhs,
                             const nalMatrix4x4& rhs,
                             nalMatrix4x4* result)
@@ -1343,7 +1386,7 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
         const float localZ = localDir4.m128_f32[2];
 
         const float painYaw = AngleNormalize180(
-            atan2f(localY, localX) * 57.29577951308232f);
+            AnimIK_ReleaseAtan2(localY, localX) * 57.29577951308232f);
         const float yawScale =
             (90.0f - fabsf(painYaw)) * AnimIK_painFlinchAngle
             * -0.011111111111111112f;
