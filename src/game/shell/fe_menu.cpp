@@ -221,6 +221,13 @@ void* FEMenu::operator new(size_t size)
     return mem_heap_malloc(16, (unsigned int)size);
 }
 
+// FEMenu instances are placement-constructed in mem_heap_malloc blocks.
+// Their deleting destructors must return those blocks to the same heap.
+void FEMenu::operator delete(void* ptr)
+{
+    mem_heap_free(ptr);
+}
+
 // ea: 0x005AE8E0
 int FEMenu::GetReturnMenu()
 {

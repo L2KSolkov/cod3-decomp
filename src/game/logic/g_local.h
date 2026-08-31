@@ -273,6 +273,8 @@ struct vehicleAnimMap_t {
     int  numRoutes;          // +0x14
     int* exitMap;            // +0x18
 };
+static_assert(sizeof(vehicleAnimMap_t::vehicleAnimTag_t) == 0x4,
+              "vehicleAnimTag_t size mismatch");
 static_assert(sizeof(vehicleAnimMap_t) == 0x1C, "vehicleAnimMap_t size mismatch");
 
 struct vehicle_path_node_t {
@@ -4229,6 +4231,7 @@ struct cdl_brush_t {
     uint16_t first_side;  // +0x00
     uint16_t num_sides;   // +0x02
 };
+static_assert(sizeof(debug_aabb) == 0x30, "debug_aabb size mismatch");
 static_assert(sizeof(cdl_brush_t) == 0x4, "cdl_brush_t size mismatch");
 struct cdlPlane {
     union { __m128 data; int packed[4]; };
@@ -5046,6 +5049,7 @@ public:
     void FreeInteraction();                // ?FreeInteraction@InteractionController@@QAEXXZ (g.o 0x4B00A0)
     void Update(float deltaT);             // anim.o 0x557170
 };
+static_assert(sizeof(useList_t) == 0x8, "useList_t size mismatch");
 
 // ea: 0x00556E50
 inline int CheckActorInteraction(Entity& ent, const char* interactionName)
@@ -5440,6 +5444,8 @@ struct EntityDeathTask : Task {
     static TaskHandler* GetHandler();  // ?GetHandler@EntityDeathTask@@SAPAVTaskHandler@@XZ (game2.o 0x5171D0)
     static FourCC GetTaskId();  // ?GetTaskId@EntityDeathTask@@SA?AVFourCC@@XZ (game2.o 0x5171E0)
 };
+static_assert(sizeof(EntityDeathTask) == 0x1C,
+              "EntityDeathTask size mismatch");
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,
                             bool useAngles);
