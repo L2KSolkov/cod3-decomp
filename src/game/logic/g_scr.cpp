@@ -997,8 +997,12 @@ ae_fixed_string<64, unsigned char>::substr(
     ae_fixed_string<64, unsigned char>&, int, int) const;
 template ae_fixed_string<256, unsigned short>&
 ae_fixed_string<256, unsigned short>::operator+=(const char*);
-template ae_sized_array_base<ae_pair<void*, unsigned int>, 15>::
-ae_sized_array_base();
+// ea: 0x005EEBF0
+template <>
+ae_sized_array_base<ae_pair<void*, unsigned int>, 15>::
+ae_sized_array_base()
+{
+}
 template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(int);
 template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(Handle);
 template DbLinkedHandle<TaskSys, Task>::DbLinkedHandle(int);

@@ -211,7 +211,22 @@ def main() -> int:
 
 
 def is_constructor(name: str) -> bool:
-    parts = [part for part in name.split("::") if part]
+    parts: list[str] = []
+    start = 0
+    depth = 0
+    index = 0
+    while index < len(name):
+        if name[index] == '<':
+            depth += 1
+        elif name[index] == '>' and depth:
+            depth -= 1
+        elif (name[index:index + 2] == '::' and depth == 0):
+            parts.append(name[start:index])
+            start = index + 2
+            index += 1
+        index += 1
+    parts.append(name[start:])
+    parts = [part for part in parts if part]
     return len(parts) >= 2 and parts[-1] == parts[-2]
 
 

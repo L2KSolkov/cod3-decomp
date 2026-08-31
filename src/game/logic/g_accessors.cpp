@@ -3652,10 +3652,21 @@ VehicleNodeAllocator::VehicleNodeAllocator()
 // ============================================================================
 
 // ae_sized_array_base ctors (g.o 0x4AE5F0 / 0x4AE600 / 0x4AE6E0)
+// ea: 0x004B16A0
+template <>
+ae_sized_array_base<ae_fixed_string<512, unsigned short>, 64>::
+ae_sized_array_base()
+{
+    for (int i = 0; i < 64; ++i)
+    {
+        m_elements[i].mLength = 0;
+        m_elements[i].mBuff[0] = 0;
+    }
+}
+
 template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 256>;
 template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 64>;
 template class ae_sized_array_base<DbLinkedHandle<EntityHandleDb, Entity>, 1000>;
-template class ae_sized_array_base<ae_fixed_string<512, unsigned short>, 64>;
 
 // HandleDb GetObject / BindObjectToHandle (g.o 0x4B0DA0 / 0x4B0E20)
 Entity* EntityHandleDb::GetObject(int idx) const

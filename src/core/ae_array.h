@@ -28,9 +28,6 @@ class ae_sized_array_base {
 public:
     T m_elements[CAPACITY];  // +0x00
 
-    // ea: 0x005EAC70
-    // alias-ea: 0x005EEBF0
-    // alias-ea: 0x004B16A0
     ae_sized_array_base() {}
 };
 

@@ -13,6 +13,22 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// IDA defines the entity array backing store as a raw byte region with an
+// element pointer, rather than an inline typed array.  The release constructor
+// at 0x005EAC70 points m_elements at that storage before any array operation.
+template <>
+class ae_sized_array_base<Broc::entity, 512> {
+public:
+    Broc::entity* m_elements;  // +0x00
+    unsigned char m_elementdata[sizeof(Broc::entity) * 512];  // +0x04
+
+    // ea: 0x005EAC70
+    ae_sized_array_base()
+        : m_elements(reinterpret_cast<Broc::entity*>(m_elementdata))
+    {
+    }
+};
+
 // ============================================================================
 // TPakId â€” pak archive id enum
 // ============================================================================
