@@ -64,7 +64,6 @@ VKMenu* VKMenu_ctor(void* mem, FEMenuSystem* s)
 // ea: 0x005942F0
 VKMenu::~VKMenu()
 {
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x00597740
