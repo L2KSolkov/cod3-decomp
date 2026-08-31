@@ -696,9 +696,6 @@ static bool AnimIK_ApplyTwoBoneIK(
     const math::Dir3 basePos(baseModel.w[0], baseModel.w[1], baseModel.w[2]);
     const math::Dir3 jointPos(jointModel.w[0], jointModel.w[1], jointModel.w[2]);
     const math::Dir3 targetPos(target.w[0], target.w[1], target.w[2]);
-    const math::Dir3 midDir(jointPos.v.m128_f32[0] - basePos.v.m128_f32[0],
-                            jointPos.v.m128_f32[1] - basePos.v.m128_f32[1],
-                            jointPos.v.m128_f32[2] - basePos.v.m128_f32[2]);
     const math::Dir3 targetDelta(targetPos.v.m128_f32[0] - basePos.v.m128_f32[0],
                                  targetPos.v.m128_f32[1] - basePos.v.m128_f32[1],
                                  targetPos.v.m128_f32[2] - basePos.v.m128_f32[2]);
@@ -726,7 +723,33 @@ static bool AnimIK_ApplyTwoBoneIK(
         targetDelta.v.m128_f32[0] / targetLength,
         targetDelta.v.m128_f32[1] / targetLength,
         targetDelta.v.m128_f32[2] / targetLength);
-    const math::Dir3 midDirection = math::Unitize(midDir);
+    // The release does not use the raw joint-to-base direction here.  It
+    // blends the base matrix's X/Y axis sum with the parent Y axis crossed
+    // against the target direction, limiting the parent alignment to 0.4.
+    // Keep the arithmetic in model space exactly as the release solver does.
+    const math::Dir3 baseAxisSum(baseModel.x[0] + baseModel.y[0],
+                                 baseModel.x[1] + baseModel.y[1],
+                                 baseModel.x[2] + baseModel.y[2]);
+    const math::Dir3 parentTargetCross(
+        parentModel.y[1] * targetDir.v.m128_f32[2]
+            - parentModel.y[2] * targetDir.v.m128_f32[1],
+        parentModel.y[2] * targetDir.v.m128_f32[0]
+            - parentModel.y[0] * targetDir.v.m128_f32[2],
+        parentModel.y[0] * targetDir.v.m128_f32[1]
+            - parentModel.y[1] * targetDir.v.m128_f32[0]);
+    const float parentAlignment = min(
+        0.4f,
+        fabsf(parentModel.y[0] * targetDir.v.m128_f32[0]
+              + parentModel.y[1] * targetDir.v.m128_f32[1]
+              + parentModel.y[2] * targetDir.v.m128_f32[2]));
+    const float crossWeight = 1.0f - parentAlignment;
+    const math::Dir3 midDirection(
+        baseAxisSum.v.m128_f32[0] * parentAlignment
+            + parentTargetCross.v.m128_f32[0] * crossWeight,
+        baseAxisSum.v.m128_f32[1] * parentAlignment
+            + parentTargetCross.v.m128_f32[1] * crossWeight,
+        baseAxisSum.v.m128_f32[2] * parentAlignment
+            + parentTargetCross.v.m128_f32[2] * crossWeight);
     float sinUpper = 0.0f;
     float cosUpper = 1.0f;
     float sinLower = 0.0f;
