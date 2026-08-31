@@ -1852,6 +1852,7 @@ nflState nflGetState()
     }
     return result;
 }
+// ea: 0x0082C4D0
 const char* nflGetStateText(nflState state)
 {
     switch (state) { case NFL_STATE_INVALID: return "INVALID"; case NFL_STATE_IDLE: return "IDLE"; case NFL_STATE_BUSY: return "BUSY"; case NFL_STATE_ERROR: return "ERROR"; default: return "???"; }
