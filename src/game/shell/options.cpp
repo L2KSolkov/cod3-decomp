@@ -1194,14 +1194,13 @@ void InGameOptionsMenu::SetPanelFileMain(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v6 != nullptr)
     {
-        color32 col;
-        int v47 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v34 = TextPointer->GetX();
         font_index v5 = TextPointer->GetFont();
         v6 = new (v6) FEMultiLineText(v5, x1, 0.0f, 1,
-                                      (panel_layer)layer, 0.0f, 0, v47, col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     helpbar1 = v6;
     v6->SetNumLines(1);
@@ -1211,15 +1210,13 @@ void InGameOptionsMenu::SetPanelFileMain(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v9 != nullptr)
     {
-        color32 col2;
-        int v48 = TextPointer->GetColor().i;
+        color32 col2 = TextPointer->GetColor();
         float layera = TextPointer->GetScaleX();
         float x1a = TextPointer->GetY();
         float v35 = TextPointer->GetX();
         font_index v8 = TextPointer->GetFont();
         v9 = new (v9) FEMultiLineText(v8, x1a, 0.0f, 1,
-                                      (panel_layer)layera, 0.0f, 0, v48,
-                                      col2);
+                                      (panel_layer)layera, 0.0f, 0, 0, col2);
     }
     helpbar2 = v9;
     v9->SetNumLines(1);
@@ -1663,15 +1660,13 @@ void OptionsGameplayMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v5 != nullptr)
     {
-        color32 col;
-        int v26 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v23 = TextPointer->GetX();
         font_index v6 = TextPointer->GetFont();
         v5 = new (v5) FEMultiLineText(v6, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v26,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v5;
     v5->SetNumLines(1);
@@ -2153,15 +2148,13 @@ void OptionsControlsMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v5 != nullptr)
     {
-        color32 col;
-        int v22 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v19 = TextPointer->GetX();
         font_index v6 = TextPointer->GetFont();
         v5 = new (v5) FEMultiLineText(v6, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v22,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v5;
     v5->SetNumLines(1);
@@ -2487,15 +2480,13 @@ void OptionsSoundMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v5 != nullptr)
     {
-        color32 col;
-        int v37 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v34 = TextPointer->GetX();
         font_index v6 = TextPointer->GetFont();
         v5 = new (v5) FEMultiLineText(v6, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v37,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v5;
     v5->SetNumLines(1);
@@ -2808,15 +2799,13 @@ void OptionsStickMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v5 != nullptr)
     {
-        color32 col;
-        int v17 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v14 = TextPointer->GetX();
         font_index v6 = TextPointer->GetFont();
         v5 = new (v5) FEMultiLineText(v6, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v17,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v5;
     v5->SetNumLines(1);
@@ -3137,15 +3126,13 @@ void OptionsButtonMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v5 != nullptr)
     {
-        color32 col;
-        int v17 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v14 = TextPointer->GetX();
         font_index v6 = TextPointer->GetFont();
         v5 = new (v5) FEMultiLineText(v6, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v17,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v5;
     v5->SetNumLines(1);
@@ -3314,15 +3301,13 @@ void GammaScreenMenu::SetPanelFile(PanelFile* pf)
         (FEMultiLineText*)mem_heap_malloc(0xA8u);
     if (v5 != nullptr)
     {
-        color32 col;
-        int v21 = TextPointer->GetColor().i;
+        color32 col = TextPointer->GetColor();
         float layer = TextPointer->GetScaleX();
         float x1 = TextPointer->GetY();
         float v18 = TextPointer->GetX();
         font_index v6 = TextPointer->GetFont();
         v5 = new (v5) FEMultiLineText(v6, x1, 0.0f, 0,
-                                      (panel_layer)layer, 0.0f, 0, v21,
-                                      col);
+                                      (panel_layer)layer, 0.0f, 0, 0, col);
     }
     mHelpBar = v5;
     v5->SetNumLines(1);
