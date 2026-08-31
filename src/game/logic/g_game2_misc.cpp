@@ -1439,8 +1439,8 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
     {
         const float side = fabsf(steering);
         RotateBone(2, math::Dir3(side * 0.05f,
-                                 steering * 0.1f, steering * 0.2f));
-        RotateBone(4, math::Dir3(-side * 0.15f,
+                                 steering * 0.25f, steering * 0.2f));
+        RotateBone(4, math::Dir3(-side * 0.03f,
                                  steering * 0.1f, steering * 0.2f));
     }
 
