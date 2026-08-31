@@ -948,6 +948,9 @@ public:
     FEText(font_index f, const char* s, float x, float y, int z,
            panel_layer layer, float scale, int hJustify, int vJustify,
            color32 col);                    // shell.o 0x56BA80
+    static void operator delete(void* ptr);
+    static void operator delete(void* ptr, size_t size);
+    static void operator delete(void*, void*) {}
     void AddFont(int, font_index) {}         // helper retained outside vtable
     virtual ~FEText();                      // shell.o 0x56BCE0
     virtual FEText* Clone();                // shell.o 0x56BD50

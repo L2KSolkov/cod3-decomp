@@ -154,6 +154,16 @@ FEText::~FEText()
     }
 }
 
+void FEText::operator delete(void* ptr)
+{
+    mem_heap_free(ptr);
+}
+
+void FEText::operator delete(void* ptr, size_t)
+{
+    mem_heap_free(ptr);
+}
+
 // ea: 0x0056BD50
 FEText* FEText::Clone()
 {
