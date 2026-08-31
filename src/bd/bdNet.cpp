@@ -171,21 +171,20 @@ const bdNetStartParams& bdNetImpl::getParams() {
 // bdNetImpl::receiveAndDispatchAll - ea: 0x8AF250
 // ============================================================================
 void bdNetImpl::receiveAndDispatchAll() {
-    if (m_status != BD_NET_DONE) {
-        bdMessageProxy proxy(".\\bdNet-xbox.cpp",
-                             "void __thiscall bdNetImpl::receiveAndDispatchAll(void)",
-                             0x75u, "dw/err");
-        proxy.log("defaultFileName", "bdNetImpl::receiveAndDispatchAll: not ready to work");
-    }
-    if (m_connectionStore == NULL)
-        return;
+    do {
+        if (m_status != BD_NET_DONE) {
+            bdMessageProxy proxy(".\\bdNet-xbox.cpp",
+                                 "void __thiscall bdNetImpl::receiveAndDispatchAll(void)",
+                                 0x75u, "dw/err");
+            proxy.log("defaultFileName", "bdNetImpl::receiveAndDispatchAll: not ready to work");
+        }
+    } while (g_assertFalse);
     bdReference<bdConnection> connection;
     while (m_connectionStore->receiveFrom(connection)) {
         m_dispatcher.process(connection);
-        if (connection.m_ptr != NULL && connection.m_ptr->releaseRef() == 0)
-            delete connection.m_ptr;
-        connection.m_ptr = NULL;
     }
+    if (connection.m_ptr != NULL && connection.m_ptr->releaseRef() == 0)
+        delete connection.m_ptr;
 }
 
 // ============================================================================
