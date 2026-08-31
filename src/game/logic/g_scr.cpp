@@ -26081,62 +26081,62 @@ T entity_get_field(unsigned int handle)
 }
 
 // entity_set_actor_field - ea: 0x005F36D0
-// entity_set_actor_field - ea: 0x005F3920
-// entity_set_actor_field - ea: 0x005F3B70
-// entity_set_actor_field - ea: 0x005F3DC0
-// entity_set_actor_field - ea: 0x005F4010
-// entity_set_actor_field - ea: 0x005F4260
-// entity_set_actor_field - ea: 0x005F4550
-// entity_set_actor_field - ea: 0x005F4840
-// entity_set_actor_field - ea: 0x005F4B30
-// entity_set_actor_field - ea: 0x005F4D80
-// entity_set_actor_field - ea: 0x005F4FD0
-// entity_set_actor_field - ea: 0x005F5220
-// entity_set_actor_field - ea: 0x005F5460
-// entity_set_actor_field - ea: 0x005F56B0
-// entity_set_actor_field - ea: 0x005F58F0
-// entity_set_actor_field - ea: 0x005F5B30
-// entity_set_actor_field - ea: 0x005F5D70
-// entity_set_actor_field - ea: 0x005F5FC0
-// entity_set_actor_field - ea: 0x005F6210
-// entity_set_actor_field - ea: 0x005F6450
-// entity_set_actor_field - ea: 0x005F6690
-// entity_set_actor_field - ea: 0x005F6980
-// entity_set_actor_field - ea: 0x005F6BC0
-// entity_set_actor_field - ea: 0x005F6E00
-// entity_set_actor_field - ea: 0x005F7040
-// entity_set_actor_field - ea: 0x005F7290
-// entity_set_actor_field - ea: 0x005F74E0
-// entity_set_actor_field - ea: 0x005F7730
-// ea: 0x005F7970
-// ea: 0x005F7BB0
-// ea: 0x005F7DF0
-// ea: 0x005F8150
-// ea: 0x005F8390
-// ea: 0x005F85D0
-// ea: 0x005F8930
-// ea: 0x005F8B70
-// ea: 0x005F8DC0
-// ea: 0x005F9030
-// ea: 0x005F9390
-// ea: 0x005F95D0
-// ea: 0x005F9840
-// ea: 0x005F9A80
-// ea: 0x005F9CC0
-// ea: 0x005F9F00
-// ea: 0x005FA140
-// ea: 0x005FA380
-// ea: 0x005FA5C0
-// ea: 0x005FA800
-// ea: 0x005FAB60
-// ea: 0x005FAEC0
-// ea: 0x005FB220
-// ea: 0x005FB580
-// ea: 0x005FB7C0
-// ea: 0x005FBA00
-// ea: 0x005FBC70
-// ea: 0x005FBEB0
-// ea: 0x005FC0F0
+// alias-ea: 0x005F3920
+// alias-ea: 0x005F3B70
+// alias-ea: 0x005F3DC0
+// alias-ea: 0x005F4010
+// alias-ea: 0x005F4260
+// alias-ea: 0x005F4550
+// alias-ea: 0x005F4840
+// alias-ea: 0x005F4B30
+// alias-ea: 0x005F4D80
+// alias-ea: 0x005F4FD0
+// alias-ea: 0x005F5220
+// alias-ea: 0x005F5460
+// alias-ea: 0x005F56B0
+// alias-ea: 0x005F58F0
+// alias-ea: 0x005F5B30
+// alias-ea: 0x005F5D70
+// alias-ea: 0x005F5FC0
+// alias-ea: 0x005F6210
+// alias-ea: 0x005F6450
+// alias-ea: 0x005F6690
+// alias-ea: 0x005F6980
+// alias-ea: 0x005F6BC0
+// alias-ea: 0x005F6E00
+// alias-ea: 0x005F7040
+// alias-ea: 0x005F7290
+// alias-ea: 0x005F74E0
+// alias-ea: 0x005F7730
+// alias-ea: 0x005F7970
+// alias-ea: 0x005F7BB0
+// alias-ea: 0x005F7DF0
+// alias-ea: 0x005F8150
+// alias-ea: 0x005F8390
+// alias-ea: 0x005F85D0
+// alias-ea: 0x005F8930
+// alias-ea: 0x005F8B70
+// alias-ea: 0x005F8DC0
+// alias-ea: 0x005F9030
+// alias-ea: 0x005F9390
+// alias-ea: 0x005F95D0
+// alias-ea: 0x005F9840
+// alias-ea: 0x005F9A80
+// alias-ea: 0x005F9CC0
+// alias-ea: 0x005F9F00
+// alias-ea: 0x005FA140
+// alias-ea: 0x005FA380
+// alias-ea: 0x005FA5C0
+// alias-ea: 0x005FA800
+// alias-ea: 0x005FAB60
+// alias-ea: 0x005FAEC0
+// alias-ea: 0x005FB220
+// alias-ea: 0x005FB580
+// alias-ea: 0x005FB7C0
+// alias-ea: 0x005FBA00
+// alias-ea: 0x005FBC70
+// alias-ea: 0x005FBEB0
+// alias-ea: 0x005FC0F0
 template <typename T, int OFF, int IDX>
 void entity_set_actor_field(unsigned int handle, T val)
 {
@@ -26172,62 +26172,62 @@ void entity_set_actor_field(unsigned int handle, T val)
 }
 
 // entity_get_actor_field - ea: 0x005F37F0
-// entity_get_actor_field - ea: 0x005F3A40
-// entity_get_actor_field - ea: 0x005F3C90
-// entity_get_actor_field - ea: 0x005F3EE0
-// entity_get_actor_field - ea: 0x005F4130
-// entity_get_actor_field - ea: 0x005F4390
-// entity_get_actor_field - ea: 0x005F4680
-// entity_get_actor_field - ea: 0x005F4970
-// entity_get_actor_field - ea: 0x005F4C50
-// entity_get_actor_field - ea: 0x005F4EA0
-// entity_get_actor_field - ea: 0x005F50F0
-// entity_get_actor_field - ea: 0x005F5340
-// entity_get_actor_field - ea: 0x005F5580
-// entity_get_actor_field - ea: 0x005F57D0
-// entity_get_actor_field - ea: 0x005F5A10
-// entity_get_actor_field - ea: 0x005F5C50
-// entity_get_actor_field - ea: 0x005F5E90
-// entity_get_actor_field - ea: 0x005F60E0
-// entity_get_actor_field - ea: 0x005F6330
-// entity_get_actor_field - ea: 0x005F6570
-// entity_get_actor_field - ea: 0x005F67C0
-// entity_get_actor_field - ea: 0x005F6AA0
-// entity_get_actor_field - ea: 0x005F6CE0
-// entity_get_actor_field - ea: 0x005F6F20
-// entity_get_actor_field - ea: 0x005F7160
-// entity_get_actor_field - ea: 0x005F73B0
-// entity_get_actor_field - ea: 0x005F7600
-// entity_get_actor_field - ea: 0x005F7850
-// ea: 0x005F7A90
-// ea: 0x005F7CD0
-// ea: 0x005F7F60
-// ea: 0x005F8270
-// ea: 0x005F84B0
-// ea: 0x005F8740
-// ea: 0x005F8A50
-// ea: 0x005F8C90
-// ea: 0x005F8EE0
-// ea: 0x005F91A0
-// ea: 0x005F94B0
-// ea: 0x005F96F0
-// ea: 0x005F9960
-// ea: 0x005F9BA0
-// ea: 0x005F9DE0
-// ea: 0x005FA020
-// ea: 0x005FA260
-// ea: 0x005FA4A0
-// ea: 0x005FA6E0
-// ea: 0x005FA970
-// ea: 0x005FACD0
-// ea: 0x005FB030
-// ea: 0x005FB390
-// ea: 0x005FB6A0
-// ea: 0x005FB8E0
-// ea: 0x005FBB20
-// ea: 0x005FBD90
-// ea: 0x005FBFD0
-// ea: 0x005FC210
+// alias-ea: 0x005F3A40
+// alias-ea: 0x005F3C90
+// alias-ea: 0x005F3EE0
+// alias-ea: 0x005F4130
+// alias-ea: 0x005F4390
+// alias-ea: 0x005F4680
+// alias-ea: 0x005F4970
+// alias-ea: 0x005F4C50
+// alias-ea: 0x005F4EA0
+// alias-ea: 0x005F50F0
+// alias-ea: 0x005F5340
+// alias-ea: 0x005F5580
+// alias-ea: 0x005F57D0
+// alias-ea: 0x005F5A10
+// alias-ea: 0x005F5C50
+// alias-ea: 0x005F5E90
+// alias-ea: 0x005F60E0
+// alias-ea: 0x005F6330
+// alias-ea: 0x005F6570
+// alias-ea: 0x005F67C0
+// alias-ea: 0x005F6AA0
+// alias-ea: 0x005F6CE0
+// alias-ea: 0x005F6F20
+// alias-ea: 0x005F7160
+// alias-ea: 0x005F73B0
+// alias-ea: 0x005F7600
+// alias-ea: 0x005F7850
+// alias-ea: 0x005F7A90
+// alias-ea: 0x005F7CD0
+// alias-ea: 0x005F7F60
+// alias-ea: 0x005F8270
+// alias-ea: 0x005F84B0
+// alias-ea: 0x005F8740
+// alias-ea: 0x005F8A50
+// alias-ea: 0x005F8C90
+// alias-ea: 0x005F8EE0
+// alias-ea: 0x005F91A0
+// alias-ea: 0x005F94B0
+// alias-ea: 0x005F96F0
+// alias-ea: 0x005F9960
+// alias-ea: 0x005F9BA0
+// alias-ea: 0x005F9DE0
+// alias-ea: 0x005FA020
+// alias-ea: 0x005FA260
+// alias-ea: 0x005FA4A0
+// alias-ea: 0x005FA6E0
+// alias-ea: 0x005FA970
+// alias-ea: 0x005FACD0
+// alias-ea: 0x005FB030
+// alias-ea: 0x005FB390
+// alias-ea: 0x005FB6A0
+// alias-ea: 0x005FB8E0
+// alias-ea: 0x005FBB20
+// alias-ea: 0x005FBD90
+// alias-ea: 0x005FBFD0
+// alias-ea: 0x005FC210
 template <typename T, int OFF, int IDX>
 T entity_get_actor_field(unsigned int handle)
 {
