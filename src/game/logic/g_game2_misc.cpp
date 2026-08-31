@@ -1813,6 +1813,10 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
                 rigidOffsetYaw *= 0.3f;
                 rigidBonePitch *= 0.3f;
             }
+            RotateBone(2, math::Dir3(rigidOffsetYaw, 0.0f,
+                                     rigidBonePitch));
+            RotateBone(4, math::Dir3(-rigidOffsetYaw, 0.0f,
+                                     -rigidBonePitch));
         }
         else
         {
