@@ -562,7 +562,11 @@ public:
     // get_joint_limit_active - ea: 0x006F1060 (inline COMDAT)
     const unsigned int get_joint_limit_active(unsigned int f) const
     {
-        return (m_flags >> (6 + f)) & 1;
+        if (f >= 2
+            && _tlAssert("c:/cod/code/tl/physics/include/rbc_defs\\rbc_def_ragdoll.h", 48,
+                         "f >= 0 && f < MAX_JOINT_LIMITS", defaultFileName))
+            __debugbreak();
+        return m_flags & (1u << f);
     }
 };
 static_assert(sizeof(rigid_body_constraint_ragdoll) == 0x150, "rigid_body_constraint_ragdoll size mismatch");
