@@ -72,7 +72,7 @@ bdConnectionStatistics.obj	16	16	0	0	0	0	0
 bdConnectionStore.obj	87	75	4	8	0	0	0
 bdCookie.obj	12	1	1	0	0	10	0
 bdCookieAckChunk.obj	8	1	2	0	0	5	0
-bdCookieEchoChunk.obj	14	5	3	0	0	6	0
+bdCookieEchoChunk.obj	14	5	2	0	0	7	0
 bdCore.obj	12	12	0	0	0	0	0
 bdDataChunk.obj	20	8	3	7	0	2	0
 bdDiscoveryClient.obj	35	27	1	7	0	0	0
@@ -88,7 +88,7 @@ bdHeartbeatAckChunk.obj	8	4	2	0	0	2	0
 bdHeartbeatChunk.obj	8	4	2	0	0	2	0
 bdInAddr.obj	5	0	2	1	0	2	0
 bdInetAddr.obj	25	0	0	1	0	24	0
-bdInitAckChunk.obj	15	13	0	0	0	2	0
+bdInitAckChunk.obj	15	5	1	0	0	9	0
 bdInitChunk.obj	11	2	1	0	0	8	0
 bdLog.obj	15	15	0	0	0	0	0
 bdLogChannel.obj	48	48	0	0	0	0	0

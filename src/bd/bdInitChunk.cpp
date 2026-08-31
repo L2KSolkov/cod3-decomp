@@ -145,6 +145,7 @@ bool bdInitChunk::deserialize(const unsigned char* data, unsigned int size,
 
 // ============================================================================
 // bdInitAckChunk::getInitTag â€” ea: 0x8AB040
+// ea: 0x008AB040
 // ============================================================================
 unsigned int bdInitAckChunk::getInitTag() const {
     return this->m_initTag;
@@ -152,6 +153,7 @@ unsigned int bdInitAckChunk::getInitTag() const {
 
 // ============================================================================
 // bdInitAckChunk::getWindowCredit â€” ea: 0x8AB050
+// ea: 0x008AB050
 // ============================================================================
 int bdInitAckChunk::getWindowCredit() const {
     return this->m_windowCredit;
@@ -159,6 +161,7 @@ int bdInitAckChunk::getWindowCredit() const {
 
 // ============================================================================
 // bdInitAckChunk::getPeerTag â€” ea: 0x8AB060
+// ea: 0x008AB060
 // ============================================================================
 unsigned int bdInitAckChunk::getPeerTag() const {
     return this->m_peerTag;
@@ -197,6 +200,7 @@ bdInitAckChunk::bdInitAckChunk(unsigned int initTag, bdReference<bdCookie> cooki
 
 // ============================================================================
 // bdInitAckChunk::~bdInitAckChunk â€” ea: 0x8AB190
+// ea: 0x008AB190
 // ============================================================================
 bdInitAckChunk::~bdInitAckChunk() {
     if (this->m_rawCookie.m_ptr != NULL && this->m_rawCookie.m_ptr->releaseRef() == 0) {
@@ -211,8 +215,9 @@ bdInitAckChunk::~bdInitAckChunk() {
 
 // ============================================================================
 // bdInitAckChunk::getCookie â€” ea: 0x8AB230
+// ea: 0x008AB230
 // ============================================================================
-bool bdInitAckChunk::getCookie(bdReference<bdByteBuffer>& cookie) const {
+bool bdInitAckChunk::getCookie(bdReference<bdByteBuffer>& cookie) {
     if (this->m_rawCookie.m_ptr != NULL && &this->m_rawCookie != &cookie) {
         if (cookie.m_ptr != NULL && cookie.m_ptr->releaseRef() == 0)
             delete cookie.m_ptr;
@@ -225,6 +230,7 @@ bool bdInitAckChunk::getCookie(bdReference<bdByteBuffer>& cookie) const {
 
 // ============================================================================
 // bdInitAckChunk::getSerializedSize â€” ea: 0x8AB280
+// ea: 0x008AB280
 // ============================================================================
 unsigned int bdInitAckChunk::getSerializedSize() {
     return this->m_cookie.m_ptr->getSerializedSize() + 8;
@@ -232,6 +238,7 @@ unsigned int bdInitAckChunk::getSerializedSize() {
 
 // ============================================================================
 // bdInitAckChunk::serialize â€” ea: 0x8AB2B0
+// ea: 0x008AB2B0
 // ============================================================================
 unsigned int bdInitAckChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned char* result = NULL;
@@ -264,6 +271,7 @@ unsigned int bdInitAckChunk::serialize(unsigned char* data, unsigned int size) {
 
 // ============================================================================
 // bdInitAckChunk::deserialize â€” ea: 0x8AB3A0
+// ea: 0x008AB3A0
 // ============================================================================
 bool bdInitAckChunk::deserialize(const unsigned char* data, unsigned int size,
                                  unsigned int* offset) {

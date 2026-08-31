@@ -288,7 +288,7 @@ bdCookieEchoChunk::~bdCookieEchoChunk() {
 // bdCookieEchoChunk::getCookie â€” ea: 0x8ABB80
 // ============================================================================
 // ea: 0x008ABB80
-bool bdCookieEchoChunk::getCookie(bdReference<bdCookie>& cookie) const {
+bool bdCookieEchoChunk::getCookie(bdReference<bdCookie>& cookie) {
     if (this->m_cookie.m_ptr != NULL && &this->m_cookie != &cookie) {
         if (cookie.m_ptr != NULL && cookie.m_ptr->releaseRef() == 0)
             delete cookie.m_ptr;

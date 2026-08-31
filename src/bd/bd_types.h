@@ -1138,7 +1138,7 @@ public:
     virtual ~bdCookieEchoChunk();
     bdCookieEchoFlags getFlags() const;
     virtual unsigned int getSerializedSize();
-    bool getCookie(bdReference<bdCookie>& cookie) const;
+    bool getCookie(bdReference<bdCookie>& cookie);
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
     virtual bool deserialize(const unsigned char* data, unsigned int size,
                              unsigned int* offset);
@@ -1216,7 +1216,7 @@ public:
     unsigned int getInitTag() const;
     int getWindowCredit() const;
     unsigned int getPeerTag() const;
-    bool getCookie(bdReference<bdByteBuffer>& cookie) const;
+    bool getCookie(bdReference<bdByteBuffer>& cookie);
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
     virtual bool deserialize(const unsigned char* data, unsigned int size,
