@@ -10,11 +10,221 @@
 // ============================================================================
 #include "cdFlagShader.h"
 
+#include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/ngl_dx_shader.h"
+#include "ngl/ngl_dx_state.h"
+#include "render/ShaderCommon.h"
+
 #include <intrin.h>
+#include <string.h>
 
 // Shader global pointer definitions
 cdFlagShader* gCDFlagShader = nullptr;  // ?gCDFlagShader@@3PAVcdFlagShader@@A
 extern unsigned int gShaderSwitchingFlags;
+extern unsigned int dword_40300;
+extern unsigned int dword_40304;
+extern unsigned int dword_4033C;
+extern unsigned int dword_40340;
+extern unsigned int dword_BC2CFC;
+extern unsigned int dword_BC2D00;
+extern unsigned int dword_BC2CF8;
+extern unsigned int dword_BC2D04;
+extern unsigned int D3D__DirtyFlags;
+extern unsigned int D3D__TextureState[4][32];
+extern unsigned int dword_BC2A14[4];
+extern unsigned int gpuHashVertexShader;
+extern unsigned int gpuHashPixelShader;
+extern _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;
+extern unsigned int cdFlagRandomSeedID;
+
+static __m128 FlagZeroW(__m128 value)
+{
+    const __m128 zero = _mm_setzero_ps();
+    return _mm_shuffle_ps(value, _mm_shuffle_ps(zero, value, 160), 52);
+}
+
+static void FlagStoreVector(unsigned char* dst, unsigned int offset, __m128 value)
+{
+    *reinterpret_cast<__m128*>(dst + offset) = value;
+}
+
+// ea: 0x007CA470
+void cdFlagShaderNode::Render()
+{
+    const unsigned int cullMode = this->mMaterial->mCullMode != 1 ? 0u : 0x900u;
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_CULLMODE, cullMode) == 0)
+        D3DDevice_SetRenderState_CullMode(cullMode);
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHABLENDENABLE, 0) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40304, 0);
+        dword_BC2CFC = 0;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHATESTENABLE, 1) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40300, 1);
+        dword_BC2D00 = 1;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAFUNC, 0x204u) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_4033C, 0x204u);
+        dword_BC2CF8 = 0x204u;
+    }
+    if (D3DDevice_SetRenderState_ParameterCheck(D3DRS_ALPHAREF, 0x80u) == 0) {
+        D3DDevice_SetRenderState_Simple(dword_40340, 0x80u);
+        dword_BC2D04 = 0x80u;
+    }
+
+    nglDxSetTexture(0, this->mMaterial->mTexture, 1u, 3u);
+    if (nglDxTexCache.Prev[0].WrapU != 1) {
+        nglDxTexCache.Prev[0].WrapU = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSU, 1u) == 0) {
+            D3D__DirtyFlags |= 1u;
+            D3D__TextureState[0][D3DTSS_ADDRESSU] = 1;
+        }
+    }
+    if (nglDxTexCache.Prev[0].WrapV != 1) {
+        nglDxTexCache.Prev[0].WrapV = 1;
+        if (D3DDevice_SetTextureState_ParameterCheck(0, D3DTSS_ADDRESSV, 1u) == 0) {
+            D3D__DirtyFlags |= 1u;
+            dword_BC2A14[0] = 1;
+        }
+    }
+
+    math::Mat43 flagToLocal;
+    CalculateFlagMatrix(flagToLocal, this->Section, 5.0f);
+
+    float time = ShaderCommon::gTime;
+    const unsigned int seedId = cdFlagRandomSeedID;
+    if ((this->MeshNode->ShaderParams.Array[seedId >> 5] &
+         (1u << (seedId & 0x1Fu))) != 0) {
+        const unsigned int seed = this->MeshNode->ShaderParams.Array[seedId + 2] & 0xFFFu;
+        time += static_cast<float>(seed) * 0.00024420026f * 100.0f;
+    }
+
+    const __m128 f0 = flagToLocal.x.v;
+    const __m128 f1 = flagToLocal.y.v;
+    const __m128 f2 = flagToLocal.z.v;
+    const __m128 f3 = flagToLocal.w.v;
+    const __m128 v6 = _mm_shuffle_ps(f1, f2, 68);
+    const __m128 v7 = _mm_shuffle_ps(v6, f0, 136);
+    const __m128 v8 = _mm_shuffle_ps(v7, v7, 170);
+    const __m128 v9 = _mm_shuffle_ps(v6, f0, 221);
+    const __m128 v10 = _mm_shuffle_ps(_mm_shuffle_ps(f1, f2, 238), f0, 168);
+    const __m128 v11 = _mm_setr_ps(v10.m128_f32[1], v10.m128_f32[2],
+                                   v10.m128_f32[0], 0.0f);
+    const __m128 v12 = FlagZeroW(v10);
+    const __m128 v13 = FlagZeroW(v9);
+    const __m128 v14 = _mm_mul_ps(v13, v11);
+    const __m128 v15 = _mm_sub_ps(FlagZeroW(v14), _mm_mul_ps(v11, v12));
+    const __m128 v16 = FlagZeroW(v7);
+    const __m128 v17 = _mm_mul_ps(v11, v16);
+    const __m128 v18 = _mm_mul_ps(v16, v11);
+    const __m128 v19 = _mm_setr_ps(v7.m128_f32[1], v8.m128_f32[0],
+                                   v7.m128_f32[0], 0.0f);
+    const __m128 v61 = _mm_mul_ps(v12, v19);
+    const __m128 v20 = _mm_mul_ps(_mm_setr_ps(v8.m128_f32[0],
+                                               v7.m128_f32[0],
+                                               v7.m128_f32[1], 0.0f), v15);
+    const float v20Sum = v20.m128_f32[0] + v20.m128_f32[1] + v20.m128_f32[2] + v20.m128_f32[3];
+    const __m128 inv = _mm_set1_ps(1.0f / v20Sum);
+    const __m128 v23 = _mm_mul_ps(v15, inv);
+    const __m128 v55 = _mm_mul_ps(_mm_sub_ps(FlagZeroW(v61), v17), inv);
+    const __m128 v24 = _mm_mul_ps(_mm_sub_ps(FlagZeroW(v18), _mm_mul_ps(v19, v13)), inv);
+    const __m128 v25 = _mm_xor_ps(_mm_set1_ps(-0.0f),
+        _mm_add_ps(_mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(f3, f3, 0), v23),
+                              _mm_mul_ps(_mm_shuffle_ps(f3, f3, 85), v55)),
+                   _mm_mul_ps(_mm_shuffle_ps(f3, f3, 170), v24)));
+    const __m128 v26 = _mm_shuffle_ps(v24, v25, 68);
+    const __m128 v27 = _mm_shuffle_ps(v23, v55, 68);
+    const __m128 v64 = _mm_shuffle_ps(v27, v26, 136);
+    const __m128 v65 = _mm_shuffle_ps(v27, v26, 221);
+    const __m128 v66 = _mm_shuffle_ps(_mm_shuffle_ps(v23, v55, 238),
+                                      _mm_shuffle_ps(v24, v25, 238), 136);
+
+    const math::Mat44& localToScreen = this->MeshNode->LocalToScreen;
+    const __m128 x = localToScreen.x.v;
+    const __m128 y = localToScreen.y.v;
+    const __m128 z = localToScreen.z.v;
+    const __m128 w = localToScreen.w.v;
+    const __m128 v31 = _mm_shuffle_ps(x, y, 68);
+    const __m128 v32 = _mm_shuffle_ps(z, w, 68);
+    const __m128 v33 = _mm_shuffle_ps(z, w, 238);
+    const __m128 v34 = v31;
+    const __m128 v64b = _mm_shuffle_ps(v31, v32, 221);
+    const __m128 v35 = FlagZeroW(f0);
+    const __m128 v36 = _mm_shuffle_ps(v34, v32, 136);
+    const __m128 v37 = _mm_shuffle_ps(x, y, 238);
+    const __m128 v38 = _mm_shuffle_ps(v37, v33, 221);
+    const __m128 v39 = _mm_shuffle_ps(v37, v33, 136);
+    const __m128 v40 = v38;
+    const __m128 v41 = FlagZeroW(f1);
+    const __m128 v42 = FlagZeroW(f2);
+    const __m128 v43 = _mm_shuffle_ps(f3, _mm_shuffle_ps(_mm_set1_ps(1.0f), f3, 160), 52);
+    const auto combine = [&](const __m128& q) {
+        return _mm_add_ps(_mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(q, q, 0), v36),
+                                     _mm_mul_ps(_mm_shuffle_ps(q, q, 85), v64b)),
+                          _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(q, q, 170), v39),
+                                     _mm_mul_ps(_mm_shuffle_ps(q, q, 255), v40)));
+    };
+    const __m128 v44 = combine(v35);
+    const __m128 v45 = combine(v41);
+    const __m128 v46 = combine(v42);
+    const __m128 v47 = _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v43, v43, 170), v39),
+                                  _mm_mul_ps(_mm_shuffle_ps(v43, v43, 255), v40));
+    const __m128 v48 = _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v43, v43, 0), v36),
+                                  _mm_mul_ps(_mm_shuffle_ps(v43, v43, 85), v64b));
+    const __m128 v49 = _mm_shuffle_ps(v44, v45, 68);
+    const __m128 v50 = _mm_shuffle_ps(v44, v45, 238);
+    const __m128 v51 = _mm_add_ps(v48, v47);
+    const __m128 v52 = _mm_shuffle_ps(v46, v51, 68);
+    const __m128 v63 = _mm_shuffle_ps(v49, v52, 136);
+    const __m128 v64c = _mm_shuffle_ps(v49, v52, 221);
+    const __m128 v65b = _mm_shuffle_ps(v50, _mm_shuffle_ps(v46, v51, 238), 136);
+    const __m128 v66b = _mm_shuffle_ps(v50, _mm_shuffle_ps(v46, v51, 238), 221);
+
+    alignas(16) unsigned char params[0x4D0] = {};
+    FlagStoreVector(params, 0, v64);
+    reinterpret_cast<float*>(params + 16)[0] = v65.m128_f32[0];
+    reinterpret_cast<float*>(params + 24)[0] = v65.m128_f32[2];
+    FlagStoreVector(params, 32, v66);
+    FlagStoreVector(params, 48, _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f));
+    FlagStoreVector(params, 64, v63);
+    FlagStoreVector(params, 80, v64c);
+    FlagStoreVector(params, 96, v65b);
+    FlagStoreVector(params, 112, v66b);
+    *reinterpret_cast<float*>(params + 128) = 0.25f;
+    *reinterpret_cast<float*>(params + 132) = 1.5f;
+    *reinterpret_cast<float*>(params + 136) = time;
+    *reinterpret_cast<float*>(params + 140) = time * 0.25f;
+    *reinterpret_cast<float*>(params + 144) = 42.0f;
+    memcpy(params + 160, FlagSinTable, sizeof(FlagSinTable));
+    *reinterpret_cast<unsigned int*>(params + 1184) = 1045220557u;
+    *reinterpret_cast<unsigned int*>(params + 1188) = 1051931443u;
+    *reinterpret_cast<unsigned int*>(params + 1192) = 1065353216u;
+    *reinterpret_cast<unsigned int*>(params + 1196) = 0x40000000u;
+    *reinterpret_cast<float*>(params + 1200) = 1.0f;
+    *reinterpret_cast<float*>(params + 1204) = 0.6f;
+    *reinterpret_cast<float*>(params + 1208) = 0.30000001f;
+    *reinterpret_cast<float*>(params + 1212) = 0.0f;
+    *reinterpret_cast<float*>(params + 1216) = 0.08f;
+    *reinterpret_cast<float*>(params + 1220) = 0.08f;
+    D3DDevice_SetVertexShaderConstantNotInlineFast(6, params, 0x134u);
+    nglDxInitShaders(false);
+    const unsigned int vertexShader = static_cast<unsigned int>(cdFlagVertex::VS[0]);
+    if (vertexShader != gpuHashVertexShader) {
+        gpuHashVertexShader = vertexShader;
+        D3DDevice_LoadVertexShaderProgram(
+            reinterpret_cast<const unsigned int*>(static_cast<uintptr_t>(vertexShader)), 0);
+        D3DDevice_SelectVertexShaderDirect(&gpuSetVertexShaderInputs, 0);
+    }
+    const _D3DPixelShaderDef* pixelShader =
+        reinterpret_cast<const _D3DPixelShaderDef*>(cdFlagPixel::PS[0]);
+    if (pixelShader != reinterpret_cast<const _D3DPixelShaderDef*>(
+                             static_cast<uintptr_t>(gpuHashPixelShader))) {
+        gpuHashPixelShader = static_cast<unsigned int>(reinterpret_cast<uintptr_t>(pixelShader));
+        D3DDevice_SetPixelShaderProgram(pixelShader);
+    }
+    nglGpuDrawSection(this->Section);
+    nglDxState.PrevBM = static_cast<unsigned int>(-1);
+}
 
 // ea: 0x007CB840
 cdFlagShader::cdFlagShader() {

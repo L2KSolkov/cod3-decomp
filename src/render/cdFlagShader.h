@@ -38,6 +38,7 @@ struct cdFlagShaderNode : nglShaderNode {
     cdFlagShaderNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
                      cdFlagShaderMat* iMaterial);  // @0x7CB9F0
     virtual ~cdFlagShaderNode(); // @0x7CBA50
+    void Render() override;      // @0x7CA470
 };
 static_assert(sizeof(cdFlagShaderNode) == 0x18, "cdFlagShaderNode size mismatch");
 
