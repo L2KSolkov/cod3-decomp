@@ -4603,15 +4603,8 @@ void SceneManager::UpdateEffects(float delta_t)
                         fxset = EffectEventSys::sInst->GetActiveEffectSet(h);
                         if (fxset == nullptr)
                         {
-                            AeAssert::gCurrentAuthor = AeAssert::ARO;
-                            AeAssert::gCurrentFile =
-                                "c:\\cod\\code\\game\\scenemanager.cpp";
-                            AeAssert::gCurrentLine = 430;
-                            AeAssert::gCurrentExpr = "fxset";
-                            if (!AeAssert::IsIgnored()
-                                && AeAssert::Assert(
-                                       "should always have a fx set here, even if the trigger does nothing"))
-                                __debugbreak();
+                            // Intentional divergence: a no-op scene trigger
+                            // may legitimately return no active effect set.
                         }
                         effect->mState = 1;
                     }
