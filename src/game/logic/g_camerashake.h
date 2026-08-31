@@ -137,6 +137,8 @@ public:
     void Normalize3(float* v);  // ea: 0x4F57C0
     float GetElapsedTime();   // ea: 0x4F5820
 };
+static_assert(sizeof(NoiseManager) == 0x1,
+              "NoiseManager release layout mismatch");
 
 extern int g_noiseP[256];     // ?g_noiseP
 extern float g_noiseG[256];   // ?g_noiseG

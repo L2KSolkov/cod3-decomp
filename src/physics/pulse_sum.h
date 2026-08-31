@@ -1554,6 +1554,8 @@ static const math::Dir3 sub_pos(rigid_body* b, const math::Dir3& p) {
     return result;
 }
 };
+static_assert(sizeof(rbint) == 0x1,
+              "rbint release layout mismatch");
 
 // ============================================================================
 // rbint — rigid-body intrinsic math (methods in phys_util.o, unresolved)
@@ -1666,6 +1668,8 @@ struct phys_list_condition_functor_has_user_rigid_body {
         return true;
     }
 };
+static_assert(sizeof(phys_list_condition_functor_has_user_rigid_body) == 0x1,
+              "phys_list_condition_functor_has_user_rigid_body release layout mismatch");
 
 struct phys_list_condition_functor_has_rigid_body_and_user_rigid_body {
     rigid_body* const m_rb;  // +0x00
@@ -1695,6 +1699,8 @@ struct phys_list_condition_functor_has_no_constraints {
         return rb->m_constraint_count == 0;
     }
 };
+static_assert(sizeof(phys_list_condition_functor_has_no_constraints) == 0x1,
+              "phys_list_condition_functor_has_no_constraints release layout mismatch");
 
 // ============================================================================
 // Contact-manifold helpers (phys_contact_manifold.o / phys_util.o)

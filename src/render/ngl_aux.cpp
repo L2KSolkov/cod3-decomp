@@ -101,6 +101,8 @@ struct ngl_aux_static_init {
         }
     }
 };
+static_assert(sizeof(ngl_aux_static_init) == 0x1,
+              "ngl_aux_static_init release layout mismatch");
 
 static ngl_aux_static_init ngl_aux_static_init_instance;
 

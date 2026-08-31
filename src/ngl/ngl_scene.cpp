@@ -96,6 +96,8 @@ public:
         return NodeA.second < NodeB.second;
     }
 };
+static_assert(sizeof(nglOpaqueCompare) == 0x1,
+              "nglOpaqueCompare release layout mismatch");
 
 class nglTransCompare {
 public:
@@ -109,6 +111,8 @@ public:
         return false;
     }
 };
+static_assert(sizeof(nglTransCompare) == 0x1,
+              "nglTransCompare release layout mismatch");
 
 // ============================================================================
 // Data (ngl_scene.o)

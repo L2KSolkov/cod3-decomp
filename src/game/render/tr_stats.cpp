@@ -151,6 +151,8 @@ public:
     void RenderDebugStats();
     void Shutdown();
 };
+static_assert(sizeof(TranslucentStat) == 0x1,
+              "TranslucentStat release layout mismatch");
 
 TranslucentStat::TranslucentStat()
 {

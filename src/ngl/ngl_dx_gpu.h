@@ -498,6 +498,8 @@ public:
         return Surface2 != NULL ? 0 : 0x8007000E;
     }
 };
+static_assert(sizeof(gpuD3DDevice) == 0x1,
+              "gpuD3DDevice release layout mismatch");
 
 // ============================================================================
 // gpuCreate* — free-function texture creators (inline COMDATs, ngl_gpu_texture.o)

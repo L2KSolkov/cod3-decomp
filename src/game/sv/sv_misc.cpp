@@ -22,6 +22,8 @@ public:
     PakManagerContext(TPakId id);  // ??0PakManagerContext@@QAE@W4TPakId@@@Z
     ~PakManagerContext();          // ??1PakManagerContext@@QAE@XZ
 };
+static_assert(sizeof(PakManagerContext) == 0x1,
+              "PakManagerContext release layout mismatch");
 PakManagerContext::PakManagerContext(TPakId id)
 {
     PakManager::sInst->PushContext(id);

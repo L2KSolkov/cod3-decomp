@@ -431,6 +431,8 @@ struct cmgr_mem_ctx_t {
     cmgr_mem_ctx_t();
     ~cmgr_mem_ctx_t();
 };
+static_assert(sizeof(cmgr_mem_ctx_t) == 0x1,
+              "cmgr_mem_ctx_t release layout mismatch");
 
 // ea: 0x0065FE20
 cmgr_mem_ctx_t::cmgr_mem_ctx_t()

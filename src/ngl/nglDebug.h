@@ -10,6 +10,8 @@
 #include "core/math_types.h"
 
 struct ngliDebugStruct {};   // empty base (size 1)
+static_assert(sizeof(ngliDebugStruct) == 0x1,
+              "ngliDebugStruct release layout mismatch");
 
 struct nglDebugStruct : ngliDebugStruct {
     unsigned char ShowPerfInfo;                    // +0x00

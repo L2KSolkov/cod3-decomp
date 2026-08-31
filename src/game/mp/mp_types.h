@@ -102,6 +102,8 @@ public:
     static void sleepSeconds(unsigned long secs);        // ?sleepSeconds@cThreadSleep@@SAXK@Z
     static void sleepMilliseconds(unsigned long msecs); // ?sleepMilliseconds@cThreadSleep@@SAXK@Z
 };
+static_assert(sizeof(cThreadSleep) == 0x1,
+              "cThreadSleep release layout mismatch");
 
 // ============================================================================
 // MPUtility - free serialization helpers (bdBitBuffer writers, mp.o)

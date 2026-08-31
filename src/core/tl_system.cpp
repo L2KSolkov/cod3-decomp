@@ -58,6 +58,8 @@ public:
     tlMemAllocMutex();
     ~tlMemAllocMutex();
 };
+static_assert(sizeof(tlMemAllocMutex) == 0x1,
+              "tlMemAllocMutex release layout mismatch");
 
 // ============================================================================
 // Globals
