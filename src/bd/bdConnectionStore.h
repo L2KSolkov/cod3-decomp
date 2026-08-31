@@ -41,7 +41,7 @@ public:
     void registerListener(bdConnectionListener* listener);
     void unregisterListener(bdConnectionListener* listener);
     void remove(bdReference<bdConnection> connection);
-    bdReference<bdConnection> create(const bdReference<bdCommonAddr>& addr,
+    bdReference<bdConnection> create(bdReference<bdCommonAddr> addr,
                                      const XNKID& secID);
 
 protected:

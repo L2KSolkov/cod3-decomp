@@ -362,7 +362,7 @@ void bdConnectionStore::remove(bdReference<bdConnection> connection) {
 // ============================================================================
 // bdConnectionStore::create - ea: 0x8A2EB0
 // ============================================================================
-bdReference<bdConnection> bdConnectionStore::create(const bdReference<bdCommonAddr>& addr,
+bdReference<bdConnection> bdConnectionStore::create(bdReference<bdCommonAddr> addr,
                                                     const XNKID& secID) {
     bdReference<bdConnection> connection;
     if (addr.m_ptr == NULL) {
@@ -373,49 +373,59 @@ bdReference<bdConnection> bdConnectionStore::create(const bdReference<bdCommonAd
         return connection;
     }
 
-    bdReference<bdAddrHandle> addrHandle;
-    if (!bdSingleton<bdAddressMapImpl>::getInstance()->commonAddrToAddr(addr, secID, addrHandle))
-        return connection;
-
-    if (m_connectionMap.get(bdAddrHandleHashmapWrapper(addrHandle), connection)) {
-        bdMessageProxy proxy(".\\bdConnectionStore.cpp",
-                             "class bdReference<class bdConnection> __thiscall bdConnectionStore::create(class bdReference<class bdCommonAddr>,const XNKID &)",
-                             0x64u, "dw/warn/");
-        proxy.log("bdConnection/connectionstore", "a connection already exists to host.");
-        return connection;
-    }
-
-    if (addr.m_ptr->isLoopback()) {
+    const bool loopback = addr.m_ptr->isLoopback();
+    bdConnection* created = NULL;
+    if (loopback) {
         bdMessageProxy proxy(".\\bdConnectionStore.cpp",
                              "class bdReference<class bdConnection> __thiscall bdConnectionStore::create(class bdReference<class bdCommonAddr>,const XNKID &)",
                              0x44u, "dw/info/");
         proxy.log("bdConnection/connectionstore", "Creating new loopback connection.");
-        bdLoopbackConnection* lb = new (bdMemory::allocate(sizeof(bdLoopbackConnection)))
-            bdLoopbackConnection(addr);
-        connection.m_ptr = lb;
-        if (connection.m_ptr != NULL)
-            connection.m_ptr->addRef();
-        connection.m_ptr->setAddressHandle(addrHandle);
-        if (!m_connectionMap.put(bdAddrHandleHashmapWrapper(addrHandle), connection))
-            connection.m_ptr = NULL;
+        void* memory = bdMemory::allocate(sizeof(bdLoopbackConnection));
+        if (memory != NULL) {
+            if (addr.m_ptr != NULL)
+                addr.m_ptr->addRef();
+            created = new (memory) bdLoopbackConnection(addr);
+        }
     } else {
         bdMessageProxy proxy(".\\bdConnectionStore.cpp",
                              "class bdReference<class bdConnection> __thiscall bdConnectionStore::create(class bdReference<class bdCommonAddr>,const XNKID &)",
                              0x49u, "dw/info/");
         proxy.log("bdConnection/connectionstore", "Creating new unicast connection.");
-        bdUnicastConnection* uc = new (bdMemory::allocate(sizeof(bdUnicastConnection)))
-            bdUnicastConnection(addr);
-        connection.m_ptr = uc;
-        if (connection.m_ptr != NULL)
-            connection.m_ptr->addRef();
-        connection.m_ptr->setAddressHandle(addrHandle);
-        bool ok = m_socket.connect(addrHandle);
-        ok = ok && m_connectionMap.put(bdAddrHandleHashmapWrapper(addrHandle), connection);
-        if (!ok) {
-            connection.m_ptr->disconnect();
-            connection.m_ptr->close();
-            connection.m_ptr = NULL;
+        void* memory = bdMemory::allocate(sizeof(bdUnicastConnection));
+        if (memory != NULL) {
+            if (addr.m_ptr != NULL)
+                addr.m_ptr->addRef();
+            created = new (memory) bdUnicastConnection(addr);
         }
     }
+
+    if (created != NULL) {
+        connection.m_ptr = created;
+        connection.m_ptr->addRef();
+        for (unsigned int i = 0; i < m_listeners.m_size; ++i)
+            created->registerListener(m_listeners.m_data[i]);
+
+        bdReference<bdCommonAddr> mapAddr(addr.m_ptr);
+        bdListAddRef(mapAddr);
+        bdReference<bdAddrHandle> addrHandle;
+        bdSingleton<bdAddressMapImpl>::getInstance()->commonAddrToAddr(mapAddr, secID,
+                                                                         addrHandle);
+        created->setAddressHandle(addrHandle);
+
+        const bool exists = m_connectionMap.get(bdAddrHandleHashmapWrapper(addrHandle),
+                                                 connection);
+        if (!exists) {
+            if (!loopback)
+                m_socket.connect(addrHandle);
+            m_connectionMap.put(bdAddrHandleHashmapWrapper(addrHandle), connection);
+        } else {
+            bdMessageProxy proxy(".\\bdConnectionStore.cpp",
+                                 "class bdReference<class bdConnection> __thiscall bdConnectionStore::create(class bdReference<class bdCommonAddr>,const XNKID &)",
+                                 0x64u, "dw/warn/");
+            proxy.log("bdConnection/connectionstore", "a connection already exists to host.");
+        }
+        bdListRelease(addrHandle);
+    }
+    bdListRelease(addr);
     return connection;
 }
