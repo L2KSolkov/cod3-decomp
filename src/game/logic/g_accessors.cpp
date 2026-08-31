@@ -3263,7 +3263,7 @@ void phys_static_array<T, CAPACITY>::reset_buffer()
 }
 template <typename T, int CAPACITY>
 // ea: 0x004B1210
-// ea: 0x004B1220
+// alias-ea: 0x004B1220
 phys_static_array<T, CAPACITY>::~phys_static_array()
 {
 }

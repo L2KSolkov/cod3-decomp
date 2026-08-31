@@ -2084,7 +2084,7 @@ int XModel::GetNumBones(XModel* model, int lodIndex)
 
 // Task::~Task (game2.o; release body only restores the base vtable)
 // ea: 0x004A52D0
-// ea: 0x004A52F0
+// alias-ea: 0x004A52F0
 Task::~Task() {}
 
 // RumbleManager free artifacts (core.o surface; ABI forwarding wrappers)
