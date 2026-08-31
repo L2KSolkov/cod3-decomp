@@ -2154,8 +2154,21 @@ void AnimIK::ApplyADS(Entity* ent)
         nalGenericPose_GetModelPositionOrientation(pose, &headHandle);
     const nalPositionOrientation handPO =
         nalGenericPose_GetModelPositionOrientation(pose, &handHandle);
+    nalMatrix4x4 headMatrix;
+    nalMatrix4x4_FromPositionOrientation(headPO, &headMatrix);
+    nalMatrix4x4 gunMatrix;
+    nalMatrix4x4_FromPositionOrientation(gunPO, &gunMatrix);
+    nalMatrix4x4 adsMatrix;
+    nalPositionOrientation adsPO = headPO;
+    adsPO.orient = adsOrientation;
+    nalMatrix4x4_FromPositionOrientation(adsPO, &adsMatrix);
+    nalMatrix4x4 headInverse = headMatrix.Inverse();
+    nalMatrix4x4 adsRelative;
+    AnimIK_Multiply(adsMatrix, headInverse, &adsRelative);
+    nalMatrix4x4 targetMatrix;
+    AnimIK_Multiply(gunMatrix, adsRelative, &targetMatrix);
     nalPositionOrientation targetPO = gunPO;
-    targetPO.orient = adsOrientation;
+    targetPO.orient = AnimIK_QuaternionFromMatrix(targetMatrix);
     const float handToHeadX = headPO.pos.v.m128_f32[0] + 15.0f
         - handPO.pos.v.m128_f32[0];
     const float handToHeadY = headPO.pos.v.m128_f32[1]
