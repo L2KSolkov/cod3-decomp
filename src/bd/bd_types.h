@@ -1513,7 +1513,9 @@ public:
     // matches the COD3 vtable (loopback vtable @0xD52864):
     // dtor, receive, send, getMessageToDispatch, getStatus, connect,
     // disconnect, close, getDataToSend.
+    // ea: 0x008A0AA0
     const bdReference<bdAddrHandle>& getAddressHandle() const { return m_addrHandle; }
+    // ea: 0x008A0AC0
     bdConnectionStatistics* getStats() { return &m_stats; }
 
     virtual ~bdConnection();
