@@ -992,22 +992,29 @@ void LightEffect_SetColor(void* self, float r, float g, float b, float a)
 // GDB event + particle params surfaces (name-accessed fields)
 // ============================================================================
 struct gdEvent {
-    InplaceString sound;              // +0x00
-    InplaceString particle1;          // +0x04
-    InplaceString particle2;          // +0x08
-    InplaceString particle3;          // +0x0C
-    InplaceString particle4;          // +0x10
-    InplaceString particle5;          // +0x14
-    InplaceString particle_bone;      // +0x18
-    InplaceString rumble;             // +0x1C
-    InplaceString light;              // +0x20
-    InplaceString delayed_event;      // +0x24
-    int  update_position_only;        // +0x28
-    int  use_world_orient;            // +0x2C
-    int  fade_out;                    // +0x30
-    float delay;                      // +0x34
+    InplaceString particle1;          // +0x00
+    InplaceString particle2;          // +0x04
+    InplaceString particle3;          // +0x08
+    InplaceString particle4;          // +0x0C
+    InplaceString particle5;          // +0x10
+    InplaceString particle_bone;      // +0x14
+    int use_world_orient;             // +0x18
+    int use_entity_angle;             // +0x1C
+    int alpha_blend;                  // +0x20
+    int link_po;                      // +0x24
+    int fade_out;                     // +0x28
+    int update_position_only;         // +0x2C
+    InplaceString sound;              // +0x30
+    InplaceString subtitle;           // +0x34
+    InplaceString rumble;             // +0x38
+    InplaceString light;              // +0x3C
+    float delay;                      // +0x40
+    InplaceString delayed_event;      // +0x44
+    InplaceString nano_graph;         // +0x48
+    float nano_magnitude;             // +0x4C
+    float nano_radius;                // +0x50
 };
-static_assert(sizeof(gdEvent) == 0x38, "gdEvent size mismatch");
+static_assert(sizeof(gdEvent) == 0x54, "gdEvent size mismatch");
 
 extern ParticleParams gParticleParams;  // 0x00F00F58
 ParticleParams gParticleParams;

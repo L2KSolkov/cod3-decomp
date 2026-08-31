@@ -151,6 +151,7 @@ struct leafList_s {
     int              lastLeaf;   // +0x30
     void (*storeLeafs)(leafList_s*, int); // +0x34
 };
+static_assert(sizeof(leafList_s) == 0x40, "leafList_s size mismatch");
 
 inline BspNode& BspNodeAt(unsigned int index)
 {
@@ -1083,7 +1084,7 @@ struct traceWork_t {
     uint8_t _padF4[0xF8 - 0xF4];
     int    contents;               // +0xF8 (visitor filter mask)
     uint8_t isPoint;               // +0xFC
-    uint8_t _padFD[0x110 - 0xFD];
+    uint8_t _padFD[0x100 - 0xFD];
     math::Position3 trace_endpos;  // +0x100
     float  trace_normal[4];        // +0x110
     float  trace_fraction;         // +0x120
@@ -1101,7 +1102,9 @@ struct traceWork_t {
     int    sphere_use;             // +0x170
     float  sphere_radius;          // +0x174
     float  sphere_halfheight;      // +0x178
+    uint8_t _pad17C[0x180 - 0x17C];
 };
+static_assert(sizeof(traceWork_t) == 0x180, "traceWork_t size mismatch");
 
 // ============================================================================
 // PartialClipMap + WorldSector (pcm)
@@ -1128,6 +1131,8 @@ struct PartialClipMap {
     WorldSector dummyNode;         // +0xB4
     WorldSector worldSectors[1024];// +0xD8
 };
+static_assert(sizeof(PartialClipMap) == 0x90D8,
+              "PartialClipMap size mismatch");
 PartialClipMap pcm;               // ?pcm@@3UPartialClipMap@@A (game.o @ 0x1334E68)
 
 // ea: 0x006199C0
@@ -1193,13 +1198,17 @@ char* com_lumpBuf;  // ?com_lumpBuf@@3PADA (game.o)
 extern cvar_t* cm_noCurves;        // ?cm_noCurves@@3PAUcvar_t@@A
 extern cvar_t* cm_playerCurveClip; // ?cm_playerCurveClip@@3PAUcvar_t@@A
 
-struct dheader_t {
-    int version;
-    struct {
-        int fileofs;
-        int filelen;
-    } lumps[78];
+struct lump_t {
+    int filelen;
+    int fileofs;
 };
+struct dheader_t {
+    int ident;
+    int version;
+    lump_t lumps[38];
+};
+static_assert(sizeof(lump_t) == 0x8, "lump_t size mismatch");
+static_assert(sizeof(dheader_t) == 0x138, "dheader_t size mismatch");
 
 // ea: 0x00618390
 void CM_LoadMap(const char* name, int clientload, int* checksum)
@@ -9081,13 +9090,16 @@ void CM_ValidateAllWorldSectors()
 // CM_AreaEntities - ea: 0x6331A0 / _r: 0x633020 (cm_world.cpp)
 // ============================================================================
 struct areaParms_t {
+    math::Position3 start;       // +0x00
     math::Position3 mins;       // +0x00
-    math::Position3 maxs;       // +0x10
-    DbLinkedHandle<EntityHandleDb, Entity>* list;  // +0x20
-    int count;                  // +0x24
-    int maxcount;               // +0x28
-    int contentmask;            // +0x2C
+    math::Position3 maxs;        // +0x20
+    DbLinkedHandle<EntityHandleDb, Entity>* list;  // +0x30
+    int count;                   // +0x34
+    int maxcount;                // +0x38
+    int contentmask;             // +0x3C
+    trace_t* results;            // +0x40
 };
+static_assert(sizeof(areaParms_t) == 0x50, "areaParms_t size mismatch");
 
 // ea: 0x00633020
 void CM_AreaEntities_r(WorldSector* node, areaParms_t* ap)
@@ -9784,10 +9796,12 @@ int CM_PointSightTraceToEntities(sightpointtrace_t* clip,
 // ============================================================================
 struct locTraceWork_t {
     trace_t          trace;     // +0x00
-    math::Position3  start;     // +0x50
-    math::Position3  end;       // +0x60
-    int              contents;  // +0x70
+    int              contents;  // +0x50
+    math::Position3  start;     // +0x54
+    math::Position3  end;       // +0x64
 };
+static_assert(sizeof(locTraceWork_t) == 0x80,
+              "locTraceWork_t size mismatch");
 
 extern int CM_TraceBox(const math::Position3& start,
                        const math::Position3& end,

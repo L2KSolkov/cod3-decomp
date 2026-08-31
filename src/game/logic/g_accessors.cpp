@@ -135,6 +135,8 @@ struct sphere_clip_stack_entry {
     // game.o 0x0065BD10
     sphere_clip_stack_entry() {}
 };
+static_assert(sizeof(sphere_clip_stack_entry) == 0x30,
+              "sphere_clip_stack_entry size mismatch");
 
 // game.o 0x0065F5F0
 cdlPlane::cdlPlane() {}
