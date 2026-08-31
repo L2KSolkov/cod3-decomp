@@ -13,6 +13,42 @@ extern "C" {
 unsigned int __stdcall XNetGetTitleXnAddr(XNADDR* pxna);
 }
 
+// ============================================================================
+// bdNetStartParams - ea: 0x777E30 / 0x778070
+// ============================================================================
+bdNetStartParams::bdNetStartParams()
+    : m_onlineGame(false), m_gamePort(1000), m_socket(NULL),
+      m_natTravPort(3074), m_timeout(0.0f), m_upnpTimeout(3.0f) {
+    m_natTravHosts.m_data = (bdString*)bdMemory::allocate(sizeof(bdString) * 4);
+    m_natTravHosts.m_capacity = 4;
+    m_natTravHosts.m_size = 0;
+    if (m_natTravHosts.m_data != NULL) {
+        new (&m_natTravHosts.m_data[0]) bdString("stun.eu.demonware.net");
+        new (&m_natTravHosts.m_data[1]) bdString("stun.us.demonware.net");
+        new (&m_natTravHosts.m_data[2]) bdString("stun.jp.demonware.net");
+        new (&m_natTravHosts.m_data[3]) bdString("stun.au.demonware.net");
+        m_natTravHosts.m_size = 4;
+    }
+    m_localAddresses.m_data = NULL;
+    m_localAddresses.m_capacity = 0;
+    m_localAddresses.m_size = 0;
+}
+
+bdNetStartParams::~bdNetStartParams() {
+    for (unsigned int i = 0; i < m_localAddresses.m_size; ++i)
+        m_localAddresses.m_data[i].~bdInetAddr();
+    bdMemory::deallocate(m_localAddresses.m_data);
+    m_localAddresses.m_data = NULL;
+    m_localAddresses.m_size = 0;
+    m_localAddresses.m_capacity = 0;
+    for (unsigned int i = 0; i < m_natTravHosts.m_size; ++i)
+        m_natTravHosts.m_data[i].~bdString();
+    bdMemory::deallocate(m_natTravHosts.m_data);
+    m_natTravHosts.m_data = NULL;
+    m_natTravHosts.m_size = 0;
+    m_natTravHosts.m_capacity = 0;
+}
+
 // IDA 0x89CAB0: bdString stores its data pointer at offset 0 and the
 // allocation header's length two words before that buffer.
 // ea: 0x0089CAB0
@@ -34,6 +70,14 @@ bdNetImpl::bdNetImpl()
 // ============================================================================
 bdNetImpl::~bdNetImpl() {
     stop();
+    m_tmpSocket.~bdSocket();
+    for (unsigned int i = 0; i < m_natTravAddrs.m_size; ++i)
+        m_natTravAddrs.m_data[i].~bdAddr();
+    bdMemory::deallocate(m_natTravAddrs.m_data);
+    m_natTravAddrs.m_data = NULL;
+    m_natTravAddrs.m_size = 0;
+    m_natTravAddrs.m_capacity = 0;
+    m_dispatcher.clear();
 }
 
 static void destroyNetSingleton() {
@@ -84,10 +128,8 @@ bdNetStatus bdNetImpl::getStatus() const {
 // ============================================================================
 // bdNetImpl::sendAll - ea: 0x8AF0E0
 // ============================================================================
-bool bdNetImpl::sendAll() {
-    if (m_connectionStore != NULL)
-        return m_connectionStore->flushAll();
-    return false;
+void bdNetImpl::sendAll() {
+    m_connectionStore->flushAll();
 }
 
 // ============================================================================

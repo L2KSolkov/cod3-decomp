@@ -98,7 +98,7 @@ bdMallocMemory.obj	6	6	0	0	0	0	0
 bdMemory.obj	23	23	0	0	0	0	0
 bdMessage.obj	25	22	0	1	0	2	0
 bdMutex.obj	4	0	0	0	0	4	0
-bdNet-xbox.obj	49	35	5	8	0	1	0
+bdNet-xbox.obj	49	35	4	9	0	1	0
 bdPacket.obj	32	23	1	0	0	8	0
 bdPlatformMutex-xbox.obj	4	0	0	0	0	4	0
 bdPlatformSocket-win32.obj	8	0	4	0	0	4	0
@@ -194,7 +194,7 @@ jobqueue.o	26	6	0	14	0	6	0
 jobqueue_legacy.o	11	8	0	0	0	3	0
 mem_lib.o	47	31	2	12	0	2	0
 mem_lib_platform.o	11	11	0	0	0	0	0
-mp.o	1142	375	12	355	0	400	0
+mp.o	1142	374	12	356	0	400	0
 mp_actors.o	436	63	0	145	0	228	0
 mp_anim_wad.o	430	194	144	0	0	92	0
 mp_level_wad.o	1062	1040	3	14	0	5	0

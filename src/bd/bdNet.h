@@ -34,11 +34,8 @@ struct bdNetStartParams {
     float m_timeout;                       // +0x24
     float m_upnpTimeout;                   // +0x28
 
-    bdNetStartParams() : m_onlineGame(false), m_gamePort(0), m_socket(NULL),
-                         m_natTravPort(0), m_timeout(0.0f), m_upnpTimeout(0.0f) {
-        memset(&m_natTravHosts, 0, sizeof(m_natTravHosts));
-        memset(&m_localAddresses, 0, sizeof(m_localAddresses));
-    }
+    bdNetStartParams();
+    ~bdNetStartParams();
 };
 static_assert(sizeof(bdNetStartParams) == 0x2C, "bdNetStartParams size mismatch");
 
@@ -57,7 +54,7 @@ public:
     virtual ~bdNetImpl();
 
     bdNetStatus getStatus() const;
-    bool sendAll();
+    void sendAll();
     void registerDispatchInterceptor(bdDispatchInterceptor* const interceptor);
     void unregisterDispatchInterceptor(bdDispatchInterceptor* const interceptor);
     bdConnectionStore* getConnectionStore();
