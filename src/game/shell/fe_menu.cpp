@@ -324,6 +324,7 @@ FEMenu::~FEMenu()
         delete panel;
     }
     mem_heap_free(entries);
+    entries = nullptr;
     if (helpbar1 != nullptr)
         delete helpbar1;
     if (helpbar2 != nullptr)
