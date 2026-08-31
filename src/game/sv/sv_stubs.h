@@ -837,8 +837,8 @@ public:
         float GetMinValue() const;          // game2.o 0x004EB780
         float GetMaxValue() const;          // game2.o 0x004EB790
         DbLinkedHandle<EntityHandleDb, Entity> GetEntHdl() const; // game2.o 0x004EB7A0
-        bool IsSourceValid() const;         // core.o 0x4DC780
-        nslSourceID GetSourceId() const;    // core.o 0x4DC790
+        bool IsSourceValid();               // core.o 0x4DC780
+        nslSourceID GetSourceId();          // core.o 0x4DC790
         float GetLength() const;            // ?GetLength@Sound@SoundDevice@@QBEMXZ
         ae_fixed_string<1024, unsigned short> GetDebugString() const;  // ?GetDebugString@Sound@SoundDevice@@QBE?AV?$ae_fixed_string@$0EAA@G@@XZ (game.o 0x6216F0)
         void PlayQueued();                  // ?PlayQueued@Sound@SoundDevice@@QAEXXZ
@@ -961,7 +961,7 @@ public:
     float mDebugListenerUp[3];        // +0x7A94
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     static SoundDevice* Inst();     // ?Inst@SoundDevice@@SAPAV1@XZ (g.o 0x4A8520)
-    float GetVolScale() const;      // ?GetVolScale@SoundDevice@@QBEMXZ (core.o 0x4DC7A0)
+    float GetVolScale();            // ?GetVolScale@SoundDevice@@QAEMXZ (core.o 0x4DC7A0)
     nslEffect* GetCurrentReverb();  // game2.o 0x004EB7C0
     static void CreateInst();       // ?CreateInst@SoundDevice@@SAXXZ (core.o 0x4DC5F0)
     static void DeleteInst();       // ?DeleteInst@SoundDevice@@SAXXZ (core.o 0x4E26C0)

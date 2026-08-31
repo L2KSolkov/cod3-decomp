@@ -432,21 +432,25 @@ SoundDevice::SoundHandleDb* SoundDevice::SoundHandleDb::Inst()
     return &SoundDevice::SoundHandleDb::sInst;
 }
 
+// ea: 0x004DC700
 float SoundDevice::Sound::GetStartingPitch() const
 {
     return nslGetWaveParam((nslWaveID)mWave, 1, 1.0f);
 }
 
+// ea: 0x004DC720
 float SoundDevice::Sound::GetStartingVolume() const
 {
     return nslGetWaveParam((nslWaveID)mWave, 0, 1.0f);
 }
 
+// ea: 0x004DC740
 float SoundDevice::Sound::GetMaxDist() const
 {
     return nslGetWaveParam((nslWaveID)mWave, 26, 1.0f);
 }
 
+// ea: 0x004DC760
 float SoundDevice::Sound::GetMinDist() const
 {
     return nslGetWaveParam((nslWaveID)mWave, 25, 1.0f);
@@ -467,17 +471,20 @@ DbLinkedHandle<EntityHandleDb, Entity> SoundDevice::Sound::GetEntHdl() const
     return DbLinkedHandle<EntityHandleDb, Entity>(mEntHandle);
 }
 
-bool SoundDevice::Sound::IsSourceValid() const
+// ea: 0x004DC780
+bool SoundDevice::Sound::IsSourceValid()
 {
     return mSource != -1;
 }
 
-nslSourceID SoundDevice::Sound::GetSourceId() const
+// ea: 0x004DC790
+nslSourceID SoundDevice::Sound::GetSourceId()
 {
     return (nslSourceID)mSource;
 }
 
-float SoundDevice::GetVolScale() const
+// ea: 0x004DC7A0
+float SoundDevice::GetVolScale()
 {
     return mVolScale;
 }
