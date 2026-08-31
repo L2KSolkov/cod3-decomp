@@ -8,6 +8,7 @@
 
 // ============================================================================
 // getCumulativeAck â€” ea: 0x8AD670
+// ea: 0x008AD670
 // ============================================================================
 unsigned short bdSAckChunk::getCumulativeAck() const {
     return this->m_cumulativeAck;
@@ -15,6 +16,7 @@ unsigned short bdSAckChunk::getCumulativeAck() const {
 
 // ============================================================================
 // setCumulativeAck â€” ea: 0x8AD680
+// ea: 0x008AD680
 // ============================================================================
 void bdSAckChunk::setCumulativeAck(unsigned short ack) {
     this->m_cumulativeAck = ack;
@@ -22,6 +24,7 @@ void bdSAckChunk::setCumulativeAck(unsigned short ack) {
 
 // ============================================================================
 // getGapList â€” ea: 0x8AD690
+// ea: 0x008AD690
 // ============================================================================
 bdLinkedList<bdGapAckBlock>& bdSAckChunk::getGapList() {
     return this->m_gapList;
@@ -29,6 +32,7 @@ bdLinkedList<bdGapAckBlock>& bdSAckChunk::getGapList() {
 
 // ============================================================================
 // setWindowCredit â€” ea: 0x8AD6A0
+// ea: 0x008AD6A0
 // ============================================================================
 void bdSAckChunk::setWindowCredit(int credit) {
     this->m_windowCredit = credit;
@@ -36,6 +40,7 @@ void bdSAckChunk::setWindowCredit(int credit) {
 
 // ============================================================================
 // getWindowCredit â€” ea: 0x8AD6B0
+// ea: 0x008AD6B0
 // ============================================================================
 int bdSAckChunk::getWindowCredit() const {
     return this->m_windowCredit;
@@ -43,6 +48,7 @@ int bdSAckChunk::getWindowCredit() const {
 
 // ============================================================================
 // getFlags â€” ea: 0x8AD6C0
+// ea: 0x008AD6C0
 // ============================================================================
 bdSAckChunk::bdSAckFlags bdSAckChunk::getFlags() const {
     return this->m_flags;
@@ -50,6 +56,7 @@ bdSAckChunk::bdSAckFlags bdSAckChunk::getFlags() const {
 
 // ============================================================================
 // bdSAckChunk::serialize â€” ea: 0x8AD860
+// ea: 0x008AD860
 // ============================================================================
 unsigned int bdSAckChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -92,6 +99,7 @@ unsigned int bdSAckChunk::serialize(unsigned char* data, unsigned int size) {
 
 // ============================================================================
 // bdSAckChunk::getSerializedSize â€” ea: 0x8ADA00
+// ea: 0x008ADA00
 // ============================================================================
 unsigned int bdSAckChunk::getSerializedSize() {
     return this->serialize(NULL, 0xFFFFFFFFu);
@@ -121,6 +129,7 @@ bdSAckChunk::bdSAckChunk(int windowCredit, bdSAckFlags flags)
 
 // ============================================================================
 // bdSAckChunk::~bdSAckChunk â€” ea: 0x8ADAB0
+// ea: 0x008ADAB0
 // ============================================================================
 bdSAckChunk::~bdSAckChunk() {
     this->m_gapList.clear();
@@ -128,6 +137,7 @@ bdSAckChunk::~bdSAckChunk() {
 
 // ============================================================================
 // bdSAckChunk::addGap â€” ea: 0x8ADB10
+// ea: 0x008ADB10
 // ============================================================================
 void bdSAckChunk::addGap(const bdGapAckBlock& block) {
     this->m_gapList.insertAfter(this->m_gapList.m_tail, block);
@@ -135,6 +145,7 @@ void bdSAckChunk::addGap(const bdGapAckBlock& block) {
 
 // ============================================================================
 // bdSAckChunk::deserialize â€” ea: 0x8ADB30
+// ea: 0x008ADB30
 // ============================================================================
 bool bdSAckChunk::deserialize(const unsigned char* data, unsigned int size,
                               unsigned int* offset) {
