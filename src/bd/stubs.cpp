@@ -279,6 +279,42 @@ bool rewindBytes(const void* src, unsigned int srcSize, unsigned int offset,
     return false;
 }
 
+// ea: 0x0089EE80
+template <typename T>
+bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
+                     unsigned int* newOffset, const T& value)
+{
+    return appendBasicType(dest, destSize, offset, newOffset,
+                            (const void*)&value, sizeof(T));
+}
+
+template bool appendBasicType<unsigned char>(void*, unsigned int, unsigned int,
+                                             unsigned int*, const unsigned char&);
+
+// ea: 0x0089EEB0
+template <typename T>
+bool removeBasicType(const void* src, unsigned int srcSize, unsigned int offset,
+                     unsigned int* newOffset, T& value)
+{
+    return removeBasicType((const unsigned char*)src, srcSize, offset,
+                            newOffset, (void*)&value, sizeof(T));
+}
+
+template bool removeBasicType<unsigned char>(const void*, unsigned int, unsigned int,
+                                             unsigned int*, unsigned char&);
+
+namespace bdBitBuffer {
+// ea: 0x0089EE70
+template <typename T>
+T* endianSwap(const T& src, T& dst)
+{
+    dst = src;
+    return (T*)&src;
+}
+
+template unsigned char* endianSwap<unsigned char>(const unsigned char&, unsigned char&);
+}
+
 // 0x0089EEF0 / 0x0089F000 (bdCore)
 // ea: 0x0089EEF0
 bool appendEncodedUInt16(void* dest, unsigned int destSize,
