@@ -22,7 +22,7 @@ public:
     // ea: 0x89AF70 (weak constructor emitted in bdBitBuffer.obj)
     bdReferencable() : m_refCount(0) {}
     // ea: 0x89EB80 (canonical virtual destructor)
-    // ea: 0x89AF80 (weak scalar/vector deleting-destructor aliases)
+    // ea: 0x0089EB80
     virtual ~bdReferencable() {}
 
     bdInt addRef() {
