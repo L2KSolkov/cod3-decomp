@@ -232,6 +232,7 @@ unsigned int bdCookie::getSerializedSize() {
 // ============================================================================
 // bdCookieEchoChunk::getFlags â€” ea: 0x8AB9A0
 // ============================================================================
+// ea: 0x008AB9A0
 bdCookieEchoChunk::bdCookieEchoFlags bdCookieEchoChunk::getFlags() const {
     return this->m_flags;
 }
@@ -239,6 +240,7 @@ bdCookieEchoChunk::bdCookieEchoFlags bdCookieEchoChunk::getFlags() const {
 // ============================================================================
 // bdCookieEchoChunk::getSerializedSize â€” ea: 0x8AB9B0
 // ============================================================================
+// ea: 0x008AB9B0
 unsigned int bdCookieEchoChunk::getSerializedSize() {
     return 100;
 }
@@ -266,6 +268,7 @@ bdCookieEchoChunk::bdCookieEchoChunk(bdReference<bdByteBuffer> rawCookie)
 // ============================================================================
 // bdCookieEchoChunk::~bdCookieEchoChunk â€” ea: 0x8ABAE0
 // ============================================================================
+// ea: 0x008ABAE0
 bdCookieEchoChunk::~bdCookieEchoChunk() {
     if (this->m_rawCookie.m_ptr != NULL && this->m_rawCookie.m_ptr->releaseRef() == 0) {
         delete this->m_rawCookie.m_ptr;
@@ -280,6 +283,7 @@ bdCookieEchoChunk::~bdCookieEchoChunk() {
 // ============================================================================
 // bdCookieEchoChunk::getCookie â€” ea: 0x8ABB80
 // ============================================================================
+// ea: 0x008ABB80
 bool bdCookieEchoChunk::getCookie(bdReference<bdCookie>& cookie) const {
     if (this->m_cookie.m_ptr != NULL && &this->m_cookie != &cookie) {
         if (cookie.m_ptr != NULL && cookie.m_ptr->releaseRef() == 0)
@@ -294,6 +298,7 @@ bool bdCookieEchoChunk::getCookie(bdReference<bdCookie>& cookie) const {
 // ============================================================================
 // bdCookieEchoChunk::serialize â€” ea: 0x8ABBF0
 // ============================================================================
+// ea: 0x008ABBF0
 unsigned int bdCookieEchoChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int result = 0;
     unsigned int v16 = 0;
@@ -331,6 +336,7 @@ unsigned int bdCookieEchoChunk::serialize(unsigned char* data, unsigned int size
 // ============================================================================
 // bdCookieEchoChunk::deserialize â€” ea: 0x8ABD10
 // ============================================================================
+// ea: 0x008ABD10
 bool bdCookieEchoChunk::deserialize(const unsigned char* data, unsigned int size,
                                     unsigned int* offset) {
     unsigned int v4 = size;
