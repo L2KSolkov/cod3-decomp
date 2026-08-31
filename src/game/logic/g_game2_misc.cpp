@@ -124,7 +124,8 @@ static_assert(sizeof(nalPositionOrientation) == 0x20,
 
 namespace nalGeneric {
 class nalGenericSkeleton;
-struct nalGenericBoneHandle {
+class nalGenericBoneHandle {
+public:
     const nalGenericSkeleton* Skeleton;  // +0x00
     int BoneIndex;                       // +0x04
 };
@@ -738,12 +739,12 @@ public:
 
     AnimIK();
     ~AnimIK();
-    void GetGunAndHandMatrix(Entity* ent, nalGenericBoneHandle* gunHandle,
-                             nalGenericBoneHandle* handHandle,
-                             nalMatrix4x4* gunMat,
-                             nalMatrix4x4* handMat);
-    void GetFootMatrices(nalMatrix4x4* leftFootMat,
-                         nalMatrix4x4* rightFootMat);
+    void GetGunAndHandMatrix(Entity* ent, nalGenericBoneHandle& gunHandle,
+                             nalGenericBoneHandle& handHandle,
+                             nalMatrix4x4& gunMat,
+                             nalMatrix4x4& handMat);
+    void GetFootMatrices(nalMatrix4x4& leftFootMat,
+                         nalMatrix4x4& rightFootMat);
     float WeaponRecoilTimeScale(float fireTime, float duration,
                                 float force);
     void ApplyLadderClimb(Entity* ent, nalMatrix4x4& leftFootMat,
@@ -751,8 +752,8 @@ public:
     void Initialize();
     void UpdateGunMatrix(nalGenericBoneHandle gunHandle,
                          nalGenericBoneHandle handHandle,
-                         nalMatrix4x4* gunMat,
-                         nalMatrix4x4* handMat);
+                         nalMatrix4x4& gunMat,
+                         nalMatrix4x4& handMat);
     void ApplyFootIK(Entity* ent, nalMatrix4x4& leftFootMat,
                      nalMatrix4x4& rightFootMat);
     void ApplyHandIK(Entity* ent, nalMatrix4x4& leftMat,
@@ -879,21 +880,21 @@ bool IKenabled = true;
 // ============================================================================
 // ea: 0x4F6270
 void AnimIK::GetGunAndHandMatrix(Entity* ent,
-                                 nalGenericBoneHandle* gunHandle,
-                                 nalGenericBoneHandle* handHandle,
-                                 nalMatrix4x4* gunMat,
-                                 nalMatrix4x4* handMat)
+                                 nalGenericBoneHandle& gunHandle,
+                                 nalGenericBoneHandle& handHandle,
+                                 nalMatrix4x4& gunMat,
+                                 nalMatrix4x4& handMat)
 {
-    nalGenericSkeleton_GetBoneHandle(skeleton, handHandle, &boneName[0]);
-    Axis4_to_nalMatrix4x4(ent->sentient->mLastAnimIKGunOffset, gunMat);
+    nalGenericSkeleton_GetBoneHandle(skeleton, &handHandle, &boneName[0]);
+    Axis4_to_nalMatrix4x4(ent->sentient->mLastAnimIKGunOffset, &gunMat);
 }
 
 // ============================================================================
 // AnimIK::GetFootMatrices
 // ============================================================================
 // ea: 0x4F62A0
-void AnimIK::GetFootMatrices(nalMatrix4x4* leftFootMat,
-                             nalMatrix4x4* rightFootMat)
+void AnimIK::GetFootMatrices(nalMatrix4x4& leftFootMat,
+                             nalMatrix4x4& rightFootMat)
 {
     nalGenericBoneHandle leftFootHandle;
     nalGenericBoneHandle rightFootHandle;
@@ -909,12 +910,12 @@ void AnimIK::GetFootMatrices(nalMatrix4x4* leftFootMat,
         nalGenericPose_GetModelPositionOrientation(pose, &leftFootHandle);
     nalMatrix4x4 leftMatrix;
     nalMatrix4x4_FromPositionOrientation(po, &leftMatrix);
-    *leftFootMat = leftMatrix;
+    leftFootMat = leftMatrix;
     nalPositionOrientation po2 =
         nalGenericPose_GetModelPositionOrientation(pose, &rightFootHandle);
     nalMatrix4x4 rightMatrix;
     nalMatrix4x4_FromPositionOrientation(po2, &rightMatrix);
-    *rightFootMat = rightMatrix;
+    rightFootMat = rightMatrix;
 }
 
 // ============================================================================
@@ -1067,7 +1068,7 @@ void AnimIK::Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
     nalMatrix4x4 leftFootMat;
     nalMatrix4x4 rightFootMat;
     Axis4_to_nalMatrix4x4(ent->sentient->mLastAnimIKGunOffset, &handMat);
-    GetFootMatrices(&rightHandMat, &leftFootMat);
+    GetFootMatrices(rightHandMat, leftFootMat);
 
     nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle,
                                      &stru_F05238);
@@ -1090,13 +1091,13 @@ void AnimIK::Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
     ApplyFootIK(ent, rightHandMat, leftFootMat);
     if (ent->client != nullptr && (ent->client->ps.pm_flags & 0x10) != 0)
         ApplyHandIK(ent, gunLocalMat, leftHandMat);
-    UpdateGunMatrix(animHandle, gunHandle, &handMat, &gunLocalMat);
+    UpdateGunMatrix(animHandle, gunHandle, handMat, gunLocalMat);
 }
 
 // ea: 0x004FB150
 void AnimIK::UpdateGunMatrix(nalGenericBoneHandle gunHandle,
                              nalGenericBoneHandle handHandle,
-                             nalMatrix4x4* gunMat, nalMatrix4x4* handMat)
+                             nalMatrix4x4& gunMat, nalMatrix4x4& handMat)
 {
     (void)handMat;
 
@@ -1106,8 +1107,8 @@ void AnimIK::UpdateGunMatrix(nalGenericBoneHandle gunHandle,
     nalMatrix4x4_FromPositionOrientation(handPositionOrientation, &newHandMat);
 
     nalMatrix4x4 composed;
-    AnimIK_Multiply(*gunMat, newHandMat, &composed);
-    *gunMat = composed;
+    AnimIK_Multiply(gunMat, newHandMat, &composed);
+    gunMat = composed;
 
     if (stru_F05040 != noneString)
     {
@@ -1122,15 +1123,15 @@ void AnimIK::UpdateGunMatrix(nalGenericBoneHandle gunHandle,
         nalMatrix4x4_FromPositionOrientation(pelvisPositionOrientation,
                                               &pelvisMat);
         nalMatrix4x4 inversePelvis = pelvisMat.Inverse();
-        AnimIK_Multiply(*gunMat, inversePelvis, &composed);
-        *gunMat = composed;
+        AnimIK_Multiply(gunMat, inversePelvis, &composed);
+        gunMat = composed;
     }
 
     math::Mat44 finalMatrix;
-    finalMatrix.x.v = _mm_loadu_ps(gunMat->x);
-    finalMatrix.y.v = _mm_loadu_ps(gunMat->y);
-    finalMatrix.z.v = _mm_loadu_ps(gunMat->z);
-    finalMatrix.w.v = _mm_loadu_ps(gunMat->w);
+    finalMatrix.x.v = _mm_loadu_ps(gunMat.x);
+    finalMatrix.y.v = _mm_loadu_ps(gunMat.y);
+    finalMatrix.z.v = _mm_loadu_ps(gunMat.z);
+    finalMatrix.w.v = _mm_loadu_ps(gunMat.w);
     nalPositionOrientation newHandPositionOrientation;
     newHandPositionOrientation.orient = nalQuaternionFromMatrix(finalMatrix);
     newHandPositionOrientation.pos.v = finalMatrix.w.v;

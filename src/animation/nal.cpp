@@ -1424,7 +1424,8 @@ void nalMatrix4x4::Rotate(const math::Quaternion& rotation)
 
 // nalGenericBoneHandle - bone reference (index + skeleton)
 namespace nalGeneric {
-struct nalGenericBoneHandle {
+class nalGenericBoneHandle {
+public:
     const nalGenericSkeleton* Skeleton;  // +0x00
     int BoneIndex;                       // +0x04
 

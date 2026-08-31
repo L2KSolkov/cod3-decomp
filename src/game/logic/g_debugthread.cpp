@@ -143,7 +143,7 @@ namespace nalGeneric {
 class nalGenericAnim;
 class nalGenericInstance;
 class nalGenericSkeleton;
-struct nalGenericBoneHandle {
+class nalGenericBoneHandle {
 public:
     const nalGenericSkeleton* Skeleton; // +0x00
     int BoneIndex;                      // +0x04
