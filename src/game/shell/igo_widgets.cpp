@@ -5990,8 +5990,9 @@ void IGOFrontEnd::SetPanelFile(PanelFile* pf)
 // ea: 0x0059C460
 void IGOFrontEnd::UpdateAfterWeaponsLoaded()
 {
-    if (hintWidget[currCl] != nullptr)
-        hintWidget[currCl]->SetWeaponsPQs(panel, iconsPanel);
+    PanelFile* weaponPanel = panel != nullptr ? panel : mpPanel;
+    if (hintWidget[currCl] != nullptr && weaponPanel != nullptr)
+        hintWidget[currCl]->SetWeaponsPQs(weaponPanel, iconsPanel);
 }
 
 // ea: 0x005AED10
