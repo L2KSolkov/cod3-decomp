@@ -3082,12 +3082,12 @@ public:
     ~cdl_array() { done(); }
 
     // ea: 0x004AC780
-    // ea: 0x004AE420
-    // ea: 0x004AE430
-    // ea: 0x004AE440
-    // ea: 0x004AE450
-    // ea: 0x004AE460
-    // ea: 0x004AE470
+    // alias-ea: 0x004AE420
+    // alias-ea: 0x004AE430
+    // alias-ea: 0x004AE440
+    // alias-ea: 0x004AE450
+    // alias-ea: 0x004AE460
+    // alias-ea: 0x004AE470
     unsigned int size() const { return m_count; }  // ?size@?$cdl_array@...@@QBEIXZ
     const T& operator[](unsigned int index) const; // ?A@?$cdl_array@...@@QBEABU...@@I@Z
     T& operator[](unsigned int index);
@@ -3096,13 +3096,13 @@ public:
     void load_inplace(char* base, int* offs);
 };
 template <typename T>
-// ea: 0x004AC790
-// ea: 0x004B1010
-// ea: 0x004B1060
-// ea: 0x004B10B0
-// ea: 0x004B1100
-// ea: 0x004B1150
-// ea: 0x004B11A0
+    // ea: 0x004AC790
+// alias-ea: 0x004B1010
+// alias-ea: 0x004B1060
+// alias-ea: 0x004B10B0
+// alias-ea: 0x004B1100
+// alias-ea: 0x004B1150
+// alias-ea: 0x004B11A0
 const T& cdl_array<T>::operator[](unsigned int index) const
 {
     if (index >= m_count
