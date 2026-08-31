@@ -2186,9 +2186,14 @@ unsigned __int64 tlGetTick()
     return __rdtsc();
 }
 	// ea: 0x004A53E0
-	unsigned int* tlFixedString::value()
+unsigned int* tlFixedString::value()
 {
     return (unsigned int*)this;
+}
+
+const uint32_t* tlFixedString::value() const
+{
+    return (const uint32_t*)this;
 }
 
 // ea: 0x004A5570

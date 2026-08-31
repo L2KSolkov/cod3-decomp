@@ -87,7 +87,7 @@ public:
     // ea: 0x4A53E0
     uint32_t* value();  // ?value@tlFixedString@@QAEPAIXZ (g.o 0x4A53E0)
     // ea: 0x4B53E0
-    const uint32_t* value() const { return (const uint32_t*)this; }
+    const uint32_t* value() const;
 
     unsigned int GetHash() const;
 
