@@ -35,6 +35,30 @@ math::Mat43& rigid_body::dangerous_get_mat()
     return m_mat;
 }
 
+// ea: 0x006F0DA0
+const math::Mat43& rigid_body::get_mat_for_setup() const
+{
+    return m_mat;
+}
+
+// ea: 0x006F0DB0
+math::Mat43& rigid_body::dangerous_get_mat_for_setup()
+{
+    return m_mat;
+}
+
+// ea: 0x006F0E10
+const math::Dir3& rigid_body::get_t_vel() const
+{
+    return m_t_vel;
+}
+
+// ea: 0x006F0E20
+const math::Dir3& rigid_body::get_a_vel() const
+{
+    return m_a_vel;
+}
+
 // ============================================================================
 // SSE constants (rdata COMDATs; referenced across the physics lib)
 // ============================================================================
