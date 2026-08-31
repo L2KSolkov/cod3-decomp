@@ -239,21 +239,19 @@ void FN_DebugEntity_BBoxes()
 }
 
 // ea: 0x4F8F20
-Entity* FN_DebugThread_Select_Player()
+void FN_DebugThread_Select_Player()
 {
     Entity* result = EntityManager::sInst->GetPlayer(currCl);
     g_debugThread.m_entityHandle.mHandle.mVal = result->mHandle.mHandle.mVal;
     g_debugThread.m_active = 1;
-    return result;
 }
 
 // ea: 0x4F8F50
-EntityManager* FN_DebugThread_Select_Level()
+void FN_DebugThread_Select_Level()
 {
     g_debugThread.m_entityHandle.mHandle.mVal =
         EntityManager::sInst->mWorld->mHandle.mHandle.mVal;
     g_debugThread.m_active = 1;
-    return EntityManager::sInst;
 }
 
 // ea: 0x503780

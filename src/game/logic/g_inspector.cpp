@@ -828,8 +828,8 @@ extern void FN_Multiplayer_MapRestart();  // game2.o
 extern void FN_Multiplayer_Rank1();
 extern void FN_Multiplayer_Rank2();
 extern void FN_Multiplayer_Rank3();
-extern Entity* FN_DebugThread_Select_Player();  // game2.o
-extern EntityManager* FN_DebugThread_Select_Level();
+extern void FN_DebugThread_Select_Player();  // game2.o
+extern void FN_DebugThread_Select_Level();
 extern void FN_DebugThread_Select_Nearest();    // game2.o
 extern void FN_DebugThread_Select_Nearest_Trigger();  // game2.o
 extern void FN_DebugThread_Select_UniqueIndex();      // game2.o

@@ -217,7 +217,7 @@ extern void nslGetSourcePosition(nslSourceID sid, float* const position);  // ?n
 // ============================================================================
 // DebugThread::DisplayEntitySound - ea: 0x4F8AB0
 // ============================================================================
-void DebugThread::DisplayEntitySound(const math::Position3* entityPos,
+void DebugThread::DisplayEntitySound(const math::Position3& entityPos,
                                      int xpos, int ypos, int yinc, float scale)
 {
     if (sound_disableAllOtherSounds.integer == 1)
@@ -885,7 +885,7 @@ void DebugThread::Render()
     g_inspectorManager.m_currentRgba[3] = 1.0f;
     g_inspectorManager.Print(tmpstr, 100, line, 0.5f);
     float entityPos[3] = { ox, oy, oz };
-    DisplayEntitySound((const math::Position3*)entityPos, 100, line, 18, 0.5f);
+    DisplayEntitySound(*(const math::Position3*)entityPos, 100, line, 18, 0.5f);
     g_SoundOnlyPlay.mHandle.mVal = (unsigned int)-1;
 }
 
