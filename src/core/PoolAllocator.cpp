@@ -475,7 +475,7 @@ int PoolAllocator::GetLargestBlockSize() const {
 // PoolAllocator::ReportTotals
 // ea: 0x7BDC20
 // ============================================================================
-void PoolAllocator::ReportTotals(ae_sized_array<ae_fixed_string<64, unsigned char>, 8>* strList) {
+void PoolAllocator::ReportTotals(ae_sized_array<ae_fixed_string<64, unsigned char>, 8>& strList) {
     char buf[64];
     for (int i = 0; i < mPoolArray.m_size; ++i) {
         BlockPool* pool = mPoolArray.m_elements[i];
@@ -488,7 +488,7 @@ void PoolAllocator::ReportTotals(ae_sized_array<ae_fixed_string<64, unsigned cha
         // Copy into ae_fixed_string
         ae_fixed_string<64, unsigned char> str;
         str.mLength = (unsigned char)(snprintf((char*)str.mBuff, str.capacity(), "%s", buf) & 0xFF);
-        strList->push_back(str);
+        strList.push_back(str);
     }
 }
 

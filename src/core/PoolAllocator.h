@@ -133,7 +133,7 @@ public:
 
     // Diagnostic reporting
     void ReportAllocations();
-    void ReportTotals(ae_sized_array<ae_fixed_string<64, unsigned char>, 8>* strList);
+    void ReportTotals(ae_sized_array<ae_fixed_string<64, unsigned char>, 8>& strList);
 
     // Check if pool has remaining capacity
     bool IsEmpty() const;                            // ea: 0x7BD470

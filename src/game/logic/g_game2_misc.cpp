@@ -3167,7 +3167,7 @@ extern void RE_Text_Paint(float x, float y, int font, float scale,
                           const float* color, const char* text, float a7,
                           int a8, int a9);
 
-void DisplayPoolTotals(PoolAllocator* pool)
+void DisplayPoolTotals(PoolAllocator& pool)
 {
     ae_sized_array<ae_fixed_string<64, unsigned char>, 8> strList;
     for (int i = 0; i < 8; ++i)
@@ -3176,7 +3176,7 @@ void DisplayPoolTotals(PoolAllocator* pool)
         strList.m_elements[i].mBuff[0] = 0;
     }
     strList.m_size = 0;
-    pool->ReportTotals(&strList);
+    pool.ReportTotals(strList);
     float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
     int y = 64;
     for (int i = 0; i < strList.m_size; ++i)

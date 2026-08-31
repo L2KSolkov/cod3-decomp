@@ -102,7 +102,7 @@ int AeThread::get_dlist_node_offset()
     return 0;
 }
 
-extern void DisplayPoolTotals(PoolAllocator* pool);   // g_game2_misc.cpp
+extern void DisplayPoolTotals(PoolAllocator& pool);   // g_game2_misc.cpp
 extern PoolAllocator* gCommonPoolAllocator;           // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A
 extern PoolAllocator* gAeThreadBackupStackAllocator;  // g_local.h
 DbLinkedHandle<EntityHandleDb, Entity> g_renderUniqueIndex;  // ?g_renderUniqueIndex@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o)
@@ -480,11 +480,11 @@ void DebugThread::Render()
             gDebugThread_Message = nullptr;
     }
     if (memory_reportBrocPool.integer == 1)
-        DisplayPoolTotals(gBrocPool);
+        DisplayPoolTotals(*gBrocPool);
     if (memory_reportBrocBackupStackPool.integer == 1)
-        DisplayPoolTotals(gAeThreadBackupStackAllocator);
+        DisplayPoolTotals(*gAeThreadBackupStackAllocator);
     if (memory_reportCommonPool.integer == 1)
-        DisplayPoolTotals(gCommonPoolAllocator);
+        DisplayPoolTotals(*gCommonPoolAllocator);
     if (memory_reportAepsStats.integer == 1)
     {
         FX_ReportFX();
