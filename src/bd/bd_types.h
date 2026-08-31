@@ -33,7 +33,7 @@ struct bdStringData {
     unsigned int m_length;
     unsigned int m_capacity;
 
-    bdStringData* getString();
+    char* getString();
 };
 static_assert(sizeof(bdStringData) == 12, "bdStringData size mismatch");
 

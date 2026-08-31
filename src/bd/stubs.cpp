@@ -76,9 +76,9 @@ bdEmptyStringStorage g_emptyStringStorage = {{1, 0, 0}, {0}};
 }
 
 // ea: 0x0089C890
-bdStringData* bdStringData::getString()
+char* bdStringData::getString()
 {
-    return this + 1;
+    return reinterpret_cast<char*>(this + 1);
 }
 
 // ea: 0x0089C8A0
