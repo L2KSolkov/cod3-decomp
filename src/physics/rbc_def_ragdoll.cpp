@@ -23,6 +23,19 @@ extern math::Dir3 construct_orth_ud(const math::Dir3& ud);
 
 #define MAX_JOINT_LIMITS 2
 
+// ea: 0x00888CD0
+void rigid_body_constraint_ragdoll::set_joint_limit_active(unsigned int f, bool b)
+{
+    if (f >= MAX_JOINT_LIMITS
+        && _tlAssert("c:/cod/code/tl/physics/include/rbc_defs\\rbc_def_ragdoll.h", 47,
+                     "f >= 0 && f < MAX_JOINT_LIMITS", defaultFileName))
+        __debugbreak();
+    if (b)
+        m_flags |= 1u << f;
+    else
+        m_flags &= ~(1u << f);
+}
+
 // ============================================================================
 // rigid_body_constraint_ragdoll::set â€” ea: 0x888E80
 // ============================================================================

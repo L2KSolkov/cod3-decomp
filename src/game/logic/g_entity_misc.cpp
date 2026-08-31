@@ -2807,14 +2807,6 @@ void rigid_body::add_force(const math::Dir3& f)
         reinterpret_cast<unsigned char*>(this) + 0x110);
     *forceSum = _mm_add_ps(*forceSum, f.v);
 }
-struct rigid_body_constraint_ragdoll {
-    void set_joint_limit_active(unsigned int a, bool b);
-};
-void rigid_body_constraint_ragdoll::set_joint_limit_active(unsigned int a,
-                                                           bool b)
-{
-    (void)a; (void)b;
-}
 struct rigid_body_constraint_contact;
 struct rigid_body_constraint;
 struct outer_time;
