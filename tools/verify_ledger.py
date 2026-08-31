@@ -647,6 +647,21 @@ def symbol_variants(name: str) -> set[str]:
             "?appendEncodedUInt16@bdBytePacker@@YA_NPAXIIPAIG@Z",
         "?removeEncodedUInt16@bdBytePacker@@SA_NPBEIIAAIAAG@Z":
             "?removeEncodedUInt16@bdBytePacker@@YA_NPBEIIPAIPAG@Z",
+        # The release uses a concrete HandleDb template specialization for
+        # ActiveEffectSet; the port keeps the same layout and methods in the
+        # non-template HandleDb type.
+        "??0?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE@XZ":
+            "??0HandleDb@@QAE@XZ",
+        "?AllocateHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAE?AV?$SizedHandle@$08$0BH@@@XZ":
+            "?AllocateHandle@HandleDb@@QAE?AVHandle@@XZ",
+        "?BindObjectToHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@PAVActiveEffectSet@@@Z":
+            "?BindObjectToHandle@HandleDb@@QAEXVHandle@@PAVActiveEffectSet@@@Z",
+        "?DereferenceHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QBEPAVActiveEffectSet@@VHandle@@@Z":
+            "?DereferenceHandle@HandleDb@@QBEPAVActiveEffectSet@@VHandle@@@Z",
+        "?ReleaseHandle@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXVHandle@@@Z":
+            "?ReleaseHandle@HandleDb@@QAEXVHandle@@@Z",
+        "?Dump@?$HandleDb@VActiveEffectSet@@$0CAA@V?$SizedHandle@$08$0BH@@@@@QAEXXZ":
+            "?Dump@HandleDb@@QAEXXZ",
         # Release chunk overrides retain protected-member (`MAE`) access
         # decorations, while the port exposes the same virtual entry points
         # publicly (`UAE`). Access does not change the x86 call contract or
