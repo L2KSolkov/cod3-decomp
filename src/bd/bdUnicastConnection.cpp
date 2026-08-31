@@ -152,11 +152,10 @@ bool bdUnicastConnection::send(bdReference<bdMessage> message, bool reliable) {
         proxy.log("bdConnection/connections", "connection not established.");
     }
 
-    unsigned int payloadSize = 0;
-    if (message.m_ptr->hasPayload())
-        payloadSize += message.m_ptr->getPayload().m_ptr->getDataSize();
-    if (message.m_ptr->hasUnencryptedPayload())
-        payloadSize += message.m_ptr->getUnencryptedPayload().m_ptr->getMaxReadSize();
+    bdReference<bdBitBuffer> payload = message.m_ptr->getPayload();
+    const unsigned int payloadSize =
+        payload.m_ptr != NULL ? payload.m_ptr->getNumBitsWritten() : 0;
+    bdListRelease(payload);
 
     bool sent = false;
     if (payloadSize > BD_MAX_MESSAGE_SIZE) {
