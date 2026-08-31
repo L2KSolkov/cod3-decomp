@@ -21,6 +21,7 @@ bdLoopbackConnection::~bdLoopbackConnection() {
 
 // ============================================================================
 // bdLoopbackConnection::receive - ea: 0x8A3A60
+// ea: 0x008A3A60
 // ============================================================================
 bool bdLoopbackConnection::receive(const unsigned char*, unsigned int) {
     return true;
@@ -28,6 +29,7 @@ bool bdLoopbackConnection::receive(const unsigned char*, unsigned int) {
 
 // ============================================================================
 // bdLoopbackConnection::checkNewMessages - ea: 0x8A3A70
+// ea: 0x008A3A70
 // ============================================================================
 bool bdLoopbackConnection::checkNewMessages() {
     bool result = (m_flag70 != 0);
@@ -37,6 +39,7 @@ bool bdLoopbackConnection::checkNewMessages() {
 
 // ============================================================================
 // bdLoopbackConnection::send - ea: 0x8A40A0
+// ea: 0x008A40A0
 // ============================================================================
 bool bdLoopbackConnection::send(const bdReference<bdMessage>& message, bool) {
     bdReference<bdBitBuffer> payload = message.m_ptr->getPayload();
@@ -67,6 +70,7 @@ bool bdLoopbackConnection::getMessageToDispatch(bdReference<bdMessage>& message)
 
 // ============================================================================
 // bdLoopbackConnection::getDataToSend - ea: 0x8A3A80
+// ea: 0x008A3A80
 // ============================================================================
 unsigned int bdLoopbackConnection::getDataToSend(unsigned char*, unsigned int) {
     return 0;
