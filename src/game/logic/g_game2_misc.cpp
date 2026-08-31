@@ -1472,10 +1472,10 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         sentient->mLastTerrainMappingFootOffsetZ[1] = 0.0f;
         return;
     }
-    if (!sentient->mEnableTerrainMappingIK)
+    if (!sentient->mEnableTerrainMappingIK
+        && fabsf(sentient->mLastTerrainMappingFootOffsetZ[0]) < 1.0f
+        && fabsf(sentient->mLastTerrainMappingFootOffsetZ[1]) < 1.0f)
     {
-        sentient->mLastTerrainMappingFootOffsetZ[0] = 0.0f;
-        sentient->mLastTerrainMappingFootOffsetZ[1] = 0.0f;
         sentient->mLastTerrainMappingPelvisZ = -9999.0f;
         sentient->mLastTerrainMappingOriginZ = -9999.0f;
         return;
