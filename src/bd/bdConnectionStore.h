@@ -40,7 +40,7 @@ public:
     void closeAll();
     void registerListener(bdConnectionListener* listener);
     void unregisterListener(bdConnectionListener* listener);
-    void remove(const bdReference<bdConnection>& connection);
+    void remove(bdReference<bdConnection> connection);
     bdReference<bdConnection> create(const bdReference<bdCommonAddr>& addr,
                                      const XNKID& secID);
 

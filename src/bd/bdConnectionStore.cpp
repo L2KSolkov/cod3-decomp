@@ -341,12 +341,13 @@ void bdConnectionStore::unregisterListener(bdConnectionListener* listener) {
 // ============================================================================
 // bdConnectionStore::remove - ea: 0x8A2A10
 // ============================================================================
-void bdConnectionStore::remove(const bdReference<bdConnection>& connection) {
+void bdConnectionStore::remove(bdReference<bdConnection> connection) {
     bdMessageProxy proxy(".\\bdConnectionStore.cpp",
                          "void __thiscall bdConnectionStore::remove(class bdReference<class bdConnection>)",
                          0x6Eu, "dw/info/");
     proxy.log("bdConnection/connectionstore", "Removing connection.");
     bdReference<bdAddrHandle> addrHandle = connection.m_ptr->getAddressHandle();
+    bdListAddRef(addrHandle);
     bool removed = m_connectionMap.remove(bdAddrHandleHashmapWrapper(addrHandle));
     if (!removed) {
         bdMessageProxy proxy(".\\bdConnectionStore.cpp",
@@ -354,6 +355,8 @@ void bdConnectionStore::remove(const bdReference<bdConnection>& connection) {
                              0x74u, "dw/warn/");
         proxy.log("bdConnection/connectionstore", "failed to remove connection from store, connection not present.");
     }
+    bdListRelease(addrHandle);
+    bdListRelease(connection);
 }
 
 // ============================================================================
