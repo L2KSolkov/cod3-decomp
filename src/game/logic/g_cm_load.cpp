@@ -8898,7 +8898,7 @@ public:
     void* mLayout;   // +0x00 (InplaceTree<uint,uint>*)
     InplaceVector<GdbFileSet::Value>* mRecord; // +0x04
     bool IsValid() const;
-    GdbFileSet::Value* GetStruct();
+    void* GetStruct();
 };
 struct GdbFileBank;
 class PakFile;
@@ -8927,7 +8927,7 @@ bool GdbFile::IsValid() const
 }
 
 // ea: 0x004E2AC0
-GdbFileSet::Value* GdbFile::GetStruct()
+void* GdbFile::GetStruct()
 {
     return &(*mRecord)[0];
 }
