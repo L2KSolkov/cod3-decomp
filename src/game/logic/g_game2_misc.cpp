@@ -1965,6 +1965,17 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
             / (groundedFootRange[1] - groundedFootRange[0]);
         groundedness = max(0.0f, min(1.0f, groundedness));
         const math::Position3 footPos(foot->w[0], foot->w[1], foot->w[2]);
+        nalGenericBoneHandle toeHandle{nullptr, 0};
+        const int toeBoneIndex = i == 0 ? 22 : 21;
+        nalGenericSkeleton_GetBoneHandle(skeleton, &toeHandle,
+                                         &BoneNames[toeBoneIndex]);
+        math::Position3 toePos = footPos;
+        if (toeHandle.Skeleton != nullptr)
+        {
+            const nalPositionOrientation toeOrientation =
+                nalGenericPose_GetModelPositionOrientation(pose, &toeHandle);
+            toePos = toeOrientation.pos;
+        }
         math::Position3 start(footPos.v.m128_f32[0],
                              footPos.v.m128_f32[1],
                              footPos.v.m128_f32[2] + 18.0f);
@@ -2047,7 +2058,7 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         float& offset = sentient->mLastTerrainMappingFootOffsetZ[i];
         offset += (targetOffset - offset) * blend;
         foot->w[2] += offset;
-        sentient->mLastTerrainMappingToePos[i] = footPos;
+        sentient->mLastTerrainMappingToePos[i] = toePos;
     }
 
     if (sentient->mLastTerrainMappingPelvisZ >= -9998.0f)
