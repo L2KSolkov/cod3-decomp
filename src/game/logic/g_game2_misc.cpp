@@ -906,7 +906,7 @@ extern void filter_proximity_data(const math::Position3& lo,
                                   proximity_data_t& out);
 extern void Axis4_to_nalMatrix4x4(const float (*axis)[3],
                                   nalMatrix4x4* mat);  // ea: 0x4F6220
-tlFixedString boneName[8];               // ?boneName (game2.o @ 0xF052B8)
+tlFixedString boneName("bip01 r hand"); // game2.o @ 0xF052B8
 tlFixedString noneString("** NONE **"); // game2.o @ 0xF05550
 tlFixedString stru_F05040("bip01 pelvis"); // game2.o @ 0xF05040
 tlFixedString stru_F05318;               // ?stru_F05318 (game2.o bone name)
@@ -928,7 +928,7 @@ void AnimIK::GetGunAndHandMatrix(Entity* ent,
                                  nalMatrix4x4& gunMat,
                                  nalMatrix4x4& handMat)
 {
-    nalGenericSkeleton_GetBoneHandle(skeleton, &handHandle, &boneName[0]);
+    nalGenericSkeleton_GetBoneHandle(skeleton, &handHandle, &boneName);
     Axis4_to_nalMatrix4x4(ent->sentient->mLastAnimIKGunOffset, &gunMat);
 }
 
@@ -1102,7 +1102,7 @@ void AnimIK::Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
     nalGenericBoneHandle gunHandle;
     gunHandle.Skeleton = nullptr;
     gunHandle.BoneIndex = 0;
-    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &boneName[0]);
+    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &boneName);
 
     nalMatrix4x4 handMat;
     nalMatrix4x4 gunLocalMat;
@@ -1119,7 +1119,7 @@ void AnimIK::Update(Entity* ent, nalGeneric::nalGenericSkeleton* inSkeleton,
         nalGenericPose_GetModelPositionOrientation(pose, &gunHandle);
     nalMatrix4x4_FromPositionOrientation(leftHandOrientation, &leftHandMat);
 
-    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &boneName[0]);
+    nalGenericSkeleton_GetBoneHandle(skeleton, &gunHandle, &boneName);
     const nalPositionOrientation rightHandOrientation =
         nalGenericPose_GetModelPositionOrientation(pose, &gunHandle);
     nalMatrix4x4_FromPositionOrientation(rightHandOrientation, &rightHandMat);
@@ -1256,7 +1256,7 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
     nalGenericSkeleton_GetBoneHandle(skeleton, &leftHandHandle,
                                      &stru_F05238);
     nalGenericSkeleton_GetBoneHandle(skeleton, &rightHandHandle,
-                                     &boneName[0]);
+                                     &boneName);
     const bool haveHandHandles = leftHandHandle.Skeleton != nullptr
         && rightHandHandle.Skeleton != nullptr;
     nalMatrix4x4 startHandMatrices[2];
