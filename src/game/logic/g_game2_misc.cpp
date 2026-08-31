@@ -2085,6 +2085,10 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         nalPositionOrientation pelvis =
             nalGenericPose_GetModelPositionOrientation(pose, &pelvisHandle);
         pelvis.pos.v.m128_f32[2] = sentient->mLastTerrainMappingPelvisZ;
+        // The release's localFootMat is overwritten by both foot inputs;
+        // after the loop it holds rightFootMat and supplies the pelvis
+        // orientation for the final pose write.
+        pelvis.orient = AnimIK_QuaternionFromMatrix(rightFootMat);
         static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
             pelvisHandle, pelvis);
     }
