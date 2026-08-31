@@ -522,8 +522,8 @@ public:
         dlist_node* m_prev;
 
         // ea: 0x005EA030
-        // ea: 0x005EA050
-        // ea: 0x005EA100
+        // alias-ea: 0x005EA050
+        // alias-ea: 0x005EA100
         dlist_node(dlist_node* prev, dlist_node* next)
             : m_next(next), m_prev(prev) {}
         void pop();
@@ -6784,7 +6784,7 @@ public:
     // ea: 0x005EFCA0
     virtual int GetSize() { return 1; }
     // ea: 0x005EFCB0
-    // ea: 0x005EFCE0
+    // alias-ea: 0x005EFCE0
     virtual ~WaitTilOutputInst1Local() {}
 };
 
@@ -6802,7 +6802,7 @@ public:
     // ea: 0x005EFDE0
     virtual int GetSize() { return 2; }
     // ea: 0x005EFDF0
-    // ea: 0x005EFE20
+    // alias-ea: 0x005EFE20
     virtual ~WaitTilOutputInst2Local() {}
 };
 
@@ -26555,8 +26555,8 @@ T entity_get_sentient_field(unsigned int handle)
 
 template <typename T, int OFF, int IDX>
 // ea: 0x005FEFA0
-// ea: 0x005FF1E0
-// ea: 0x005FF420
+// alias-ea: 0x005FF1E0
+// alias-ea: 0x005FF420
 void entity_set_player_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26591,8 +26591,8 @@ void entity_set_player_field(unsigned int handle, T val)
 
 template <typename T, int OFF, int IDX>
 // ea: 0x005FF0C0
-// ea: 0x005FF300
-// ea: 0x005FF550
+// alias-ea: 0x005FF300
+// alias-ea: 0x005FF550
 T entity_get_player_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26630,9 +26630,9 @@ T entity_get_player_field(unsigned int handle)
 
 template <typename T, int OFF, int IDX>
 // ea: 0x005FF710
-// ea: 0x005FF960
-// ea: 0x005FFBB0
-// ea: 0x005FFE00
+// alias-ea: 0x005FF960
+// alias-ea: 0x005FFBB0
+// alias-ea: 0x005FFE00
 void entity_set_persistent_player_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26667,9 +26667,9 @@ void entity_set_persistent_player_field(unsigned int handle, T val)
 
 template <typename T, int OFF, int IDX>
 // ea: 0x005FF830
-// ea: 0x005FFA80
-// ea: 0x005FFCD0
-// ea: 0x005FFF20
+// alias-ea: 0x005FFA80
+// alias-ea: 0x005FFCD0
+// alias-ea: 0x005FFF20
 T entity_get_persistent_player_field(unsigned int handle)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
