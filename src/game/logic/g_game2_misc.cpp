@@ -1377,7 +1377,13 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
         return;
 
     const float steering = vehicle->scr_vehicle->current.mSteeringAngle;
-    if (client->ps.vehType == 1 && client->ps.vehSubType == 2)
+    vehicle_info_t* vehicleInfo =
+        VEH_GetInfo(vehicle->scr_vehicle->infoIdx);
+    const bool specialVehicle =
+        (client->ps.vehType == 1 && client->ps.vehSubType == 2)
+        || (ent->actor != nullptr && vehicleInfo != nullptr
+            && vehicleInfo->type == 1 && vehicleInfo->subtype == 2);
+    if (specialVehicle)
     {
         const float side = fabsf(steering);
         nalGenericBoneHandle pelvisHandle{nullptr, 0};
