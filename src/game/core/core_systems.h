@@ -1166,7 +1166,7 @@ public:
         void Clear();
         void Where(int id, const int& val, bool weak);
         void Where(int id, const DbQueryString& val, bool weak);
-        void ConstructQuery(DbQuery* query) const;  // ea: 0x004E8390
+        void ConstructQuery(DbQuery& query) const;  // ea: 0x004E8390
     };
     static_assert(sizeof(CachedQuery) == 0x1B8, "CachedQuery size mismatch");
 
@@ -1658,7 +1658,8 @@ struct DbFieldSet {
 };
 static_assert(sizeof(DbFieldSet) == 0x250, "DbFieldSet size mismatch");
 
-struct DbQuery {
+class DbQuery {
+public:
     friend class EffectEventSys;
     DbQuery(const DbTable& db);       // ea: 0x004E7F20
     virtual ~DbQuery();

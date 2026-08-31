@@ -4749,72 +4749,72 @@ void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
 }
 
 // ea: 0x004E8390
-void EffectEventSys::CachedQuery::ConstructQuery(DbQuery* query) const
+void EffectEventSys::CachedQuery::ConstructQuery(DbQuery& query) const
 {
     if ((mSpecifiedFields.mBits[0] & 0x100) != 0)
     {
         bool weak = (mWeakFields.mBits[8 >> 3] >> (8 & 7)) & 1;
-        query->Where(8, mWEAPON_ID, weak);
+        query.Where(8, mWEAPON_ID, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x10) != 0)
     {
         bool weak = (mWeakFields.mBits[4 >> 3] >> (4 & 7)) & 1;
-        query->Where(4, mMYMATERIAL, weak);
+        query.Where(4, mMYMATERIAL, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x20) != 0)
     {
         bool weak = (mWeakFields.mBits[5 >> 3] >> (5 & 7)) & 1;
-        query->Where(5, mMIN_DIST, weak);
+        query.Where(5, mMIN_DIST, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x40) != 0)
     {
         bool weak = (mWeakFields.mBits[6 >> 3] >> (6 & 7)) & 1;
-        query->Where(6, mMAX_DIST, weak);
+        query.Where(6, mMAX_DIST, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x1000) != 0)
     {
         bool weak = (mWeakFields.mBits[12 >> 3] >> (12 & 7)) & 1;
-        query->Where(12, mBARREL, weak);
+        query.Where(12, mBARREL, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 4) != 0)
     {
         bool weak = (mWeakFields.mBits[2 >> 3] >> (2 & 7)) & 1;
-        query->Where(2, mSTANCE, weak);
+        query.Where(2, mSTANCE, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x200) != 0)
     {
         bool weak = (mWeakFields.mBits[9 >> 3] >> (9 & 7)) & 1;
-        query->Where(9, mVEHICLE_ID, weak);
+        query.Where(9, mVEHICLE_ID, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x400) != 0)
     {
         bool weak = (mWeakFields.mBits[10 >> 3] >> (10 & 7)) & 1;
-        query->Where(10, mACTION, weak);
+        query.Where(10, mACTION, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x800) != 0)
     {
         bool weak = (mWeakFields.mBits[11 >> 3] >> (11 & 7)) & 1;
-        query->Where(11, mWEAPON_CLASS, weak);
+        query.Where(11, mWEAPON_CLASS, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 2) != 0)
     {
         bool weak = (mWeakFields.mBits[1 >> 3] >> (1 & 7)) & 1;
-        query->Where(1, mFOOTSTEP, weak);
+        query.Where(1, mFOOTSTEP, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 0x80) != 0)
     {
         bool weak = (mWeakFields.mBits[7 >> 3] >> (7 & 7)) & 1;
-        query->Where(7, mSCRIPT_ID, weak);
+        query.Where(7, mSCRIPT_ID, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 1) != 0)
     {
         bool weak = (mWeakFields.mBits[0 >> 3] >> (0 & 7)) & 1;
-        query->Where(0, mCONTEXT, weak);
+        query.Where(0, mCONTEXT, weak);
     }
     if ((mSpecifiedFields.mBits[0] & 8) != 0)
     {
         bool weak = (mWeakFields.mBits[3 >> 3] >> (3 & 7)) & 1;
-        query->Where(3, mMATERIAL, weak);
+        query.Where(3, mMATERIAL, weak);
     }
 }
 
@@ -5206,7 +5206,7 @@ int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
     for (int ti = 0; ti < event_tables.m_size; ++ti)
     {
         DbQuery query(*event_tables[ti]);
-        q.mCachedQuery.ConstructQuery(&query);
+        q.mCachedQuery.ConstructQuery(query);
         DbQueryResults results;
         memset(&results, 0, sizeof(results));
         query.FindMatches(results);
