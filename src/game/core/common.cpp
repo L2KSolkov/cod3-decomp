@@ -6,6 +6,7 @@
 #include "game/core/core_types.h"
 #include "game/core/core_systems.h"
 #include "game/core/core_globals.h"
+#include "game/ui_types.h"
 #include "input/controller.h"
 
 // ?gSoundOptions@@3VSoundOptions@@A (core.o @ 0xF00EF0)
@@ -184,7 +185,11 @@ extern void* AudioBankMgr_sInst;
 enum nflState : unsigned;
 extern nflState codNflUpdate();
 extern void SyncFrameBuffers();
-class FEManager; extern FEManager g_femanager;
+class FEManager {
+public:
+    DialogMenuSystem* GetDMS(int client);
+};
+extern FEManager g_femanager;
 bool gUseNfl;                       // ?gUseNfl@@3_NA (core.o)
 bool g_enableControllerTest;        // ?g_enableControllerTest@@3_NA (game2.o)
 bool g_controllerConnected[4];      // ?g_controllerConnected@@3PA_NA (game2.o)
@@ -401,6 +406,7 @@ extern void DialogMenuSystem_BringUp(void* self, const char* t, bool type_ok,
                                      bool type_yn, const char* title_unloc,
                                      bool layer1);
 extern void DialogMenuSystem_CloseDialog(void* self);
+extern void j_nullsub_96();
 extern void* FEManager_GetIGMS(void* self, int client);
 extern void InGameMenuSystem_ActivatePauseMenu(void* self);
 // The derived call-site artifact uses FEMenuSystem::IsSystemActive at
@@ -2054,14 +2060,15 @@ void Com_ControllerWarningDialog(bool activate, int client)
         char newString[512];
         sprintf(newString, "%s %d %s", STBString,
                 *(int*)controller::inst() + 1, v3);
-        void* DMS = FEManager_GetDMS(&g_femanager, client);
-        DialogMenuSystem_BringUp(DMS, newString, false, false, "", true);
-        DialogMenuSystem_CloseDialog(DMS);
+        DialogMenuSystem* DMS = g_femanager.GetDMS(client);
+        DMS->BringUp(newString, false, false, defaultFileName, true);
+        DMS->GetLayer(DMS->GetActiveMenu() == 0)->triangleResponse =
+            (void (*)(int))j_nullsub_96;
+        DMS->GetLayer(DMS->GetActiveMenu() == 0)->Reformat(true, 0);
     }
     else
     {
-        void* v11 = FEManager_GetDMS(&g_femanager, client);
-        DialogMenuSystem_CloseDialog(v11);
+        g_femanager.GetDMS(client)->CloseDialog();
     }
 }
 
