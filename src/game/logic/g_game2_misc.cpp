@@ -2666,16 +2666,6 @@ void TestFPS::GetFilename(char* filename)
 // ============================================================================
 // SplineMgr - spline asset bank (0x184, IDA verified)
 // ============================================================================
-struct SplineEntry {
-    int pakId;   // +0x00 (PAK_ID_INVALID = -1)
-    void* file;  // +0x04
-    int pad8;    // +0x08
-
-    SplineEntry();                         // ea: 0x5186C0
-    void Unload();                         // ea: 0x5186E0
-    bool IsUsed() const;                   // ea: 0x518700
-};
-
 struct SplineGroupFile {
     void* mTree;      // +0x00 InplaceTree<uint,uint>
     void** mPtrs;     // +0x04 InplaceVector<SplineGroup*>
@@ -2713,10 +2703,21 @@ struct HashGroupFileLocal {
 
 class SplineMgr : public AssetBankSet {
 public:
+    struct SplineEntry {
+        int pakId;   // +0x00 (PAK_ID_INVALID = -1)
+        void* file;  // +0x04
+        int pad8;    // +0x08
+
+        SplineEntry();                         // ea: 0x5186C0
+        void Unload();                         // ea: 0x5186E0
+        bool IsUsed() const;                   // ea: 0x518700
+    };
     SplineEntry mList[32];             // +0x04
 
     SplineEntry* GetUnusedEntry();     // ea: 0x4F9700
+private:
     virtual void UnloadBank(TPakId pakId); // ea: 0x4F97C0
+public:
     static bool EndOfSpline(const float* p);  // ea: 0x4F59A0
     void AddSplineGroupFile(unsigned char* data, int pakId);  // ea: 0x4FF5B0
     SplinePathData* GetSplinePathData(unsigned int name, TPakId& pakId);  // ea: 0x4FF5D0
@@ -2734,6 +2735,8 @@ public:
     static void DeleteInst();  // ?DeleteInst@SplineMgr@@SAXXZ
 };
 
+using SplineEntry = SplineMgr::SplineEntry;
+
 extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
 SplineMgr* SplineMgr::sInst;  // ?sInst@SplineMgr@@2PAV1@A (game2.o @ 0x12F3EA0)
 
@@ -2744,20 +2747,20 @@ SplineMgr* SplineMgr::Inst()
 }
 
 // ea: 0x005186C0
-SplineEntry::SplineEntry()
+SplineMgr::SplineEntry::SplineEntry()
     : pakId(-1), file(nullptr)
 {
 }
 
 // ea: 0x005186E0
-void SplineEntry::Unload()
+void SplineMgr::SplineEntry::Unload()
 {
     pakId = -1;
     file = nullptr;
 }
 
 // ea: 0x00518700
-bool SplineEntry::IsUsed() const
+bool SplineMgr::SplineEntry::IsUsed() const
 {
     return pakId != -1;
 }
