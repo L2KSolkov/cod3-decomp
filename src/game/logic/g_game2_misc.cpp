@@ -1570,8 +1570,10 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
                 - footPos.v.m128_f32[2];
             sentient->mLastTerrainMappingTraceZ[i] =
                 trace.endpos.v.m128_f32[2];
-            ent->client->mFootStepsSurface[i] =
-                trace.surfaceFlags;
+            int surfaceBits = 0;
+            memcpy(&surfaceBits, &trace.normal.v.m128_f32[2],
+                   sizeof(surfaceBits));
+            ent->client->mFootStepsSurface[i] = surfaceBits;
         }
         const float blend = min(1.0f, elapsedMs * 0.001f * 8.0f);
         float& offset = sentient->mLastTerrainMappingFootOffsetZ[i];
