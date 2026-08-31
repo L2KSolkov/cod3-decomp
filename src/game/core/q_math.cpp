@@ -188,7 +188,7 @@ const float Q_random(int* seed)
 {
     int v1 = 69069 * *seed + 1;
     *seed = v1;
-    float seeda = (float)(v1 & 0xFFFF);
+    float seeda = (float)v1;
     return seeda / 65536.0;
 }
 
@@ -197,7 +197,7 @@ const float Q_crandom(int* seed)
 {
     int v1 = 69069 * *seed + 1;
     *seed = v1;
-    float seeda = (float)(v1 & 0xFFFF);
+    float seeda = (float)v1;
     return seeda / 65536.0 - 0.5 + seeda / 65536.0 - 0.5;
 }
 
