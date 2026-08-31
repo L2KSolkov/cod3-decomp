@@ -72,8 +72,6 @@ inline void bdListRelease(bdControlChunkStore& value) {
 // ============================================================================
 class bdUnicastConnection : public bdConnection {
 public:
-    virtual ~bdUnicastConnection();
-
     virtual bool connect();
     virtual void disconnect();
     virtual void close();
@@ -82,6 +80,7 @@ public:
 
 protected:
     friend class bdConnectionStore;
+    virtual ~bdUnicastConnection();
     bdUnicastConnection();
     bdUnicastConnection(bdReference<bdCommonAddr> dest);
 
