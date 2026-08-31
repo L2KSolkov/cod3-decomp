@@ -9,6 +9,8 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x0089D460	??0bdInetAddr@@QAE@PBVbdInAddr@@@Z	V4	PASS	ida-manual-bd-inetaddr-20260830	2026-08-30	src/bd/bdInetAddr.cpp:24-27; c3_bin/codmp_xboxr.xbe.c:1667794-1667800	Release copies the four-byte source object; source copies m_addr from the mapped bdInAddr pointer.
 0x0089D470	?set@bdInetAddr@@QAEXABV1@@Z	V3	PASS	ida-manual-bd-inetaddr-20260830	2026-08-30	src/bd/bdInetAddr.cpp:29-32	Concrete address-copy setter is present.
 0x0089D470	?set@bdInetAddr@@QAEXABV1@@Z	V4	PASS	ida-manual-bd-inetaddr-20260830	2026-08-30	src/bd/bdInetAddr.cpp:29-32; c3_bin/codmp_xboxr.xbe.c:1667801-1667806	Release copies the four-byte address; source matches the mapped void ABI and copy behavior.
+0x0089D480	?set@bdInetAddr@@QAEXPBD@Z	V3	PASS	bdinetaddr-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1667808-1667813;src/bd/bdInetAddr.cpp:34-36	Setter delegates string parsing to the embedded bdInAddr.
+0x0089D480	?set@bdInetAddr@@QAEXPBD@Z	V4	PASS	bdinetaddr-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1667808-1667813;src/bd/bdInetAddr.cpp:34-36	Release/source string setter delegation and const-character-pointer ABI match.
 0x0089D490	?set@bdInetAddr@@QAEXI@Z	V3	PASS	ida-manual-bd-inetaddr-20260830	2026-08-30	src/bd/bdInetAddr.cpp:39-42	Concrete integer setter is present.
 0x0089D490	?set@bdInetAddr@@QAEXI@Z	V4	PASS	ida-manual-bd-inetaddr-20260830	2026-08-30	src/bd/bdInetAddr.cpp:39-42; c3_bin/codmp_xboxr.xbe.c:1667808-1667813	Release stores the unsigned address; source matches the mapped void ABI and store.
 0x0089D4A0	?set@bdInetAddr@@QAEXPBVbdInAddr@@@Z	V3	PASS	ida-manual-bd-inetaddr-20260830	2026-08-30	src/bd/bdInetAddr.cpp:44-47	Concrete bdInAddr-pointer setter is present.
