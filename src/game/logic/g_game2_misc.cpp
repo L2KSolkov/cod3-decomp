@@ -1697,6 +1697,35 @@ void AnimIK::ApplyFire(Entity* ent)
                              latestOffsetDist * offsetScale, 0.0f));
     RotateBone(11, math::Dir3(-latestPitchAngle * pitchScale,
                               -latestOffsetDist * offsetScale, 0.0f));
+
+    nalGenericBoneHandle leftHandHandle{nullptr, 0};
+    nalGenericBoneHandle rightHandHandle{nullptr, 0};
+    nalGenericSkeleton_GetBoneHandle(skeleton, &leftHandHandle,
+                                     &BoneNames[9]);
+    nalGenericSkeleton_GetBoneHandle(skeleton, &rightHandHandle,
+                                     &BoneNames[13]);
+    if (leftHandHandle.Skeleton != nullptr)
+    {
+        const nalPositionOrientation hand =
+            nalGenericPose_GetModelPositionOrientation(pose,
+                                                       &leftHandHandle);
+        nalMatrix4x4 target;
+        nalMatrix4x4_FromPositionOrientation(hand, &target);
+        target.w[0] -= latestOffsetDist * offsetScale;
+        AnimIK_ApplyTwoBoneIK(this, 0, BoneNames[9], BoneNames[8],
+                              BoneNames[7], target);
+    }
+    if (rightHandHandle.Skeleton != nullptr)
+    {
+        const nalPositionOrientation hand =
+            nalGenericPose_GetModelPositionOrientation(pose,
+                                                       &rightHandHandle);
+        nalMatrix4x4 target;
+        nalMatrix4x4_FromPositionOrientation(hand, &target);
+        target.w[0] -= latestOffsetDist * offsetScale;
+        AnimIK_ApplyTwoBoneIK(this, 1, BoneNames[13], BoneNames[12],
+                              BoneNames[11], target);
+    }
 }
 // ea: 0x00504C90
 void AnimIK::ApplyVehicleSteering(Entity* ent)
