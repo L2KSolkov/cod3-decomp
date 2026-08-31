@@ -1622,37 +1622,37 @@ void FS_Startup(const char* gameName)
     fs_restrict = Cvar_Get("fs_restrict", defaultFileName, 16);
     fs_ignoreLozalized = Cvar_Get("fs_ignoreLozalized", "0", 544);
     if (*fs_cdpath->string != 0)
-        FS_AddLocalizedGameDirectory(fs_cdpath->string, gameName);
+        FS_AddLocalizedGameDirectory(gameName, fs_cdpath->string);
     if (*fs_basepath->string != 0)
-        FS_AddLocalizedGameDirectory(fs_basepath->string, gameName);
+        FS_AddLocalizedGameDirectory(gameName, fs_basepath->string);
     if (*fs_basepath->string != 0
         && Q_stricmp(fs_homepath->string, fs_basepath->string) != 0)
     {
-        FS_AddLocalizedGameDirectory(fs_homepath->string, gameName);
+        FS_AddLocalizedGameDirectory(gameName, fs_homepath->string);
     }
     if (*fs_basegame->string != 0
         && Q_stricmp(gameName, defaultFileName) == 0
         && Q_stricmp(fs_basegame->string, gameName) != 0)
     {
         if (*fs_cdpath->string != 0)
-            FS_AddLocalizedGameDirectory(fs_cdpath->string, fs_basegame->string);
+            FS_AddLocalizedGameDirectory(fs_basegame->string, fs_cdpath->string);
         if (*fs_basepath->string != 0)
-            FS_AddLocalizedGameDirectory(fs_basepath->string, fs_basegame->string);
+            FS_AddLocalizedGameDirectory(fs_basegame->string, fs_basepath->string);
         char* v4 = fs_homepath->string;
         if (*v4 != 0 && Q_stricmp(v4, fs_basepath->string) != 0)
-            FS_AddLocalizedGameDirectory(fs_homepath->string, fs_basegame->string);
+            FS_AddLocalizedGameDirectory(fs_basegame->string, fs_homepath->string);
     }
     if (*fs_gamedirvar->string != 0
         && Q_stricmp(gameName, defaultFileName) == 0
         && Q_stricmp(fs_gamedirvar->string, gameName) != 0)
     {
         if (*fs_cdpath->string != 0)
-            FS_AddLocalizedGameDirectory(fs_cdpath->string, fs_gamedirvar->string);
+            FS_AddLocalizedGameDirectory(fs_gamedirvar->string, fs_cdpath->string);
         if (*fs_basepath->string != 0)
-            FS_AddLocalizedGameDirectory(fs_basepath->string, fs_gamedirvar->string);
+            FS_AddLocalizedGameDirectory(fs_gamedirvar->string, fs_basepath->string);
         char* v5 = fs_homepath->string;
         if (*v5 != 0 && Q_stricmp(v5, fs_basepath->string) != 0)
-            FS_AddLocalizedGameDirectory(fs_homepath->string, fs_gamedirvar->string);
+            FS_AddLocalizedGameDirectory(fs_gamedirvar->string, fs_homepath->string);
     }
     fs_gamedirvar->modified = 0;
     Com_Printf("----------------------\n");
