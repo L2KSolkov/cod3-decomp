@@ -26265,16 +26265,16 @@ T entity_get_actor_field(unsigned int handle)
 }
 
 // ea: 0x005EBA90
-// ea: 0x005EBD30
-// ea: 0x005EBFD0
-// ea: 0x005EC270
-// ea: 0x005EC510
-// ea: 0x005EC7B0
-// ea: 0x005ECA50
-// ea: 0x005ECCB0
-// ea: 0x005ECF10
-// ea: 0x005ED0D0
-// ea: 0x005ED290
+// alias-ea: 0x005EBD30
+// alias-ea: 0x005EBFD0
+// alias-ea: 0x005EC270
+// alias-ea: 0x005EC510
+// alias-ea: 0x005EC7B0
+// alias-ea: 0x005ECA50
+// alias-ea: 0x005ECCB0
+// alias-ea: 0x005ECF10
+// alias-ea: 0x005ED0D0
+// alias-ea: 0x005ED290
 template <typename T, int OFF, int IDX>
 void pnode_set_field(int handle, T val)
 {
@@ -26321,16 +26321,16 @@ void pnode_set_field(int handle, T val)
 }
 
 // ea: 0x005EBBD0
-// ea: 0x005EBE70
-// ea: 0x005EC110
-// ea: 0x005EC3B0
-// ea: 0x005EC650
-// ea: 0x005EC8F0
-// ea: 0x005ECB70
-// ea: 0x005ECDD0
-// ea: 0x005ED020
-// ea: 0x005ED1E0
-// ea: 0x005ED3D0
+// alias-ea: 0x005EBE70
+// alias-ea: 0x005EC110
+// alias-ea: 0x005EC3B0
+// alias-ea: 0x005EC650
+// alias-ea: 0x005EC8F0
+// alias-ea: 0x005ECB70
+// alias-ea: 0x005ECDD0
+// alias-ea: 0x005ED020
+// alias-ea: 0x005ED1E0
+// alias-ea: 0x005ED3D0
 template <typename T, int OFF, int IDX>
 T pnode_get_field(int handle)
 {
@@ -26399,12 +26399,12 @@ inline Broc::vector vnode_invalid_value<Broc::vector>()
 }
 
 // ea: 0x005ED530
-// ea: 0x005ED690
-// ea: 0x005ED7F0
-// ea: 0x005ED940
-// ea: 0x005EDA90
-// ea: 0x005EDB90
-// ea: 0x005EDC90
+// alias-ea: 0x005ED690
+// alias-ea: 0x005ED7F0
+// alias-ea: 0x005ED940
+// alias-ea: 0x005EDA90
+// alias-ea: 0x005EDB90
+// alias-ea: 0x005EDC90
 template <typename T, int OFF>
 void vnode_set_field(int handle, T val)
 {
@@ -26426,12 +26426,12 @@ void vnode_set_field(int handle, T val)
 }
 
 // ea: 0x005ED5F0
-// ea: 0x005ED750
-// ea: 0x005ED880
-// ea: 0x005ED9D0
-// ea: 0x005EDB10
-// ea: 0x005EDC10
-// ea: 0x005EDD50
+// alias-ea: 0x005ED750
+// alias-ea: 0x005ED880
+// alias-ea: 0x005ED9D0
+// alias-ea: 0x005EDB10
+// alias-ea: 0x005EDC10
+// alias-ea: 0x005EDD50
 template <typename T, int OFF>
 T vnode_get_field(int handle)
 {
@@ -26452,22 +26452,22 @@ T vnode_get_field(int handle)
 
 template <typename T, int OFF, int IDX>
 // ea: 0x005FC330
-// ea: 0x005FC680
-// ea: 0x005FC8B0
-// ea: 0x005FCAF0
-// ea: 0x005FCD40
-// ea: 0x005FCFB0
-// ea: 0x005FD1F0
-// ea: 0x005FD430
-// ea: 0x005FD680
-// ea: 0x005FD8B0
-// ea: 0x005FDAE0
-// ea: 0x005FDD20
-// ea: 0x005FDF50
-// ea: 0x005FE180
-// ea: 0x005FE3B0
-// ea: 0x005FE5F0
-// ea: 0x005FED60
+// alias-ea: 0x005FC680
+// alias-ea: 0x005FC8B0
+// alias-ea: 0x005FCAF0
+// alias-ea: 0x005FCD40
+// alias-ea: 0x005FCFB0
+// alias-ea: 0x005FD1F0
+// alias-ea: 0x005FD430
+// alias-ea: 0x005FD680
+// alias-ea: 0x005FD8B0
+// alias-ea: 0x005FDAE0
+// alias-ea: 0x005FDD20
+// alias-ea: 0x005FDF50
+// alias-ea: 0x005FE180
+// alias-ea: 0x005FE3B0
+// alias-ea: 0x005FE5F0
+// alias-ea: 0x005FED60
 void entity_set_sentient_field(unsigned int handle, T val)
 {
     Entity* mObject = BrocSysApiHandleToEntity(handle);
@@ -26501,22 +26501,22 @@ void entity_set_sentient_field(unsigned int handle, T val)
 }
 
 // ea: 0x005FC490
-// ea: 0x005FC790
-// ea: 0x005FC9D0
-// ea: 0x005FCC00
-// ea: 0x005FCE60
-// ea: 0x005FD0D0
-// ea: 0x005FD310
-// ea: 0x005FD540
-// ea: 0x005FD790
-// ea: 0x005FD9C0
-// ea: 0x005FDC00
-// ea: 0x005FDE30
-// ea: 0x005FE060
-// ea: 0x005FE290
-// ea: 0x005FE4D0
-// ea: 0x005FE710
-// ea: 0x005FEE80
+// alias-ea: 0x005FC790
+// alias-ea: 0x005FC9D0
+// alias-ea: 0x005FCC00
+// alias-ea: 0x005FCE60
+// alias-ea: 0x005FD0D0
+// alias-ea: 0x005FD310
+// alias-ea: 0x005FD540
+// alias-ea: 0x005FD790
+// alias-ea: 0x005FD9C0
+// alias-ea: 0x005FDC00
+// alias-ea: 0x005FDE30
+// alias-ea: 0x005FE060
+// alias-ea: 0x005FE290
+// alias-ea: 0x005FE4D0
+// alias-ea: 0x005FE710
+// alias-ea: 0x005FEE80
 template <typename T, int OFF, int IDX>
 T entity_get_sentient_field(unsigned int handle)
 {
