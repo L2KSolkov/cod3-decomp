@@ -1546,6 +1546,7 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
     for (int i = 0; i < 2; ++i)
     {
         nalMatrix4x4* foot = footMatrices[i];
+        ent->client->mFootStepsThisZ[i] = foot->z[2];
         const math::Position3 footPos(foot->w[0], foot->w[1], foot->w[2]);
         math::Position3 start(footPos.v.m128_f32[0],
                              footPos.v.m128_f32[1],
