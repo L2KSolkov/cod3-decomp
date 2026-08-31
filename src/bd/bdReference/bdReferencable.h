@@ -23,6 +23,7 @@ public:
     bdReferencable() : m_refCount(0) {}
     // ea: 0x89EB80 (canonical virtual destructor)
     // ea: 0x0089EB80
+    // alias-ea: 0x0089AF80
     virtual ~bdReferencable() {}
 
     bdInt addRef() {

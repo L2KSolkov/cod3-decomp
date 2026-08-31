@@ -13,3 +13,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x008AD5C0	?serialize@bdChunk@@UAEIPAEI@Z	V4	PASS	bdchunk-manual-20260830	2026-08-30	IDA decompile:0x008AD5C0	Release/source capacity guard, local offset initialization, one-byte type append, and return paths match.
 0x008AD600	?deserialize@bdChunk@@UAE_NQBEIAAI@Z	V3	PASS	bdchunk-manual-20260830	2026-08-30	src/bd/bdChunk.cpp:69-78	Body checks remaining capacity, removes one-byte type through bdBytePacker, stores m_type, and returns success/failure.
 0x008AD600	?deserialize@bdChunk@@UAE_NQBEIAAI@Z	V4	PASS	bdchunk-manual-20260830	2026-08-30	IDA decompile:0x008AD600	Release/source remaining-size guard, removeBasicType call, m_type store, and boolean return paths match.
+0x008AD560	??_GbdChunk@@UAEPAXI@Z	V3	PASS	bdchunk-manual-20260830	2026-08-30	src/bd/bdChunk.cpp:22-24	Compiler-generated vector deleting destructor shares the restored virtual bdChunk destructor cleanup.
+0x008AD560	??_GbdChunk@@UAEPAXI@Z	V4	PASS	bdchunk-manual-20260830	2026-08-30	IDA decompile:0x008AD560	Release alias calls bdChunk destructor and conditionally deallocates; generated wrapper matches.
+0x008AD560	??_EbdChunk@@UAEPAXI@Z	V3	PASS	bdchunk-manual-20260830	2026-08-30	src/bd/bdChunk.cpp:22-24	Compiler-generated scalar deleting destructor shares the restored virtual bdChunk destructor cleanup.
+0x008AD560	??_EbdChunk@@UAEPAXI@Z	V4	PASS	bdchunk-manual-20260830	2026-08-30	IDA decompile:0x008AD560	Release scalar/vector aliases share the same deleting-destructor implementation.

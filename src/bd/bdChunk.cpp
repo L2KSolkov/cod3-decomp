@@ -18,6 +18,7 @@ bdChunk::bdChunk(bdChunkTypes type)
 // bdChunk::~bdChunk â€” ea: 0x8AD530
 // ============================================================================
 // ea: 0x008AD530
+// alias-ea: 0x008AD560
 bdChunk::~bdChunk() {
 }
 

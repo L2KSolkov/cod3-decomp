@@ -30,6 +30,7 @@ bdHMac::bdHMac()
 }
 
 // ea: 0x009ECFE0
+// alias-ea: 0x009EC420
 bdHMac::~bdHMac()
 {
 }
@@ -50,6 +51,7 @@ bdHMacSHA1::bdHMacSHA1(const unsigned char* key, unsigned int keyLen)
 }
 
 // ea: 0x009EC450
+// alias-ea: 0x009EC4B0
 bdHMacSHA1::~bdHMacSHA1()
 {
 }
@@ -113,6 +115,7 @@ bdCookie::bdCookie(unsigned int localTag, unsigned int peerTag,
 // ============================================================================
 // bdCookie::~bdCookie â€” ea: 0x8AB560
 // ea: 0x008AB560
+// alias-ea: 0x008AB5B0
 // ============================================================================
 bdCookie::~bdCookie() {
 }
@@ -269,6 +272,7 @@ bdCookieEchoChunk::bdCookieEchoChunk(bdReference<bdByteBuffer> rawCookie)
 // bdCookieEchoChunk::~bdCookieEchoChunk â€” ea: 0x8ABAE0
 // ============================================================================
 // ea: 0x008ABAE0
+// alias-ea: 0x008ABBD0
 bdCookieEchoChunk::~bdCookieEchoChunk() {
     if (this->m_rawCookie.m_ptr != NULL && this->m_rawCookie.m_ptr->releaseRef() == 0) {
         delete this->m_rawCookie.m_ptr;
@@ -387,6 +391,7 @@ bdCookieAckChunk::bdCookieAckChunk()
 // bdCookieAckChunk::~bdCookieAckChunk â€” ea: 0x8ABEC0
 // ============================================================================
 // ea: 0x008ABEC0
+// alias-ea: 0x008ABEF0
 bdCookieAckChunk::~bdCookieAckChunk() {
 }
 

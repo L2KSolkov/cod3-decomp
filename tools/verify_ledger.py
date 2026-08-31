@@ -385,7 +385,7 @@ def scan_markers() -> list[Marker]:
     # definition a declaration annotation belongs to.
     # A file banner may describe a range (``ea: 0x854490-0x878100``), not a
     # function marker.  Do not turn the range's first address into a marker.
-    pattern = re.compile(r"//[^\r\n]*?\bea:\s*(0x[0-9A-Fa-f]+)\b(?!\s*-)")
+    pattern = re.compile(r"//[^\r\n]*?\b(?:ea|alias-ea):\s*(0x[0-9A-Fa-f]+)\b(?!\s*-)")
     for path in source_files():
         lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
         for number, line in enumerate(lines):
@@ -421,7 +421,8 @@ def scan_markers() -> list[Marker]:
                 # not a second claim on that definition.
                 continue
             comment = line.split("//", 1)[1]
-            marker_prefix = comment[:comment.find("ea:")]
+            token = re.search(r"\b(?:ea|alias-ea):", comment)
+            marker_prefix = comment[:token.start()] if token else ""
             # Header inventories often list several addresses as prose
             # (for example ``ctor() ea: ...``).  They are not annotations for
             # the following definition and must not steal its body.  Keep

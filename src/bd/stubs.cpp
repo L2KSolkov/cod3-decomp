@@ -1200,6 +1200,7 @@ bool bdByteBuffer::read(void* data, unsigned int size)
 }
 
 // ea: 0x0089E5D0
+// alias-ea: 0x0089E630
 bdByteBuffer::~bdByteBuffer()
 {
     if (m_data != nullptr)
