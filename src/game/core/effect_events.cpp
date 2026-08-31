@@ -1366,13 +1366,8 @@ Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
     }
     if (scriptId == nullptr)
     {
-        AeAssert::gCurrentAuthor = AeAssert::COD3;
-        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
-        AeAssert::gCurrentLine = 227;
-        AeAssert::gCurrentExpr = "scriptId";
-        if (!AeAssert::IsIgnored()
-            && AeAssert::Assert("Empty script id passed in"))
-            __debugbreak();
+        // Intentional divergence: tolerate empty scene-effect script IDs on
+        // Win32 so an unused asset record does not break map loading.
         result.mVal = 0;
         return result;
     }
