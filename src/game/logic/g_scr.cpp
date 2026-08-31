@@ -1004,6 +1004,12 @@ template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(Handle);
 template DbLinkedHandle<TaskSys, Task>::DbLinkedHandle(int);
 template DbLinkedHandle<TaskSys, Task>&
 DbLinkedHandle<TaskSys, Task>::operator=(Handle);
+template int ae_vector<debug_aabb>::size() const;
+template debug_aabb& ae_vector<debug_aabb>::operator[](int);
+template debug_aabb* ae_vector<debug_aabb>::construct_array(int, int);
+template debug_aabb* ae_vector<debug_aabb>::construct_array(int);
+template debug_aabb* ae_vector<debug_aabb>::begin();
+template debug_aabb* ae_vector<debug_aabb>::end();
 template unsigned int
 InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>::size() const;
 template const InplaceTreeElement<InplaceString, InplaceString>&
