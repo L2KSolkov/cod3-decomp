@@ -41,6 +41,8 @@ struct _tlSkipListBase {
         return level;
     }
 };
+static_assert(sizeof(_tlSkipListBase) == 0x8,
+              "_tlSkipListBase size mismatch");
 
 template <typename T, typename Key>
 class tlSkipList : public _tlSkipListBase {

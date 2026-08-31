@@ -238,6 +238,8 @@ struct TypeCallbackSearch {
     // ea: 0x004DF460
     bool operator()(const ConfigString* cfgstring);
 };
+static_assert(sizeof(TypeCallbackSearch) == 0xC,
+              "TypeCallbackSearch size mismatch");
 
 bool TypeCallbackSearch::operator()(const ConfigString* cfgstring)
 {

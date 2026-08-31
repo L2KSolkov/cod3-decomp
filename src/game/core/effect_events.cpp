@@ -1007,6 +1007,7 @@ struct gdEvent {
     int  fade_out;                    // +0x30
     float delay;                      // +0x34
 };
+static_assert(sizeof(gdEvent) == 0x38, "gdEvent size mismatch");
 
 extern ParticleParams gParticleParams;  // 0x00F00F58
 ParticleParams gParticleParams;

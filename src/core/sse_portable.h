@@ -89,3 +89,5 @@
         return ((u[0]>>31)&1) | ((u[1]>>31)&2) | ((u[2]>>31)&4) | ((u[3]>>31)&8);
     }
 #endif
+
+static_assert(sizeof(__m128) == 0x10, "__m128 size mismatch");
