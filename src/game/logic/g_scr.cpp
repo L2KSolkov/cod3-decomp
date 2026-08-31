@@ -415,7 +415,7 @@ AeThreadState::AeThreadState(EAction result)
 }
 
 // ea: 0x005E9490
-// ea: 0x005E94A0 (release vector-deleting alias uses the same destructor body)
+// alias-ea: 0x005E94A0 (release vector-deleting alias uses the same destructor body)
 AeThreadState::~AeThreadState()
 {
 }
@@ -578,7 +578,7 @@ public:
 
 template <typename T>
 // ea: 0x005EE830
-// ea: 0x005EE8D0
+// alias-ea: 0x005EE8D0
 reserved_dlist<T>::reserved_dlist()
 {
     dlist_node* p_m_end = reinterpret_cast<dlist_node*>(&m_end);
@@ -596,8 +596,8 @@ bool reserved_dlist<T>::empty() const
 
 template <typename T>
 // ea: 0x005EE850
-// ea: 0x005EE8A0
-// ea: 0x005EE8F0
+// alias-ea: 0x005EE8A0
+// alias-ea: 0x005EE8F0
 void reserved_dlist<T>::push_back(T* obj)
 {
     obj->m_dlist_node.mNext = reinterpret_cast<AeDListNode*>(&m_end);
@@ -632,8 +632,8 @@ T* reserved_dlist<T>::pop_back()
 
 template <typename T>
 // ea: 0x005EEC00
-// ea: 0x005EEC60
-// ea: 0x005EECB0
+// alias-ea: 0x005EEC60
+// alias-ea: 0x005EECB0
 typename reserved_dlist<T>::iterator reserved_dlist<T>::find(T* object)
 {
     dlist_node* m_head_node = m_head;
@@ -665,8 +665,8 @@ typename reserved_dlist<T>::iterator reserved_dlist<T>::find(T* object)
 
 template <typename T>
 // ea: 0x005EA8E0
-// ea: 0x005EA900
-// ea: 0x005EA950
+// alias-ea: 0x005EA900
+// alias-ea: 0x005EA950
 void reserved_dlist<T>::dlist_node::pop()
 {
     m_next->m_prev = m_prev;
@@ -675,7 +675,7 @@ void reserved_dlist<T>::dlist_node::pop()
 
 template <typename T>
 // ea: 0x005EA8C0
-// ea: 0x005EA930
+// alias-ea: 0x005EA930
 void reserved_dlist<T>::clear()
 {
     m_size = 0;
@@ -717,7 +717,7 @@ reserved_dlist<T>::const_iterator::const_iterator(
 
 template <typename T>
 // ea: 0x005EAB70
-// ea: 0x005EAB90
+// alias-ea: 0x005EAB90
 bool reserved_dlist<T>::const_iterator::compare(
     const const_iterator& rhs) const
 {
@@ -754,8 +754,8 @@ reserved_dlist<T>::get_head() const
 
 template <typename T>
 // ea: 0x005EAE20
-// ea: 0x005EACE0
-// ea: 0x005EAD20
+// alias-ea: 0x005EACE0
+// alias-ea: 0x005EAD20
 reserved_dlist<T>::iterator::iterator(T* obj)
     : m_node(reinterpret_cast<dlist_node*>(&obj->m_dlist_node)),
       m_next(reinterpret_cast<dlist_node*>(obj->m_dlist_node.mNext))
@@ -809,7 +809,7 @@ T* reserved_dlist<T>::iterator::operator*()
 
 template <typename T>
 // ea: 0x005EEA50
-// ea: 0x005EEA90
+// alias-ea: 0x005EEA90
 const T* reserved_dlist<T>::const_iterator::operator*() const
 {
     return reserved_dlist<T>::node_to_object(m_node);
@@ -817,7 +817,7 @@ const T* reserved_dlist<T>::const_iterator::operator*() const
 
 template <typename T>
 // ea: 0x005EEA60
-// ea: 0x005EEAA0
+// alias-ea: 0x005EEAA0
 bool reserved_dlist<T>::const_iterator::operator!=(
     const const_iterator& rhs) const
 {
@@ -826,8 +826,8 @@ bool reserved_dlist<T>::const_iterator::operator!=(
 
 template <typename T>
 // ea: 0x005EF770
-// ea: 0x005EF860
-// ea: 0x005EF900
+// alias-ea: 0x005EF860
+// alias-ea: 0x005EF900
 void reserved_dlist<T>::erase(T* object)
 {
     iterator found = find(object);
