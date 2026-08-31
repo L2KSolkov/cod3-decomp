@@ -32,6 +32,7 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
+// ea: 0x004E2520
 const char* DialogueInstance::Choose()
 {
     unsigned int size = mSounds.mSize;
