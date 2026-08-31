@@ -2221,8 +2221,8 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         sentient->mLastTerrainMappingPelvisZ -= originDelta;
     const float finalLeftFootZ = leftFootMat.w[2];
     const float finalRightFootZ = rightFootMat.w[2];
-    const float finalMaxFootZ = max(finalLeftFootZ, finalRightFootZ);
-    const float pelvisTarget = finalMaxFootZ + pelvisFootGap;
+    const float finalMinFootZ = min(finalLeftFootZ, finalRightFootZ);
+    const float pelvisTarget = finalMinFootZ + pelvisFootGap;
     if (sentient->mLastTerrainMappingPelvisZ < -9998.0f)
         sentient->mLastTerrainMappingPelvisZ = pelvisTarget;
     const float pelvisRate = sentient->mEnableTerrainMappingIK
