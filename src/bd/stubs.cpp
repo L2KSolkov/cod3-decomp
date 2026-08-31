@@ -679,6 +679,7 @@ bdBitBuffer::bdBitBuffer(unsigned int bitCount, bool typeChecked)
 }
 
 // ea: 0x0089B500
+// alias-ea: 0x0089BCD0
 bdBitBuffer::~bdBitBuffer()
 {
     // The release destructor clears the embedded fast-array after releasing

@@ -376,7 +376,12 @@ struct bdFastArray {
     unsigned int m_capacity; // +0x04
     unsigned int m_size;     // +0x08
 
-    bdFastArray() : m_data(NULL), m_capacity(0), m_size(0) {}
+    // ea: 0x0089B010 (bdFastArray<unsigned char> default constructor)
+    bdFastArray() {
+        m_data = NULL;
+        m_capacity = 0;
+        m_size = 0;
+    }
     // ea: 0x0089B4C0 (bdFastArray<unsigned char> destructor)
     ~bdFastArray() {
         bdMemory::deallocate(m_data);

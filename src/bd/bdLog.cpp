@@ -426,6 +426,7 @@ void destroyLogSingleton() {
     }
 }
 
+// ea: 0x0089B080
 static unsigned int bdStrlcpy(char* destination, const char* source,
                               unsigned int count) {
     const unsigned int result = (unsigned int)strlen(source);
