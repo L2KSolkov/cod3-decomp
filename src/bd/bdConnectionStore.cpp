@@ -22,7 +22,7 @@
 bdConnectionStore::bdConnectionStore(bdSocket* socket,
                                      bdReference<bdCommonAddr> me,
                                      bdSecurityKeyMap* securityKeyMap,
-                                     bdDHKey* dhKey,
+                                     bdDHKey* const dhKey,
                                      const bdArray<bdAddr>& localAddresses)
     : m_socket(socket, securityKeyMap, dhKey, localAddresses),
       m_securityKeyMap(securityKeyMap),

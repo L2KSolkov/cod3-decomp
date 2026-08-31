@@ -28,7 +28,7 @@ enum bdConnectionStoreStatus {
 class bdConnectionStore {
 public:
     bdConnectionStore(bdSocket* socket, bdReference<bdCommonAddr> me,
-                      bdSecurityKeyMap* securityKeyMap, bdDHKey* dhKey,
+                      bdSecurityKeyMap* securityKeyMap, bdDHKey* const dhKey,
                       const bdArray<bdAddr>& localAddresses);
     ~bdConnectionStore();
 
