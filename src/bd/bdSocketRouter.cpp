@@ -59,7 +59,7 @@ bool bdSocketRouter::connect(bdReference<bdAddrHandle>& addrHandle) {
 // ============================================================================
 // bdSocketRouter::getStatus - ea: 0x8B7090
 // ============================================================================
-bdSocketAssociationStatus bdSocketRouter::getStatus(
+bdSocketStatus bdSocketRouter::getStatus(
     const bdReference<bdAddrHandle>& addrHandle) {
     struct in_addr ina;
     ina.s_addr = addrHandle.m_ptr->m_addr.inUn.m_iaddr;

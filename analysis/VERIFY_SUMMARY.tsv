@@ -125,7 +125,7 @@ bdShutdownAckChunk.obj	8	4	1	0	0	3	0
 bdShutdownChunk.obj	8	4	1	0	0	3	0
 bdShutdownCompleteChunk.obj	8	4	1	0	0	3	0
 bdSocket.obj	12	2	0	1	0	9	0
-bdSocketRouter-xbox.obj	25	15	2	6	0	2	0
+bdSocketRouter-xbox.obj	25	15	0	1	0	9	0
 bdStopwatch.obj	7	0	0	0	0	7	0
 bdString.obj	30	0	0	0	0	30	0
 bdTrulyRandom.obj	3	0	1	0	0	2	0

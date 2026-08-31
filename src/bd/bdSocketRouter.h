@@ -14,20 +14,21 @@
 #include "bd/bdQoSProbe.h"
 
 class bdSecurityKeyMap;
-struct bdDHKey;
+class bdDHKey;
 
-enum bdSocketStatus {
+enum bdSocketRouterStatus {
     BD_SOCKET_ROUTER_UNINITIALIZED = 0,
     BD_SOCKET_ROUTER_INITIALIZED = 1,
     BD_SOCKET_ROUTER_QUIT = 2,
 };
 
-enum bdSocketAssociationStatus {
+enum bdSocketStatus {
     BD_SOCKET_IDLE = 0,
     BD_SOCKET_PENDING = 1,
     BD_SOCKET_CONNECTED = 2,
     BD_SOCKET_LOST = 3,
 };
+using bdSocketAssociationStatus = bdSocketStatus;
 
 class bdSocketRouter {
 public:
@@ -38,7 +39,7 @@ public:
     void pump();
     bdQoSProbe* getQoSProber();
     bool connect(bdReference<bdAddrHandle>& addrHandle);
-    bdSocketAssociationStatus getStatus(const bdReference<bdAddrHandle>& addrHandle);
+    bdSocketStatus getStatus(const bdReference<bdAddrHandle>& addrHandle);
     virtual int sendTo(const bdReference<bdAddrHandle>& addrHandle,
                        const void* data, unsigned int length);
     virtual int receiveFrom(bdReference<bdAddrHandle>& addrHandle,
