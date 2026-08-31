@@ -1,4 +1,10 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x009EC410	??0bdHMac@@QAE@XZ	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:27-30	Explicit polymorphic base constructor has an empty source body; the compiler-generated vtable initialization is the complete implementation.
+0x009EC410	??0bdHMac@@QAE@XZ	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC410	Release writes the bdHMac base vtable and returns this; the restored explicit constructor produces the same ABI lifecycle.
+0x009EC420	??_GbdHMac@@UAEPAXI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:33-36	Compiler-generated vector deleting destructor is represented by the restored virtual base destructor and its generated cleanup wrapper.
+0x009EC420	??_GbdHMac@@UAEPAXI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC420	Release calls bdHMac::~bdHMac, conditionally deallocates on the delete flag, and returns this; MSVC emits the same wrapper for the restored virtual destructor.
+0x009EC420	??_EbdHMac@@UAEPAXI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:33-36	Compiler-generated scalar deleting destructor is represented by the restored virtual base destructor and its generated cleanup wrapper.
+0x009EC420	??_EbdHMac@@UAEPAXI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC420	Release scalar/vector aliases share the same destructor wrapper; source virtual destruction supplies the matching conditional deallocation ABI.
 0x009EC450	??1bdHMacSHA1@@UAE@XZ	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:45-47	Body is the polymorphic bdHMacSHA1 destructor; compiler-emitted vtable/base cleanup supplies the release lifecycle.
 0x009EC450	??1bdHMacSHA1@@UAE@XZ	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC450	Release writes the bdHMacSHA1 vtable then calls bdHMac::~bdHMac; the restored inheritance gives the same destructor chain.
 0x009EC460	?process@bdHMacSHA1@@UAE_NQBEI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:50-54	Body intentionally returns true and ignores its input, matching the release implementation.
@@ -7,3 +13,7 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x009EC470	?getData@bdHMacSHA1@@UAE_NPAEAAI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC470	Release memset length/output pointer and true return match source.
 0x009EC4A0	??0bdHMacSHA1@@QAE@QBEI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:38-42	Body is the polymorphic constructor; compiler-emitted vtable initialization supplies the release object setup.
 0x009EC4A0	??0bdHMacSHA1@@QAE@QBEI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC4A0	Release writes the bdHMacSHA1 vtable and returns this; restored polymorphic class construction matches.
+0x009EC4B0	??_EbdHMacSHA1@@UAEPAXI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:53-56	Compiler-generated scalar deleting destructor is represented by the restored virtual derived destructor and its generated cleanup wrapper.
+0x009EC4B0	??_EbdHMacSHA1@@UAEPAXI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC4B0	Release calls bdHMacSHA1::~bdHMacSHA1, conditionally deallocates on the delete flag, and returns this; MSVC emits the same wrapper.
+0x009EC4B0	??_GbdHMacSHA1@@UAEPAXI@Z	V3	PASS	bd-hmac-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:53-56	Compiler-generated vector deleting destructor is represented by the restored virtual derived destructor and its generated cleanup wrapper.
+0x009EC4B0	??_GbdHMacSHA1@@UAEPAXI@Z	V4	PASS	bd-hmac-manual-20260830	2026-08-30	IDA decompile:0x9EC4B0	Release scalar/vector aliases share the same derived destructor wrapper; source virtual destruction supplies the matching ABI.

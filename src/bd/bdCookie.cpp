@@ -19,11 +19,18 @@ void* allocate(unsigned int size);
 }
 
 struct bdHMac {
+    // ea: 0x009EC410
+    bdHMac();
     virtual ~bdHMac();
 };
 
+// ea: 0x009EC410
+bdHMac::bdHMac()
+{
+}
+
 // ea: 0x009ECFE0
-bdHMac::~bdHMac()
+bdHMac::~bdHMac() // bdHMac deleting-destructor aliases - ea: 0x009EC420
 {
 }
 
@@ -43,7 +50,7 @@ bdHMacSHA1::bdHMacSHA1(const unsigned char* key, unsigned int keyLen)
 }
 
 // ea: 0x009EC450
-bdHMacSHA1::~bdHMacSHA1()
+bdHMacSHA1::~bdHMacSHA1() // bdHMacSHA1 deleting-destructor aliases - ea: 0x009EC4B0
 {
 }
 
@@ -107,7 +114,7 @@ bdCookie::bdCookie(unsigned int localTag, unsigned int peerTag,
 // bdCookie::~bdCookie â€” ea: 0x8AB560
 // ea: 0x008AB560
 // ============================================================================
-bdCookie::~bdCookie() {
+bdCookie::~bdCookie() { // bdCookie deleting-destructor aliases - ea: 0x008AB5B0
 }
 
 // ============================================================================
