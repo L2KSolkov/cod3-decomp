@@ -14,7 +14,7 @@ class bdQoSProbeListener {
 public:
     bdQoSProbeListener();                                             // @0x8B7400
     virtual ~bdQoSProbeListener();                                    // @0x8B7410
-    virtual void onQoSProbeSuccess(const bdQoSProbeInfo* info) = 0;  // slot +4
+    virtual void onQoSProbeSuccess(const bdQoSProbeInfo& info) = 0;  // slot +4
     virtual void onQoSProbeFail(bdReference<bdCommonAddr> addr) = 0; // slot +8
 };
 

@@ -2461,7 +2461,7 @@ public:
     static int mRenderSessionInfo;     // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
     static int mRenderEntityBufferInfo;  // ?mRenderEntityBufferInfo@MPPeer@@2HA (mp.o)
 private:
-    virtual void onQoSProbeSuccess(const bdQoSProbeInfo* info);  // ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z (mp.o 0x735BF0)
+    virtual void onQoSProbeSuccess(const bdQoSProbeInfo& info);  // ?onQoSProbeSuccess@MPPeer@@EAEXABVbdQoSProbeInfo@@@Z (mp.o 0x735BF0)
     virtual void onQoSProbeFail(bdReference<bdCommonAddr> addr);  // ?onQoSProbeFail@MPPeer@@EAEXV?$bdReference@VbdCommonAddr@@@@@Z (mp.o 0x735C40)
     virtual void onSessionConnectFail();  // ?onSessionConnectFail@MPPeer@@EAEXXZ (mp.o 0x72C940)
     virtual void onSessionConnectSuccess();  // ?onSessionConnectSuccess@MPPeer@@EAEXXZ (mp.o 0x761910)
