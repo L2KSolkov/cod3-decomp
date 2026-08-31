@@ -23,7 +23,7 @@ struct trace_t {
     const char* shader;                               // +0x2C
     DbLinkedHandle<EntityHandleDb, Entity> mEntity;             // +0x30
     HashString partName;                              // +0x34
-    uint32_t  partGroup;                              // +0x38
+    hitLocation_t partGroup;                          // +0x38
     uint8_t   allsolid;                               // +0x3C
     uint8_t   startsolid;                             // +0x3D
     // pad 2
@@ -41,7 +41,18 @@ struct trace_t {
 };
 static_assert(sizeof(trace_t) == 0x50, "trace_t size mismatch");
 static_assert(offsetof(trace_t, endpos) == 0x00, "trace_t::endpos offset mismatch");
+static_assert(offsetof(trace_t, normal) == 0x10, "trace_t::normal offset mismatch");
 static_assert(offsetof(trace_t, fraction) == 0x20, "trace_t::fraction offset mismatch");
+static_assert(offsetof(trace_t, surfaceFlags) == 0x24, "trace_t::surfaceFlags offset mismatch");
+static_assert(offsetof(trace_t, contents) == 0x28, "trace_t::contents offset mismatch");
+static_assert(offsetof(trace_t, shader) == 0x2C, "trace_t::shader offset mismatch");
+static_assert(offsetof(trace_t, mEntity) == 0x30, "trace_t::mEntity offset mismatch");
+static_assert(offsetof(trace_t, partName) == 0x34, "trace_t::partName offset mismatch");
+static_assert(offsetof(trace_t, partGroup) == 0x38, "trace_t::partGroup offset mismatch");
+static_assert(offsetof(trace_t, allsolid) == 0x3C, "trace_t::allsolid offset mismatch");
+static_assert(offsetof(trace_t, startsolid) == 0x3D, "trace_t::startsolid offset mismatch");
+static_assert(offsetof(trace_t, decal_radius) == 0x40, "trace_t::decal_radius offset mismatch");
+static_assert(offsetof(trace_t, check_decal) == 0x44, "trace_t::check_decal offset mismatch");
 
 // ============================================================================
 // collision_context_t — collision filtering context

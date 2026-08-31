@@ -459,7 +459,7 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                 clip->trace.allsolid = objTrace.allsolid;
                 clip->trace.startsolid = objTrace.startsolid;
                 clip->trace.partName = objTrace.partName;
-                clip->trace.partGroup = objTrace.partGroup;
+                clip->trace.partGroup = static_cast<hitLocation_t>(objTrace.partGroup);
                 clip->trace.mEntity.mHandle.mVal = p_currentOrigin->mHandle.mHandle.mVal;
                 clip->trace.contents = p_currentOrigin->r.contents;
             } else {
