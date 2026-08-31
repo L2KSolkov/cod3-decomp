@@ -72,9 +72,9 @@ unsigned int bdConnectionStore::flush(bdReference<bdConnection> connection) {
     unsigned char data[1304];
     unsigned int size = connection.m_ptr->getDataToSend(data, sizeof(data));
     if (size != 0) {
-        connection.m_ptr->getStats()->addBytesSent(BD_UDP_IP_OVERHEAD);
-        connection.m_ptr->getStats()->addPacketsSent(1);
-        connection.m_ptr->getStats()->addPacketSizeSent(size);
+        connection.m_ptr->getStats().addBytesSent(BD_UDP_IP_OVERHEAD);
+        connection.m_ptr->getStats().addPacketsSent(1);
+        connection.m_ptr->getStats().addPacketSizeSent(size);
         int status = m_socket.sendTo(addrHandle, data, size);
         if (status < 0) {
             switch (status) {

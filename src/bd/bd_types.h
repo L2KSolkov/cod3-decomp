@@ -750,7 +750,8 @@ static_assert(offsetof(bdAddrHandle, m_port) == 0x0C, "bdAddrHandle::m_port offs
 // bdConnectionStatistics — connection stats (64 bytes)
 // Size: 0x40 (64 bytes) — verified against IDA
 // ============================================================================
-struct bdConnectionStatistics {
+class bdConnectionStatistics {
+public:
     unsigned int m_bytesSent;            // +0x00
     unsigned int m_bytesSentPerSecond;   // +0x04
     unsigned int m_avgBytesSent;         // +0x08
@@ -1563,7 +1564,7 @@ public:
     // ea: 0x008A0AA0
     const bdReference<bdAddrHandle>& getAddressHandle() const { return m_addrHandle; }
     // ea: 0x008A0AC0
-    bdConnectionStatistics* getStats() { return &m_stats; }
+    bdConnectionStatistics& getStats() { return m_stats; }
 
     virtual ~bdConnection();
     virtual bool receive(unsigned char* buffer, unsigned int bufferSize) = 0;

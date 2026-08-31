@@ -95,8 +95,8 @@ int bdSessionInfo::getInfo(const bdSession* session, char* buf, unsigned int buf
         if (cs < 5)
             connStatus = connNames[cs];
 
-        bdConnectionStatistics* stats = conn.m_ptr->getStats();
-        unsigned int rtt = (unsigned int)(stats->getAvgRTT() * 1000.0);
+        bdConnectionStatistics& stats = conn.m_ptr->getStats();
+        unsigned int rtt = (unsigned int)(stats.getAvgRTT() * 1000.0);
 
         char addr[24];
         const bdReference<bdAddrHandle>& addrHandle = conn.m_ptr->getAddressHandle();
@@ -149,8 +149,8 @@ unsigned char* bdSessionInfo::getPeerInfo(const bdSession* session, char* buf, i
     if (cs < 5)
         connStatus = connNames[cs];
 
-    bdConnectionStatistics* stats = conn.m_ptr->getStats();
-    unsigned int rtt = (unsigned int)(stats->getAvgRTT() * 1000.0);
+    bdConnectionStatistics& stats = conn.m_ptr->getStats();
+    unsigned int rtt = (unsigned int)(stats.getAvgRTT() * 1000.0);
 
     char addr[24];
     const bdReference<bdAddrHandle>& addrHandle = conn.m_ptr->getAddressHandle();
