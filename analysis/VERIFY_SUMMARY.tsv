@@ -101,7 +101,7 @@ bdMutex.obj	4	0	0	0	0	4	0
 bdNet-xbox.obj	49	35	0	0	2	12	0
 bdPacket.obj	32	23	1	0	0	8	0
 bdPlatformMutex-xbox.obj	4	0	0	0	0	4	0
-bdPlatformSocket-win32.obj	8	0	4	0	0	4	0
+bdPlatformSocket-win32.obj	8	0	3	1	0	4	0
 bdPlatformSocket.obj	5	0	0	0	0	5	0
 bdPlatformTiming-xbox.obj	5	0	0	0	0	5	0
 bdPlatformTrulyRandom-xbox.obj	1	0	0	0	1	0	0
@@ -124,8 +124,8 @@ bdShortTimer.obj	4	0	0	0	0	4	0
 bdShutdownAckChunk.obj	8	4	1	0	0	3	0
 bdShutdownChunk.obj	8	4	1	0	0	3	0
 bdShutdownCompleteChunk.obj	8	4	1	0	0	3	0
-bdSocket.obj	12	2	3	6	0	1	0
-bdSocketRouter-xbox.obj	25	15	3	6	0	1	0
+bdSocket.obj	12	2	0	1	0	9	0
+bdSocketRouter-xbox.obj	25	15	2	6	0	2	0
 bdStopwatch.obj	7	0	0	0	0	7	0
 bdString.obj	30	0	0	0	0	30	0
 bdTrulyRandom.obj	3	0	1	0	0	2	0

@@ -202,7 +202,8 @@ int bdFprintf(void* stream, const char* format, ...);
 // bdInAddr - IPv4 address (4 bytes). Default ctor leaves the COD3 invalid
 // marker 0xFF00FF00 (ea: 0x8B5E40).
 // ============================================================================
-struct bdInAddr {
+class bdInAddr {
+public:
     union {
         uint8_t  m_byte[4];
         uint32_t m_s_addr;
@@ -258,7 +259,8 @@ static_assert(sizeof(bdInetAddr) == 4, "bdInetAddr size mismatch");
 // ============================================================================
 // bdAddr - address + port (8 bytes). Verified against IDA (bdAddr.obj).
 // ============================================================================
-struct bdAddr {
+class bdAddr {
+public:
     bdInetAddr      m_address;  // +0x00
     uint16_t        m_port;     // +0x04
 
