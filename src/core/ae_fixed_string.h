@@ -190,8 +190,8 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
     }
 
     // ea: 0x004B0FB0
-    // ea: 0x004B1610
-    // ea: 0x007BFBB0 (ae_formatted_string<512,unsigned short>)
+    // alias-ea: 0x004B1610
+    // alias-ea: 0x007BFBB0 (ae_formatted_string<512,unsigned short>)
     // Narrow-format overload (formats into a wide buffer via %ls-style values).
     ae_formatted_string(const char* fmt, ...) {
         char tmp[512];

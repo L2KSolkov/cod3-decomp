@@ -406,7 +406,7 @@ public:
 
 template <typename T1, typename T2>
 // ea: 0x004B2020
-// ea: 0x004B2BE0
+// alias-ea: 0x004B2BE0
 WaitTilOutputInst2<T1, T2>::~WaitTilOutputInst2()
 {
 }

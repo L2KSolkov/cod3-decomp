@@ -3699,14 +3699,14 @@ public:
     U  mA1;
 
     // ea: 0x004B1510
-    // ea: 0x004B1590
+    // alias-ea: 0x004B1590
     TaskFunctor1(void (T::*fp)(Entity*, U), const U& a1)
         : mFp(fp), mA1(a1)
     {
     }
     virtual ~TaskFunctor1();
     // ea: 0x004B1540
-    // ea: 0x004B15C0
+    // alias-ea: 0x004B15C0
     virtual void Update(Task* t, Entity* e)
     {
         (((T*)t)->*mFp)(e, mA1);
@@ -3912,7 +3912,7 @@ public:
         T*  mObject;  // +0x00
         int mKey;     // +0x04
         // ea: 0x004AE370
-        // ea: 0x004AE3D0
+        // alias-ea: 0x004AE3D0
         DbElement() : mObject(nullptr), mKey(1) {}
         // ea: 0x004AE390
         T* GetObject() const { return mObject; }
@@ -3941,7 +3941,7 @@ public:
 
 template <typename T, int CAPACITY, typename H>
 // ea: 0x004B2480
-// ea: 0x004B26F0
+// alias-ea: 0x004B26F0
 HandleDb<T, CAPACITY, H>::HandleDb()
 {
     mFreeIndices.Clear();
