@@ -1722,6 +1722,13 @@ void AnimIK::ApplyFire(Entity* ent)
     RotateBone(2, math::Dir3(-latestTorsoAngle * torsoScale, 0.0f, 0.0f));
     RotateBone(4, math::Dir3(latestTorsoAngle * torsoScale, 0.0f, 0.0f));
 
+    // The release builds a pure pitch recoil matrix from the newest event's
+    // pitch angle and applies it to each arm's hand target before solving IK.
+    nalMatrix4x4 recoilMatrix;
+    AnimIK_MatrixFromAngles(
+        math::Dir3(-latestPitchAngle * pitchScale, 0.0f, 0.0f),
+        &recoilMatrix);
+
     nalGenericBoneHandle leftHandHandle{nullptr, 0};
     nalGenericBoneHandle rightHandHandle{nullptr, 0};
     nalGenericSkeleton_GetBoneHandle(skeleton, &leftHandHandle,
@@ -1735,6 +1742,9 @@ void AnimIK::ApplyFire(Entity* ent)
                                                        &leftHandHandle);
         nalMatrix4x4 target;
         nalMatrix4x4_FromPositionOrientation(hand, &target);
+        nalMatrix4x4 recoiledTarget;
+        AnimIK_Multiply(target, recoilMatrix, &recoiledTarget);
+        target = recoiledTarget;
         target.w[0] -= latestOffsetDist * offsetScale;
         AnimIK_ApplyTwoBoneIK(this, 0, BoneNames[9], BoneNames[8],
                               BoneNames[7], target);
@@ -1746,6 +1756,9 @@ void AnimIK::ApplyFire(Entity* ent)
                                                        &rightHandHandle);
         nalMatrix4x4 target;
         nalMatrix4x4_FromPositionOrientation(hand, &target);
+        nalMatrix4x4 recoiledTarget;
+        AnimIK_Multiply(target, recoilMatrix, &recoiledTarget);
+        target = recoiledTarget;
         target.w[0] -= latestOffsetDist * offsetScale;
         AnimIK_ApplyTwoBoneIK(this, 1, BoneNames[13], BoneNames[12],
                               BoneNames[11], target);
