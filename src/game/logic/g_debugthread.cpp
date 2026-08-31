@@ -1363,7 +1363,8 @@ bool AnimationPlayer::nalPartialAnimState::Update(AnimationPlayer* player,
 // ============================================================================
 // MetaNalBaseAnim - meta-animation wrapper (0x44, IDA verified)
 // ============================================================================
-struct MetaAnimData {
+class MetaAnimData {
+public:
     void** __vftable;  // +0x00
     // vtable slots:
     //   [0] GetAnimName() -> const tlFixedString*
@@ -1376,8 +1377,13 @@ struct MetaAnimData {
     //   [7] DelayCreate(nalAnimClass**, int)
 };
 
-struct nalBaseSkeleton;
-struct nalInstanceClass;
+class nalBaseSkeleton;
+class nalAnyPose;
+template <typename Pose>
+class nalAnimClass {
+public:
+    class nalInstanceClass;
+};
 
 struct MetaNalBaseAnim {
     void** __vftable;           // +0x00
@@ -1393,10 +1399,12 @@ struct MetaNalBaseAnim {
 
     MetaNalBaseAnim();                       // ea: 0x4F5F20
     void Create(MetaAnimData* theMetaAnimData);  // ea: 0x4F5F50
-    void DelayCreate(void** animArray, int numAnims);  // ea: 0x4F5FE0
-    void DelayCreate(void* anim);            // ea: 0x4FAE20
+    void DelayCreate(nalAnimClass<nalAnyPose>** animArray,
+                     int numAnims);  // ea: 0x4F5FE0
+    void DelayCreate(nalAnimClass<nalAnyPose>* anim);  // ea: 0x4FAE20
     int IsDelayCreate();                     // ea: 0x4F6010
-    void* CreateAnimInst(nalBaseSkeleton* theSkel);  // ea: 0x4F6020
+    nalAnimClass<nalAnyPose>::nalInstanceClass*
+    CreateAnimInst(nalBaseSkeleton* theSkel);  // ea: 0x4F6020
 };
 static_assert(sizeof(MetaNalBaseAnim) == 0x44, "MetaNalBaseAnim size mismatch");
 
@@ -1438,17 +1446,20 @@ void MetaNalBaseAnim::Create(MetaAnimData* theMetaAnimData)
 }
 
 // ea: 0x4F5FE0
-void MetaNalBaseAnim::DelayCreate(void** animArray, int numAnims)
+void MetaNalBaseAnim::DelayCreate(nalAnimClass<nalAnyPose>** animArray,
+                                  int numAnims)
 {
-    ((DelayCreateFn)mData->__vftable[7])(mData, animArray, numAnims);
+    ((DelayCreateFn)mData->__vftable[7])(
+        mData, reinterpret_cast<void**>(animArray), numAnims);
     Create(mData);
 }
 
 // ea: 0x4FAE20
-void MetaNalBaseAnim::DelayCreate(void* anim)
+void MetaNalBaseAnim::DelayCreate(nalAnimClass<nalAnyPose>* anim)
 {
-    void* animArray = anim;
-    ((DelayCreateFn)mData->__vftable[7])(mData, &animArray, 1);
+    nalAnimClass<nalAnyPose>* animArray = anim;
+    ((DelayCreateFn)mData->__vftable[7])(
+        mData, reinterpret_cast<void**>(&animArray), 1);
     Create(mData);
 }
 
@@ -1459,9 +1470,11 @@ int MetaNalBaseAnim::IsDelayCreate()
 }
 
 // ea: 0x4F6020
-void* MetaNalBaseAnim::CreateAnimInst(nalBaseSkeleton* theSkel)
+nalAnimClass<nalAnyPose>::nalInstanceClass*
+MetaNalBaseAnim::CreateAnimInst(nalBaseSkeleton* theSkel)
 {
-    return ((CreateAnimInstFn)mData->__vftable[5])(mData, theSkel, this);
+    return reinterpret_cast<nalAnimClass<nalAnyPose>::nalInstanceClass*>(
+        ((CreateAnimInstFn)mData->__vftable[5])(mData, theSkel, this));
 }
 
 // ============================================================================
