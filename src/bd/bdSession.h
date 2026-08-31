@@ -85,14 +85,6 @@ public:
     bdSession(bdSessionHandler* const sessionHandler);
     virtual ~bdSession();
 
-    // bdDispatchInterceptor
-    virtual bool accept(bdReceivedMessage& message);
-
-    // bdConnectionListener
-    virtual void onConnect(bdReference<bdConnection> connection);
-    virtual void onConnectFailed(bdReference<bdConnection> connection);
-    virtual void onDisconnect(bdReference<bdConnection> connection);
-
     bool join(bdReference<bdCommonAddr> hostAddr, const XNKID& secID,
               const XNKEY& secKey, bdBitBuffer* const userData);
     void leave();
@@ -117,6 +109,14 @@ public:
     unsigned int getPeerHash(unsigned int index) const;
 
 protected:
+    // bdDispatchInterceptor
+    virtual bool accept(bdReceivedMessage& message);
+
+    // bdConnectionListener
+    virtual void onConnect(bdReference<bdConnection> connection);
+    virtual void onConnectFailed(bdReference<bdConnection> connection);
+    virtual void onDisconnect(bdReference<bdConnection> connection);
+
     bool startConnect(bdReference<bdConnection>& connection,
                       bdReference<bdCommonAddr> addr, const XNKID& secID,
                       const char* const connectionDesc);
