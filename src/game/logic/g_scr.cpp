@@ -1010,6 +1010,9 @@ template debug_aabb* ae_vector<debug_aabb>::construct_array(int, int);
 template debug_aabb* ae_vector<debug_aabb>::construct_array(int);
 template debug_aabb* ae_vector<debug_aabb>::begin();
 template debug_aabb* ae_vector<debug_aabb>::end();
+template void ae_vector<debug_aabb>::push_back(const debug_aabb&);
+template void ae_vector<debug_aabb>::resize(int);
+template void ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>::pop_back();
 template unsigned int
 InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>::size() const;
 template const InplaceTreeElement<InplaceString, InplaceString>&
