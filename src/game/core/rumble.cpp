@@ -445,7 +445,6 @@ void RumbleEffectInstance::operator delete(void* ptr)
 PoolAllocator* RumbleEffectInstance::SetAllocator(PoolAllocator* p)
 {
     sAllocator = p;
-    RumbleEffectInstance_sAllocator = p;
     return p;
 }
 
