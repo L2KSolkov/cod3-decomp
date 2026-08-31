@@ -179,7 +179,7 @@ struct PakInfoNode {
 class PakManager {
 public:
     static PakManager* sInst;
-    uint8_t _pad00[0x2C];
+    uint8_t _pad00[0x364];
     void* mProgressCallback;
     const PakInfoNode* GetPakInfo(const char* long_name) const;
     bool IsLoaded(TPakId id) const;
