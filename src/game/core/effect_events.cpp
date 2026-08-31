@@ -3427,14 +3427,17 @@ bool AbstractEffect::IsSound()
 }
 
 // AbstractEffect virtuals (aeps.o; stubs until effect runtime is ported)
+// ea: 0x004DE540
 void AbstractEffect::SetPoPtr(math::Mat43* po)
 {
     mPoPtr = po;
 }
+// ea: 0x004DF330
 bool AbstractEffect::IsQueued() const
 {
-    return false;
+    return true;
 }
+// ea: 0x004DF320
 bool AbstractEffect::IsLooping() const
 {
     return false;
