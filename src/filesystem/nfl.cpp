@@ -724,19 +724,23 @@ extern void nfdIoComplete(nfdDriver*, unsigned, int);
 extern "C" void txPrintv(const char* channel, int level, const char* fmt, char* list);
 extern "C" unsigned long long txTime();
 
+// ea: 0x0082D640
 void nfsError(const char* fmt, ...)
 {
     va_list args; va_start(args, fmt); txPrintv("NFL", 0, fmt, reinterpret_cast<char*>(args)); va_end(args);
 }
+// ea: 0x0082D620
 void nfsWarning(const char* fmt, ...)
 {
     va_list args; va_start(args, fmt); txPrintv("NFL", 1, fmt, reinterpret_cast<char*>(args)); va_end(args);
 }
+// ea: 0x0082D600
 void nfsMessage(const char* fmt, ...)
 {
     va_list args; va_start(args, fmt); txPrintv("NFL", 2, fmt, reinterpret_cast<char*>(args)); va_end(args);
 }
 
+// ea: 0x0082D660
 const char* nfsRequestStateText(nfsRequestState state)
 {
     switch (state) {
@@ -751,12 +755,14 @@ const char* nfsRequestStateText(nfsRequestState state)
     default: return "NFS_REQUEST_STATE_???";
     }
 }
+// ea: 0x0082D6E0
 const char* nfsFileTypeText(nfsFileType type)
 {
     if (type == NFS_FILE_TYPE_NATIVE) return "NFS_FILE_TYPE_NATIVE";
     if (type == NFS_FILE_TYPE_SUBFILE) return "NFS_FILE_TYPE_SUBFILE";
     return "NFS_FILE_TYPE_???";
 }
+// ea: 0x0082D710
 const char* nfsRequestStateText(nflRequestState state)
 {
     switch (state) {
@@ -769,6 +775,7 @@ const char* nfsRequestStateText(nflRequestState state)
     default: return "NFL_REQUEST_STATE_???";
     }
 }
+// ea: 0x0082D770
 const char* nfsMediaIDText(nflMediaID media)
 {
     static char text[32]; text[0] = 0;
@@ -781,6 +788,7 @@ const char* nfsMediaIDText(nflMediaID media)
         strcat_s(text, sizeof(text), "UNKN:");
     return text;
 }
+// ea: 0x0082D800
 const char* nfsBufferModeText(nflBufferMode mode)
 {
     switch (mode) {
@@ -791,6 +799,7 @@ const char* nfsBufferModeText(nflBufferMode mode)
     default: return "NFL_BUFFER_MODE_???";
     }
 }
+// ea: 0x0082D850
 const char* nfdErrorText(nfdError error)
 {
     switch (error) {
@@ -806,6 +815,7 @@ const char* nfdErrorText(nfdError error)
     default: return "NFD_ERROR_???";
     }
 }
+// ea: 0x0082D8C0
 const char* nfdFileFlagsText(nfdFileFlags flags)
 {
     static char text[64]; strcpy_s(text, sizeof(text), "NFD_FILE_FLAGS");
@@ -816,6 +826,7 @@ const char* nfdFileFlagsText(nfdFileFlags flags)
         strcat_s(text, sizeof(text), "_???");
     return text;
 }
+// ea: 0x0082D9C0
 const char* nfdMediaStateText(nfdMediaState state)
 {
     switch (state) {
@@ -827,6 +838,7 @@ const char* nfdMediaStateText(nfdMediaState state)
     default: return "NFD_MEDIA_STATE_???";
     }
 }
+// ea: 0x0082DA10
 const char* nfdIoStateText(nfdIoState state)
 {
     switch (state) {

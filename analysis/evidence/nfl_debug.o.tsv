@@ -1,0 +1,25 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0082D600	?nfsMessage@@YAXPBDZZ	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:736-739	Body forwards the variadic list to txPrintv on NFL level 2.
+0x0082D600	?nfsMessage@@YAXPBDZZ	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D600	Release/source channel, level, format/list forwarding, and return behavior match.
+0x0082D620	?nfsWarning@@YAXPBDZZ	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:732-735	Body forwards the variadic list to txPrintv on NFL level 1.
+0x0082D620	?nfsWarning@@YAXPBDZZ	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D620	Release/source channel, level, format/list forwarding, and return behavior match.
+0x0082D640	?nfsError@@YAXPBDZZ	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:728-731	Body forwards the variadic list to txPrintv on NFL level 0.
+0x0082D640	?nfsError@@YAXPBDZZ	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D640	Release/source channel, level, format/list forwarding, and return behavior match.
+0x0082D660	?nfsRequestStateText@@YAPBDW4nfsRequestState@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:741-754	Body maps every NFS request state and returns the release unknown-state text.
+0x0082D660	?nfsRequestStateText@@YAPBDW4nfsRequestState@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D660	Release/source switch cases, strings, and default path match.
+0x0082D6E0	?nfsFileTypeText@@YAPBDW4nfsFileType@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:755-760	Body maps native/subfile file types and returns the unknown text.
+0x0082D6E0	?nfsFileTypeText@@YAPBDW4nfsFileType@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D6E0	Release/source comparisons and all returned strings match.
+0x0082D710	?nfsRequestStateText@@YAPBDW4nflRequestState@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:761-773	Body maps every NFL request state and returns the release unknown-state text.
+0x0082D710	?nfsRequestStateText@@YAPBDW4nflRequestState@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D710	Release/source switch cases, strings, and default path match.
+0x0082D770	?nfsMediaIDText@@YAPBDW4nflMediaID@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:774-789	Body builds the static media label from DISC/HOST/LINK bits and appends UNKN for unsupported bits.
+0x0082D770	?nfsMediaIDText@@YAPBDW4nflMediaID@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D770	Release bit iteration, labels, static buffer reset, unknown-bit handling, and return match source; strcat_s is bounded-equivalent because the maximum output is 20 characters plus NUL.
+0x0082D800	?nfsBufferModeText@@YAPBDW4nflBufferMode@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:790-801	Body maps all NFL buffer modes and returns the unknown text.
+0x0082D800	?nfsBufferModeText@@YAPBDW4nflBufferMode@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D800	Release/source switch cases, strings, and default path match.
+0x0082D850	?nfdErrorText@@YAPBDW4nfdError@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:802-819	Body maps all release NFD error cases, including the shared EOF/unaligned result, and the unknown text.
+0x0082D850	?nfdErrorText@@YAPBDW4nfdError@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D850	Release/source case grouping, strings, and default path match.
+0x0082D8C0	?nfdFileFlagsText@@YAPBDW4nfdFileFlags@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:820-832	Body builds NFD_FILE_FLAGS with READ/WRITE/CREATE suffixes and an unknown suffix for other bits.
+0x0082D8C0	?nfdFileFlagsText@@YAPBDW4nfdFileFlags@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D8C0	Release/source prefix, bit tests, suffix order, unknown-bit mask, static buffer, and return match.
+0x0082D9C0	?nfdMediaStateText@@YAPBDW4nfdMediaState@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:833-844	Body maps loading/loaded/failure and ejecting/ejected states to release strings.
+0x0082D9C0	?nfdMediaStateText@@YAPBDW4nfdMediaState@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82D9C0	Release/source switch cases, ejecting/ejected strings, and default path match.
+0x0082DA10	?nfdIoStateText@@YAPBDW4nfdIoState@@@Z	V3	PASS	nfl-debug-manual-20260830	2026-08-30	src/filesystem/nfl.cpp:845-857	Body maps all NFD I/O states and returns the unknown text.
+0x0082DA10	?nfdIoStateText@@YAPBDW4nfdIoState@@@Z	V4	PASS	nfl-debug-manual-20260830	2026-08-30	IDA decompile:0x82DA10	Release/source switch cases, strings, and default path match.

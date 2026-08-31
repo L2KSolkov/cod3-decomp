@@ -214,7 +214,7 @@ nal_skeleton.o	10	0	5	2	0	3	0
 nal_stream.o	18	7	0	10	0	1	0
 nextgen.o	8	8	0	0	0	0	0
 nfl_common.o	10	1	0	8	0	1	0
-nfl_debug.o	12	12	0	0	0	0	0
+nfl_debug.o	12	0	0	0	0	12	0
 nfl_driver.o	4	0	0	4	0	0	0
 nfl_system.o	53	10	2	40	0	1	0
 nfl_win32_driver.o	9	0	0	9	0	0	0
