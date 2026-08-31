@@ -1566,7 +1566,7 @@ public:
     bdConnectionStatistics* getStats() { return &m_stats; }
 
     virtual ~bdConnection();
-    virtual bool receive(const unsigned char* buffer, unsigned int bufferSize) = 0;
+    virtual bool receive(unsigned char* buffer, unsigned int bufferSize) = 0;
     virtual bool send(const bdReference<bdMessage>& message, bool reliable = false) = 0;
     virtual bool getMessageToDispatch(bdReference<bdMessage>& message) = 0;
     virtual Status getStatus() const;
@@ -1602,7 +1602,7 @@ static_assert(offsetof(bdConnection, m_status) == 0x60, "bdConnection::m_status 
 class bdLoopbackConnection : public bdConnection {
 public:
     virtual ~bdLoopbackConnection();
-    virtual bool receive(const unsigned char* buffer, unsigned int bufferSize);
+    virtual bool receive(unsigned char* buffer, unsigned int bufferSize);
     virtual bool send(const bdReference<bdMessage>& message, bool reliable = false);
     virtual bool getMessageToDispatch(bdReference<bdMessage>& message);
 

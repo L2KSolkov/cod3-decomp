@@ -23,7 +23,7 @@ bdLoopbackConnection::~bdLoopbackConnection() {
 // bdLoopbackConnection::receive - ea: 0x8A3A60
 // ea: 0x008A3A60
 // ============================================================================
-bool bdLoopbackConnection::receive(const unsigned char*, unsigned int) {
+bool bdLoopbackConnection::receive(unsigned char*, unsigned int) {
     return true;
 }
 

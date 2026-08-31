@@ -225,7 +225,7 @@ bool bdUnicastConnection::getMessageToDispatch(bdReference<bdMessage>& message) 
 // ============================================================================
 // bdUnicastConnection::receive - ea: 0x8A7DC0
 // ============================================================================
-bool bdUnicastConnection::receive(const unsigned char* buffer, unsigned int bufferSize) {
+bool bdUnicastConnection::receive(unsigned char* buffer, unsigned int bufferSize) {
     if (m_shutdownGuard.getElapsedTimeInSeconds() > BD_UC_SHUTDOWN_GUARD) {
         close();
         return false;
