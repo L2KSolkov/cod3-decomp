@@ -769,6 +769,7 @@ void BitSet<N>::Rmv(int v)
     ((unsigned int*)mBits)[v >> 5] &= ~(1u << (v & 0x1F));
 }
 
+// ea: 0x004E35F0
 template <int N>
 void BitSet<N>::Set(int b, bool v)
 {
