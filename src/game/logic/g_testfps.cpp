@@ -434,13 +434,12 @@ void TakeCubeMapShot()
 // PlayRumble - trigger a rumble through the Broc API
 // ea: 0x4EC6E0
 // ============================================================================
-int PlayRumble()
+void PlayRumble()
 {
     reinterpret_cast<BrocAPICompat*>(gpBrocAPI)->mRumble(
         gLowFreqDelay, gLowFreqRumbleIntensity, gLowFreqSteadyDuration,
         gLowFreqRampUpTime, gLowFreqRampDownTime, gHighFreqDelay,
         gHighFreqDuration, 0);
-    return 0;
 }
 
 // ============================================================================

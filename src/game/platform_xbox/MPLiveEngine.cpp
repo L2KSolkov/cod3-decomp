@@ -291,13 +291,13 @@ MPLiveEngine::~MPLiveEngine()
 }
 
 // ea: 0x4EBE10 (game2.o)
-void MPLiveEngine::LockPort(unsigned int port)
+void MPLiveEngine::LockPort(unsigned long port)
 {
     actualPort = port;
 }
 
 // ea: 0x51E190
-unsigned int MPLiveEngine::GetLockedPort()
+unsigned long MPLiveEngine::GetLockedPort()
 {
     return actualPort;
 }

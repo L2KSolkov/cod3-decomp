@@ -819,7 +819,7 @@ extern void FN_ApplyEasyDifficultyChanges();
 extern void FN_ApplyMediumDifficultyChanges();
 extern void FN_ApplyHardDifficultyChanges();
 extern int FnReverseOptions();       // ?FnReverseOptions@@YAHXZ (game2.o)
-extern int PlayRumble();             // ?PlayRumble@@YAHXZ (game2.o)
+extern void PlayRumble();             // ?PlayRumble@@YAXXZ (game2.o)
 extern void FN_DefaultShellshockTestFunction();
 extern void FN_PainShellshockTestFunction();
 extern void FN_DeathShellshockTestFunction();
@@ -1050,7 +1050,7 @@ unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
 unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
 extern int g_fps;                 // ?g_fps@@3HA (game2.o)
 extern void IM_RenderGameEntityStats();    // ?IM_RenderGameEntityStats@@YAXXZ (game2.o)
-extern Entity* RenderPlayerStats();       // ?RenderPlayerStats@@YAPAVEntity@@XZ (game2.o)
+extern void RenderPlayerStats();       // ?RenderPlayerStats@@YAXXZ (game2.o)
 
 // PathNode / zone / audio-tick helper views (opaque owners)
 // BadPathManager defined in game/actor_types.h (mp_actors.o)
@@ -1972,11 +1972,11 @@ void InspectorManager::SetupUserMenus()
 // RenderPlayerStats - ea: 0x4F0E10
 // Stats table renderer: 7 columns (per player slot) x rows (stat categories).
 // ============================================================================
-Entity* RenderPlayerStats()
+void RenderPlayerStats()
 {
     Entity* v1 = EntityManager::sInst->GetPlayer(currCl);
     if (v1 == nullptr || v1->client == nullptr)
-        return v1;
+        return;
     static const int s_statCol[25] = {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17,
         18, 19, 20, 21, 22, 23, 24, 25
@@ -2031,7 +2031,6 @@ Entity* RenderPlayerStats()
                       g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
         xx += (int)xinc;
     }
-    return v1;
 }
 
 // ============================================================================
