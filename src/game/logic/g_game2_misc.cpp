@@ -1774,10 +1774,7 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
         (client->ps.vehType == 1 && client->ps.vehSubType == 2)
         || (ent->actor != nullptr && vehicleInfo != nullptr
             && vehicleInfo->type == 1 && vehicleInfo->subtype == 2);
-    // The release branches into the arm-tag IK path when a rigid-body vehicle
-    // is present; the scalar steering pose below is only entered for legacy
-    // script vehicles without mRBVeh.
-    if (vehicle->scr_vehicle->mRBVeh == nullptr && specialVehicle)
+    if (specialVehicle)
     {
         const float side = fabsf(steering);
         nalGenericBoneHandle pelvisHandle{nullptr, 0};
@@ -1803,7 +1800,7 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
         RotateBone(4, math::Dir3(scaledSide * -0.6f,
                                  steering * 0.1f, scaledSteering * -0.6f));
     }
-    else if (vehicle->scr_vehicle->mRBVeh == nullptr && client->ps.vehPos == 1)
+    else if (client->ps.vehPos == 1)
     {
         const float gunnerPitch =
             vehicle->scr_vehicle->current.mGunnerAngles.v.m128_f32[0];
@@ -1835,7 +1832,7 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
         RotateBone(4, math::Dir3(gunnerScale * gunnerPitch * 0.7f,
                                  0.0f, 0.0f));
     }
-    else if (vehicle->scr_vehicle->mRBVeh == nullptr)
+    else
     {
         const float side = fabsf(steering);
         RotateBone(2, math::Dir3(side * 0.05f,
