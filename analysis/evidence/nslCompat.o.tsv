@@ -1,3 +1,43 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
 0x008203F0	?nslGetNumVoices@@YAIXZ	V3	PASS	ida-manual-nsl-compat-20260829	2026-08-29	src/sound/nsl.cpp:1049-1051	Source forwards the voice-count query to nslVoiceCount.
 0x008203F0	?nslGetNumVoices@@YAIXZ	V4	PASS	ida-manual-nsl-compat-20260829	2026-08-29	IDA:0x008203F0;src/sound/nsl.cpp:1049-1051	Release/source contain the same thunk-level nslVoiceCount call and return value.
+0x00820290	?nslVoiceGet@@YAPAUnslVoice@@H@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:3516	Body forwards the voice index to nslVoicePtr.
+0x00820290	?nslVoiceGet@@YAPAUnslVoice@@H@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820290	Release/source contain the same nslVoicePtr thunk and return value.
+0x008202A0	?nslGetGroup@@YAPAUnslGroup@@PBD@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:3518	Body forwards the group name to nslGroupGet.
+0x008202A0	?nslGetGroup@@YAPAUnslGroup@@PBD@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8202A0	Release/source contain the same nslGroupGet thunk and return value.
+0x008202B0	?nslGetListenerGroup@@YAPAUnslGroup@@XZ	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:3520	Body forwards listener index zero to nslListenerGetGroup.
+0x008202B0	?nslGetListenerGroup@@YAPAUnslGroup@@XZ	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8202B0	Release/source contain the same zero-index nslListenerGetGroup call.
+0x008202C0	?nslGetMasterGroup@@YAPAUnslGroup@@XZ	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:3522	Body forwards directly to nslMasterGetGroup.
+0x008202C0	?nslGetMasterGroup@@YAPAUnslGroup@@XZ	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8202C0	Release/source contain the same master-group thunk.
+0x008202D0	?nslFreeBank@@YAXW4nslBankID@@@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1428	Body forwards the bank ID to nslWaveBankFree.
+0x008202D0	?nslFreeBank@@YAXW4nslBankID@@@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8202D0	Release/source contain the same nslWaveBankFree call.
+0x008202E0	?nslGetBankState@@YAHW4nslBankID@@@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1426	Body forwards the bank ID to nslWaveBankGetState with the ABI-compatible integer result.
+0x008202E0	?nslGetBankState@@YAHW4nslBankID@@@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8202E0	Release/source contain the same nslWaveBankGetState thunk and 32-bit result.
+0x008202F0	?nslLoadBank@@YA?AW4nslBankID@@III@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1404	Body forwards file, offset, and flags to nslWaveBankLoad in release order.
+0x008202F0	?nslLoadBank@@YA?AW4nslBankID@@III@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8202F0	Release/source contain the same reordered nslWaveBankLoad call and return value.
+0x00820310	?nslGetWave@@YA?AW4nslWaveID@@PBD@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1406	Body forwards the name to nslWaveLookup.
+0x00820310	?nslGetWave@@YA?AW4nslWaveID@@PBD@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820310	Release/source contain the same nslWaveLookup thunk and return value.
+0x00820320	?nslGetWaveLength@@YAHW4nslWaveID@@@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1419	Body forwards the wave ID to nslWaveGetLength.
+0x00820320	?nslGetWaveLength@@YAHW4nslWaveID@@@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820320	Release/source contain the same nslWaveGetLength thunk and integer result.
+0x00820330	?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1408-1410	Body forwards wave ID, parameter index, and default value to nslWaveGetParam.
+0x00820330	?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820330	Release/source contain the same nslWaveGetParam thunk and floating-point result ABI.
+0x00820340	?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1402	Body forwards the wave ID to nslWaveGetGroupName.
+0x00820340	?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820340	Release/source contain the same nslWaveGetGroupName thunk.
+0x00820350	?nslGetWaveName@@YAPBDW4nslWaveID@@@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1366	Body forwards the wave ID to nslWaveGetName.
+0x00820350	?nslGetWaveName@@YAPBDW4nslWaveID@@@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820350	Release/source contain the same nslWaveGetName thunk.
+0x00820360	?nslIsWaveLooped@@YAHW4nslWaveID@@@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1421	Body forwards the wave ID to nslWaveIsLooping.
+0x00820360	?nslIsWaveLooped@@YAHW4nslWaveID@@@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820360	Release/source contain the same nslWaveIsLooping thunk and integer result.
+0x00820370	?nslSetListenerOrientation@@YAXQBM0@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1739-1742	Body forwards both orientation vectors with listener index zero.
+0x00820370	?nslSetListenerOrientation@@YAXQBM0@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820370	Release/source contain the same zero-index nslListenerSetOrientation call.
+0x00820390	?nslSetListenerPosition@@YAXQBM@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1745-1747	Body forwards the position vector with listener index zero.
+0x00820390	?nslSetListenerPosition@@YAXQBM@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820390	Release/source contain the same zero-index nslListenerSetPosition call.
+0x008203B0	?nslNumBanksInUse@@YAHXZ	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1958	Body forwards to nslWaveBankSlotsGetUsedCount.
+0x008203B0	?nslNumBanksInUse@@YAHXZ	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8203B0	Release/source contain the same used-count thunk and 32-bit result.
+0x008203C0	?nslAreAllBanksLoaded@@YAHXZ	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1957	Body returns whether the loading count is zero.
+0x008203C0	?nslAreAllBanksLoaded@@YAHXZ	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8203C0	Release/source comparison and boolean result match.
+0x008203D0	?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1423	Body forwards the wave ID to nslWaveIsStreaming.
+0x008203D0	?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8203D0	Release/source contain the same nslWaveIsStreaming thunk and integer result.
+0x008203E0	?nslGetVoice@@YAPAUnslVoice@@I@Z	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1059	Body forwards the voice index to nslVoicePtr.
+0x008203E0	?nslGetVoice@@YAPAUnslVoice@@I@Z	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x8203E0	Release/source contain the same nslVoicePtr thunk and return value.
+0x00820400	?nslGetMaxNumVoices@@YAIXZ	V3	PASS	nsl-compat-manual-20260830	2026-08-30	src/sound/nsl.cpp:1355	Body forwards to nslVoiceCount.
+0x00820400	?nslGetMaxNumVoices@@YAIXZ	V4	PASS	nsl-compat-manual-20260830	2026-08-30	IDA decompile:0x820400	Release/source contain the same nslVoiceCount thunk and return value.

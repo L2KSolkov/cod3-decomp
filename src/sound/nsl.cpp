@@ -1401,6 +1401,7 @@ const char*   nslWaveGetGroupName(nslWaveID waveID) {
 // ea: 0x00820340
 const char*   nslGetWaveGroup(nslWaveID waveID) { return nslWaveGetGroupName(waveID); }      // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 enum nslBankID : unsigned { NSL_BANK_ID_INVALID = (unsigned)-1 };
+// ea: 0x008202F0
 nslBankID      nslLoadBank(unsigned int flags, unsigned int file, unsigned int fileOffset) { return static_cast<nslBankID>(nslWaveBankLoad(static_cast<nflFileID>(file), fileOffset, flags)); }  // ?nslLoadBank@@YA?AW4nslBankID@@III@Z
 // ea: 0x00820310
 nslWaveID      nslGetWave(const char* name) { return nslWaveLookup(name); }                  // ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z
@@ -1422,8 +1423,9 @@ int           nslIsWaveLooped(nslWaveID waveID) { return nslWaveIsLooping(waveID
 // ea: 0x008203D0
 int           nslIsWaveStreamed(nslWaveID waveID) { return nslWaveIsStreaming(waveID); }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
 
-// nslCompat.o / nslSource.o family (stubbed; manglings match binary)
+// ea: 0x008202E0
 int           nslGetBankState(nslBankID bankID) { return nslWaveBankGetState(static_cast<nslWaveBankID>(bankID)); }
+// ea: 0x008202D0
 void          nslFreeBank(nslBankID bankID) { nslWaveBankFree(static_cast<nslWaveBankID>(bankID)); }
 // ea: 0x00820920
 void          nslFreeSource(nslSourceID sid) {
@@ -1953,7 +1955,9 @@ void          nslSetEmitterEffectOn(nslEmitterID eid) {
 void          nslSetEmitterEffectOff(nslEmitterID eid) {
     nslEmitter_ForAll(eid, nslSetSourceEffectOff);
 }
+// ea: 0x008203C0
 int           nslAreAllBanksLoaded() { return nslWaveBankSlotsGetLoadingCount() == 0; } // ?nslAreAllBanksLoaded@@YAHXZ
+// ea: 0x008203B0
 int           nslNumBanksInUse() { return static_cast<int>(nslWaveBankSlotsGetUsedCount()); } // ?nslNumBanksInUse@@YAHXZ
 
 // ============================================================================
