@@ -256,23 +256,25 @@ void cdSimpleSpecularShaderNode::Render() {
 
     nglDxState.PrevBM = (unsigned int)-1;
 
-    // The original stack places the constant upload pointer 12 bytes before
-    // the typed context. Keep that contiguous layout while retaining 16-byte
-    // alignment for the matrix/vector fields used by the lighting helpers.
-    alignas(16) unsigned char upload[0x110] = {};
-    SimpleSpecularContext* context =
-        reinterpret_cast<SimpleSpecularContext*>(upload + 0x10);
+    // Release uses a 0x104-byte scratch context with the constant upload
+    // pointer beginning 12 bytes before it. Preserve those fixed offsets:
+    // lighting matrices at +52/+116, eye position at +228, and material
+    // values at +212/+216. The first 0x40 bytes uploaded are LocalToScreen.
+    alignas(16) unsigned char upload[0x120] = {};
+    unsigned char* context = upload + 0x10;
     unsigned char* constantData = upload + 4;
 
-    context->params.v = _mm_setr_ps(this->mMaterial->mSpecularPower,
-                                    this->mMaterial->mSpecularLevel,
-                                    0.0f, 0.0f);
+    *reinterpret_cast<float*>(context + 212) = this->mMaterial->mSpecularPower;
+    *reinterpret_cast<float*>(context + 216) = this->mMaterial->mSpecularLevel;
     nglDetermineLights(this->MeshNode);
-    nglGetDirLightMatrix(this->MeshNode, &context->mLightMatrices[0],
-                         &context->mLightMatrices[1]);
-    GetEyePos(this->MeshNode, context->eyePos);
-    context->mLToS = this->MeshNode->LocalToScreen;
-    std::memcpy(constantData, &context->mLToS, 12);
+    nglGetDirLightMatrix(
+        this->MeshNode,
+        reinterpret_cast<math::Mat44*>(context + 52),
+        reinterpret_cast<math::Mat44*>(context + 116));
+    GetEyePos(this->MeshNode,
+              *reinterpret_cast<math::Vector4*>(context + 228));
+    std::memcpy(constantData, &this->MeshNode->LocalToScreen,
+                sizeof(math::Mat44));
     D3DDevice_SetVertexShaderConstantNotInlineFast(6, constantData, 0x40u);
 
     nglDxSetTexture(0, this->mMaterial->mDiffuseTexture, 1u, 3u);
