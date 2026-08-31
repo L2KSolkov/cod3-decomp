@@ -603,6 +603,12 @@ def debug_symbols() -> set[str]:
 
 def symbol_variants(name: str) -> set[str]:
     values = {name}
+    # MSVC x86 adds a leading underscore to C-linkage symbols.  If the
+    # source-level name already begins with one (for example `_Z_MallocInternal`),
+    # the emitted public symbol therefore has two while the release map keeps
+    # the single-underscore spelling.
+    if name.startswith("_") and not name.startswith("__"):
+        values.add("_" + name)
     # The release map was produced with an older MSVC ABI spelling for a few
     # pointer/reference and enum/class decorations.  IDA's release bodies
     # confirm these are the same x86 call contracts; accept the current
