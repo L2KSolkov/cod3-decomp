@@ -795,7 +795,7 @@ void EffectEventSys::CachedQuery::Where(int id, const int& val, bool weak)
 }
 
 // ea: 0x004E82B0
-void EffectEventSys::CachedQuery::Where(int id, const DbQueryString* val,
+void EffectEventSys::CachedQuery::Where(int id, const DbQueryString& val,
                                         bool weak)
 {
     mSpecifiedFields.Add(id);
@@ -805,9 +805,9 @@ void EffectEventSys::CachedQuery::Where(int id, const DbQueryString* val,
         mWeakFields.Rmv(id);
     switch (id)
     {
-    case 7: memcpy(&mSCRIPT_ID, val, sizeof(mSCRIPT_ID)); break;
-    case 8: memcpy(&mWEAPON_ID, val, sizeof(mWEAPON_ID)); break;
-    case 9: memcpy(&mVEHICLE_ID, val, sizeof(mVEHICLE_ID)); break;
+    case 7: memcpy(&mSCRIPT_ID, &val, sizeof(mSCRIPT_ID)); break;
+    case 8: memcpy(&mWEAPON_ID, &val, sizeof(mWEAPON_ID)); break;
+    case 9: memcpy(&mVEHICLE_ID, &val, sizeof(mVEHICLE_ID)); break;
     default:
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CachedQuery.h";
@@ -878,7 +878,7 @@ void EffectEventSys::Where<const char*>(int id, const char* const& val,
     DbQueryString destination;
     strncpy(destination.buf, val, 0x7Fu);
     destination.buf[127] = 0;
-    mCurrentQuery->mCachedQuery.Where(id, &destination, weak);
+    mCurrentQuery->mCachedQuery.Where(id, destination, weak);
 }
 
 static unsigned int holdrand = 1;
@@ -2431,7 +2431,7 @@ ActiveEffectSet* EffectEventSys::GetActiveEffectSet(Handle handle)
 }
 
 // ea: 0x004E5D50
-ActiveEffectSet* EffectEventSys::DereferenceHandle(Handle h)
+ActiveEffectSet* EffectEventSys::DereferenceHandle(Handle h) const
 {
     int index = h.mVal & 0x1FF;
     ActiveEffectSet* result = nullptr;
@@ -4749,7 +4749,7 @@ void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
 }
 
 // ea: 0x004E8390
-void EffectEventSys::CachedQuery::ConstructQuery(DbQuery* query)
+void EffectEventSys::CachedQuery::ConstructQuery(DbQuery* query) const
 {
     if ((mSpecifiedFields.mBits[0] & 0x100) != 0)
     {

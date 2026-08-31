@@ -12864,7 +12864,7 @@ class PhysDataBankManager : public InplaceAssetBankSet<PhysDataBank> {
 public:
     static void* operator new(unsigned int s, void* p); // core.o 0x004DC410
     static PhysDataBankManager* sInst;  // ?sInst@PhysDataBankManager@@2PAV1@A (g_globals.cpp)
-    static PhysDataBankManager* CreateInst();
+    static void CreateInst();
     static void DeleteInst();
     PhysDataBankManager();
     virtual ~PhysDataBankManager();
@@ -12877,7 +12877,7 @@ public:
 class DestructibleBankManager : public InplaceAssetBankSet<DestructibleBank> {
 public:
     static DestructibleBankManager* sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A (g_globals.cpp)
-    static DestructibleBankManager* CreateInst();
+    static void CreateInst();
     static void DeleteInst();
     DestructibleBankManager();
     virtual ~DestructibleBankManager();
@@ -12913,7 +12913,7 @@ PhysDataBankManager::~PhysDataBankManager()
 }
 
 // ea: 0x004E86F0
-PhysDataBankManager* PhysDataBankManager::CreateInst()
+void PhysDataBankManager::CreateInst()
 {
     if (PhysDataBankManager::sInst != nullptr)
     {
@@ -12933,10 +12933,10 @@ PhysDataBankManager* PhysDataBankManager::CreateInst()
         PhysDataBankManager* result =
             new (memory) PhysDataBankManager();
         PhysDataBankManager::sInst = result;
-        return result;
+        return;
     }
     PhysDataBankManager::sInst = nullptr;
-    return nullptr;
+    return;
 }
 
 // ea: 0x004DC420
@@ -13018,7 +13018,7 @@ IVPointer<Destructible> DestructibleBankManager::GetDestructible(
 }
 
 // ea: 0x004E7FE0
-DestructibleBankManager* DestructibleBankManager::CreateInst()
+void DestructibleBankManager::CreateInst()
 {
     if (DestructibleBankManager::sInst != nullptr)
     {
@@ -13038,10 +13038,10 @@ DestructibleBankManager* DestructibleBankManager::CreateInst()
         DestructibleBankManager* result =
             new (memory) DestructibleBankManager();
         DestructibleBankManager::sInst = result;
-        return result;
+        return;
     }
     DestructibleBankManager::sInst = nullptr;
-    return nullptr;
+    return;
 }
 
 // ea: 0x004B5590

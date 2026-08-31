@@ -1164,8 +1164,8 @@ public:
 
         void Clear();
         void Where(int id, const int& val, bool weak);
-        void Where(int id, const DbQueryString* val, bool weak);
-        void ConstructQuery(DbQuery* query);  // ea: 0x004E8390
+        void Where(int id, const DbQueryString& val, bool weak);
+        void ConstructQuery(DbQuery* query) const;  // ea: 0x004E8390
     };
     static_assert(sizeof(CachedQuery) == 0x1B8, "CachedQuery size mismatch");
 
@@ -1226,7 +1226,7 @@ public:
                                  HashString soundName);  // ea: 0x004BCD90
     void SendSoundNotify(Entity* pEnt);          // ea: 0x004BCDE0
     ActiveEffectSet* GetActiveEffectSet(Handle handle);  // ea: 0x004C56B0
-    ActiveEffectSet* DereferenceHandle(Handle handle);    // ea: 0x004E5D50
+    ActiveEffectSet* DereferenceHandle(Handle handle) const;    // ea: 0x004E5D50
     int IsSoundAlreadyPlaying(unsigned int mSoundNameHashStr, Entity* pEnt,
                               int maxEffects);   // ea: 0x004CA820
     bool IsEffectActive(Handle handle);          // ea: 0x004CACD0
