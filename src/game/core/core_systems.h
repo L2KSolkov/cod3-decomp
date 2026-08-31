@@ -1699,6 +1699,13 @@ public:
     ae_sized_array<DbRow*, 64> mMatches;      // +0x000
     ae_sized_array<DbRow*, 64> mMatchesSpec;  // +0x104
     int  mMaxNumFields;            // +0x208
+    // ea: 0x004E2430
+    DbQueryResults()
+    {
+        mMatches.m_size = 0;
+        mMatchesSpec.m_size = 0;
+        mMaxNumFields = 0;
+    }
     DbRow* GetRandomResult();
     DbRow* GetRandomResultSpecific();
     DbRow* GetResult(unsigned int idx);
