@@ -1551,6 +1551,18 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
     nalMatrix4x4* footMatrices[2] = {&leftFootMat, &rightFootMat};
     const bool doTerrainTrace = sentient->mEnableTerrainMappingIK
         && ent->has_zone_collision();
+    const float originZ = ent->r.currentOrigin.v.m128_f32[2];
+    float originDelta = 0.0f;
+    if (sentient->mLastTerrainMappingOriginZ < -9998.0f)
+        sentient->mLastTerrainMappingOriginZ = originZ;
+    else
+        originDelta = originZ - sentient->mLastTerrainMappingOriginZ;
+    if (fabsf(originDelta) < 32.0f)
+    {
+        sentient->mLastTerrainMappingFootOffsetZ[0] += originDelta;
+        sentient->mLastTerrainMappingFootOffsetZ[1] += originDelta;
+    }
+    sentient->mLastTerrainMappingOriginZ = originZ;
     float pelvisTarget = 0.0f;
     for (int i = 0; i < 2; ++i)
     {
@@ -1592,12 +1604,8 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         pelvisTarget = min(pelvisTarget, offset);
     }
 
-    const float originZ = ent->r.currentOrigin.v.m128_f32[2];
-    if (sentient->mLastTerrainMappingOriginZ < -9998.0f)
-        sentient->mLastTerrainMappingOriginZ = originZ;
-    const float originDelta = originZ - sentient->mLastTerrainMappingOriginZ;
-    sentient->mLastTerrainMappingOriginZ = originZ;
-    pelvisTarget += originDelta;
+    if (sentient->mLastTerrainMappingPelvisZ >= -9998.0f)
+        sentient->mLastTerrainMappingPelvisZ -= originDelta;
     if (sentient->mLastTerrainMappingPelvisZ < -9998.0f)
         sentient->mLastTerrainMappingPelvisZ = originZ;
     const float maxChange = max(3.0f, elapsedMs * 0.001f * 60.0f);
