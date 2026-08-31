@@ -1095,6 +1095,8 @@ protected:
     virtual void Right();
     virtual void ButtonHeldAction();
 public:
+    static void operator delete(void* ptr);
+    static void operator delete(void*, void*);
     FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve, int flg);  // ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z (shell.o)
 };
 static_assert(sizeof(FEMenu) == 0x4C, "FEMenu size mismatch");
