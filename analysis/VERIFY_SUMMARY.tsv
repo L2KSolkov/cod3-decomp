@@ -98,7 +98,7 @@ bdMallocMemory.obj	6	6	0	0	0	0	0
 bdMemory.obj	23	23	0	0	0	0	0
 bdMessage.obj	25	22	0	1	0	2	0
 bdMutex.obj	4	0	0	0	0	4	0
-bdNet-xbox.obj	49	35	4	9	0	1	0
+bdNet-xbox.obj	49	35	0	13	0	1	0
 bdPacket.obj	32	23	1	0	0	8	0
 bdPlatformMutex-xbox.obj	4	0	0	0	0	4	0
 bdPlatformSocket-win32.obj	8	0	4	0	0	4	0

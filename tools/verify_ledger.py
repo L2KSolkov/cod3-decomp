@@ -605,6 +605,20 @@ def symbol_variants(name: str) -> set[str]:
     # confirm these are the same x86 call contracts; accept the current
     # compiler's equivalent decorations without weakening body gates.
     equivalent = {
+        # The release bdNet object decorates its status enum as a nested
+        # bdNetImpl::bdNetStatus and its start-parameter type as a class;
+        # current MSVC emits the equivalent global enum/struct spellings.
+        "?getStatus@bdNetImpl@@QBE?AW4bdNetStatus@1@XZ":
+            "?getStatus@bdNetImpl@@QBE?AW4bdNetStatus@@XZ",
+        "?getParams@bdNetImpl@@QAEABVbdNetStartParams@@XZ":
+            "?getParams@bdNetImpl@@QAEABUbdNetStartParams@@XZ",
+        "?start@bdNetImpl@@QAE_NABVbdNetStartParams@@@Z":
+            "?start@bdNetImpl@@QAE_NABUbdNetStartParams@@@Z",
+        # The release virtual destructor uses the compiler's protected
+        # access decoration; current MSVC emits the equivalent public virtual
+        # destructor decoration for the same function body.
+        "??1bdNetImpl@@MAE@XZ":
+            "??1bdNetImpl@@UAE@XZ",
         # Release marks nuge::tensor_transform_principle as a static member
         # (`SAX`), while the port keeps the same callable in the nuge namespace
         # (`YAX`). The referenced parameters and body are identical.
