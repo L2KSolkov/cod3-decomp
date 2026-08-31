@@ -29,8 +29,8 @@ public:
     T m_elements[CAPACITY];  // +0x00
 
     // ea: 0x005EAC70
-    // ea: 0x005EEBF0
-    // ea: 0x004B16A0
+    // alias-ea: 0x005EEBF0
+    // alias-ea: 0x004B16A0
     ae_sized_array_base() {}
 };
 
@@ -40,25 +40,25 @@ public:
     int     m_size;                // +sizeof(T)*CAPACITY
 
     // ea: 0x005EA480
-    // ea: 0x005EEB20
-    // ea: 0x004AC550
-    // ea: 0x004AD0F0
-    // ea: 0x004ADFD0
-    // ea: 0x004B1450
-    // ea: 0x004B1470
-    // ea: 0x004B14D0
-    // ea: 0x004B2BF0
+    // alias-ea: 0x005EEB20
+    // alias-ea: 0x004AC550
+    // alias-ea: 0x004AD0F0
+    // alias-ea: 0x004ADFD0
+    // alias-ea: 0x004B1450
+    // alias-ea: 0x004B1470
+    // alias-ea: 0x004B14D0
+    // alias-ea: 0x004B2BF0
     ae_sized_array() : m_size(0) {}
 
     // ea: 0x005EA1A0
-    // ea: 0x005EA680
-    // ea: 0x005EA8A0
-    // ea: 0x005EABB0
-    // ea: 0x004AC520
-    // ea: 0x004AD180
-    // ea: 0x004ADDB0
-    // ea: 0x004AE060
-    // ea: 0x004AC5E0
+    // alias-ea: 0x005EA680
+    // alias-ea: 0x005EA8A0
+    // alias-ea: 0x005EABB0
+    // alias-ea: 0x004AC520
+    // alias-ea: 0x004AD180
+    // alias-ea: 0x004ADDB0
+    // alias-ea: 0x004AE060
+    // alias-ea: 0x004AC5E0
     int size() const { return m_size; }
     // ea: 0x005EA490
     bool empty() const { return m_size == 0; }
@@ -66,9 +66,9 @@ public:
     void clear() { m_size = 0; }
 
     // ea: 0x005EA120
-    // ea: 0x004AC4A0
-    // ea: 0x004AC560
-    // ea: 0x004AD100
+    // alias-ea: 0x004AC4A0
+    // alias-ea: 0x004AC560
+    // alias-ea: 0x004AD100
     T& operator[](int idx) {
         if (idx < 0 || idx >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -82,9 +82,9 @@ public:
     }
 
     // ea: 0x005EA820
-    // ea: 0x004ACFF0
-    // ea: 0x004AD070
-    // ea: 0x004ADFE0
+    // alias-ea: 0x004ACFF0
+    // alias-ea: 0x004AD070
+    // alias-ea: 0x004ADFE0
     T& operator[](unsigned int idx) {
         if (idx >= static_cast<unsigned int>(CAPACITY)) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -111,13 +111,13 @@ public:
     }
 
     // ea: 0x005EA1B0
-    // ea: 0x004AD190
-    // ea: 0x004ADDC0
-    // ea: 0x004AE070
-    // ea: 0x005EA690
-    // ea: 0x005EA4B0
-    // ea: 0x004AC5F0
-    // ea: 0x007BF9A0
+    // alias-ea: 0x004AD190
+    // alias-ea: 0x004ADDC0
+    // alias-ea: 0x004AE070
+    // alias-ea: 0x005EA690
+    // alias-ea: 0x005EA4B0
+    // alias-ea: 0x004AC5F0
+    // alias-ea: 0x007BF9A0
     void push_back(const T& val) {
         if (m_size >= CAPACITY) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
@@ -133,16 +133,16 @@ public:
         }
     }
     // ea: 0x005EA970
-    // ea: 0x004AE6D0
+    // alias-ea: 0x004AE6D0
     int capacity() const { return CAPACITY; }
     // ea: 0x005EE950
-    // ea: 0x004B14F0
+    // alias-ea: 0x004B14F0
     int free_space() const { return CAPACITY - m_size; }
 
     // ea: 0x005EA540
-    // ea: 0x005EA980
-    // ea: 0x004AC690
-    // ea: 0x004AE100
+    // alias-ea: 0x005EA980
+    // alias-ea: 0x004AC690
+    // alias-ea: 0x004AE100
     T& pop_back() {
         if (m_size != 0)
             --m_size;
@@ -172,8 +172,8 @@ public:
             --m_size;
     }
     // ea: 0x005EEAE0
-    // ea: 0x004B1660
-    // ea: 0x005EED00
+    // alias-ea: 0x004B1660
+    // alias-ea: 0x005EED00
     T& back() { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }  // ?back@?$ae_sized_array@H$0CN@@@QAEAAHXZ (g.o 0x4B1660)
     // ea: 0x005EE7D0
     const T& back() const { return m_elements[(m_size - 1 <= 0) ? 0 : m_size - 1]; }
@@ -186,18 +186,18 @@ public:
         const_iterator() : m_ptr(nullptr) {}
     private:
         // ea: 0x005EAC80
-        // ea: 0x004AE5D0
+        // alias-ea: 0x004AE5D0
         const_iterator(const T* ptr) : m_ptr(ptr) {}  // ??0const_iterator@...@@AAE@PBQAVEntity@@@Z (g.o 0x4AE5D0)
     public:
         // ea: 0x005EA730
-        // ea: 0x004ACFB0
+        // alias-ea: 0x004ACFB0
         const T& operator*() const { return *m_ptr; }  // ??Dconst_iterator@...@@QBEAB...@@XZ
         const T* operator->() const { return m_ptr; }
         // ea: 0x005EA740
-        // ea: 0x004ACFC0
+        // alias-ea: 0x004ACFC0
         const_iterator& operator++() { ++m_ptr; return *this; }  // ??Econst_iterator@...@@QAEAAV01@XZ
         // ea: 0x005EA750
-        // ea: 0x004ACFD0
+        // alias-ea: 0x004ACFD0
         bool operator!=(const_iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9const_iterator@...@@QBE_NV01@@Z
     };
 
@@ -208,32 +208,32 @@ public:
         iterator() : m_ptr(nullptr) {}
     private:
     // ea: 0x004AE610
-        // ea: 0x004AE650
+        // alias-ea: 0x004AE650
         iterator(T* ptr) : m_ptr(ptr) {}  // ??0iterator@...@@AAE@PAPAVEntity@@@Z (g.o 0x4AE610)
     public:
         // ea: 0x004AD230
-        // ea: 0x004AD280
+        // alias-ea: 0x004AD280
         T& operator*() const { return *m_ptr; }  // ??Diterator@...@@QBEAAPAV...@@XZ / QBEAAV...@@XZ
         T* operator->() const { return m_ptr; }
         // ea: 0x004AD240
-        // ea: 0x004AD290
+        // alias-ea: 0x004AD290
         iterator& operator++() { ++m_ptr; return *this; }  // ??Eiterator@...@@QAEAAV01@XZ
         // ea: 0x004AD250
-        // ea: 0x004AD2A0
+        // alias-ea: 0x004AD2A0
         bool operator!=(iterator rhs) const { return m_ptr != rhs.m_ptr; }  // ??9iterator@...@@QBE_NV01@@Z
     };
 
     // ea: 0x004B0EE0
-    // ea: 0x004B1490
+    // alias-ea: 0x004B1490
     iterator begin() { return iterator(m_elements); }  // ?begin@...@@QAE?AViterator@1@XZ
     // ea: 0x004B0EF0
-    // ea: 0x004B14A0
+    // alias-ea: 0x004B14A0
     iterator end() { return iterator(&m_elements[m_size]); }  // ?end@...@@QAE?AViterator@1@XZ
     // ea: 0x004B0F10
-    // ea: 0x005EEB40
+    // alias-ea: 0x005EEB40
     const_iterator begin() const { return const_iterator(m_elements); }  // ?begin@...@@QBE?AVconst_iterator@1@XZ
     // ea: 0x004B0F20
-    // ea: 0x005EEB60
+    // alias-ea: 0x005EEB60
     const_iterator end() const { return const_iterator(&m_elements[m_size]); }  // ?end@...@@QBE?AVconst_iterator@1@XZ
 };
 
