@@ -233,6 +233,16 @@ void FEMenu::operator delete(void* ptr, size_t)
     mem_heap_free(ptr);
 }
 
+void FEMenuSystem::operator delete(void* ptr)
+{
+    mem_heap_free(ptr);
+}
+
+void FEMenuSystem::operator delete(void* ptr, size_t)
+{
+    mem_heap_free(ptr);
+}
+
 // ea: 0x005AE8E0
 int FEMenu::GetReturnMenu()
 {

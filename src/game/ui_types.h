@@ -1303,6 +1303,12 @@ protected:
     virtual void NewMenuActive() {}                 // slot 36 inline 0x5AFA30
 public:
     FEMenuSystem(int s, font_index f);  // ?FEMenuSystem@@QAE@HW4font_index@@@Z 0x57DD70
+    // FEMenuSystem instances are placement-constructed in mem_heap_malloc
+    // blocks by FEManager; deleting destructors must return those blocks to
+    // the same game heap rather than the CRT heap.
+    static void operator delete(void* ptr);
+    static void operator delete(void* ptr, size_t size);
+    static void operator delete(void*, void*) {}
     int CurrentOverlay();                           // ?CurrentOverlay@FEMenuSystem@@QAEHXZ 0x570DC0
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
     bool GetBDFlag(int f, int controller);          // shell.o 0x5AE9A0
