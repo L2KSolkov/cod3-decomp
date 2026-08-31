@@ -8910,7 +8910,7 @@ int CallbackCanTeamChange(Broc::entity player, int team_allies);  // ea: 0x9408B
 void TeamChangeKillPlayer(Broc::entity player);          // ea: 0x940D40
 void CallbackPlayerTeamChange(Broc::entity player, int autoBalance, int denied);  // ea: 0x940EC0
 void CallbackPlayerClassChange(Broc::entity player, unsigned int newPlayerClass);  // ea: 0x941270
-unsigned int CallbackStopFollowing();                    // ea: 0x941350
+void CallbackStopFollowing();                             // ea: 0x941350
 void CallbackRoundOver(int condition, Broc::string winner);  // ea: 0x941480
 void CallbackNextRound();                                // ea: 0x942050
 void CallbackRestartMap();                               // ea: 0x9420E0
@@ -9234,14 +9234,14 @@ void CallbackRestartMap() {
 }
 
 // CallbackStopFollowing - ea: 0x941350
-unsigned int CallbackStopFollowing() {
+void CallbackStopFollowing() {
     Broc::entity lvl =
         mp_util_wad::pLevel != nullptr
             ? mp_util_wad::pLevel->_base.entity
             : Broc::entity();
     void* ftor = StopFollowing__functor(lvl, true);
-    return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
-                               __LINE__, "StopFollowing", ftor);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, "StopFollowing", ftor);
 }
 
 // CallbackQuitGame - ea: 0x944580
