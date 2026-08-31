@@ -20,7 +20,7 @@
 // bdConnectionStore::bdConnectionStore - ea: 0x8A2DE0
 // ============================================================================
 bdConnectionStore::bdConnectionStore(bdSocket* socket,
-                                     const bdReference<bdCommonAddr>& me,
+                                     bdReference<bdCommonAddr> me,
                                      bdSecurityKeyMap* securityKeyMap,
                                      bdDHKey* dhKey,
                                      const bdArray<bdAddr>& localAddresses)
@@ -33,7 +33,11 @@ bdConnectionStore::bdConnectionStore(bdSocket* socket,
       m_status(BD_CONNECTION_STORE_UNINITIALIZED) {
     if (m_me.m_ptr != NULL)
         m_me.m_ptr->addRef();
-    bdSingleton<bdAddressMapImpl>::getInstance()->setTitleCommonAddr(m_me);
+    bdReference<bdCommonAddr> titleRef(me.m_ptr);
+    bdListAddRef(titleRef);
+    bdSingleton<bdAddressMapImpl>::getInstance()->setTitleCommonAddr(titleRef);
+    bdListRelease(titleRef);
+    bdListRelease(me);
 }
 
 // ============================================================================
