@@ -1992,6 +1992,19 @@ void AnimIK::ApplyADS(Entity* ent)
         return;
     if ((ent->client->ps.eFlags & 0x100000) != 0)
         return;
+    // The release validates the view-locked entity before doing any ADS arm
+    // work.  It reports the original vehicleEnt assertion but intentionally
+    // continues when the assertion is configured as non-fatal.
+    Entity* vehicleEnt = HandleDbToEnt(ent->client->ps.mViewLockedEntity);
+    if (vehicleEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = static_cast<AeAssert::ECoderId>(0);
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AnimIK.cpp";
+        AeAssert::gCurrentLine = 1586;
+        AeAssert::gCurrentExpr = "vehicleEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
     const float ads = ent->client->ps.fWeaponPosFrac;
     if (ads <= 0.0f)
         return;
