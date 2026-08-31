@@ -499,7 +499,7 @@ class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); 
 class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
 class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
-class SmokeGrenadeMgr { public: static SmokeGrenadeMgr* CreateInst(); };
+class SmokeGrenadeMgr { public: static void CreateInst(); };
 class CGBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class AnimBankManager { public: static void CreateInst(); };

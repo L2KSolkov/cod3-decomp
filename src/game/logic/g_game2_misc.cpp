@@ -2926,7 +2926,7 @@ SmokeGrenadeMgr::SmokeGrenadeMgr()
 }
 
 // ea: 0x004E9410
-SmokeGrenadeMgr* SmokeGrenadeMgr::CreateInst()
+void SmokeGrenadeMgr::CreateInst()
 {
     SmokeGrenadeMgr* result = nullptr;
     if (sInst != nullptr)
@@ -2954,7 +2954,7 @@ SmokeGrenadeMgr* SmokeGrenadeMgr::CreateInst()
     {
         sInst = nullptr;
     }
-    return result;
+    return;
 }
 
 // ============================================================================

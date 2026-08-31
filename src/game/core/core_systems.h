@@ -400,7 +400,8 @@ struct BitSet {
 // (likely head/tail links or count) - TODO verify when porting list code.
 // ============================================================================
 template <typename T>
-struct reserved_dlist {
+class reserved_dlist {
+public:
     struct dlist_node {
         dlist_node* mNext;  // +0x00
         dlist_node* mPrev;  // +0x04
@@ -1276,7 +1277,8 @@ static_assert(sizeof(EffectEventSys) == 0xA380, "EffectEventSys size mismatch");
 // ============================================================================
 // Rumble types (core.o rumble.cpp)
 // ============================================================================
-struct RumbleEffectInstance {
+class RumbleEffectInstance {
+public:
     static PoolAllocator* sAllocator;
     reserved_dlist<RumbleEffectInstance>::dlist_node m_dlist_node;  // +0x00
     RumbleEffectInstanceHandle m_handle;      // +0x08

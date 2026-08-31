@@ -745,7 +745,7 @@ public:
     SmokeGrenadeMgr();  // ea: 0x004E8C50
     SmokeGrenadeInfoList mSmokeGrenadeInfoList;  // +0x00
     static SmokeGrenadeMgr* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
-    static SmokeGrenadeMgr* CreateInst();  // ?CreateInst@SmokeGrenadeMgr@@SAPAV1@XZ
+    static void CreateInst();  // ?CreateInst@SmokeGrenadeMgr@@SAXXZ
     static SmokeGrenadeMgr* Inst();  // ?Inst@SmokeGrenadeMgr@@SAPAV1@XZ (g.o 0x4A83B0)
     float CalcOpacity(const SmokeGrenadeInfo& smokeGrenInfo) const;  // ?CalcOpacity@SmokeGrenadeMgr@@IBEMABUSmokeGrenadeInfo@@@Z (game2.o 0x4FA0E0)
     bool PointCanSeePoint(const float* startPoint, const float* endPoint,
