@@ -121,7 +121,7 @@ bdSessionInfo.obj	3	0	0	0	0	3	0
 bdSessionInterceptor.obj	4	2	0	0	0	2	0
 bdSessionListener.obj	12	2	0	0	0	10	0
 bdShortTimer.obj	4	0	0	0	0	4	0
-bdShutdownAckChunk.obj	8	4	1	1	0	2	0
+bdShutdownAckChunk.obj	8	4	1	0	0	3	0
 bdShutdownChunk.obj	8	4	1	0	0	3	0
 bdShutdownCompleteChunk.obj	8	4	1	1	0	2	0
 bdSocket.obj	12	2	3	6	0	1	0
