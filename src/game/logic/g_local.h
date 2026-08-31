@@ -679,8 +679,8 @@ struct DebugThread {
     void Render();   // ?Render@DebugThread@@QAEXXZ (game2.o 0x50A050)
     void DisplayEntitySound(const math::Position3* entityPos, int xpos,
                             int ypos, int yinc, float scale);  // ea: 0x4F8AB0
-    char* DisplayMessage(char* msg, int xpos, int ypos, float r, float g,
-                         float b, float scale, float alphaMin);
+    void DisplayMessage(char* msg, int xpos, int ypos, float r, float g,
+                        float b, float scale, float alphaMin);
     void Update();   // ?Update@DebugThread@@QAEXXZ (game2.o 0x4F46A0)
     int IsActive();   // ?IsActive@DebugThread@@QAEHXZ (game2.o 0x5173C0)
     void SetActive(int active);  // ?SetActive@DebugThread@@QAEXH@Z (game2.o 0x5173D0)

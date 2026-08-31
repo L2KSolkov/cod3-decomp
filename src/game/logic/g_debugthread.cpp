@@ -892,9 +892,9 @@ void DebugThread::Render()
 // ============================================================================
 // DebugThread::DisplayMessage - ea: 0x4F4620
 // ============================================================================
-char* DebugThread::DisplayMessage(char* msg, int xpos, int ypos, float r,
-                                  float g, float b, float scale,
-                                  float alphaMin)
+void DebugThread::DisplayMessage(char* msg, int xpos, int ypos, float r,
+                                 float g, float b, float scale,
+                                 float alphaMin)
 {
     gDebugThread_MessageRGB[0] = r;
     gDebugThread_MessageRGB[1] = g;
@@ -905,7 +905,6 @@ char* DebugThread::DisplayMessage(char* msg, int xpos, int ypos, float r,
     gDebugThread_MessageTicks = 300;
     gDebugThread_MessageYpos = (float)ypos;
     gDebugThread_MessageAlphaMin = (int)alphaMin;
-    return msg;
 }
 
 // ============================================================================
