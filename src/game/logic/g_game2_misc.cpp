@@ -1548,10 +1548,9 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         sentient->mLastTerrainMappingFootOffsetZ[1] = 0.0f;
         return;
     }
-    if (!ent->has_zone_collision())
-        return;
-
     nalMatrix4x4* footMatrices[2] = {&leftFootMat, &rightFootMat};
+    const bool doTerrainTrace = sentient->mEnableTerrainMappingIK
+        && ent->has_zone_collision();
     float pelvisTarget = 0.0f;
     for (int i = 0; i < 2; ++i)
     {
@@ -1567,19 +1566,23 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         const math::Position3 mins(-3.0f, -3.0f, -3.0f);
         const math::Position3 maxs(3.0f, 3.0f, 3.0f);
         trace_t trace{};
-        collision_context_t context(ent->mHandle, 42008593);
-        g_Trace(&trace, start, mins, maxs, end, context);
         float targetOffset = 0.0f;
-        if (trace.fraction < 1.0f && trace.normal.v.m128_f32[2] > 0.0f)
+        if (doTerrainTrace)
         {
-            targetOffset = trace.endpos.v.m128_f32[2]
-                - footPos.v.m128_f32[2];
-            sentient->mLastTerrainMappingTraceZ[i] =
-                trace.endpos.v.m128_f32[2];
-            int surfaceBits = 0;
-            memcpy(&surfaceBits, &trace.normal.v.m128_f32[2],
-                   sizeof(surfaceBits));
-            ent->client->mFootStepsSurface[i] = surfaceBits;
+            collision_context_t context(ent->mHandle, 42008593);
+            g_Trace(&trace, start, mins, maxs, end, context);
+            if (trace.fraction < 1.0f
+                && trace.normal.v.m128_f32[2] > 0.0f)
+            {
+                targetOffset = trace.endpos.v.m128_f32[2]
+                    - footPos.v.m128_f32[2];
+                sentient->mLastTerrainMappingTraceZ[i] =
+                    trace.endpos.v.m128_f32[2];
+                int surfaceBits = 0;
+                memcpy(&surfaceBits, &trace.normal.v.m128_f32[2],
+                       sizeof(surfaceBits));
+                ent->client->mFootStepsSurface[i] = surfaceBits;
+            }
         }
         const float blend = min(1.0f, elapsedMs * 0.001f * 8.0f);
         float& offset = sentient->mLastTerrainMappingFootOffsetZ[i];
