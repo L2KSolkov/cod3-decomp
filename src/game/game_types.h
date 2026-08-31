@@ -119,14 +119,14 @@ public:
 
     DbLinkedHandle() { mHandle.mVal = 0; }
     // ea: 0x005EA570
-    // ea: 0x004AC6C0
-    // ea: 0x004ACEA0
+    // alias-ea: 0x004AC6C0
+    // alias-ea: 0x004ACEA0
     DbLinkedHandle(int v) { mHandle.mVal = (unsigned int)v; }  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@H@Z (g.o 0x4AC6C0)
     // ea: 0x005EA590
-    // ea: 0x004AC6E0
+    // alias-ea: 0x004AC6E0
     DbLinkedHandle(Handle h) { mHandle = h; }                  // ??0?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAE@VHandle@@@Z (g.o 0x4AC6E0)
     // ea: 0x004AC700
-    // ea: 0x004ACEC0
+    // alias-ea: 0x004ACEC0
     DbLinkedHandle& operator=(Handle rhs)                      // ??4?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@QAEAAV0@VHandle@@@Z (g.o 0x4AC700)
     {
         mHandle = rhs;
@@ -156,8 +156,8 @@ public:
         sizeof(DbLinkedHandle<HandleDb, T>) * CAPACITY];  // +0x04
 
     // ea: 0x004AE5F0
-    // ea: 0x004AE600
-    // ea: 0x004AE6E0
+    // alias-ea: 0x004AE600
+    // alias-ea: 0x004AE6E0
     ae_sized_array_base()
         : m_elements(reinterpret_cast<DbLinkedHandle<HandleDb, T>*>(
               m_elementdata))
