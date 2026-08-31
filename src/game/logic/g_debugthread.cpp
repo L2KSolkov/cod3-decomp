@@ -1140,6 +1140,8 @@ struct AnimNoteHandler {
     void SetEntityHandle(DbLinkedHandle<EntityHandleDb, Entity> handle);
     int GetNextNotifyIndex(float time);
 };
+static_assert(sizeof(AnimNoteHandler) == 0x0C,
+              "AnimNoteHandler size mismatch");
 
 static_assert(sizeof(AnimNoteHandler::NotifyInfo) == 0x0C,
               "AnimNoteHandler::NotifyInfo size mismatch");
@@ -1500,6 +1502,8 @@ struct QuickTaskDeactivation {
     static int get_dlist_node_offset();
     DbLinkedHandle<EntityHandleDb, Entity> GetHandle() const;
 };
+static_assert(sizeof(QuickTaskDeactivation) == 0x0C,
+              "QuickTaskDeactivation size mismatch");
 
 void* QuickTaskDeactivation::get_dlist_node()
 {

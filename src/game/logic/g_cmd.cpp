@@ -21,6 +21,7 @@ struct cmd_t {
     int maxsize;    // +0x04
     int cmdsize;    // +0x08
 };
+static_assert(sizeof(cmd_t) == 0x0C, "cmd_t size mismatch");
 static cmd_t cmd_text;               // ?cmd_text@@3Ucmd_t@@A (game.o)
 static unsigned char cmd_text_buf[8192];
 static cmd_t sv_cmd_text;            // ?sv_cmd_text@@3Ucmd_t@@A (game.o)
@@ -122,6 +123,8 @@ struct RemainingTime {
     unsigned int mTrackId;       // +0x04
     float        mRemainingTime; // +0x08
 };
+static_assert(sizeof(RemainingTime) == 0x0C,
+              "RemainingTime size mismatch");
 
 class CurveManager {
 private:
