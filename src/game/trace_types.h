@@ -85,3 +85,5 @@ public:
                                int mask);  // ??0player_collision_context_t@@QAE@V?$DbLinkedHandle@...@@H@Z (g.o 0x4B0000)
     bool filter(Entity* ent) const;  // ?filter@player_collision_context_t@@UBE_NPAVEntity@@@Z
 };
+static_assert(sizeof(player_collision_context_t) == 0x18,
+              "player_collision_context_t size mismatch");

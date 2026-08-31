@@ -200,6 +200,8 @@ struct polyVert_t {
     float lightmap[2];
     unsigned char modulate[4];
 };
+static_assert(sizeof(polyVert_t) == 0x20,
+              "polyVert_t size mismatch");
 
 struct nglMeshSection;
 struct gpuVertexFormat;

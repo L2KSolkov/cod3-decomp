@@ -264,6 +264,8 @@ enum eWeaponCategory {
 struct _weapon_name {
     char name[0x20];  // +0x00
 };
+static_assert(sizeof(_weapon_name) == 0x20,
+              "_weapon_name size mismatch");
 
 struct _weapon_category {
     _weapon_name* weapons;  // +0x00

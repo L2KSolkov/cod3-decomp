@@ -761,6 +761,8 @@ struct debug_sphere {
                  const Color& _color);                // ??0debug_sphere@@QAE@ABVPosition3@math@@MABVColor@@@Z (g.o 0x4AC070)
     debug_sphere& operator=(const debug_sphere& other);  // ??4debug_sphere@@QAEAAU0@ABU0@@Z (g.o 0x4AE140)
 };
+static_assert(sizeof(debug_sphere) == 0x20,
+              "debug_sphere size mismatch");
 extern ae_vector<debug_sphere> debug_spheres;  // g.o 0xED2A98
 extern int render;                             // g.o 0xDD725C
 
