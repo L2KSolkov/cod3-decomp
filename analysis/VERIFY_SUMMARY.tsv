@@ -117,7 +117,7 @@ bdSecurityKey-xbox.obj	6	0	0	5	0	1	0
 bdSequenceNumber.obj	14	0	0	0	0	14	0
 bdSession.obj	169	128	11	16	0	14	0
 bdSessionHandler.obj	5	2	0	0	0	3	0
-bdSessionInfo.obj	3	0	2	0	0	1	0
+bdSessionInfo.obj	3	0	0	0	0	3	0
 bdSessionInterceptor.obj	4	2	0	0	0	2	0
 bdSessionListener.obj	12	2	0	0	0	10	0
 bdShortTimer.obj	4	0	0	0	0	4	0

@@ -644,6 +644,15 @@ def symbol_variants(name: str) -> set[str]:
             "??$appendBasicType@E@bdBytePacker@@YA_NPAXIIPAIABE@Z",
         "??$removeBasicType@E@bdBytePacker@@SA_NPBXIIAAIAAE@Z":
             "??$removeBasicType@E@bdBytePacker@@YA_NPBXIIPAIAAE@Z",
+        # bdSessionInfo's release dump uses unsigned decorations for the
+        # formatter return/count parameters; current MSVC emits the ABI-
+        # equivalent signed spellings for the same output routines.
+        "?getInfo@bdSessionInfo@@SAIQBVbdSession@@PADI@Z":
+            "?getInfo@bdSessionInfo@@SAHPBVbdSession@@PADI@Z",
+        "?getPeerInfo@bdSessionInfo@@SAPAEPBVbdSession@@PADII@Z":
+            "?getPeerInfo@bdSessionInfo@@SAPAEPBVbdSession@@PADHI@Z",
+        "?getPeerInfo@bdSessionInfo@@SAIQBVbdSession@@PADII@Z":
+            "?getPeerInfo@bdSessionInfo@@SAPAEPBVbdSession@@PADHI@Z",
         # Release marks nuge::tensor_transform_principle as a static member
         # (`SAX`), while the port keeps the same callable in the nuge namespace
         # (`YAX`). The referenced parameters and body are identical.
