@@ -775,16 +775,16 @@ static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
 float AnimIK::painDurationMin = 450.0f;
 float AnimIK::painDurationMax = 700.0f;
 float AnimIK_painFlinchAngle = 22.0f;
-float AnimIK_painLowBlowPelvisShift[2] = {6.0f, 0.0f};
+float AnimIK_painLowBlowPelvisShift[3] = {6.0f, 0.0f, -2.0f};
 float AnimIK_painLowBlowPelvisPow = 0.365f;
-float AnimIK_painHighBlowPelvisShift[2] = {-3.0f, 0.0f};
+float AnimIK_painHighBlowPelvisShift[3] = {-3.0f, 0.0f, -1.0f};
 float AnimIK_painHighBlowPelvisPow = 0.47f;
 
 struct AnimIKPainBone {
     int boneIndex;
-    float pitchScale;
-    float yawScale;
-    float rollScale;
+    float scale;
+    float pow;
+    float piScale;
 };
 
 static const AnimIKPainBone AnimIKHighBlowBones[4] = {
@@ -1016,9 +1016,9 @@ void AnimIK::Initialize()
 // ============================================================================
 // ea: 0x50BBC0
 extern float AnimIK_painFlinchAngle;      // game2.o
-extern float AnimIK_painLowBlowPelvisShift[2];  // game2.o
+extern float AnimIK_painLowBlowPelvisShift[3];  // game2.o
 extern float AnimIK_painLowBlowPelvisPow; // game2.o
-extern float AnimIK_painHighBlowPelvisShift[2]; // game2.o
+extern float AnimIK_painHighBlowPelvisShift[3]; // game2.o
 extern float AnimIK_painHighBlowPelvisPow;      // game2.o
 extern float AnimIK_painDurationMin;      // game2.o
 extern float AnimIK_painDurationMax;      // game2.o
@@ -1208,6 +1208,19 @@ void AnimIK::RotateBone(int boneIndex, const math::Dir3& rotation)
 // ea: 0x004FCA40
 void AnimIK::ApplyPainFlinch(Entity* ent)
 {
+    struct PainAggregate {
+        int index;
+        float age;
+        float baseAmplitude;
+        float amplitude;
+        float totalPainDir[3];
+        int totalPainCount;
+    } best[2] = {};
+    for (int i = 0; i < 2; ++i)
+    {
+        best[i].index = -1;
+    }
+
     for (int eventIndex = 0; eventIndex < 15; ++eventIndex)
     {
         AnimIKPainEvent& event = ent->client->AnimIKPainEvents[eventIndex];
@@ -1226,22 +1239,109 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
         const float impulse = sinf(phase) * event.amplitude;
         if (impulse <= 0.0f)
             continue;
-        const float yaw = atan2f(event.dir[1], event.dir[0])
-            * 57.29577951308232f;
-        const float lateral = cosf(yaw * 0.0174532925199433f) * impulse;
-        const float forward = sinf(yaw * 0.0174532925199433f) * impulse;
-        const AnimIKPainBone* bones = event.bIsLowBlow
+        PainAggregate& aggregate = best[event.bIsLowBlow ? 1 : 0];
+        aggregate.totalPainDir[0] += event.dir[0] * impulse;
+        aggregate.totalPainDir[1] += event.dir[1] * impulse;
+        aggregate.totalPainDir[2] += event.dir[2] * impulse;
+        ++aggregate.totalPainCount;
+        if (impulse > aggregate.amplitude)
+        {
+            aggregate.index = eventIndex;
+            aggregate.age = age;
+            aggregate.baseAmplitude = event.amplitude;
+            aggregate.amplitude = impulse;
+        }
+    }
+
+    nalMatrix4x4 entityAxis;
+    AnimIK_MatrixFromAngles(
+        math::Dir3(0.0f, ent->r.currentAngles.v.m128_f32[1], 0.0f),
+        &entityAxis);
+    const nalMatrix4x4 inverseEntityAxis = entityAxis.Inverse();
+
+    for (int type = 0; type < 2; ++type)
+    {
+        PainAggregate& aggregate = best[type];
+        if (aggregate.amplitude <= 0.0f)
+            continue;
+
+        float painDir4[4] = {
+            aggregate.totalPainDir[0], aggregate.totalPainDir[1],
+            aggregate.totalPainDir[2], 0.0f
+        };
+        const __m128 localDir4 = AnimIK_MultiplyRow(
+            painDir4, inverseEntityAxis);
+        const float localX = localDir4.m128_f32[0];
+        const float localY = localDir4.m128_f32[1];
+        const float localZ = localDir4.m128_f32[2];
+
+        const float painYaw = AngleNormalize180(
+            atan2f(localY, localX) * 57.29577951308232f);
+        const float yawScale =
+            (90.0f - fabsf(painYaw)) * AnimIK_painFlinchAngle
+            * -0.011111111111111112f;
+        float pitchEnvelope;
+        if (painYaw <= 0.0f)
+        {
+            pitchEnvelope = ((-painYaw - 90.0f) * 0.011111111111111112f)
+                + 1.0f;
+            if (pitchEnvelope > 1.0f)
+                pitchEnvelope = 1.0f - (pitchEnvelope - 1.0f);
+            pitchEnvelope = -pitchEnvelope;
+        }
+        else
+        {
+            pitchEnvelope = ((painYaw - 90.0f)
+                             * 0.011111111111111112f) + 1.0f;
+            if (pitchEnvelope > 1.0f)
+                pitchEnvelope = 1.0f - (pitchEnvelope - 1.0f);
+        }
+        const float pitchScale = pitchEnvelope * AnimIK_painFlinchAngle;
+        const AnimIKPainBone* bones = type != 0
             ? AnimIKLowBlowBones : AnimIKHighBlowBones;
+        const float painScale =
+            (1.0f - powf(aggregate.age, 1.0f)) * aggregate.baseAmplitude;
         for (int bone = 0; bone < 4; ++bone)
         {
-            const AnimIKPainBone& scale = bones[bone];
-            RotateBone(scale.boneIndex,
-                        math::Dir3(forward * scale.pitchScale
-                                       * AnimIK_painFlinchAngle,
-                                   lateral * scale.yawScale
-                                       * AnimIK_painFlinchAngle,
-                                   impulse * scale.rollScale
-                                       * AnimIK_painFlinchAngle));
+            const AnimIKPainBone& boneScale = bones[bone];
+            const float bonePhase = powf(aggregate.age, boneScale.pow)
+                * boneScale.piScale * 3.14159265358979323846f;
+            const float boneImpulse = sinf(bonePhase) * painScale;
+            RotateBone(boneScale.boneIndex,
+                       math::Dir3(boneScale.scale * yawScale * boneImpulse,
+                                  0.0f,
+                                  boneScale.scale * pitchScale * boneImpulse));
+        }
+
+        nalGenericBoneHandle pelvisHandle{nullptr, 0};
+        nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle,
+                                         &BoneNames[0]);
+        if (pelvisHandle.Skeleton != nullptr)
+        {
+            nalPositionOrientation pelvis =
+                nalGenericPose_GetModelPositionOrientation(pose,
+                                                           &pelvisHandle);
+            const float pelvisPow = type != 0
+                ? AnimIK_painLowBlowPelvisPow
+                : AnimIK_painHighBlowPelvisPow;
+            float pelvisEnvelope = powf(aggregate.age, pelvisPow);
+            pelvisEnvelope = pelvisEnvelope >= 0.5f
+                ? 1.0f - (pelvisEnvelope - 0.5f) * 2.0f
+                : pelvisEnvelope * 2.0f;
+            const float pelvisScale = aggregate.baseAmplitude
+                * pelvisEnvelope;
+            const float shiftX = type != 0
+                ? AnimIK_painLowBlowPelvisShift[0]
+                : AnimIK_painHighBlowPelvisShift[0];
+            const float shiftZ = type != 0
+                ? AnimIK_painLowBlowPelvisShift[2]
+                : AnimIK_painHighBlowPelvisShift[2];
+            pelvis.pos.v.m128_f32[0] += localX * shiftX * pelvisScale;
+            pelvis.pos.v.m128_f32[1] += localY * shiftX * pelvisScale;
+            pelvis.pos.v.m128_f32[2] += localZ * shiftX * pelvisScale
+                + shiftZ * pelvisScale;
+            static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
+                pelvisHandle, pelvis);
         }
     }
 }
