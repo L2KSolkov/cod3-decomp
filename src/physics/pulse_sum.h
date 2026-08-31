@@ -1691,6 +1691,8 @@ struct phys_list_condition_functor_has_rigid_body_and_user_rigid_body {
         return false;
     }
 };
+static_assert(sizeof(phys_list_condition_functor_has_rigid_body_and_user_rigid_body) == 0x4,
+              "phys_list_condition_functor_has_rigid_body_and_user_rigid_body release layout mismatch");
 
 struct phys_list_condition_functor_has_no_constraints {
     phys_list_condition_functor_has_no_constraints() {}

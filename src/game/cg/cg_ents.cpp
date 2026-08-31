@@ -99,6 +99,7 @@ localEntity_t* cg_freeLocalEntities = nullptr;  // ?cg_freeLocalEntities@@3PAUlo
 struct _cmd_t {
     unsigned int hVal;  // +0x00
 };
+static_assert(sizeof(_cmd_t) == 0x4, "_cmd_t size mismatch");
 _cmd_t gCG_ServerCommands[16];  // ?gCG_ServerCommands@@3PAU_cmd_t@@A (cg.o @ 0x13505E0)
 
 extern const float colorRed[4];

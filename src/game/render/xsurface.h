@@ -48,6 +48,8 @@ union XVariantVertexInfo_u {
     XSimpleVertexInfo_s* simple; // +0x00
     XVertexInfo_s* info;         // +0x00
 };
+static_assert(sizeof(XVariantVertexInfo_u) == 0x4,
+              "XVariantVertexInfo_u size mismatch");
 
 class XSurface {
 public:

@@ -268,6 +268,8 @@ struct _weapon_name {
 struct _weapon_category {
     _weapon_name* weapons;  // +0x00
 };
+static_assert(sizeof(_weapon_category) == 0x4,
+              "_weapon_category size mismatch");
 
 _weapon_category gWeaponCategories[64];       // ?gWeaponCategories@@3PAU_weapon_category@@A (game2.o @ 0x11DA9F8)
 

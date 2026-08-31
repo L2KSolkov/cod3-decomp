@@ -494,9 +494,13 @@ struct MP_ANIM_CELL_FIELDS {
     unsigned short numAnims;   // +0x00
     unsigned short animIndex;  // +0x02
 };
+static_assert(sizeof(MP_ANIM_CELL_FIELDS) == 0x4,
+              "MP_ANIM_CELL_FIELDS size mismatch");
 struct MP_ANIM_LOOKUP {
     MP_ANIM_CELL_FIELDS anims[4];
 };
+static_assert(sizeof(MP_ANIM_LOOKUP) == 0x10,
+              "MP_ANIM_LOOKUP size mismatch");
 unsigned int ValidAddress[14] = {
     247507231u, 103005506u, 583820383u, 3433132743u,
     4208230906u, 1242898952u, 2792623640u, 120074986u,

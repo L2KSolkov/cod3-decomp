@@ -3169,6 +3169,7 @@ unsigned char* SceneBank_PersistentStorage(void* self, unsigned int a)
 struct bdRandom {
     unsigned int m_val;
 };
+static_assert(sizeof(bdRandom) == 0x4, "bdRandom size mismatch");
 unsigned int bdRandom_nextUInt(void* self)
 {
     if (self == nullptr)

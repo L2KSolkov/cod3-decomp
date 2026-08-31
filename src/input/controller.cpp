@@ -29,6 +29,8 @@ struct XINPUT_GAMEPAD {
 };
 struct XINPUT_STATE { DWORD dwPacketNumber; XINPUT_GAMEPAD Gamepad; };
 struct XINPUT_VIBRATION { WORD wLeftMotorSpeed; WORD wRightMotorSpeed; };
+static_assert(sizeof(XINPUT_VIBRATION) == 0x4,
+              "XINPUT_VIBRATION size mismatch");
 #endif
 
 namespace AeAssert {

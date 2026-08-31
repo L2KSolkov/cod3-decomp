@@ -4226,6 +4226,7 @@ struct cdl_brush_t {
     uint16_t first_side;  // +0x00
     uint16_t num_sides;   // +0x02
 };
+static_assert(sizeof(cdl_brush_t) == 0x4, "cdl_brush_t size mismatch");
 struct cdlPlane {
     union { __m128 data; int packed[4]; };
     cdlPlane();                                      // game.o 0x65F5F0
@@ -4237,6 +4238,7 @@ struct cdl_patch_t {
     uint16_t first_index;  // +0x00
     uint16_t num_inds;     // +0x02
 };
+static_assert(sizeof(cdl_patch_t) == 0x4, "cdl_patch_t size mismatch");
 struct proxy_obj_t {
     uint16_t oi;  // +0x00
     uint8_t  bi;  // +0x02
@@ -4244,6 +4246,7 @@ struct proxy_obj_t {
     proxy_obj_t() = default;
     proxy_obj_t(unsigned char _bi, unsigned short _oi, unsigned char _ti);
 };
+static_assert(sizeof(proxy_obj_t) == 0x4, "proxy_obj_t size mismatch");
 struct bounded_proxy_obj_t {
     uint16_t oi;        // +0x00
     uint8_t  bi;        // +0x02
