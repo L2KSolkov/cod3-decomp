@@ -949,6 +949,7 @@ typename nalAnimSkeletonRet<T>::type nalAnimClass<T>::GetSkeleton() const
     return reinterpret_cast<typename nalAnimSkeletonRet<T>::type>(Skeleton);
 }
 
+// ea: 0x00870480
 template <typename T>
 const tlFixedString& nalAnimClass<T>::GetAnimTypeName() const
 {
