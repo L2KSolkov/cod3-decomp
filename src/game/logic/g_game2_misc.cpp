@@ -1724,10 +1724,6 @@ void AnimIK::ApplyFire(Entity* ent)
 
     RotateBone(2, math::Dir3(-latestTorsoAngle * torsoScale, 0.0f, 0.0f));
     RotateBone(4, math::Dir3(latestTorsoAngle * torsoScale, 0.0f, 0.0f));
-    RotateBone(7, math::Dir3(-latestPitchAngle * pitchScale,
-                             latestOffsetDist * offsetScale, 0.0f));
-    RotateBone(11, math::Dir3(-latestPitchAngle * pitchScale,
-                              -latestOffsetDist * offsetScale, 0.0f));
 
     nalGenericBoneHandle leftHandHandle{nullptr, 0};
     nalGenericBoneHandle rightHandHandle{nullptr, 0};
