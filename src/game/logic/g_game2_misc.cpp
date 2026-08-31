@@ -1936,7 +1936,8 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         sentient->mLastTerrainMappingOriginZ = originZ;
     else
         originDelta = originZ - sentient->mLastTerrainMappingOriginZ;
-    if (fabsf(originDelta) < 32.0f)
+    const bool originDeltaValid = fabsf(originDelta) < 32.0f;
+    if (originDeltaValid)
     {
         sentient->mLastTerrainMappingFootOffsetZ[0] += originDelta;
         sentient->mLastTerrainMappingFootOffsetZ[1] += originDelta;
@@ -2057,10 +2058,39 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         }
         if (groundedness >= 0.99f)
             sentient->mLastTerrainMappingGroundedOffset[i] = targetOffset;
-        const float blend = min(1.0f, terrainFrameTime * 8.0f);
         float& offset = sentient->mLastTerrainMappingFootOffsetZ[i];
-        offset += (targetOffset - offset) * blend;
-        foot->w[2] += offset;
+        float appliedOffset = targetOffset;
+        if (originDeltaValid)
+        {
+            const float terrainDiff = targetOffset - offset;
+            if (!sentient->mEnableTerrainMappingIK)
+                terrainFrameTime *= 5.0f;
+            float exponent = max(0.75f, fabsf(terrainDiff)
+                                           * 0.083333336f);
+            exponent = exponent * 3.0f >= 1.2f
+                ? 1.2f : exponent * 3.0f;
+            if (terrainDiff <= 0.0f)
+            {
+                const float delta = -powf(-terrainDiff, exponent);
+                appliedOffset = max(targetOffset, offset + delta);
+                if (delta < terrainFrameTime * -55.0f)
+                    appliedOffset = offset - terrainFrameTime * 55.0f;
+            }
+            else
+            {
+                const float delta = powf(terrainDiff, exponent);
+                appliedOffset = min(targetOffset, offset + delta);
+                if (delta > terrainFrameTime * 45.0f)
+                    appliedOffset = offset + terrainFrameTime * 45.0f;
+            }
+            if (fabsf(targetOffset - appliedOffset) > 22.0f)
+                appliedOffset = targetOffset
+                    + (targetOffset <= appliedOffset ? 22.0f : -22.0f);
+        }
+        const float footOffset = appliedOffset > 0.0f
+            ? appliedOffset * groundedness : appliedOffset;
+        foot->w[2] -= footOffset;
+        offset = appliedOffset;
         sentient->mLastTerrainMappingToePos[i] = toePos;
     }
 
