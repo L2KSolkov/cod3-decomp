@@ -93,13 +93,13 @@ public:
     virtual void onConnectFailed(bdReference<bdConnection> connection);
     virtual void onDisconnect(bdReference<bdConnection> connection);
 
-    bool join(const bdReference<bdCommonAddr>& hostAddr, const XNKID& secID,
+    bool join(bdReference<bdCommonAddr> hostAddr, const XNKID& secID,
               const XNKEY& secKey, bdBitBuffer* const userData);
     void leave();
-    bool send(const bdReference<bdMessage>& msg, bool reliable);
-    bool send(const bdReference<bdConnection>& peerConnection,
-              const bdReference<bdMessage>& msg, bool reliable);
-    bool sendHost(const bdReference<bdMessage>& msg, bool reliable);
+    bool send(bdReference<bdMessage> msg, bool reliable);
+    bool send(bdReference<bdConnection> peerConnection,
+              bdReference<bdMessage> msg, bool reliable);
+    bool sendHost(bdReference<bdMessage> msg, bool reliable);
     void registerListener(bdSessionListener* const listener);
     void unregisterListener(bdSessionListener* const listener);
     void registerInterceptor(bdSessionInterceptor* const interceptor);
@@ -112,16 +112,16 @@ public:
     bool readyToConnect() const;
     bdReference<bdConnection> getConnection(unsigned int index) const;
     bdReference<bdConnection> getHost() const;
-    bool getPeerIndex(const bdReference<bdConnection>& connection,
+    bool getPeerIndex(bdReference<bdConnection> connection,
                       unsigned int& index) const;
     unsigned int getPeerHash(unsigned int index) const;
 
 protected:
     bool startConnect(bdReference<bdConnection>& connection,
-                      const bdReference<bdCommonAddr>& addr, const XNKID& secID,
+                      bdReference<bdCommonAddr> addr, const XNKID& secID,
                       const char* const connectionDesc);
     bool connectToLocalHost(const XNKID& secID);
-    bool connectToRemoteHost(const bdReference<bdCommonAddr>& hostAddr,
+    bool connectToRemoteHost(bdReference<bdCommonAddr> hostAddr,
                              const XNKID& secID);
     bool connectToLocalPeer(const XNKID& secID);
     bool createJoinRequest(bdBitBuffer* const userData);

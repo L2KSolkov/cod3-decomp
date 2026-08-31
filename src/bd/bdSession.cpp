@@ -112,7 +112,7 @@ bdReference<bdConnection> bdSession::getHost() const {
 // ============================================================================
 // bdSession::sendHost - ea: 0x8B0E40
 // ============================================================================
-bool bdSession::sendHost(const bdReference<bdMessage>& msg, bool reliable) {
+bool bdSession::sendHost(bdReference<bdMessage> msg, bool reliable) {
     bool sent = false;
     if (m_hostConnection.m_ptr == NULL) {
         bdMessageProxy proxy(".\\bdSession\\bdSession.cpp",
@@ -123,8 +123,11 @@ bool bdSession::sendHost(const bdReference<bdMessage>& msg, bool reliable) {
                               "bool __thiscall bdSession::sendHost(class bdReference<class bdMessage>,const bool)",
                               0x171u, "dw/info/");
         proxy2.log("bdPeer/session", "Sending message to peer failed.");
+        bdListRelease(msg);
         return false;
     }
+    if (msg.m_ptr != NULL)
+        msg.m_ptr->addRef();
     sent = m_hostConnection.m_ptr->send(msg, reliable);
     if (!sent) {
         bdMessageProxy proxy(".\\bdSession\\bdSession.cpp",
@@ -132,6 +135,7 @@ bool bdSession::sendHost(const bdReference<bdMessage>& msg, bool reliable) {
                              0x171u, "dw/info/");
         proxy.log("bdPeer/session", "Sending message to peer failed.");
     }
+    bdListRelease(msg);
     return sent;
 }
 
@@ -196,28 +200,35 @@ bdReference<bdConnection> bdSession::getConnection(unsigned int index) const {
 // ============================================================================
 // bdSession::send (all peers) - ea: 0x8B16F0
 // ============================================================================
-bool bdSession::send(const bdReference<bdMessage>& msg, bool reliable) {
+bool bdSession::send(bdReference<bdMessage> msg, bool reliable) {
     bool sent = true;
     for (unsigned int i = 0; i < m_peers.m_size; i++) {
         bdReference<bdConnection> conn = m_peers.m_data[i].m_connection;
-        if (conn.m_ptr != NULL)
+        if (conn.m_ptr != NULL) {
+            if (msg.m_ptr != NULL)
+                msg.m_ptr->addRef();
             sent = conn.m_ptr->send(msg, reliable) && sent;
+        }
     }
+    bdListRelease(msg);
     return sent;
 }
 
 // ============================================================================
 // bdSession::getPeerIndex - ea: 0x8B17D0
 // ============================================================================
-bool bdSession::getPeerIndex(const bdReference<bdConnection>& connection,
+bool bdSession::getPeerIndex(bdReference<bdConnection> connection,
                              unsigned int& index) const {
+    bool found = false;
     for (unsigned int i = 0; i < m_peers.m_size; i++) {
         if (m_peers.m_data[i].m_connection.m_ptr == connection.m_ptr) {
             index = i;
-            return true;
+            found = true;
+            break;
         }
     }
-    return false;
+    bdListRelease(connection);
+    return found;
 }
 
 // ============================================================================
@@ -323,18 +334,24 @@ void bdSession::registerListener(bdSessionListener* const listener) {
 // ============================================================================
 // bdSession::send (specific peer) - ea: 0x8B2120
 // ============================================================================
-bool bdSession::send(const bdReference<bdConnection>& peerConnection,
-                     const bdReference<bdMessage>& msg, bool reliable) {
+bool bdSession::send(bdReference<bdConnection> peerConnection,
+                     bdReference<bdMessage> msg, bool reliable) {
+    if (msg.m_ptr != NULL)
+        msg.m_ptr->addRef();
     bool result = peerConnection.m_ptr->send(msg, reliable);
     if (!result) {
         unsigned int index = 0;
-        getPeerIndex(peerConnection, index);
+        bdReference<bdConnection> peerForIndex(peerConnection.m_ptr);
+        bdListAddRef(peerForIndex);
+        getPeerIndex(peerForIndex, index);
         bdMessageProxy proxy(".\\bdSession\\bdSession.cpp",
                              "bool __thiscall bdSession::send(class bdReference<class bdConnection>,class bdReference<class bdMessage>,const bool)",
                              0x13Du, "dw/err/");
         proxy.log("bdPeer/session", "Sending of %s message to peer %u failed.",
                   reliable ? "reliable" : "unreliable", index);
     }
+    bdListRelease(peerConnection);
+    bdListRelease(msg);
     return result;
 }
 
@@ -391,7 +408,7 @@ void bdSession::setHost(unsigned int index) {
 // bdSession::startConnect - ea: 0x8B2A50
 // ============================================================================
 bool bdSession::startConnect(bdReference<bdConnection>& connection,
-                             const bdReference<bdCommonAddr>& addr,
+                             bdReference<bdCommonAddr> addr,
                              const XNKID& secID,
                              const char* const connectionDesc) {
     bool connecting = false;
@@ -440,7 +457,7 @@ bool bdSession::connectToLocalHost(const XNKID& secID) {
 // ============================================================================
 // bdSession::connectToRemoteHost - ea: 0x8B38C0
 // ============================================================================
-bool bdSession::connectToRemoteHost(const bdReference<bdCommonAddr>& hostAddr,
+bool bdSession::connectToRemoteHost(bdReference<bdCommonAddr> hostAddr,
                                     const XNKID& secID) {
     return startConnect(m_hostConnection, hostAddr, secID, "remote host");
 }
@@ -457,7 +474,7 @@ bool bdSession::connectToLocalPeer(const XNKID& secID) {
 // ============================================================================
 // bdSession::join - ea: 0x8B5330
 // ============================================================================
-bool bdSession::join(const bdReference<bdCommonAddr>& hostAddr, const XNKID& secID,
+bool bdSession::join(bdReference<bdCommonAddr> hostAddr, const XNKID& secID,
                      const XNKEY& secKey, bdBitBuffer* const userData) {
     bool ok = readyToConnect();
     if (!ok)
