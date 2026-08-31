@@ -5360,7 +5360,7 @@ void IGOFrontEnd::SetTutorialText(int ref, int viewport)
                 "SetTutorialText called for a non local player"))
             __debugbreak();
     }
-    if (viewport == 0)
+    if (viewport == 0 && hintText[0] != nullptr)
     {
         if (ref == -1)
         {
