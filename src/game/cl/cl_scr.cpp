@@ -692,7 +692,10 @@ int dword_F13368[64];  // cl.o BSS
 int dword_F1336C[64];  // cl.o BSS
 struct GpadAxesGlob {
     int axesValues[6];
+    uint8_t _pad18[0x30]; // TODO: IDA type has additional unnamed state.
 };
+static_assert(sizeof(GpadAxesGlob) == 0x48,
+              "GpadAxesGlob size mismatch");
 GpadAxesGlob gaGlobs[2];  // ?gaGlobs@@3PAUGpadAxesGlob@@A (cl.o)
 const char* virtualAxisNames[6] = {
     "VA_SIDE", "VA_FORWARD", "VA_UP", "VA_YAW", "VA_PITCH", "VA_ATTACK"};
