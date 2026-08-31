@@ -643,6 +643,7 @@ static nalMatrix4x4 AnimIK_IdentityMatrix()
 static bool AnimIK_ApplyTwoBoneIK(
     AnimIK* ik, int jointIndex, const tlFixedString& childName,
     const tlFixedString& jointName, const tlFixedString& baseName,
+    const tlFixedString& parentName,
     const nalMatrix4x4& target)
 {
     AnimIKRawView* view = reinterpret_cast<AnimIKRawView*>(ik);
@@ -652,11 +653,13 @@ static bool AnimIK_ApplyTwoBoneIK(
     nalGenericBoneHandle child{nullptr, 0};
     nalGenericBoneHandle joint{nullptr, 0};
     nalGenericBoneHandle base{nullptr, 0};
+    nalGenericBoneHandle parent{nullptr, 0};
     nalGenericSkeleton_GetBoneHandle(view->skeleton, &child, &childName);
     nalGenericSkeleton_GetBoneHandle(view->skeleton, &joint, &jointName);
     nalGenericSkeleton_GetBoneHandle(view->skeleton, &base, &baseName);
+    nalGenericSkeleton_GetBoneHandle(view->skeleton, &parent, &parentName);
     if (child.Skeleton == nullptr || joint.Skeleton == nullptr
-        || base.Skeleton == nullptr)
+        || base.Skeleton == nullptr || parent.Skeleton == nullptr)
         return false;
 
     const nalPositionOrientation childPO =
@@ -665,6 +668,8 @@ static bool AnimIK_ApplyTwoBoneIK(
         nalGenericPose_GetModelPositionOrientation(view->pose, &joint);
     const nalPositionOrientation basePO =
         nalGenericPose_GetModelPositionOrientation(view->pose, &base);
+    const nalPositionOrientation parentPO =
+        nalGenericPose_GetModelPositionOrientation(view->pose, &parent);
 
     const math::Dir3 basePos(basePO.pos);
     const math::Dir3 jointPos(jointPO.pos);
@@ -725,7 +730,7 @@ static bool AnimIK_ApplyTwoBoneIK(
                    upperModel, lowerModel);
 
     nalMatrix4x4 parentModel;
-    nalMatrix4x4_FromPositionOrientation(basePO, &parentModel);
+    nalMatrix4x4_FromPositionOrientation(parentPO, &parentModel);
     nalMatrix4x4 inverseParent = parentModel.Inverse();
     nalMatrix4x4 baseLocal;
     AnimIK_Multiply(upperModel, inverseParent, &baseLocal);
@@ -1229,9 +1234,9 @@ void AnimIK::ApplyFootIK(Entity* ent, nalMatrix4x4& leftFootMat,
     if (ent == nullptr || ent->sentient == nullptr)
         return;
     AnimIK_ApplyTwoBoneIK(this, 2, BoneNames[16], BoneNames[15],
-                          BoneNames[14], leftFootMat);
+                          BoneNames[14], BoneNames[0], leftFootMat);
     AnimIK_ApplyTwoBoneIK(this, 3, BoneNames[19], BoneNames[18],
-                          BoneNames[17], rightFootMat);
+                          BoneNames[17], BoneNames[0], rightFootMat);
 }
 // ea: 0x004FBD10
 void AnimIK::ApplyHandIK(Entity* ent, nalMatrix4x4& leftMat,
@@ -1240,9 +1245,9 @@ void AnimIK::ApplyHandIK(Entity* ent, nalMatrix4x4& leftMat,
     if (ent == nullptr || ent->sentient == nullptr)
         return;
     AnimIK_ApplyTwoBoneIK(this, 0, BoneNames[9], BoneNames[8],
-                          BoneNames[7], leftMat);
+                          BoneNames[7], BoneNames[6], leftMat);
     AnimIK_ApplyTwoBoneIK(this, 1, BoneNames[13], BoneNames[12],
-                          BoneNames[11], rightMat);
+                          BoneNames[11], BoneNames[10], rightMat);
 }
 // ea: 0x004FC5B0
 void AnimIK::RotateBone(int boneIndex, const math::Dir3& rotation)
@@ -1747,7 +1752,7 @@ void AnimIK::ApplyFire(Entity* ent)
         target = recoiledTarget;
         target.w[0] -= latestOffsetDist * offsetScale;
         AnimIK_ApplyTwoBoneIK(this, 0, BoneNames[9], BoneNames[8],
-                              BoneNames[7], target);
+                              BoneNames[7], BoneNames[6], target);
     }
     if (rightHandHandle.Skeleton != nullptr)
     {
@@ -1761,7 +1766,7 @@ void AnimIK::ApplyFire(Entity* ent)
         target = recoiledTarget;
         target.w[0] -= latestOffsetDist * offsetScale;
         AnimIK_ApplyTwoBoneIK(this, 1, BoneNames[13], BoneNames[12],
-                              BoneNames[11], target);
+                              BoneNames[11], BoneNames[10], target);
     }
 }
 // ea: 0x00504C90
