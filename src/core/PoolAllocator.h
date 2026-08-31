@@ -41,7 +41,6 @@ public:
             : blockSize(0), blockAlign(4), numBlocks(0), block(nullptr)
         {
         }
-        // ea: 0x004B3E80
         PoolConfig(unsigned int sizeBlock, unsigned int blockCount,
                    unsigned int alignBlock, void* blok);
     };

@@ -6,6 +6,7 @@
 
 #include "PoolAllocator.h"
 
+// ea: 0x004B3E80
 PoolAllocator::PoolConfig::PoolConfig(unsigned int sizeBlock,
                                       unsigned int blockCount,
                                       unsigned int alignBlock,
