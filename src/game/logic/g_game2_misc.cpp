@@ -709,12 +709,9 @@ static bool AnimIK_ApplyTwoBoneIK(
     nalMatrix4x4 identity = AnimIK_IdentityMatrix();
     nalIKSolve2D(identity, basePos, targetPos,
                  view->joints[jointIndex][1],
-                 1.0f / (lowerLength * 2.0f),
+                 view->joints[jointIndex][3],
                  view->joints[jointIndex][2],
-                 (lowerLength * lowerLength
-                  - view->joints[jointIndex][0]
-                    * view->joints[jointIndex][0])
-                    / (lowerLength * 2.0f),
+                 view->joints[jointIndex][4],
                  solverBase, solverTarget, sinUpper, cosUpper,
                  sinLower, cosLower);
 
