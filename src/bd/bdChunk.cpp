@@ -73,11 +73,11 @@ unsigned int bdChunk::serialize(unsigned char* data, unsigned int size) {
 // bdChunk::deserialize â€” ea: 0x8AD600
 // ============================================================================
 // ea: 0x008AD600
-bool bdChunk::deserialize(const unsigned char* data, unsigned int size,
-                          unsigned int* offset) {
+bool bdChunk::deserialize(const unsigned char* const data, unsigned int size,
+                          unsigned int& offset) {
     unsigned char type = 0;
-    if (size - *offset < 4 ||
-        !bdBytePacker::removeBasicType(data, size, *offset, offset,
+    if (size - offset < 4 ||
+        !bdBytePacker::removeBasicType(data, size, offset, &offset,
                                        &type, 1u))
         return false;
     this->m_type = (bdChunkTypes)type;

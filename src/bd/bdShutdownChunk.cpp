@@ -58,14 +58,15 @@ unsigned int bdShutdownChunk::serialize(unsigned char* data, unsigned int size) 
 // bdShutdownChunk::deserialize â€” ea: 0x8AC450
 // ea: 0x008AC450
 // ============================================================================
-bool bdShutdownChunk::deserialize(const unsigned char* data, unsigned int size,
-                                  unsigned int* offset) {
+bool bdShutdownChunk::deserialize(const unsigned char* const data, unsigned int size,
+                                  unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = size;
     unsigned int v9 = *offset;
     unsigned char v6 = 0;
     unsigned int tmp;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v9)
+    if (bdChunk::deserialize(data, size, v9)
         && bdBytePacker::removeBasicType(data, v4, v9, &v9, &tmp, 1u)) {
         v6 = (unsigned char)tmp;
         ok = true;
@@ -128,14 +129,15 @@ unsigned int bdShutdownAckChunk::serialize(unsigned char* data, unsigned int siz
 // bdShutdownAckChunk::deserialize â€” ea: 0x8AC5E0
 // ea: 0x008AC5E0
 // ============================================================================
-bool bdShutdownAckChunk::deserialize(const unsigned char* data, unsigned int size,
-                                     unsigned int* offset) {
+bool bdShutdownAckChunk::deserialize(const unsigned char* const data, unsigned int size,
+                                     unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = size;
     unsigned int v9 = *offset;
     unsigned char v6 = 0;
     unsigned int tmp;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v9)
+    if (bdChunk::deserialize(data, size, v9)
         && bdBytePacker::removeBasicType(data, v4, v9, &v9, &tmp, 1u)) {
         v6 = (unsigned char)tmp;
         ok = true;
@@ -198,14 +200,15 @@ unsigned int bdShutdownCompleteChunk::serialize(unsigned char* data, unsigned in
 // bdShutdownCompleteChunk::deserialize â€” ea: 0x8AC770
 // ea: 0x008AC770
 // ============================================================================
-bool bdShutdownCompleteChunk::deserialize(const unsigned char* data, unsigned int size,
-                                          unsigned int* offset) {
+bool bdShutdownCompleteChunk::deserialize(const unsigned char* const data, unsigned int size,
+                                          unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = size;
     unsigned int v9 = *offset;
     unsigned char v6 = 0;
     unsigned int tmp;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v9)
+    if (bdChunk::deserialize(data, size, v9)
         && bdBytePacker::removeBasicType(data, v4, v9, &v9, &tmp, 1u)) {
         v6 = (unsigned char)tmp;
         ok = true;

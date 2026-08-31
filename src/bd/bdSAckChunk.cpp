@@ -147,15 +147,16 @@ void bdSAckChunk::addGap(const bdGapAckBlock& block) {
 // bdSAckChunk::deserialize â€” ea: 0x8ADB30
 // ea: 0x008ADB30
 // ============================================================================
-bool bdSAckChunk::deserialize(const unsigned char* data, unsigned int size,
-                              unsigned int* offset) {
+bool bdSAckChunk::deserialize(const unsigned char* const data, unsigned int size,
+                              unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = size;
     unsigned int v23 = *offset;
     bdSAckChunk* v24 = this;
     unsigned char v6 = 0;
     unsigned int v22;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v23)
+    if (bdChunk::deserialize(data, size, v23)
         && bdBytePacker::removeBasicType(data, size, v23, &v23, (unsigned char*)&v22, 1u)) {
         v6 = (unsigned char)v22;
         ok = true;

@@ -986,8 +986,8 @@ public:
     static bdChunkTypes getType(const unsigned char* const data, unsigned int size);
     virtual unsigned int getSerializedSize() = 0;
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdChunk) == 0x0C, "bdChunk size mismatch");
 
@@ -1007,8 +1007,8 @@ public:
     bdHeartbeatFlags getFlags() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdHeartbeatChunk) == 0x10, "bdHeartbeatChunk size mismatch");
 
@@ -1028,8 +1028,8 @@ public:
     bdHeartbeatAckFlags getFlags() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdHeartbeatAckChunk) == 0x10, "bdHeartbeatAckChunk size mismatch");
 
@@ -1049,8 +1049,8 @@ public:
     bdShutdownFlags getFlags() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdShutdownChunk) == 0x10, "bdShutdownChunk size mismatch");
 
@@ -1070,8 +1070,8 @@ public:
     bdShutdownAckFlags getFlags() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdShutdownAckChunk) == 0x10, "bdShutdownAckChunk size mismatch");
 
@@ -1091,8 +1091,8 @@ public:
     bdShutdownCompleteFlags getFlags() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdShutdownCompleteChunk) == 0x10, "bdShutdownCompleteChunk size mismatch");
 
@@ -1116,8 +1116,8 @@ public:
     unsigned int getPeerTieTag() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 
     static unsigned char m_secret[20];
     static bool          m_secretInitialized;
@@ -1144,8 +1144,8 @@ public:
     virtual unsigned int getSerializedSize();
     bool getCookie(bdReference<bdCookie>& cookie);
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdCookieEchoChunk) == 0x18, "bdCookieEchoChunk size mismatch");
 
@@ -1165,8 +1165,8 @@ public:
     bdCookieAckFlags getFlags() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdCookieAckChunk) == 0x10, "bdCookieAckChunk size mismatch");
 
@@ -1192,8 +1192,8 @@ public:
     int getWindowCredit() const;
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdInitChunk) == 0x1C, "bdInitChunk size mismatch");
 
@@ -1223,8 +1223,8 @@ public:
     bool getCookie(bdReference<bdByteBuffer>& cookie);
     virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdInitAckChunk) == 0x24, "bdInitAckChunk size mismatch");
 
@@ -1289,11 +1289,11 @@ public:
     virtual unsigned int getSerializedSize();
     unsigned int serializeUnencrypted(unsigned char* data, unsigned int size);
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
-    bool deserialize(const unsigned char* data, unsigned int size,
-                     unsigned int* offset, const unsigned char* unencData,
-                     unsigned int unencSize, unsigned int* unencReadOffset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
+    bool deserialize(const unsigned char* const data, unsigned int size,
+                     unsigned int& offset, const unsigned char* const unencData,
+                     unsigned int unencSize, unsigned int& unencReadOffset);
 };
 static_assert(sizeof(bdDataChunk) == 0x18, "bdDataChunk size mismatch");
 static_assert(offsetof(bdDataChunk, m_message) == 0x10, "bdDataChunk::m_message offset mismatch");
@@ -1330,8 +1330,8 @@ public:
     virtual unsigned int getSerializedSize();
     void addGap(const bdGapAckBlock& block);
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
-    virtual bool deserialize(const unsigned char* data, unsigned int size,
-                             unsigned int* offset);
+    virtual bool deserialize(const unsigned char* const data, unsigned int size,
+                             unsigned int& offset);
 };
 static_assert(sizeof(bdSAckChunk) == 0x28, "bdSAckChunk size mismatch");
 static_assert(offsetof(bdSAckChunk, m_flags) == 0x10, "bdSAckChunk::m_flags offset mismatch");

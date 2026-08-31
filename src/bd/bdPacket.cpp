@@ -205,9 +205,9 @@ bool bdPacket::deserialize(const unsigned char* data, unsigned int size) {
             bool ok = false;
             if (type == 2) {
                 bdDataChunk* dc = (bdDataChunk*)chunk;
-                ok = dc->deserialize(data + offset, size - offset, &offset);
+                ok = dc->deserialize(data + offset, size - offset, offset);
             } else {
-                ok = chunk->deserialize(data + offset, size - offset, &offset);
+                ok = chunk->deserialize(data + offset, size - offset, offset);
             }
             if (ok) {
                 this->addChunk(bdReference<bdChunk>(chunk));

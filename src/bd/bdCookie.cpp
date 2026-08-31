@@ -187,8 +187,9 @@ unsigned int bdCookie::serialize(unsigned char* data, unsigned int size) {
 // bdCookie::deserialize â€” ea: 0x8AB730
 // ea: 0x008AB730
 // ============================================================================
-bool bdCookie::deserialize(const unsigned char* data, unsigned int size,
-                           unsigned int* offset) {
+bool bdCookie::deserialize(const unsigned char* const data, unsigned int size,
+                           unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = *offset;
     unsigned int v5 = size;
     unsigned int v6 = size - *offset;
@@ -341,14 +342,15 @@ unsigned int bdCookieEchoChunk::serialize(unsigned char* data, unsigned int size
 // bdCookieEchoChunk::deserialize â€” ea: 0x8ABD10
 // ============================================================================
 // ea: 0x008ABD10
-bool bdCookieEchoChunk::deserialize(const unsigned char* data, unsigned int size,
-                                    unsigned int* offset) {
+bool bdCookieEchoChunk::deserialize(const unsigned char* const data, unsigned int size,
+                                    unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = size;
     unsigned int v17 = *offset;
     unsigned char v6 = 0;
     unsigned int tmp;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v17)
+    if (bdChunk::deserialize(data, size, v17)
         && bdBytePacker::removeBasicType(data, v4, v17, &v17, &tmp, 1u)) {
         v6 = (unsigned char)tmp;
         ok = true;
@@ -365,7 +367,7 @@ bool bdCookieEchoChunk::deserialize(const unsigned char* data, unsigned int size
         v10->addRef();
     unsigned int v14 = v17;
     if (ok2) {
-        if (this->m_cookie.m_ptr->deserialize(data, v4, &v17)
+        if (this->m_cookie.m_ptr->deserialize(data, v4, v17)
             && v17 - v14 != v18) {
             bdMessageProxy proxy(".\\bdPacket\\bdCookieEchoChunk.cpp",
                                  "bool __thiscall bdCookieEchoChunk::deserialize(const unsigned char *const ,const unsigned int,unsigned int &)",
@@ -432,14 +434,15 @@ unsigned int bdCookieAckChunk::serialize(unsigned char* data, unsigned int size)
 // bdCookieAckChunk::deserialize â€” ea: 0x8ABF90
 // ============================================================================
 // ea: 0x008ABF90
-bool bdCookieAckChunk::deserialize(const unsigned char* data, unsigned int size,
-                                   unsigned int* offset) {
+bool bdCookieAckChunk::deserialize(const unsigned char* const data, unsigned int size,
+                                   unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = size;
     unsigned int v9 = *offset;
     unsigned char v6 = 0;
     unsigned int tmp;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v9)
+    if (bdChunk::deserialize(data, size, v9)
         && bdBytePacker::removeBasicType(data, v4, v9, &v9, &tmp, 1u)) {
         v6 = (unsigned char)tmp;
         ok = true;

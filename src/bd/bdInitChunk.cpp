@@ -114,8 +114,9 @@ unsigned int bdInitChunk::serialize(unsigned char* data, unsigned int size) {
 // bdInitChunk::deserialize â€” ea: 0x8AAF60
 // ea: 0x008AAF60
 // ============================================================================
-bool bdInitChunk::deserialize(const unsigned char* data, unsigned int size,
-                              unsigned int* offset) {
+bool bdInitChunk::deserialize(const unsigned char* const data, unsigned int size,
+                              unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v4 = size;
     unsigned int v6 = size - *offset;
     bool result = true;
@@ -125,7 +126,7 @@ bool bdInitChunk::deserialize(const unsigned char* data, unsigned int size,
     unsigned char v8 = 0;
     unsigned int tmp;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v10)
+    if (bdChunk::deserialize(data, size, v10)
         && bdBytePacker::removeBasicType(data, v4, v10, &v10, &tmp, 1u)) {
         v8 = (unsigned char)tmp;
         ok = true;
@@ -273,8 +274,9 @@ unsigned int bdInitAckChunk::serialize(unsigned char* data, unsigned int size) {
 // bdInitAckChunk::deserialize â€” ea: 0x8AB3A0
 // ea: 0x008AB3A0
 // ============================================================================
-bool bdInitAckChunk::deserialize(const unsigned char* data, unsigned int size,
-                                 unsigned int* offset) {
+bool bdInitAckChunk::deserialize(const unsigned char* const data, unsigned int size,
+                                 unsigned int& offsetRef) {
+    unsigned int* offset = &offsetRef;
     unsigned int v5 = size;
     unsigned int v6 = size - *offset;
     bool result = true;
@@ -284,7 +286,7 @@ bool bdInitAckChunk::deserialize(const unsigned char* data, unsigned int size,
     unsigned char v9 = 0;
     unsigned int tmp;
     bool ok = false;
-    if (bdChunk::deserialize(data, size, &v17)
+    if (bdChunk::deserialize(data, size, v17)
         && bdBytePacker::removeBasicType(data, v5, v17, &v17, &tmp, 1u)) {
         v9 = (unsigned char)tmp;
         ok = true;

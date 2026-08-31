@@ -243,14 +243,16 @@ unsigned int bdDataChunk::serialize(unsigned char* data, unsigned int size) {
 // ============================================================================
 // bdDataChunk::deserialize (full, with unencrypted stream) - ea: 0x8AA950
 // ============================================================================
-bool bdDataChunk::deserialize(const unsigned char* data, unsigned int size,
-                              unsigned int* offset, const unsigned char* unencData,
-                              unsigned int unencSize, unsigned int* unencReadOffset) {
+bool bdDataChunk::deserialize(const unsigned char* const data, unsigned int size,
+                              unsigned int& offsetRef, const unsigned char* const unencData,
+                              unsigned int unencSize, unsigned int& unencReadOffsetRef) {
+    unsigned int* offset = &offsetRef;
+    unsigned int* unencReadOffset = &unencReadOffsetRef;
     (void)unencSize;
     unsigned int bytesRead = *offset;
     unsigned int unencBytesRead = *unencReadOffset;
 
-    bool ok = bdChunk::deserialize(data, size, &bytesRead);
+    bool ok = bdChunk::deserialize(data, size, bytesRead);
     if (ok && bdBytePacker::removeBasicType(data, size, bytesRead, &bytesRead,
                                             &m_flags, 1u)) {
         ok = true;
@@ -307,8 +309,8 @@ bool bdDataChunk::deserialize(const unsigned char* data, unsigned int size,
 // ============================================================================
 // bdDataChunk::deserialize (single stream) - ea: 0x8AAB70
 // ============================================================================
-bool bdDataChunk::deserialize(const unsigned char* data, unsigned int size,
-                              unsigned int* offset) {
+bool bdDataChunk::deserialize(const unsigned char* const data, unsigned int size,
+                              unsigned int& offset) {
     unsigned int unencOffset = 0;
-    return deserialize(data, size, offset, NULL, 0, &unencOffset);
+    return deserialize(data, size, offset, NULL, 0, unencOffset);
 }
