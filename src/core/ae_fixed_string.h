@@ -45,10 +45,10 @@ public:
     length_type     mLength;                               // +sizeof(mBuff)
 
     // ea: 0x004AD300
-    // ea: 0x004AE400
-    // ea: 0x004AE630
-    // ea: 0x004AE6F0
-    // ea: 0x007BED60 (ae_fixed_string<4096,unsigned short>)
+    // alias-ea: 0x004AE400
+    // alias-ea: 0x004AE630
+    // alias-ea: 0x004AE6F0
+    // alias-ea: 0x007BED60 (ae_fixed_string<4096,unsigned short>)
     ae_fixed_string() : mLength(0) {
         mBuff[0] = 0;
     }
@@ -59,7 +59,7 @@ public:
     }
 
     // ea: 0x004B0F40
-    // ea: 0x004B1280
+    // alias-ea: 0x004B1280
     ae_fixed_string(const char* txt) {
         int length = 0;
         AeStringSupport::CStrToAeStr((char*)mBuff, &length, capacity(), txt);
@@ -68,11 +68,11 @@ public:
 
     const char* c_str() const { return (const char*)mBuff; }
     // ea: 0x004AC720
-    // ea: 0x004AC770
-    // ea: 0x004ACE40
-    // ea: 0x004AD270
-    // ea: 0x004AD320
-    // ea: 0x004ADE60
+    // alias-ea: 0x004AC770
+    // alias-ea: 0x004ACE40
+    // alias-ea: 0x004AD270
+    // alias-ea: 0x004AD320
+    // alias-ea: 0x004ADE60
     char* c_str() { return (char*)mBuff; }
     // ea: 0x007BF920 (ae_fixed_string<64,unsigned char>)
     CHAR& operator[](int idx) {
@@ -91,8 +91,8 @@ public:
     // ea: 0x007BF910 (ae_fixed_string<64,unsigned char>)
     bool empty() const { return mLength == 0; }
     // ea: 0x004AD330
-    // ea: 0x004AE3F0
-    // ea: 0x004AE4E0
+    // alias-ea: 0x004AE3F0
+    // alias-ea: 0x004AE4E0
     static int capacity() {
         return (CAPACITY - 1) / sizeof(CHAR) * sizeof(CHAR);
     }
