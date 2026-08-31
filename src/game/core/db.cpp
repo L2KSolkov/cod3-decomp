@@ -237,9 +237,9 @@ int16_t DbTable::GetColumnIndex(uint16_t columnId) const
 }
 
 // ea: 0x004E22E0
-const DbColumn* DbTable::GetColumnById(uint16_t columnId) const
+const DbColumn& DbTable::GetColumnById(uint16_t columnId) const
 {
-    return mColumns[GetColumnIndex(columnId)];
+    return *mColumns[GetColumnIndex(columnId)];
 }
 
 // ea: 0x004E2310

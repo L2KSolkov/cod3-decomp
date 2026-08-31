@@ -1519,7 +1519,7 @@ public:
     const DbGraphNode* GetIndexRoot() const;
     const DbColumn& GetColumnByIndex(uint16_t idx) const;
     DbColumn& GetColumnByIndex(uint16_t idx);
-    const DbColumn* GetColumnById(uint16_t columnId) const;
+    const DbColumn& GetColumnById(uint16_t columnId) const;
     int16_t GetColumnIndex(uint16_t columnId) const;
 };
 static_assert(sizeof(DbTable) == 0x34, "DbTable size mismatch");
