@@ -1608,7 +1608,7 @@ protected:
     friend class bdConnectionStore;
     bdLoopbackConnection(bdReference<bdCommonAddr> addr);
     bool checkNewMessages();  // ?checkNewMessages@bdLoopbackConnection@@QAE_NXZ
-    virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize);
+    virtual unsigned int getDataToSend(unsigned char* const buffer, unsigned int bufferSize);
     void updateStatus();
 
 protected:

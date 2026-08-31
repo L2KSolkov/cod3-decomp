@@ -72,7 +72,7 @@ bool bdLoopbackConnection::getMessageToDispatch(bdReference<bdMessage>& message)
 // bdLoopbackConnection::getDataToSend - ea: 0x8A3A80
 // ea: 0x008A3A80
 // ============================================================================
-unsigned int bdLoopbackConnection::getDataToSend(unsigned char*, unsigned int) {
+unsigned int bdLoopbackConnection::getDataToSend(unsigned char* const, unsigned int) {
     return 0;
 }
 
