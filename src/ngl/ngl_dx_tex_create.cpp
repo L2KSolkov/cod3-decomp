@@ -41,6 +41,8 @@ struct _D3DXIMAGE_INFO {
     unsigned int MipLevels;
     _D3DFORMAT Format;
 };
+static_assert(sizeof(_D3DXIMAGE_INFO) == 0x14,
+              "_D3DXIMAGE_INFO size mismatch");
 
 // ============================================================================
 // Globals (data)

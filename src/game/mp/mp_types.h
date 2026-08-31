@@ -196,6 +196,8 @@ struct TPlayerStatsInfo {
     int   mMinRange;             // +0x0C
     int   mMaxRange;             // +0x10
 };
+static_assert(sizeof(TPlayerStatsInfo) == 0x14,
+              "TPlayerStatsInfo size mismatch");
 
 // EPlayerClass - player classes (mp.o ePlayerStats.cpp)
 enum EPlayerClass : int {

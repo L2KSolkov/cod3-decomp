@@ -343,6 +343,8 @@ struct nglShaderProfiler {
 
     static nglShaderProfiler* ShaderProfiler;  // 0x14D2358
 };
+static_assert(sizeof(nglShaderProfiler) == 0x10,
+              "nglShaderProfiler size mismatch");
 
 // Function-local static of ProfileFrame (0x14D2368).
 static int nglShaderProfileFrameCounter = 0;

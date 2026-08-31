@@ -331,6 +331,8 @@ struct CurveEvalFunc {
     CurveEvalFunc* get_dlist_node();
     static int get_dlist_node_offset();
 };
+static_assert(sizeof(CurveEvalFunc) == 0x10,
+              "CurveEvalFunc size mismatch");
 PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
 
 // game.o 0x00660230

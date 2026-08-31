@@ -2911,6 +2911,7 @@ struct hitLoc {
     float mHeight;       // +0x08
     float mLength;       // +0x0C
 };
+static_assert(sizeof(hitLoc) == 0x10, "hitLoc size mismatch");
 extern const hitLoc g_hitLocs[19];     // 0xDD76E0
 extern float g_fHitLocDamageMult[19];  // 0xEA5380
 extern int dword_EA53C8;               // 0xEA53C8

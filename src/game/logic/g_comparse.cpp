@@ -36,6 +36,8 @@ struct com_parse_mark_t {
     int backup_lines;        // +0x0C
     const char* backup_text; // +0x10
 };
+static_assert(sizeof(com_parse_mark_t) == 0x14,
+              "com_parse_mark_t size mismatch");
 
 static const char* const punctuation[] = {
     "+=", "-=", "*=", "/=", "&=", "|=", "++", "--", "&&", "||",
