@@ -5,6 +5,15 @@
 // ============================================================================
 
 #include "PoolAllocator.h"
+
+PoolAllocator::PoolConfig::PoolConfig(unsigned int sizeBlock,
+                                      unsigned int blockCount,
+                                      unsigned int alignBlock,
+                                      void* blok)
+    : blockSize(sizeBlock), blockAlign(alignBlock),
+      numBlocks(blockCount), block(blok)
+{
+}
 #include "ae_fixed_string.h"
 #include <cstdio>     // snprintf
 #include <cstring>    // memset

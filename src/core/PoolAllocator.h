@@ -43,11 +43,7 @@ public:
         }
         // ea: 0x004B3E80
         PoolConfig(unsigned int sizeBlock, unsigned int blockCount,
-                   unsigned int alignBlock, void* blok)
-            : blockSize(sizeBlock), blockAlign(alignBlock),
-              numBlocks(blockCount), block(blok)
-        {
-        }
+                   unsigned int alignBlock, void* blok);
     };
     static_assert(sizeof(PoolConfig) == 0x10, "PoolConfig size mismatch");
     static_assert(offsetof(PoolConfig, blockAlign) == 0x04,
