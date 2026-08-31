@@ -30606,8 +30606,8 @@ void RowboatMgr::PlayRow()
         PlayLeaderAnim(0);
 }
 
-// ea: 0x00550080
 extern void G_CalcTagAxis(Entity* ent, int bAnglesOnly);  // real in g_dobj.cpp
+// ea: 0x00550080
 void RowboatMgr::AlignBoatmen()
 {
     unsigned int mVal =
@@ -33109,7 +33109,7 @@ void RowboatMgr::StartInteraction(const char* leader1, const char* leader2,
     mPendingStrokeDuration = 0.0f;
 }
 
-// ea: 0x00550DF0 path: ?Activate@InteractStateRowboat@@UAEXXZ (0x5504B0)
+// ea: 0x005504B0
 void InteractStateRowboat::Activate()
 {
     typedef void (__thiscall* RB_TextFn)(void*, const char*);
@@ -37874,6 +37874,7 @@ void AnimBank::Fixup()
 
 // ea: 0x00554BD0 (?DecodeAnimBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z)
 struct PakFile;
+// ea: 0x00554BD0
 void DecodeAnimBank(const char* name, unsigned char* data, int size,
                     TPakId pakId, PakFile* file)
 {
