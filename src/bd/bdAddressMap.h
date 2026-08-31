@@ -17,15 +17,15 @@ public:
     ~bdAddressMapImpl();
     static bdAddressMapImpl* getInstance();
 
-    bool commonAddrToAddr(const bdReference<bdCommonAddr>& ca, const XNKID& xnkid,
+    bool commonAddrToAddr(bdReference<bdCommonAddr> ca, const XNKID& xnkid,
                           bdReference<bdAddrHandle>& addrHandle);
     bool addrToCommonAddr(const bdReference<bdAddrHandle>& addrHandle,
                           bdReference<bdCommonAddr>& ca, XNKID& xnkid) const;
     bool unregisterAddr(bdReference<bdAddrHandle>& addrHandle);
     bool getTitleCommonAddr(bdReference<bdCommonAddr>& ca);
-    void setTitleCommonAddr(const bdReference<bdCommonAddr>& ca);
+    void setTitleCommonAddr(bdReference<bdCommonAddr> ca);
     unsigned int addrToString(const bdReference<bdAddrHandle>& addrHandle,
-                              char* pchBuf, unsigned int cchBuf) const;
+                              char* const pchBuf, unsigned int cchBuf) const;
 
 protected:
     bdReference<bdCommonAddr> m_me;   // +0x00

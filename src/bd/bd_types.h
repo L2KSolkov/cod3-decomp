@@ -711,8 +711,8 @@ public:
     bdCommonAddr(const XNADDR& addr, uint16_t port);
     bdCommonAddr(const bdReference<bdCommonAddr>& hostAddr, const XNADDR& addr,
                  uint16_t port);
-    void serialize(uint8_t* buffer) const;
-    bool deserialize(const bdReference<bdCommonAddr>& ref, const uint8_t* buffer);
+    void serialize(uint8_t* const buffer) const;
+    bool deserialize(bdReference<bdCommonAddr> ref, const uint8_t* const buffer);
     bool operator==(const bdCommonAddr& other) const;
     bool operator!=(const bdCommonAddr& other) const;
     bool operator<(const bdCommonAddr& other) const;

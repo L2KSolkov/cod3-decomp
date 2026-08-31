@@ -75,7 +75,7 @@ bdCommonAddr::bdCommonAddr(const bdReference<bdCommonAddr>& hostAddr,
 }
 
 // bdCommonAddr::serialize - ea: 0x89E050 (bdSocket:bdCommonAddr-xbox.obj)
-void bdCommonAddr::serialize(uint8_t* buffer) const {
+void bdCommonAddr::serialize(uint8_t* const buffer) const {
     unsigned int offset = 0;
     const bool ok =
         bdBytePacker::appendBasicType(buffer, 0x2A, offset, &offset,
@@ -93,8 +93,8 @@ void bdCommonAddr::serialize(uint8_t* buffer) const {
 }
 
 // bdCommonAddr::deserialize - ea: 0x89E1C0 (bdSocket:bdCommonAddr-xbox.obj)
-bool bdCommonAddr::deserialize(const bdReference<bdCommonAddr>& ref,
-                               const uint8_t* buffer) {
+bool bdCommonAddr::deserialize(bdReference<bdCommonAddr> ref,
+                               const uint8_t* const buffer) {
     unsigned int offset = 0;
     const bool ok =
         bdBytePacker::removeBasicType(buffer, 0x2A, offset, &offset,
@@ -108,6 +108,7 @@ bool bdCommonAddr::deserialize(const bdReference<bdCommonAddr>& ref,
                              "bool __thiscall bdCommonAddr::deserialize(class bdReference<class bdCommonAddr>,const unsigned char [])",
                              0x73, "dw/err");
         proxy.log("defaultFileName", "Unable to deserialize common addr.");
+        bdListRelease(ref);
         return false;
     }
 
@@ -120,6 +121,7 @@ bool bdCommonAddr::deserialize(const bdReference<bdCommonAddr>& ref,
     m_hash = m_addr.abEnet[5] + 31 * m_hash;
     if (ref.m_ptr != nullptr && ref.m_ptr->m_hash == m_hash)
         m_isLoopback = true;
+    bdListRelease(ref);
     return true;
 }
 
@@ -191,7 +193,7 @@ bdAddressMapImpl* bdAddressMapImpl::getInstance() {
 // ============================================================================
 // bdAddressMapImpl::commonAddrToAddr - ea: 0x8B7450
 // ============================================================================
-bool bdAddressMapImpl::commonAddrToAddr(const bdReference<bdCommonAddr>& ca,
+bool bdAddressMapImpl::commonAddrToAddr(bdReference<bdCommonAddr> ca,
                                         const XNKID& xnkid,
                                         bdReference<bdAddrHandle>& addrHandle) {
     bdAddrHandle* handle = new (bdMemory::allocate(sizeof(bdAddrHandle))) bdAddrHandle();
@@ -211,7 +213,9 @@ bool bdAddressMapImpl::commonAddrToAddr(const bdReference<bdCommonAddr>& ca,
     }
     handle->m_addr.inUn.m_iaddr = ina.s_addr;
     handle->m_port = ca.m_ptr->getPort();
-    return result == 0;
+    const bool ok = result == 0;
+    bdListRelease(ca);
+    return ok;
 }
 
 // ============================================================================
@@ -281,19 +285,23 @@ bool bdAddressMapImpl::getTitleCommonAddr(bdReference<bdCommonAddr>& ca) {
 // ============================================================================
 // bdAddressMapImpl::setTitleCommonAddr - ea: 0x8B7710
 // ============================================================================
-void bdAddressMapImpl::setTitleCommonAddr(const bdReference<bdCommonAddr>& ca) {
-    if (m_me.m_ptr != NULL && m_me.m_ptr->releaseRef() == 0)
-        delete m_me.m_ptr;
-    m_me.m_ptr = ca.m_ptr;
-    if (m_me.m_ptr != NULL)
-        m_me.m_ptr->addRef();
+void bdAddressMapImpl::setTitleCommonAddr(bdReference<bdCommonAddr> ca) {
+    if (reinterpret_cast<const void*>(this) !=
+        reinterpret_cast<const void*>(&ca)) {
+        if (m_me.m_ptr != NULL && m_me.m_ptr->releaseRef() == 0)
+            delete m_me.m_ptr;
+        m_me.m_ptr = ca.m_ptr;
+        if (m_me.m_ptr != NULL)
+            m_me.m_ptr->addRef();
+    }
+    bdListRelease(ca);
 }
 
 // ============================================================================
 // bdAddressMapImpl::addrToString - ea: 0x8B77A0
 // ============================================================================
 unsigned int bdAddressMapImpl::addrToString(const bdReference<bdAddrHandle>& addrHandle,
-                                            char* pchBuf, unsigned int cchBuf) const {
+                                            char* const pchBuf, unsigned int cchBuf) const {
     struct in_addr ina;
     ina.s_addr = addrHandle.m_ptr->m_addr.inUn.m_iaddr;
     if (XNetInAddrToString(ina, pchBuf, (int)cchBuf) != 0)
