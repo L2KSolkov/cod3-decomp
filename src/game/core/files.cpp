@@ -484,7 +484,7 @@ void FS_ClearDataForFiles(void* start, void* end)
 int FS_FTell(int f)
 {
     if (fsh[f].zipFile != 0)
-        return fsh[f].zipFilePos;
+        return (int)ftell((FILE*)fsh[f].handleFiles.file.file);
     return (int)ftell((FILE*)fsh[f].handleFiles.file.file);
 }
 
