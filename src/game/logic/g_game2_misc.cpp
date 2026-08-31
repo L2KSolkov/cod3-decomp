@@ -1438,6 +1438,8 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
 // ea: 0x005068F0
 void AnimIK::ApplyADS(Entity* ent)
 {
+    if (ent->client == nullptr)
+        return;
     if ((ent->client->ps.eFlags & 0x100000) != 0)
         return;
     const float ads = ent->client->ps.fWeaponPosFrac;
