@@ -53,9 +53,8 @@ const XNKEY& bdGameInfo::getSecurityKey() const {
 // bdGameInfo::setTitleID â€” ea: 0x8AE940
 // ea: 0x008AE940
 // ============================================================================
-unsigned int bdGameInfo::setTitleID(unsigned int titleId) {
+void bdGameInfo::setTitleID(unsigned int titleId) {
     this->m_titleId = titleId;
-    return titleId;
 }
 
 // ============================================================================
@@ -189,7 +188,9 @@ bool bdGameInfo::deserialize(bdReference<bdCommonAddr> hostAddr, bdBitBuffer& bu
                     bdCommonAddr* v7 = v6 != NULL ? new (v6) bdCommonAddr() : NULL;
                     if (v7 != NULL)
                         v7->addRef();
-                    if (v7->deserialize(hostAddr, v27)) {
+                    bdReference<bdCommonAddr> hostCopy(hostAddr.m_ptr);
+                    bdListAddRef(hostCopy);
+                    if (v7->deserialize(hostCopy, v27)) {
                         if (v7 != NULL)
                             v7->addRef();
                         this->setHostAddr(bdReference<bdCommonAddr>(v7));
@@ -233,7 +234,7 @@ bdGameInfo* bdGameInfoFactoryImpl::create() const {
 // bdGameInfoFactoryImpl::setClass â€” ea: 0x8AEFB0
 // ea: 0x008AEFB0
 // ============================================================================
-void bdGameInfoFactoryImpl::setClass(bdCreatorBase<bdGameInfo>* creator) {
+void bdGameInfoFactoryImpl::setClass(bdCreatorBase<bdGameInfo>* const creator) {
     if (this->m_creator != NULL) {
         bdMessageProxy proxy(".\\bdDiscovery\\bdGameInfoFactory.cpp",
                              "void __thiscall bdGameInfoFactoryImpl::setClass(class bdCreatorBase<class bdGameInfo> *const )",

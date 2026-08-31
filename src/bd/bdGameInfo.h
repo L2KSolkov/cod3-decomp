@@ -43,13 +43,13 @@ public:
     unsigned int getTitleID() const;
     const XNKID& getSecurityID() const;
     const XNKEY& getSecurityKey() const;
-    unsigned int setTitleID(unsigned int titleId);
+    void setTitleID(unsigned int titleId);
     void setSecurityID(const XNKID& secID);
     void setSecurityKey(const XNKEY& secKey);
     bdReference<bdCommonAddr> getHostAddr() const;
     void setHostAddr(bdReference<bdCommonAddr> hostAddr);
     virtual void serialize(bdBitBuffer& buffer) const;
-    bool deserialize(bdReference<bdCommonAddr> hostAddr, bdBitBuffer& buffer);
+    virtual bool deserialize(bdReference<bdCommonAddr> hostAddr, bdBitBuffer& buffer);
 };
 static_assert(sizeof(bdGameInfo) == 0x28, "bdGameInfo size mismatch");
 
@@ -73,7 +73,7 @@ public:
     bdGameInfoFactoryImpl();
     ~bdGameInfoFactoryImpl();
     bdGameInfo* create() const;
-    void setClass(bdCreatorBase<bdGameInfo>* creator);
+    void setClass(bdCreatorBase<bdGameInfo>* const creator);
 };
 static_assert(sizeof(bdGameInfoFactoryImpl) == 4, "bdGameInfoFactoryImpl size mismatch");
 
