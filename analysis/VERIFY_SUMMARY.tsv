@@ -89,7 +89,7 @@ bdHeartbeatChunk.obj	8	4	1	0	0	3	0
 bdInAddr.obj	5	0	2	1	0	2	0
 bdInetAddr.obj	25	0	0	1	0	24	0
 bdInitAckChunk.obj	15	5	0	1	0	9	0
-bdInitChunk.obj	11	2	0	1	0	8	0
+bdInitChunk.obj	11	2	0	0	0	9	0
 bdLog.obj	15	15	0	0	0	0	0
 bdLogChannel.obj	48	48	0	0	0	0	0
 bdLogSubscriber.obj	5	5	0	0	0	0	0
