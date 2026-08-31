@@ -1,3 +1,7 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
+0x009EBFF0	?getRandomUByte8@bdTrulyRandomImpl@@QAEXQAEH@Z	V3	PASS	bd-truly-random-manual-20260830	2026-08-30	src/bd/bdPlatform.cpp:257-260	Body forwards the output buffer and signed count to bdGetRandomUChar8, matching the release call-through.
+0x009EBFF0	?getRandomUByte8@bdTrulyRandomImpl@@QAEXQAEH@Z	V4	PASS	bd-truly-random-manual-20260830	2026-08-30	IDA decompile:0x009EBFF0	Release forwards its const byte pointer and signed-int count to bdGetRandomUChar8; source preserves the decorated H (int) ABI and cast at the call boundary.
+0x009EC010	??0bdTrulyRandomImpl@@IAE@XZ	V3	PASS	bd-truly-random-manual-20260830	2026-08-30	src/bd/bdPlatform.cpp:249-253	Constructor has no data members and an empty source body, matching the release no-op constructor.
+0x009EC010	??0bdTrulyRandomImpl@@IAE@XZ	V4	PASS	bd-truly-random-manual-20260830	2026-08-30	IDA decompile:0x009EC010	Release constructor returns this without stores; source emits the same empty construction path.
 0x009EC020	?getRandomUInt@bdTrulyRandomImpl@@QAEIXZ	V3	PASS	ida-manual-bd-20260828	2026-08-28	src/bd/bdPlatform.cpp:247-253	Source obtains four random bytes and assembles the same three high-order bytes used by the release implementation.
 0x009EC020	?getRandomUInt@bdTrulyRandomImpl@@QAEIXZ	V4	PASS	ida-manual-bd-20260828	2026-08-28	c3_bin/codmp_xboxr.xbe.c:1913833-1913842	Release reads four bytes and returns byte3<<8 | byte2<<16 | byte1<<24; source matches and intentionally ignores byte0.

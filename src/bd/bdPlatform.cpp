@@ -248,6 +248,8 @@ void bdGetRandomUChar8(unsigned char* const d, bdUInt n) {
 
 struct bdTrulyRandomImpl {
 public:
+    // ea: 0x009EC010
+    bdTrulyRandomImpl() {}
     void getRandomUByte8(unsigned char* out, int count);
     unsigned int getRandomUInt();
 };
