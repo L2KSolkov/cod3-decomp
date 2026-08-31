@@ -106,6 +106,7 @@ struct statmonitor_s {
     int endtime;   // +0x00
     void* shader;  // +0x04 (nglTexture*)
 };
+static_assert(sizeof(statmonitor_s) == 0x8, "statmonitor_s size mismatch");
 static statmonitor_s stats[64];   // 0xF3C100 (game.o data)
 static int statCount;             // 0xF3C300 (game.o data)
 extern cvar_t* com_statmon;       // ?com_statmon@@3PAUcvar_t@@A (core.o)

@@ -118,6 +118,8 @@ struct simd_stack_entry {
     unsigned int offset;  // +0x00
     unsigned int level;   // +0x04
 };
+static_assert(sizeof(simd_stack_entry) == 0x8,
+              "simd_stack_entry size mismatch");
 
 extern void absolutely_fatal_irrecoverable_error_infinite_loop();  // physics.o
 

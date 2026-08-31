@@ -664,6 +664,7 @@ void Teleport()
 struct qint64 {
     unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
 };
+static_assert(sizeof(qint64) == 0x8, "qint64 size mismatch");
 
 static short (*BigShortPtr)(short);
 static short (*LittleShortPtr)(short);

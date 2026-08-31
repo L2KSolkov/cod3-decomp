@@ -137,6 +137,7 @@ struct BspArea {
     int floodnum;    // +0x00
     int floodvalid;  // +0x04
 };
+static_assert(sizeof(BspArea) == 0x8, "BspArea size mismatch");
 
 // ============================================================================
 // leafList_s - leaf enumeration result

@@ -73,6 +73,7 @@ struct keyname_t {
     const char* name;
     int keynum;
 };
+static_assert(sizeof(keyname_t) == 0x8, "keyname_t size mismatch");
 struct KeyInfoEntry {
     int   mState;          // +0x00 (low 2 bits = down, high 30 = repeats)
     char* mBoundCmdName;   // +0x04

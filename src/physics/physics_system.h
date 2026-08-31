@@ -23,6 +23,8 @@ struct phys_proftimer_callbacks {
 
     phys_proftimer_callbacks();  // ea: 0x88B050
 };
+static_assert(sizeof(phys_proftimer_callbacks) == 0x8,
+              "phys_proftimer_callbacks size mismatch");
 extern phys_proftimer_callbacks g_phys_proftimer_callbacks;
 
 void PHYS_START_PROF_TIMER(phys_proftimer_e p);
