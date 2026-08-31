@@ -39,7 +39,7 @@ int bdPlatformSocket::create(bool blocking) {
 // ============================================================================
 // bdPlatformSocket::bind - ea: 0x9ED210
 // ============================================================================
-bdSocketStatusCode bdPlatformSocket::bind(int& handle, const bdInAddr* addr,
+bdSocketStatusCode bdPlatformSocket::bind(int& handle, const bdInAddr& addr,
                                           unsigned short port) {
     if (handle == BD_INVALID_SOCKET_HANDLE)
         return BD_NET_INVALID_HANDLE;
@@ -47,7 +47,7 @@ bdSocketStatusCode bdPlatformSocket::bind(int& handle, const bdInAddr* addr,
     struct sockaddr_in localAddr;
     memset(&localAddr, 0, sizeof(localAddr));
     localAddr.sin_family = AF_INET;
-    localAddr.sin_addr.s_addr = addr->inUn.m_iaddr;
+    localAddr.sin_addr.s_addr = addr.inUn.m_iaddr;
     localAddr.sin_port = htons(port);
 
     if (::bind(handle, (struct sockaddr*)&localAddr, sizeof(localAddr)) == -1) {
@@ -63,7 +63,7 @@ bdSocketStatusCode bdPlatformSocket::bind(int& handle, const bdInAddr* addr,
 // ============================================================================
 // bdPlatformSocket::sendTo - ea: 0x9ED320
 // ============================================================================
-int bdPlatformSocket::sendTo(int handle, const bdInAddr* addr, unsigned short port,
+int bdPlatformSocket::sendTo(int& handle, const bdInAddr& addr, unsigned short port,
                              const void* data, unsigned int length) {
     if (handle == BD_INVALID_SOCKET_HANDLE)
         return BD_NET_INVALID_HANDLE;
@@ -71,7 +71,7 @@ int bdPlatformSocket::sendTo(int handle, const bdInAddr* addr, unsigned short po
     struct sockaddr_in to;
     memset(&to, 0, sizeof(to));
     to.sin_family = AF_INET;
-    to.sin_addr.s_addr = addr->inUn.m_iaddr;
+    to.sin_addr.s_addr = addr.inUn.m_iaddr;
     to.sin_port = htons(port);
 
     int result = (int)::sendto(handle, (const char*)data, length, 0,
@@ -160,6 +160,6 @@ bool bdPlatformSocket::setBlocking(int& handle, bool blocking) {
 // bdPlatformSocket::getHostByName - ea: 0x9ED840
 // (returns 0 in the binary: no DNS on the target)
 // ============================================================================
-unsigned int bdPlatformSocket::getHostByName(const char*, bdInAddr*, unsigned int, int) {
+unsigned int bdPlatformSocket::getHostByName(const char* const, bdInAddr*, unsigned int) {
     return 0;
 }

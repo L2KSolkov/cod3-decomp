@@ -313,16 +313,16 @@ public:
     bdPlatformSocket();
 
     static int create(bool blocking);
-    static bdSocketStatusCode bind(int& handle, const bdInAddr* addr, unsigned short port);
-    static int sendTo(int handle, const bdInAddr* addr, unsigned short port,
+    static bdSocketStatusCode bind(int& handle, const bdInAddr& addr, unsigned short port);
+    static int sendTo(int& handle, const bdInAddr& addr, unsigned short port,
                       const void* data, unsigned int length);
     static int receiveFrom(int& handle, bdInAddr& addr, unsigned short& port,
                            void* data, unsigned int size);
     static bool close(int& handle);
     static void unregisterThread();
     static bool setBlocking(int& handle, bool blocking);
-    static unsigned int getHostByName(const char* name, bdInAddr* addresses,
-                                      unsigned int numAddresses, int dnsHandle);
+    static unsigned int getHostByName(const char* const name, bdInAddr* addresses,
+                                      unsigned int numAddresses);
 
     static unsigned __int64 getBytesSent();
     static unsigned __int64 getBytesReceived();
