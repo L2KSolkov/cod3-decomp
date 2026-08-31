@@ -990,6 +990,13 @@ template ae_pair<void*, unsigned int>::ae_pair(void* const&,
 template ae_pair<int, void*>::ae_pair(const int&, void* const&);
 template ae_fixed_string<32, unsigned char>::ae_fixed_string(
     const ae_fixed_string<32, unsigned char>&);
+template int ae_fixed_string<64, unsigned char>::rfind(char) const;
+template char* ae_fixed_string<128, unsigned char>::c_str();
+template ae_fixed_string<64, unsigned char>&
+ae_fixed_string<64, unsigned char>::substr(
+    ae_fixed_string<64, unsigned char>&, int, int) const;
+template ae_fixed_string<256, unsigned short>&
+ae_fixed_string<256, unsigned short>::operator+=(const char*);
 template ae_sized_array_base<ae_pair<void*, unsigned int>, 15>::
 ae_sized_array_base();
 template DbLinkedHandle<AeThreadManager, AeThread>::DbLinkedHandle(int);

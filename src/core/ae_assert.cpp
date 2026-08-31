@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
+#include "ae_fixed_string.h"
 
 extern void tlPrintf(const char* fmt, ...);
 
@@ -16,6 +17,8 @@ extern void tlPrintf(const char* fmt, ...);
 #else
 #define COD3_DEBUG_OUT(s) fprintf(stderr, "%s", s)
 #endif
+
+template ae_fixed_string<4096, unsigned short>::ae_fixed_string();
 
 namespace AeAssert {
 
