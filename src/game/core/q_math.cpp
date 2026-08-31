@@ -2655,7 +2655,6 @@ void RotatePointAroundVector(float* const dst, const float* const dir,
            745);
     float rad = degrees * 3.1415927f / 180.0f;
     float rot, psin;
-    FastSinCos(rad, &psin, &rot);
     float vup[3];
     PerpendicularVector(vup, dir);
     float vright[3];
@@ -2673,6 +2672,15 @@ void RotatePointAroundVector(float* const dst, const float* const dir,
     tmpmat[2][2] = dir[2];
     float im[3][3];
     memcpy(im, tmpmat, sizeof(im));
+    psin = 0.0f;
+    rot = 1.0f;
+    if ((__fpclass(rad) & 0x297) != 0)
+        ASSERT("!IS_NAN(rad)", "c:\\cod\\code\\game\\com_math.cpp", 780);
+    FastSinCos(rad, &psin, &rot);
+    if ((__fpclass(psin) & 0x297) != 0)
+        ASSERT("!IS_NAN(zrot[0][1])", "c:\\cod\\code\\game\\com_math.cpp", 784);
+    if ((__fpclass(rot) & 0x297) != 0)
+        ASSERT("!IS_NAN(zrot[0][0])", "c:\\cod\\code\\game\\com_math.cpp", 785);
     // rotate point into im basis
     float vf = *dir;
     float v40 = dir[1];
