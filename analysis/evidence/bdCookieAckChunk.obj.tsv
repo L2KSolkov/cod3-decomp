@@ -1,2 +1,13 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
-0x008ABEC0	??1bdCookieAckChunk@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:350	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdCookieAckChunk::~bdCookieAckChunk); no user logic is omitted.
+0x008ABEA0	??0bdCookieAckChunk@@QAE@XZ	V3	PASS	bd-cookie-ack-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:367-371	Constructor delegates type 14 to bdChunk and clears m_flags.
+0x008ABEA0	??0bdCookieAckChunk@@QAE@XZ	V4	PASS	bd-cookie-ack-manual-20260830	2026-08-30	IDA decompile:0x008ABEA0	Release base construction, vtable install, and zero flag store match source.
+0x008ABEC0	??1bdCookieAckChunk@@UAE@XZ	V3	PASS	bd-cookie-ack-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:375-377	Empty destructor delegates compiler-emitted cleanup through bdChunk.
+0x008ABEC0	??1bdCookieAckChunk@@UAE@XZ	V4	PASS	bd-cookie-ack-manual-20260830	2026-08-30	IDA decompile:0x008ABEC0	Release resets the derived vtable and calls bdChunk destructor, matching source inheritance.
+0x008ABED0	?getFlags@bdCookieAckChunk@@QBE?AW4bdCookieAckFlags@1@XZ	V3	PASS	bd-cookie-ack-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:381-384	Body returns m_flags.
+0x008ABED0	?getFlags@bdCookieAckChunk@@QBE?AW4bdCookieAckFlags@1@XZ	V4	PASS	bd-cookie-ack-manual-20260830	2026-08-30	IDA decompile:0x008ABED0	Release reads the flags field at this+0x10; source matches.
+0x008ABEE0	?getSerializedSize@bdCookieAckChunk@@UAEIXZ	V3	PASS	bd-cookie-ack-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:388-390	Body returns constant size 4.
+0x008ABEE0	?getSerializedSize@bdCookieAckChunk@@UAEIXZ	V4	PASS	bd-cookie-ack-manual-20260830	2026-08-30	IDA decompile:0x008ABEE0	Release returns 4, matching source.
+0x008ABF10	?serialize@bdCookieAckChunk@@MAEIPAEI@Z	V3	PASS	bd-cookie-ack-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:395-409	Body serializes the base chunk, flags byte, and two-byte zero field.
+0x008ABF10	?serialize@bdCookieAckChunk@@MAEIPAEI@Z	V4	PASS	bd-cookie-ack-manual-20260830	2026-08-30	IDA decompile:0x008ABF10	Release/source append order, capacity handling, and returned offset match.
+0x008ABF90	?deserialize@bdCookieAckChunk@@MAE_NQBEIAAI@Z	V3	PASS	bd-cookie-ack-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:411-432	Body decodes the base type, flags byte, and two-byte field, updating offset only on success.
+0x008ABF90	?deserialize@bdCookieAckChunk@@MAE_NQBEIAAI@Z	V4	PASS	bd-cookie-ack-manual-20260830	2026-08-30	IDA decompile:0x008ABF90	Release/source decode order, failure paths, flag assignment, and offset update match.
