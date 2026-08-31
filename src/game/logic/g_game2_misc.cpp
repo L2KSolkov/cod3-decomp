@@ -1763,14 +1763,16 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
         || !IsPlayerFullySeatedInVehicle(ent))
         return;
     Entity* vehicle = *client->ps.mViewLockedEntity;
-    if (vehicle == nullptr || vehicle->scr_vehicle == nullptr
-        || client->ps.vehPos > 1)
+    if (vehicle == nullptr || vehicle->scr_vehicle == nullptr)
+        return;
+    const bool hasRigidBody = vehicle->scr_vehicle->mRBVeh != nullptr;
+    if (!hasRigidBody && client->ps.vehPos > 1)
         return;
 
     const float steering = vehicle->scr_vehicle->current.mSteeringAngle;
     vehicle_info_t* vehicleInfo =
         VEH_GetInfo(vehicle->scr_vehicle->infoIdx);
-    if (vehicle->scr_vehicle->mRBVeh != nullptr)
+    if (hasRigidBody)
     {
         float forward[3];
         float right[3];
@@ -1818,6 +1820,38 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
             RotateBone(4, math::Dir3(-rigidOffsetYaw, 0.0f,
                                      -rigidBonePitch));
         }
+        else if (client->ps.vehPos == 2)
+        {
+            const float yawDelta = AngleNormalize180(
+                ent->r.currentAngles.v.m128_f32[1]
+                - vehicle->r.currentAngles.v.m128_f32[1]) * 0.3f;
+            rigidOffsetYaw = fabsf(yawDelta) + rigidOffsetYaw;
+            rigidBonePitch *= 1.5f;
+            if (vehicleInfo != nullptr
+                && vehicleInfo->turretHorizSpanLeft != 0.0f)
+            {
+                const float turret =
+                    (vehicle->scr_vehicle->current.mTurretAngles.v.m128_f32[1]
+                     / vehicleInfo->turretHorizSpanLeft) * 0.5f;
+                nalGenericBoneHandle pelvisHandle{nullptr, 0};
+                nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle,
+                                                  &BoneNames[0]);
+                if (pelvisHandle.Skeleton != nullptr)
+                {
+                    nalPositionOrientation pelvis =
+                        nalGenericPose_GetModelPositionOrientation(
+                            pose, &pelvisHandle);
+                    pelvis.pos.v.m128_f32[0] += fabsf(turret) * 5.0f;
+                    pelvis.pos.v.m128_f32[1] += turret * -10.0f;
+                    static_cast<nalGeneric::nalGenericPose*>(pose)
+                        ->SetPositionOrientation(pelvisHandle, pelvis);
+                }
+            }
+            RotateBone(2, math::Dir3(rigidOffsetYaw, 0.0f,
+                                     rigidBonePitch));
+            RotateBone(4, math::Dir3(-rigidOffsetYaw, 0.0f,
+                                     -rigidBonePitch));
+        }
         else
         {
             RotateBone(2, math::Dir3(rigidOffsetYaw, 0.0f,
@@ -1825,6 +1859,8 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
             RotateBone(4, math::Dir3(-rigidOffsetYaw, 0.0f,
                                      -rigidBonePitch));
         }
+        if (client->ps.vehPos > 1)
+            return;
     }
     const bool specialVehicle =
         (client->ps.vehType == 1 && client->ps.vehSubType == 2)
