@@ -23,6 +23,7 @@ bdShutdownChunk::~bdShutdownChunk() {
 
 // ============================================================================
 // bdShutdownChunk::getFlags â€” ea: 0x8AC390
+// ea: 0x008AC390
 // ============================================================================
 bdShutdownChunk::bdShutdownFlags bdShutdownChunk::getFlags() const {
     return this->m_flags;
@@ -30,6 +31,7 @@ bdShutdownChunk::bdShutdownFlags bdShutdownChunk::getFlags() const {
 
 // ============================================================================
 // bdShutdownChunk::getSerializedSize â€” ea: 0x8AC3A0
+// ea: 0x008AC3A0
 // ============================================================================
 unsigned int bdShutdownChunk::getSerializedSize() {
     return 4;
@@ -37,6 +39,7 @@ unsigned int bdShutdownChunk::getSerializedSize() {
 
 // ============================================================================
 // bdShutdownChunk::serialize â€” ea: 0x8AC3D0
+// ea: 0x008AC3D0
 // ============================================================================
 unsigned int bdShutdownChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -53,6 +56,7 @@ unsigned int bdShutdownChunk::serialize(unsigned char* data, unsigned int size) 
 
 // ============================================================================
 // bdShutdownChunk::deserialize â€” ea: 0x8AC450
+// ea: 0x008AC450
 // ============================================================================
 bool bdShutdownChunk::deserialize(const unsigned char* data, unsigned int size,
                                   unsigned int* offset) {
@@ -89,6 +93,7 @@ bdShutdownAckChunk::~bdShutdownAckChunk() {
 
 // ============================================================================
 // bdShutdownAckChunk::getFlags â€” ea: 0x8AC520
+// ea: 0x008AC520
 // ============================================================================
 bdShutdownAckChunk::bdShutdownAckFlags bdShutdownAckChunk::getFlags() const {
     return this->m_flags;
@@ -96,6 +101,7 @@ bdShutdownAckChunk::bdShutdownAckFlags bdShutdownAckChunk::getFlags() const {
 
 // ============================================================================
 // bdShutdownAckChunk::getSerializedSize â€” ea: 0x8AC530
+// ea: 0x008AC530
 // ============================================================================
 unsigned int bdShutdownAckChunk::getSerializedSize() {
     return 4;
@@ -103,6 +109,7 @@ unsigned int bdShutdownAckChunk::getSerializedSize() {
 
 // ============================================================================
 // bdShutdownAckChunk::serialize â€” ea: 0x8AC560
+// ea: 0x008AC560
 // ============================================================================
 unsigned int bdShutdownAckChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -119,6 +126,7 @@ unsigned int bdShutdownAckChunk::serialize(unsigned char* data, unsigned int siz
 
 // ============================================================================
 // bdShutdownAckChunk::deserialize â€” ea: 0x8AC5E0
+// ea: 0x008AC5E0
 // ============================================================================
 bool bdShutdownAckChunk::deserialize(const unsigned char* data, unsigned int size,
                                      unsigned int* offset) {
@@ -148,13 +156,14 @@ bdShutdownCompleteChunk::bdShutdownCompleteChunk()
 }
 
 // ============================================================================
-// bdShutdownCompleteChunk::~bdShutdownCompleteChunk â€” ea: 0x8AC6A0
+// bdShutdownCompleteChunk::~bdShutdownCompleteChunk â€” ea: 0x008AC6A0
 // ============================================================================
 bdShutdownCompleteChunk::~bdShutdownCompleteChunk() {
 }
 
 // ============================================================================
 // bdShutdownCompleteChunk::getFlags â€” ea: 0x8AC6B0
+// ea: 0x008AC6B0
 // ============================================================================
 bdShutdownCompleteChunk::bdShutdownCompleteFlags bdShutdownCompleteChunk::getFlags() const {
     return this->m_flags;
@@ -162,6 +171,7 @@ bdShutdownCompleteChunk::bdShutdownCompleteFlags bdShutdownCompleteChunk::getFla
 
 // ============================================================================
 // bdShutdownCompleteChunk::getSerializedSize â€” ea: 0x8AC6C0
+// ea: 0x008AC6C0
 // ============================================================================
 unsigned int bdShutdownCompleteChunk::getSerializedSize() {
     return 4;
@@ -169,6 +179,7 @@ unsigned int bdShutdownCompleteChunk::getSerializedSize() {
 
 // ============================================================================
 // bdShutdownCompleteChunk::serialize â€” ea: 0x8AC6F0
+// ea: 0x008AC6F0
 // ============================================================================
 unsigned int bdShutdownCompleteChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -185,6 +196,7 @@ unsigned int bdShutdownCompleteChunk::serialize(unsigned char* data, unsigned in
 
 // ============================================================================
 // bdShutdownCompleteChunk::deserialize â€” ea: 0x8AC770
+// ea: 0x008AC770
 // ============================================================================
 bool bdShutdownCompleteChunk::deserialize(const unsigned char* data, unsigned int size,
                                           unsigned int* offset) {
