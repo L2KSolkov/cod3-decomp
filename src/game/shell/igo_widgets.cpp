@@ -3493,6 +3493,7 @@ void IGOHintWidget::SetWeaponsPQs(PanelFile* panel, PanelFile* panel2)
                                 AeAssert::gCurrentLine = 141;
                                 AeAssert::gCurrentExpr = nullptr;
                                 if (!AeAssert::IsIgnored()
+                                    && false
                                     && AeAssert::Warning(
                                         "could not find pickup hud icon named %s, "
                                         "using hand icon instead",
