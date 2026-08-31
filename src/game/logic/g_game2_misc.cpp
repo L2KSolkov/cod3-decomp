@@ -1295,6 +1295,9 @@ void AnimIK::ApplyFire(Entity* ent)
     float torsoScale = 0.0f;
     weaponFileInfo_t* latestWeapon = nullptr;
     int latestFireTime = 0;
+    float latestTorsoAngle = 0.0f;
+    float latestPitchAngle = 0.0f;
+    float latestOffsetDist = 0.0f;
     for (int i = 0; i < 15; ++i)
     {
         AnimIKFireEvent& event = ent->client->AnimIKFireEvents[i];
@@ -1340,6 +1343,9 @@ void AnimIK::ApplyFire(Entity* ent)
         {
             latestFireTime = event.fireTime;
             latestWeapon = weapon;
+            latestTorsoAngle = torsoAngle;
+            latestPitchAngle = pitchAngle;
+            latestOffsetDist = offsetDist;
         }
         if (age > 200.0f && eventOffsetScale == 0.0f
             && eventPitchScale == 0.0f && eventTorsoScale == 0.0f)
@@ -1350,18 +1356,12 @@ void AnimIK::ApplyFire(Entity* ent)
             && torsoScale == 0.0f))
         return;
 
-    const float torsoAngle = latestWeapon->fAnimIKTorsoRecoilPitchAngle != 0.0f
-        ? latestWeapon->fAnimIKTorsoRecoilPitchAngle : 15.0f;
-    const float pitchAngle = latestWeapon->fAnimIKPitchAngle != 0.0f
-        ? latestWeapon->fAnimIKPitchAngle : 30.0f;
-    const float offsetAngle = latestWeapon->fAnimIKOffsetDist != 0.0f
-        ? latestWeapon->fAnimIKOffsetDist : 6.0f;
-    RotateBone(2, math::Dir3(-torsoAngle * torsoScale, 0.0f, 0.0f));
-    RotateBone(4, math::Dir3(torsoAngle * torsoScale, 0.0f, 0.0f));
-    RotateBone(7, math::Dir3(-pitchAngle * pitchScale,
-                             offsetAngle * offsetScale, 0.0f));
-    RotateBone(11, math::Dir3(-pitchAngle * pitchScale,
-                              -offsetAngle * offsetScale, 0.0f));
+    RotateBone(2, math::Dir3(-latestTorsoAngle * torsoScale, 0.0f, 0.0f));
+    RotateBone(4, math::Dir3(latestTorsoAngle * torsoScale, 0.0f, 0.0f));
+    RotateBone(7, math::Dir3(-latestPitchAngle * pitchScale,
+                             latestOffsetDist * offsetScale, 0.0f));
+    RotateBone(11, math::Dir3(-latestPitchAngle * pitchScale,
+                              -latestOffsetDist * offsetScale, 0.0f));
 }
 // ea: 0x00504C90
 void AnimIK::ApplyVehicleSteering(Entity* ent)
