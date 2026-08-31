@@ -1118,8 +1118,8 @@ public:
     TPakId GetPakId() const;                             // core.o 0x004DBB60
     void SetPending(bool state);                         // core.o 0x004E25A0
     void SetOwnsMatrix();                                // core.o 0x004E25D0
-    int GetEffectCount() const;                          // core.o 0x004E25E0
-    AbstractEffect* GetEffect(int i);                    // core.o 0x004E25F0
+    const int GetEffectCount() const;                    // core.o 0x004E25E0
+    AbstractEffect* GetEffect(int i) const;              // core.o 0x004E25F0
     void StopLoopingEffects();                          // ea: 0x004C0EC0
     void GetDebugFxList(Entity* ent,
                         std::vector<std::string>& fx) const;  // ea: 0x004D3AD0

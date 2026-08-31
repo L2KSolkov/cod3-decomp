@@ -282,6 +282,7 @@ TPakId ActiveEffectSet::GetPakId() const
     return mPakId;
 }
 
+// ea: 0x004E25A0
 void ActiveEffectSet::SetPending(bool state)
 {
     if (state)
@@ -290,17 +291,20 @@ void ActiveEffectSet::SetPending(bool state)
         mFlags.mVal &= ~2u;
 }
 
+// ea: 0x004E25D0
 void ActiveEffectSet::SetOwnsMatrix()
 {
     mFlags.mVal |= 4u;
 }
 
-int ActiveEffectSet::GetEffectCount() const
+// ea: 0x004E25E0
+const int ActiveEffectSet::GetEffectCount() const
 {
     return mEffects.m_size;
 }
 
-AbstractEffect* ActiveEffectSet::GetEffect(int i)
+// ea: 0x004E25F0
+AbstractEffect* ActiveEffectSet::GetEffect(int i) const
 {
     return mEffects[i];
 }
