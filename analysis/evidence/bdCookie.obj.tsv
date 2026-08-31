@@ -1,2 +1,21 @@
 ida_ea	name	gate	result	session	date	source_ref	detail
-0x008AB560	??1bdCookie@@UAE@XZ	V3	PASS	release-empty-sweep-20260827	2026-08-27	analysis/RELEASE_STUB_AUDIT.tsv:92	Release C-dump comparison classifies this source-empty body as compiler-emitted implicit cleanup (bdCookie::~bdCookie); no user logic is omitted.
+0x008AB540	??0bdCookie@@QAE@XZ	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:74-83	Body initializes the reference-counted base and all four cookie tags to zero.
+0x008AB540	??0bdCookie@@QAE@XZ	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB540	Release vtable/base initialization and four zero tag stores match source layout.
+0x008AB560	??1bdCookie@@UAE@XZ	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:119-121	Body is the compiler-emitted virtual cleanup for bdCookie.
+0x008AB560	??1bdCookie@@UAE@XZ	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB560	Release resets the bdCookie vtable and calls bdReferencable cleanup; source inheritance supplies the same lifecycle.
+0x008AB570	?getLocalTag@bdCookie@@QBEIXZ	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:126-128	Body returns m_localTag.
+0x008AB570	?getLocalTag@bdCookie@@QBEIXZ	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB570	Release/source read the local-tag field at the same offset.
+0x008AB580	?getPeerTag@bdCookie@@QBEIXZ	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:133-135	Body returns m_peerTag.
+0x008AB580	?getPeerTag@bdCookie@@QBEIXZ	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB580	Release/source read the peer-tag field at the same offset.
+0x008AB590	?getLocalTieTag@bdCookie@@QBEIXZ	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:140-142	Body returns m_localTieTag.
+0x008AB590	?getLocalTieTag@bdCookie@@QBEIXZ	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB590	Release/source read the local-tie-tag field at the same offset.
+0x008AB5A0	?getPeerTieTag@bdCookie@@QBEIXZ	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:147-149	Body returns m_peerTieTag.
+0x008AB5A0	?getPeerTieTag@bdCookie@@QBEIXZ	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB5A0	Release/source read the peer-tie-tag field at the same offset.
+0x008AB5D0	?serialize@bdCookie@@UAEIPAEI@Z	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:154-177	Body appends size and all four tags, computes the release-trivial HMAC output, and returns the encoded size.
+0x008AB5D0	?serialize@bdCookie@@UAEIPAEI@Z	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB5D0	Release/source append order (local, peer, peer-tie, local-tie), HMAC calls, output length, and return match.
+0x008AB730	?deserialize@bdCookie@@UAE_NQBEIAAI@Z	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:182-220	Body validates available bytes, verifies the release-trivial HMAC, removes all four tags, updates offset on success, and logs failure.
+0x008AB730	?deserialize@bdCookie@@UAE_NQBEIAAI@Z	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB730	Release/source size guard, HMAC sequence, comparison, remove order/offset update, failure proxy text, and return state match.
+0x008AB900	?getSerializedSize@bdCookie@@UAEIXZ	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:225-227	Body delegates to serialize with null output and UINT_MAX capacity.
+0x008AB900	?getSerializedSize@bdCookie@@UAEIXZ	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB900	Release/source serialize(nullptr, 0xFFFFFFFF) delegation matches.
+0x008AB910	??0bdCookie@@QAE@IIII@Z	V3	PASS	bd-cookie-manual-20260830	2026-08-30	src/bd/bdCookie.cpp:88-104	Body initializes all tags, lazily fills the 20-byte secret, and returns the object.
+0x008AB910	??0bdCookie@@QAE@IIII@Z	V4	PASS	bd-cookie-manual-20260830	2026-08-30	IDA decompile:0x8AB910	Release tag assignment order, lazy random-secret initialization, and return match source.

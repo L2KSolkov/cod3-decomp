@@ -77,6 +77,7 @@ bool          bdCookie::m_secretInitialized = false;
 
 // ============================================================================
 // bdCookie::bdCookie (default) â€” ea: 0x8AB540
+// ea: 0x008AB540
 // ============================================================================
 bdCookie::bdCookie()
     : m_localTag(0),
@@ -87,6 +88,7 @@ bdCookie::bdCookie()
 
 // ============================================================================
 // bdCookie::bdCookie (tags) â€” ea: 0x8AB910
+// ea: 0x008AB910
 // ============================================================================
 bdCookie::bdCookie(unsigned int localTag, unsigned int peerTag,
                    unsigned int localTieTag, unsigned int peerTieTag)
@@ -103,12 +105,14 @@ bdCookie::bdCookie(unsigned int localTag, unsigned int peerTag,
 
 // ============================================================================
 // bdCookie::~bdCookie â€” ea: 0x8AB560
+// ea: 0x008AB560
 // ============================================================================
 bdCookie::~bdCookie() {
 }
 
 // ============================================================================
 // bdCookie::getLocalTag â€” ea: 0x8AB570
+// ea: 0x008AB570
 // ============================================================================
 unsigned int bdCookie::getLocalTag() const {
     return this->m_localTag;
@@ -116,6 +120,7 @@ unsigned int bdCookie::getLocalTag() const {
 
 // ============================================================================
 // bdCookie::getPeerTag â€” ea: 0x8AB580
+// ea: 0x008AB580
 // ============================================================================
 unsigned int bdCookie::getPeerTag() const {
     return this->m_peerTag;
@@ -123,6 +128,7 @@ unsigned int bdCookie::getPeerTag() const {
 
 // ============================================================================
 // bdCookie::getLocalTieTag â€” ea: 0x8AB590
+// ea: 0x008AB590
 // ============================================================================
 unsigned int bdCookie::getLocalTieTag() const {
     return this->m_localTieTag;
@@ -130,6 +136,7 @@ unsigned int bdCookie::getLocalTieTag() const {
 
 // ============================================================================
 // bdCookie::getPeerTieTag â€” ea: 0x8AB5A0
+// ea: 0x008AB5A0
 // ============================================================================
 unsigned int bdCookie::getPeerTieTag() const {
     return this->m_peerTieTag;
@@ -137,6 +144,7 @@ unsigned int bdCookie::getPeerTieTag() const {
 
 // ============================================================================
 // bdCookie::serialize â€” ea: 0x8AB5D0
+// ea: 0x008AB5D0
 // ============================================================================
 unsigned int bdCookie::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -167,6 +175,7 @@ unsigned int bdCookie::serialize(unsigned char* data, unsigned int size) {
 
 // ============================================================================
 // bdCookie::deserialize â€” ea: 0x8AB730
+// ea: 0x008AB730
 // ============================================================================
 bool bdCookie::deserialize(const unsigned char* data, unsigned int size,
                            unsigned int* offset) {
@@ -207,6 +216,7 @@ bool bdCookie::deserialize(const unsigned char* data, unsigned int size,
 
 // ============================================================================
 // bdCookie::getSerializedSize â€” ea: 0x8AB900
+// ea: 0x008AB900
 // ============================================================================
 unsigned int bdCookie::getSerializedSize() {
     return this->serialize(NULL, 0xFFFFFFFFu);
