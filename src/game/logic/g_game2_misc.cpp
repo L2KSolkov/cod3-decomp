@@ -1549,6 +1549,19 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
         sentient->mLastTerrainMappingFootOffsetZ[1] = 0.0f;
         return;
     }
+    float terrainFrameTime = elapsedMs * 0.001f;
+    const math::Vector4 velocity = ent->client->ps.velocity;
+    const float speed = sqrtf(velocity.v.m128_f32[0]
+                              * velocity.v.m128_f32[0]
+                              + velocity.v.m128_f32[1]
+                              * velocity.v.m128_f32[1]
+                              + velocity.v.m128_f32[2]
+                              * velocity.v.m128_f32[2]);
+    if (speed > 40.0f)
+    {
+        terrainFrameTime *= max(2.0f,
+                                min(3.0f, (speed - 40.0f) * 0.02f));
+    }
     nalMatrix4x4* footMatrices[2] = {&leftFootMat, &rightFootMat};
     const bool doTerrainTrace = sentient->mEnableTerrainMappingIK
         && ent->has_zone_collision();
@@ -1600,7 +1613,7 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
                 sentient->mLastTerrainMappingTraceZ[i] = 0.0f;
             }
         }
-        const float blend = min(1.0f, elapsedMs * 0.001f * 8.0f);
+        const float blend = min(1.0f, terrainFrameTime * 8.0f);
         float& offset = sentient->mLastTerrainMappingFootOffsetZ[i];
         offset += (targetOffset - offset) * blend;
         foot->w[2] += offset;
