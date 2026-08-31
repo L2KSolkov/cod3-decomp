@@ -1380,12 +1380,28 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
     if (client->ps.vehType == 1 && client->ps.vehSubType == 2)
     {
         const float side = fabsf(steering);
-        RotateBone(1, math::Dir3(side * 0.15f,
-                                 steering * -0.05f, side * 0.15f));
-        RotateBone(2, math::Dir3(side * 0.15f,
-                                 steering * 0.1f, side * 0.35f));
-        RotateBone(4, math::Dir3(-side * 0.6f,
-                                 steering * 0.1f, -steering * 0.35f));
+        nalGenericBoneHandle pelvisHandle{nullptr, 0};
+        nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle,
+                                         &BoneNames[0]);
+        if (pelvisHandle.Skeleton != nullptr)
+        {
+            nalPositionOrientation pelvis =
+                nalGenericPose_GetModelPositionOrientation(pose,
+                                                           &pelvisHandle);
+            pelvis.pos.v.m128_f32[0] += side * 0.15f;
+            pelvis.pos.v.m128_f32[1] += steering * -0.05f;
+            pelvis.pos.v.m128_f32[2] += side * 0.15f;
+            static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
+                pelvisHandle, pelvis);
+        }
+        const float scaledSide = side * 0.2f;
+        const float scaledSteering = steering * 0.45f;
+        RotateBone(1, math::Dir3(scaledSide * 0.75f,
+                                 steering * 0.1f, scaledSteering * 0.7f));
+        RotateBone(2, math::Dir3(scaledSide * 0.65f,
+                                 steering * 0.1f, scaledSteering * 0.5f));
+        RotateBone(4, math::Dir3(scaledSide * -0.6f,
+                                 steering * 0.1f, scaledSteering * -0.6f));
     }
     else if (client->ps.vehPos == 1)
     {
