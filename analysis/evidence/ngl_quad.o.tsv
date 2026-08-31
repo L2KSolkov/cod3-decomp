@@ -1,0 +1,35 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0083F6E0	?nglInitQuad@@YAXPAUnglQuad@@@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:15-33	Body zeroes the 0x60-byte quad and writes the release colors, UV defaults, map flags, and blend mode.
+0x0083F6E0	?nglInitQuad@@YAXPAUnglQuad@@@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F6E0	Release/source memset size, color/UV order, map flags 193, and blend constant 1691321856 match.
+0x0083F750	?nglSetQuadTex@@YAXPAUnglQuad@@PAUnglTexture@@@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:37-39	Body assigns the texture pointer.
+0x0083F750	?nglSetQuadTex@@YAXPAUnglQuad@@PAUnglTexture@@@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F750	Release/source single texture-field store matches.
+0x0083F760	?nglSetQuadMapFlags@@YAXPAUnglQuad@@I@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:43-45	Body assigns the map flags.
+0x0083F760	?nglSetQuadMapFlags@@YAXPAUnglQuad@@I@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F760	Release/source single map-flags store matches.
+0x0083F770	?nglSetQuadBlend@@YAXPAUnglQuad@@I@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:49-51	Body assigns the blend mode.
+0x0083F770	?nglSetQuadBlend@@YAXPAUnglQuad@@I@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F770	Release/source single blend-field store matches.
+0x0083F780	?nglSetQuadUV@@YAXPAUnglQuad@@MMMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:55-65	Body writes all four corners in the release UV assignment order.
+0x0083F780	?nglSetQuadUV@@YAXPAUnglQuad@@MMMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F780	Release/source eight UV stores and corner offsets match.
+0x0083F7D0	?nglSetQuadColor@@YAXPAUnglQuad@@I@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:69-75	Body writes one color to all four vertices.
+0x0083F7D0	?nglSetQuadColor@@YAXPAUnglQuad@@I@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F7D0	Release/source four color stores match.
+0x0083F7F0	?nglSetQuadRect@@YAXPAUnglQuad@@MMMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:79-89	Body writes the four rectangle corners in release order.
+0x0083F7F0	?nglSetQuadRect@@YAXPAUnglQuad@@MMMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F7F0	Release/source eight position stores and corner offsets match.
+0x0083F840	?nglSetQuadZ@@YAXPAUnglQuad@@M@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:93-95	Body assigns the quad depth.
+0x0083F840	?nglSetQuadZ@@YAXPAUnglQuad@@M@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F840	Release/source single depth-field store matches.
+0x0083F860	?nglSetQuadVPos@@YAXPAUnglQuad@@HMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:99-102	Body indexes one vertex and writes its X/Y coordinates.
+0x0083F860	?nglSetQuadVPos@@YAXPAUnglQuad@@HMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F860	Release/source indexed X/Y stores and stride match.
+0x0083F890	?nglSetQuadVUV@@YAXPAUnglQuad@@HMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:106-109	Body indexes one vertex and writes its U/V coordinates.
+0x0083F890	?nglSetQuadVUV@@YAXPAUnglQuad@@HMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F890	Release/source indexed U/V stores and stride match.
+0x0083F8C0	?nglSetQuadVColor@@YAXPAUnglQuad@@HI@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:113-115	Body indexes one vertex and writes its color.
+0x0083F8C0	?nglSetQuadVColor@@YAXPAUnglQuad@@HI@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F8C0	Release/source indexed color store and stride match.
+0x0083F8E0	?nglRotateQuad@@YAXPAUnglQuad@@MMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:119-130	Body computes sine/cosine once and rotates all four XY vertices around the center.
+0x0083F8E0	?nglRotateQuad@@YAXPAUnglQuad@@MMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F8E0	Release/source rotation formula, four-vertex stride, and update order match.
+0x0083F970	?nglScaleQuad@@YAXPAUnglQuad@@MMMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:135-146	Body scales all four XY vertices around the center.
+0x0083F970	?nglScaleQuad@@YAXPAUnglQuad@@MMMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83F970	Release/source per-corner scale formulas and store order match.
+0x0083FA40	?nglRotateQuadUV@@YAXPAUnglQuad@@MMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:151-162	Body computes sine/cosine once and rotates all four UV pairs around the center.
+0x0083FA40	?nglRotateQuadUV@@YAXPAUnglQuad@@MMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83FA40	Release/source UV rotation formula, five-float vertex stride, and update order match.
+0x0083FAD0	?nglScaleQuadUV@@YAXPAUnglQuad@@MMMM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:167-178	Body scales all four UV pairs around the center.
+0x0083FAD0	?nglScaleQuadUV@@YAXPAUnglQuad@@MMMM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83FAD0	Release/source per-corner UV scale formulas and store order match.
+0x0083FBA0	?nglSetQuadPos@@YAXPAUnglQuad@@MM@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:183-200	Body selects texture dimensions or 50x50 defaults and writes all four XY corners.
+0x0083FBA0	?nglSetQuadPos@@YAXPAUnglQuad@@MM@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83FBA0	Release/source texture-null defaults, width/height additions, corner stores, and order match.
+0x0083FC00	?nglListAddQuad@@YAXPAUnglQuad@@@Z	V3	PASS	ngl-quad-manual-20260830	2026-08-30	src/ngl/ngl_quad.cpp:205-233	Body allocates and constructs a quad node, validates matrices, copies the quad, routes transparent/opaque lists, dumps when enabled, and warns on null input.
+0x0083FC00	?nglListAddQuad@@YAXPAUnglQuad@@@Z	V4	PASS	ngl-quad-manual-20260830	2026-08-30	IDA decompile:0x83FC00	Release/source allocation size/alignment, constructor/vtable writes, copy size, blend flag, raw-Z sort key, list counters, dump flag, and null warning match.

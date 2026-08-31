@@ -11,7 +11,8 @@
 #include <string.h>
 
 // ============================================================================
-// nglInitQuad â€” ea: 0x83F6E0
+// nglInitQuad â€” ea: 0x0083F6E0
+// ea: 0x0083F6E0
 // ============================================================================
 void nglInitQuad(nglQuad* Quad) {
     memset(Quad, 0, sizeof(nglQuad));
@@ -32,28 +33,32 @@ void nglInitQuad(nglQuad* Quad) {
 }
 
 // ============================================================================
-// nglSetQuadTex â€” ea: 0x83F750
+// nglSetQuadTex â€” ea: 0x0083F750
+// ea: 0x0083F750
 // ============================================================================
 void nglSetQuadTex(nglQuad* Quad, nglTexture* Tex) {
     Quad->Tex = Tex;
 }
 
 // ============================================================================
-// nglSetQuadMapFlags â€” ea: 0x83F760
+// nglSetQuadMapFlags â€” ea: 0x0083F760
+// ea: 0x0083F760
 // ============================================================================
 void nglSetQuadMapFlags(nglQuad* Quad, unsigned int MapFlags) {
     Quad->MapFlags = MapFlags;
 }
 
 // ============================================================================
-// nglSetQuadBlend â€” ea: 0x83F770
+// nglSetQuadBlend â€” ea: 0x0083F770
+// ea: 0x0083F770
 // ============================================================================
 void nglSetQuadBlend(nglQuad* Quad, unsigned int Blend) {
     Quad->BlendMode = Blend;
 }
 
 // ============================================================================
-// nglSetQuadUV â€” ea: 0x83F780
+// nglSetQuadUV â€” ea: 0x0083F780
+// ea: 0x0083F780
 // ============================================================================
 void nglSetQuadUV(nglQuad* Quad, float u1, float v1, float u2, float v2) {
     Quad->Verts[0].U = u1;
@@ -67,7 +72,8 @@ void nglSetQuadUV(nglQuad* Quad, float u1, float v1, float u2, float v2) {
 }
 
 // ============================================================================
-// nglSetQuadColor â€” ea: 0x83F7D0
+// nglSetQuadColor â€” ea: 0x0083F7D0
+// ea: 0x0083F7D0
 // ============================================================================
 void nglSetQuadColor(nglQuad* Quad, unsigned int c) {
     Quad->Verts[0].Color = c;
@@ -77,7 +83,8 @@ void nglSetQuadColor(nglQuad* Quad, unsigned int c) {
 }
 
 // ============================================================================
-// nglSetQuadRect â€” ea: 0x83F7F0
+// nglSetQuadRect â€” ea: 0x0083F7F0
+// ea: 0x0083F7F0
 // ============================================================================
 void nglSetQuadRect(nglQuad* Quad, float x1, float y1, float x2, float y2) {
     Quad->Verts[0].X = x1;
@@ -91,14 +98,16 @@ void nglSetQuadRect(nglQuad* Quad, float x1, float y1, float x2, float y2) {
 }
 
 // ============================================================================
-// nglSetQuadZ â€” ea: 0x83F840
+// nglSetQuadZ â€” ea: 0x0083F840
+// ea: 0x0083F840
 // ============================================================================
 void nglSetQuadZ(nglQuad* Quad, float z) {
     Quad->Z = z;
 }
 
 // ============================================================================
-// nglSetQuadVPos â€” ea: 0x83F860
+// nglSetQuadVPos â€” ea: 0x0083F860
+// ea: 0x0083F860
 // ============================================================================
 void nglSetQuadVPos(nglQuad* Quad, int VertIdx, float x, float y) {
     Quad->Verts[VertIdx].X = x;
@@ -106,7 +115,8 @@ void nglSetQuadVPos(nglQuad* Quad, int VertIdx, float x, float y) {
 }
 
 // ============================================================================
-// nglSetQuadVUV â€” ea: 0x83F890
+// nglSetQuadVUV â€” ea: 0x0083F890
+// ea: 0x0083F890
 // ============================================================================
 void nglSetQuadVUV(nglQuad* Quad, int VertIdx, float u, float v) {
     Quad->Verts[VertIdx].U = u;
@@ -114,14 +124,16 @@ void nglSetQuadVUV(nglQuad* Quad, int VertIdx, float u, float v) {
 }
 
 // ============================================================================
-// nglSetQuadVColor â€” ea: 0x83F8C0
+// nglSetQuadVColor â€” ea: 0x0083F8C0
+// ea: 0x0083F8C0
 // ============================================================================
 void nglSetQuadVColor(nglQuad* Quad, int VertIdx, unsigned int Color) {
     Quad->Verts[VertIdx].Color = Color;
 }
 
 // ============================================================================
-// nglRotateQuad â€” ea: 0x83F8E0
+// nglRotateQuad â€” ea: 0x0083F8E0
+// ea: 0x0083F8E0
 // ============================================================================
 void nglRotateQuad(nglQuad* Quad, float cx, float cy, float theta) {
     float s = sinf(theta);
@@ -135,7 +147,8 @@ void nglRotateQuad(nglQuad* Quad, float cx, float cy, float theta) {
 }
 
 // ============================================================================
-// nglScaleQuad â€” ea: 0x83F970
+// nglScaleQuad â€” ea: 0x0083F970
+// ea: 0x0083F970
 // ============================================================================
 void nglScaleQuad(nglQuad* Quad, float cx, float cy, float sx, float sy) {
     Quad->Verts[0].X = ((Quad->Verts[0].X - cx) * sx) + cx;
@@ -149,7 +162,8 @@ void nglScaleQuad(nglQuad* Quad, float cx, float cy, float sx, float sy) {
 }
 
 // ============================================================================
-// nglRotateQuadUV â€” ea: 0x83FA40
+// nglRotateQuadUV â€” ea: 0x0083FA40
+// ea: 0x0083FA40
 // ============================================================================
 void nglRotateQuadUV(nglQuad* Quad, float cx, float cy, float theta) {
     float s = sinf(theta);
@@ -163,7 +177,8 @@ void nglRotateQuadUV(nglQuad* Quad, float cx, float cy, float theta) {
 }
 
 // ============================================================================
-// nglScaleQuadUV â€” ea: 0x83FAD0
+// nglScaleQuadUV â€” ea: 0x0083FAD0
+// ea: 0x0083FAD0
 // ============================================================================
 void nglScaleQuadUV(nglQuad* Quad, float cx, float cy, float sx, float sy) {
     Quad->Verts[0].U = ((Quad->Verts[0].U - cx) * sx) + cx;
@@ -177,7 +192,8 @@ void nglScaleQuadUV(nglQuad* Quad, float cx, float cy, float sx, float sy) {
 }
 
 // ============================================================================
-// nglSetQuadPos â€” ea: 0x83FBA0
+// nglSetQuadPos â€” ea: 0x0083FBA0
+// ea: 0x0083FBA0
 // ============================================================================
 void nglSetQuadPos(nglQuad* Quad, float x, float y) {
     float Width;
@@ -200,7 +216,8 @@ void nglSetQuadPos(nglQuad* Quad, float x, float y) {
 }
 
 // ============================================================================
-// nglListAddQuad â€” ea: 0x83FC00
+// nglListAddQuad â€” ea: 0x0083FC00
+// ea: 0x0083FC00
 // ============================================================================
 void nglListAddQuad(nglQuad* Quad) {
     if (Quad != NULL) {
