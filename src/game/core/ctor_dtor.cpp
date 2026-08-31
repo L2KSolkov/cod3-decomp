@@ -88,6 +88,7 @@ ServerTime::ServerTime()
 {
 }
 
+// ea: 0x004E24C0
 void ServerTime::Update(int tickMSec)
 {
     ++mNumTicksElapsed;
