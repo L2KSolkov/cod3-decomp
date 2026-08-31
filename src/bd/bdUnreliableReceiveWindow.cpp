@@ -22,12 +22,13 @@ bdUnreliableReceiveWindow::~bdUnreliableReceiveWindow() {
 // ============================================================================
 // bdUnreliableReceiveWindow::add - ea: 0x8AABB0
 // ============================================================================
-bool bdUnreliableReceiveWindow::add(const bdReference<bdDataChunk>& chunk) {
+bool bdUnreliableReceiveWindow::add(bdReference<bdDataChunk> chunk) {
     bdSequenceNumber newSeqNum(m_seqNumber, chunk.m_ptr->getSequenceNumber(), 16);
     if (newSeqNum > m_seqNumber) {
         m_recvQueue.enqueue(chunk);
         m_seqNumber = newSeqNum;
     }
+    bdListRelease(chunk);
     return true;
 }
 

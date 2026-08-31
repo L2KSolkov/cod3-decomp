@@ -77,7 +77,7 @@ float bdReliableSendWindow::getTimeoutPeriod() const {
 // ============================================================================
 // bdReliableSendWindow::add - ea: 0x8A9520
 // ============================================================================
-bool bdReliableSendWindow::add(const bdReference<bdDataChunk>& chunk) {
+bool bdReliableSendWindow::add(bdReference<bdDataChunk> chunk) {
     bool messageAdded = false;
     unsigned int index = (unsigned int)m_nextFree.getValue() % BD_MAX_WINDOW_SIZE;
     bdMessageFrame& frameSlot = m_frame[index];
@@ -94,6 +94,7 @@ bool bdReliableSendWindow::add(const bdReference<bdDataChunk>& chunk) {
         proxy.log("bdConnection/windows", "reliable message window is full.");
     }
 
+    bdListRelease(chunk);
     return messageAdded;
 }
 
@@ -252,7 +253,7 @@ void bdReliableSendWindow::getDataToSend(bdPacket& packet) {
 // ============================================================================
 // bdReliableSendWindow::handleAck - ea: 0x8A9660
 // ============================================================================
-bool bdReliableSendWindow::handleAck(const bdReference<bdSAckChunk>& chunk, float& rtt) {
+bool bdReliableSendWindow::handleAck(bdReference<bdSAckChunk> chunk, float& rtt) {
     bdSequenceNumber ack(m_lastAcked, chunk.m_ptr->getCumulativeAck(), 16);
     bdSequenceNumber lastSent = m_nextFree - 1;
     if (ack > lastSent) {
@@ -348,6 +349,7 @@ bool bdReliableSendWindow::handleAck(const bdReference<bdSAckChunk>& chunk, floa
         m_lastAcked = ack;
     }
 
+    bdListRelease(chunk);
     return true;
 }
 
@@ -367,7 +369,7 @@ bool bdReliableSendWindow::isEmpty() const {
 // ============================================================================
 // bdReliableSendWindow::increaseCongestionWindow - ea: 0x8A9420
 // ============================================================================
-void bdReliableSendWindow::increaseCongestionWindow(const bdReference<bdSAckChunk>& chunk,
+void bdReliableSendWindow::increaseCongestionWindow(bdReference<bdSAckChunk> chunk,
                                                     unsigned int bytesAcked) {
     (void)chunk;
     unsigned int cwnd = m_congestionWindow;
@@ -390,6 +392,7 @@ void bdReliableSendWindow::increaseCongestionWindow(const bdReference<bdSAckChun
             m_congestionWindow = cwnd;
         }
     }
+    bdListRelease(chunk);
 }
 
 // ============================================================================

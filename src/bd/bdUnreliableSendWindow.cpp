@@ -22,8 +22,9 @@ bdUnreliableSendWindow::~bdUnreliableSendWindow() {
 // ============================================================================
 // bdUnreliableSendWindow::add - ea: 0x8AA0E0
 // ============================================================================
-void bdUnreliableSendWindow::add(const bdReference<bdDataChunk>& chunk) {
+void bdUnreliableSendWindow::add(bdReference<bdDataChunk> chunk) {
     m_sendQueue.enqueue(chunk);
+    bdListRelease(chunk);
 }
 
 // ============================================================================

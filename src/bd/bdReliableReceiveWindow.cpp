@@ -38,7 +38,7 @@ bdReliableReceiveWindow::~bdReliableReceiveWindow() {
 // ============================================================================
 // bdReliableReceiveWindow::add - ea: 0x8A8810
 // ============================================================================
-bool bdReliableReceiveWindow::add(const bdReference<bdDataChunk>& chunk) {
+bool bdReliableReceiveWindow::add(bdReference<bdDataChunk> chunk) {
     bool result = true;
 
     do {
@@ -88,6 +88,7 @@ bool bdReliableReceiveWindow::add(const bdReference<bdDataChunk>& chunk) {
     }
 
     calculateAck();
+    bdListRelease(chunk);
     return result;
 }
 

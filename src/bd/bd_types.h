@@ -1419,13 +1419,13 @@ public:
     ~bdReliableSendWindow();
     void setTimeoutPeriod(float secs);
     float getTimeoutPeriod() const;
-    bool add(const bdReference<bdDataChunk>& chunk);
+    bool add(bdReference<bdDataChunk> chunk);
     void getDataToSend(bdPacket& packet);
-    bool handleAck(const bdReference<bdSAckChunk>& chunk, float& rtt);
+    bool handleAck(bdReference<bdSAckChunk> chunk, float& rtt);
     bool isEmpty() const;
 
 protected:
-    void increaseCongestionWindow(const bdReference<bdSAckChunk>& chunk,
+    void increaseCongestionWindow(bdReference<bdSAckChunk> chunk,
                                   unsigned int bytesAcked);
     void decreaseCongestionWindow(bdCongestionWindowDecreaseReason reason);
 
@@ -1454,7 +1454,7 @@ class bdReliableReceiveWindow {
 public:
     bdReliableReceiveWindow();
     ~bdReliableReceiveWindow();
-    bool add(const bdReference<bdDataChunk>& chunk);
+    bool add(bdReference<bdDataChunk> chunk);
     void getDataToSend(bdPacket& packet);
     bdReference<bdDataChunk> getNextToRead();
 
@@ -1482,7 +1482,7 @@ class bdUnreliableSendWindow {
 public:
     bdUnreliableSendWindow();
     virtual ~bdUnreliableSendWindow();
-    void add(const bdReference<bdDataChunk>& chunk);
+    void add(bdReference<bdDataChunk> chunk);
     void getDataToSend(bdPacket& packet);
     void reset();
 
@@ -1501,7 +1501,7 @@ class bdUnreliableReceiveWindow {
 public:
     bdUnreliableReceiveWindow();
     virtual ~bdUnreliableReceiveWindow();
-    bool add(const bdReference<bdDataChunk>& chunk);
+    bool add(bdReference<bdDataChunk> chunk);
     bdReference<bdDataChunk> getNextToRead();
     void reset();
 
