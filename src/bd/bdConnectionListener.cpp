@@ -23,27 +23,34 @@ bdConnectionListener::~bdConnectionListener() {
 // bdConnectionListener::onConnect - ea: 0x9ED000
 // ============================================================================
 void bdConnectionListener::onConnect(bdReference<bdConnection> connection) {
-    (void)connection;
+    bdListRelease(connection);
 }
 
 // ============================================================================
 // bdConnectionListener::onConnectFailed - ea: 0x9ED030
 // ============================================================================
 void bdConnectionListener::onConnectFailed(bdReference<bdConnection> connection) {
-    (void)connection;
+    bdListRelease(connection);
 }
 
 // ============================================================================
 // bdConnectionListener::onDisconnect - ea: 0x9ED060
 // ============================================================================
 void bdConnectionListener::onDisconnect(bdReference<bdConnection> connection) {
-    (void)connection;
+    bdListRelease(connection);
 }
 
 // ============================================================================
 // bdConnectionListener::onReconnect - ea: 0x9ED090
 // ============================================================================
-void bdConnectionListener::onReconnect(const bdReference<bdConnection>& connection) {
-    onDisconnect(connection);
-    onConnect(connection);
+void bdConnectionListener::onReconnect(bdReference<bdConnection> connection) {
+    bdReference<bdConnection> disconnectRef(connection.m_ptr);
+    bdListAddRef(disconnectRef);
+    onDisconnect(disconnectRef);
+
+    bdReference<bdConnection> connectRef(connection.m_ptr);
+    bdListAddRef(connectRef);
+    onConnect(connectRef);
+
+    bdListRelease(connection);
 }

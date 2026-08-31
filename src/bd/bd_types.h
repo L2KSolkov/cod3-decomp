@@ -1534,7 +1534,7 @@ public:
     virtual void onConnect(bdReference<bdConnection> connection);
     virtual void onConnectFailed(bdReference<bdConnection> connection);
     virtual void onDisconnect(bdReference<bdConnection> connection);
-    virtual void onReconnect(const bdReference<bdConnection>& connection);
+    virtual void onReconnect(bdReference<bdConnection> connection);
 };
 static_assert(sizeof(bdConnectionListener) == 0x4,
               "bdConnectionListener size mismatch");
