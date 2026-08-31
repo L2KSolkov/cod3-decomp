@@ -41,13 +41,15 @@ bool bdLoopbackConnection::checkNewMessages() {
 // bdLoopbackConnection::send - ea: 0x8A40A0
 // ea: 0x008A40A0
 // ============================================================================
-bool bdLoopbackConnection::send(const bdReference<bdMessage>& message, bool) {
+bool bdLoopbackConnection::send(bdReference<bdMessage> message, bool) {
     bdReference<bdBitBuffer> payload = message.m_ptr->getPayload();
     if (payload.m_ptr != NULL)
         payload.m_ptr->resetReadPosition();
+    bdListRelease(payload);
 
     m_messages.enqueue(message);
     m_flag70 = 1;
+    bdListRelease(message);
     return true;
 }
 

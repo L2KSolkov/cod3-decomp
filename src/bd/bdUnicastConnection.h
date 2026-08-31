@@ -76,7 +76,7 @@ public:
     virtual void disconnect();
     virtual void close();
     virtual Status getStatus() const;
-    virtual bool send(const bdReference<bdMessage>& message, bool reliable = false);
+    virtual bool send(bdReference<bdMessage> message, bool reliable = false);
 
 protected:
     friend class bdConnectionStore;

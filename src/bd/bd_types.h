@@ -1568,7 +1568,7 @@ public:
 
     virtual ~bdConnection();
     virtual bool receive(unsigned char* buffer, unsigned int bufferSize) = 0;
-    virtual bool send(const bdReference<bdMessage>& message, bool reliable = false) = 0;
+    virtual bool send(bdReference<bdMessage> message, bool reliable = false) = 0;
     virtual bool getMessageToDispatch(bdReference<bdMessage>& message) = 0;
     virtual Status getStatus() const;
     virtual bool connect();
@@ -1604,7 +1604,7 @@ class bdLoopbackConnection : public bdConnection {
 public:
     virtual ~bdLoopbackConnection();
     virtual bool receive(unsigned char* buffer, unsigned int bufferSize);
-    virtual bool send(const bdReference<bdMessage>& message, bool reliable = false);
+    virtual bool send(bdReference<bdMessage> message, bool reliable = false);
     virtual bool getMessageToDispatch(bdReference<bdMessage>& message);
 
 protected:

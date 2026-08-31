@@ -144,7 +144,7 @@ bdConnection::Status bdUnicastConnection::getStatus() const {
 // ============================================================================
 // bdUnicastConnection::send - ea: 0x8A4D20
 // ============================================================================
-bool bdUnicastConnection::send(const bdReference<bdMessage>& message, bool reliable) {
+bool bdUnicastConnection::send(bdReference<bdMessage> message, bool reliable) {
     if (m_state != BD_UC_ESTABLISHED) {
         bdMessageProxy proxy(".\\bdUnicastConnection.cpp",
                              "bool __thiscall bdUnicastConnection::send(const class bdReference<class bdMessage>,const bool)",
@@ -189,6 +189,7 @@ bool bdUnicastConnection::send(const bdReference<bdMessage>& message, bool relia
                              0x10Bu, "dw/warn/");
         proxy.log("bdConnection/connections", "Message not sent.");
     }
+    bdListRelease(message);
     return sent;
 }
 
