@@ -49,7 +49,11 @@ class nglQuadNode : public nglRenderNode {
 public:
     nglQuad Quad;  // +0x0C
 
+    // ea: 0x0083FCC0
+    nglQuadNode() : nglRenderNode() {}
     virtual void Render();  // @0x8479B0
+    // ea: 0x0083FCD0
+    virtual ~nglQuadNode() {}
 };
 static_assert(sizeof(nglQuadNode) == 0x6C, "nglQuadNode size mismatch");
 
