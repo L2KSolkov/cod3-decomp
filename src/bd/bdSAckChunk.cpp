@@ -198,15 +198,18 @@ bool bdSAckChunk::deserialize(const unsigned char* const data, unsigned int size
         while (v15 < gapCount) {
             unsigned short v16 = 0;
             unsigned int tmp;
-            if (!bdBytePacker::removeBasicType(data, size, v23, &v23,
-                                               (unsigned char*)&tmp, 2u))
-                return false;
-            v16 = (unsigned short)tmp;
+            bool firstGapRead = bdBytePacker::removeBasicType(
+                data, size, v23, &v23, (unsigned char*)&tmp, 2u);
+            if (firstGapRead)
+                v16 = (unsigned short)tmp;
             unsigned short v18 = 0;
-            if (!bdBytePacker::removeBasicType(data, size, v23, &v23,
-                                               (unsigned char*)&tmp, 2u))
-                return false;
-            v18 = (unsigned short)tmp;
+            if (firstGapRead && bdBytePacker::removeBasicType(
+                    data, size, v23, &v23, (unsigned char*)&tmp, 2u)) {
+                v18 = (unsigned short)tmp;
+                ok2 = true;
+            } else {
+                ok2 = false;
+            }
             bdGapAckBlock block;
             block.m_start = v16;
             block.m_end = v18;
@@ -216,6 +219,8 @@ bool bdSAckChunk::deserialize(const unsigned char* const data, unsigned int size
                                  0xA4u, "dw/info/");
             proxy.log("bdConnection/chunks", "gap ack: %hu-%hu", v16, v18);
             ++v15;
+            if (!ok2)
+                return false;
             v4 = size;
         }
         *offset = v23;

@@ -112,7 +112,7 @@ bdReceivedMessage.obj	4	0	0	0	0	4	0
 bdReferencable.obj	1	0	0	0	0	1	0
 bdReliableReceiveWindow.obj	19	13	1	4	0	1	0
 bdReliableSendWindow.obj	24	14	3	6	0	1	0
-bdSAckChunk.obj	26	13	3	1	0	9	0
+bdSAckChunk.obj	26	13	3	0	0	10	0
 bdSecurityKey-xbox.obj	6	0	0	5	0	1	0
 bdSequenceNumber.obj	14	0	0	0	0	14	0
 bdSession.obj	169	128	11	16	0	14	0
