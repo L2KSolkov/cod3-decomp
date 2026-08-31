@@ -1487,12 +1487,16 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
     for (int i = 0; i < 5; ++i)
     {
         const float lateral = viewYaw * AnimIKViewBoneScales[i];
-        float pitch = viewYaw * -0.15f * AnimIKViewTorsoScales[i];
+        float pitch = AnimIKViewTorsoScales[i]
+            * (-fabsf(viewYaw * 0.15f));
         if (client->ps.vehType == 2)
             pitch += viewPitch * AnimIKViewTankScales[i];
         else
-            pitch += viewPitch * AnimIKViewTorsoScales[i];
-        RotateBone(AnimIKViewBones[i], math::Dir3(pitch, lateral, 0.0f));
+            pitch += viewPitch * AnimIKViewBoneScales[i];
+        pitch = max(-20.0f, min(20.0f, pitch));
+        if (viewYaw != 0.0f)
+            RotateBone(AnimIKViewBones[i], math::Dir3(0.0f, lateral, 0.0f));
+        RotateBone(AnimIKViewBones[i], math::Dir3(pitch, 0.0f, 0.0f));
     }
 }
 // ea: 0x005068F0
