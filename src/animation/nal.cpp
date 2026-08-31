@@ -964,12 +964,14 @@ const tlFixedString& nalAnimClass<T>::GetAnimTypeName() const
     return reinterpret_cast<const nalBaseSkeleton*>(Skeleton)->AnimTypeName;
 }
 
+// ea: 0x008704B0
 template <typename T>
 void nalAnimClass<T>::SetSkeleton(const nalBaseSkeleton* skeleton)
 {
     Skeleton = reinterpret_cast<decltype(Skeleton)>(skeleton);
 }
 
+// ea: 0x008704C0
 template <typename T>
 unsigned int nalAnimClass<T>::GetVersion() const
 {
