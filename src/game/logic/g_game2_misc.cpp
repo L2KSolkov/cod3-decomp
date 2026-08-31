@@ -819,6 +819,25 @@ static const float AnimIKViewTankScales[5] = {
     -0.02f, -0.02f, 0.03f, 0.02f, 0.9f
 };
 
+struct ANIMIK_SPINE_ADJUST_BONES {
+    tlFixedString fixedString;
+    float maxRotate[3];
+    float weight[3];
+};
+
+static ANIMIK_SPINE_ADJUST_BONES spineAdjustBones[5] = {
+    {tlFixedString("bip01 pelvis"), {25.0f, 25.0f, 25.0f},
+     {0.4f, 0.4f, 0.4f}},
+    {tlFixedString("bip01 spine"), {35.0f, 32.0f, 43.0f},
+     {0.85f, 0.6f, 0.6f}},
+    {tlFixedString("bip01 spine1"), {40.0f, 45.0f, 60.0f},
+     {0.6f, 0.85f, 0.6f}},
+    {tlFixedString("bip01 spine2"), {70.0f, 45.0f, 50.0f},
+     {1.0f, 1.0f, 1.0f}},
+    {tlFixedString("bip01 neck"), {60.0f, 90.0f, 50.0f},
+     {1.0f, 1.0f, 1.0f}},
+};
+
 // game2.o dynamic initializers at 0xA63040/0xA63260.
 tlFixedString AnimIK::BoneNames[25] = {
     tlFixedString("bip01 pelvis"), tlFixedString("bip01 spine"),
@@ -1457,12 +1476,148 @@ void AnimIK::ApplyTorsoRotations(Entity* ent)
         }
     }
     client->mLastTorsoIKLegsYaw = client->ps.legsYaw;
+
+    float targetRotation[3] = {0.0f, 0.0f, 0.0f};
+    targetRotation[0] = pitch;
+    targetRotation[1] = yaw;
+    float rotationSum[3] = {0.0f, 0.0f, 0.0f};
+    static const int rotationOrder[3] = {0, 2, 1};
     for (int i = 0; i < 5; ++i)
     {
-        const float torso = pitch * AnimIKViewTorsoScales[i];
-        const float lateral = yaw * AnimIKViewBoneScales[i];
-        if (torso != 0.0f || lateral != 0.0f)
-            RotateBone(AnimIKViewBones[i], math::Dir3(torso, lateral, 0.0f));
+        nalGenericBoneHandle boneHandle;
+        boneHandle.Skeleton = nullptr;
+        boneHandle.BoneIndex = 0;
+        nalGenericSkeleton_GetBoneHandle(skeleton, &boneHandle,
+                                         &spineAdjustBones[i].fixedString);
+        if (boneHandle.Skeleton == nullptr)
+            continue;
+
+        nalPositionOrientation modelPositionOrientation =
+            nalGenericPose_GetModelPositionOrientation(pose, &boneHandle);
+        float rotationDelta[3] = {0.0f, 0.0f, 0.0f};
+        for (int axis = 0; axis < 3; ++axis)
+        {
+            if (targetRotation[axis] == 0.0f)
+                continue;
+            const float maxRotate = spineAdjustBones[i].maxRotate[axis];
+            const float weight = spineAdjustBones[i].weight[axis];
+            float delta = (targetRotation[axis] - rotationSum[axis]) * weight;
+            const float limit = maxRotate * 0.2f;
+            if (fabsf(delta + rotationSum[axis]) > limit)
+            {
+                const float targetMagnitude = fabsf(targetRotation[axis]);
+                const float maxAngle = max(90.0f, targetMagnitude);
+                const float excess = targetMagnitude - limit;
+                const float normalized = excess / (maxAngle - limit);
+                const float eased = 1.0f - powf(1.0f - normalized, 1.5f);
+                const float sign = targetRotation[axis] <= 0.0f
+                    ? -1.0f : 1.0f;
+                delta = (eased * (maxRotate * 0.8f)
+                         + maxRotate * 0.2f
+                         - fabsf(rotationSum[axis])) * sign;
+            }
+            rotationDelta[axis] = delta;
+        }
+
+        nalMatrix4x4 rotationMatrix;
+        rotationMatrix.x[0] = 1.0f;
+        rotationMatrix.x[1] = 0.0f;
+        rotationMatrix.x[2] = 0.0f;
+        rotationMatrix.x[3] = 0.0f;
+        rotationMatrix.y[0] = 0.0f;
+        rotationMatrix.y[1] = 1.0f;
+        rotationMatrix.y[2] = 0.0f;
+        rotationMatrix.y[3] = 0.0f;
+        rotationMatrix.z[0] = 0.0f;
+        rotationMatrix.z[1] = 0.0f;
+        rotationMatrix.z[2] = 1.0f;
+        rotationMatrix.z[3] = 0.0f;
+        rotationMatrix.w[0] = 0.0f;
+        rotationMatrix.w[1] = 0.0f;
+        rotationMatrix.w[2] = 0.0f;
+        rotationMatrix.w[3] = 1.0f;
+        for (int order = 0; order < 3; ++order)
+        {
+            const int axis = rotationOrder[order];
+            if (rotationDelta[axis] == 0.0f)
+                continue;
+            math::Dir3 rotationAngles(0.0f, 0.0f, 0.0f);
+            rotationAngles.v.m128_f32[axis] = rotationDelta[axis];
+            nalMatrix4x4 axisMatrix;
+            AnimIK_MatrixFromAngles(rotationAngles, &axisMatrix);
+            nalMatrix4x4 composed;
+            AnimIK_Multiply(rotationMatrix, axisMatrix, &composed);
+            rotationMatrix = composed;
+        }
+
+        if (AnimIK::ParentNames[i] != noneString)
+        {
+            nalGenericBoneHandle parentHandle;
+            parentHandle.Skeleton = nullptr;
+            parentHandle.BoneIndex = 0;
+            nalGenericSkeleton_GetBoneHandle(skeleton, &parentHandle,
+                                             &AnimIK::ParentNames[i]);
+            if (parentHandle.Skeleton != nullptr)
+            {
+                nalPositionOrientation parentPositionOrientation =
+                    nalGenericPose_GetModelPositionOrientation(
+                        pose, &parentHandle);
+                nalMatrix4x4 parentMatrix;
+                nalMatrix4x4_FromPositionOrientation(
+                    parentPositionOrientation, &parentMatrix);
+                nalMatrix4x4 inverseParent = parentMatrix.Inverse();
+                nalMatrix4x4 localMatrix;
+                AnimIK_Multiply(rotationMatrix, inverseParent, &localMatrix);
+                static_cast<nalGeneric::nalGenericPose*>(pose)
+                    ->SetPoseBoneOrientation(
+                        boneHandle, AnimIK_QuaternionFromMatrix(localMatrix));
+            }
+        }
+        else
+        {
+            nalPositionOrientation adjusted = modelPositionOrientation;
+            if ((client->ps.eFlags & 0x100000) != 0)
+            {
+                if (client->ps.vehPos == 1 && rotationDelta[0] < 0.0f)
+                {
+                    const float ratio = fabsf(rotationDelta[0])
+                        / spineAdjustBones[i].maxRotate[0];
+                    adjusted.pos.v.m128_f32[2] -= 22.0f * ratio;
+                    adjusted.pos.v.m128_f32[2] += 16.0f * ratio;
+                }
+            }
+            else
+            {
+                const float ratio = rotationDelta[0]
+                    / spineAdjustBones[i].maxRotate[0];
+                adjusted.pos.v.m128_f32[2] -= ratio * 8.0f;
+                const float speed = sqrtf(
+                    client->ps.velocity.v.m128_f32[0]
+                        * client->ps.velocity.v.m128_f32[0]
+                    + client->ps.velocity.v.m128_f32[1]
+                        * client->ps.velocity.v.m128_f32[1]
+                    + client->ps.velocity.v.m128_f32[2]
+                        * client->ps.velocity.v.m128_f32[2]);
+                if (client->ps.viewHeightTarget
+                        <= client->ps.crouchViewHeight)
+                {
+                    if (speed < 100.0f)
+                        adjusted.pos.v.m128_f32[2]
+                            += (1.0f - speed * 0.01f)
+                            * fabsf(ratio) * 10.0f;
+                }
+                else
+                {
+                    adjusted.pos.v.m128_f32[2] -= fabsf(ratio) * 8.0f;
+                }
+            }
+            adjusted.orient = AnimIK_QuaternionFromMatrix(rotationMatrix);
+            static_cast<nalGeneric::nalGenericPose*>(pose)
+                ->SetPositionOrientation(boneHandle, adjusted);
+        }
+        rotationSum[0] += rotationDelta[0];
+        rotationSum[1] += rotationDelta[1];
+        rotationSum[2] += rotationDelta[2];
     }
 }
 // ea: 0x004FFC30
