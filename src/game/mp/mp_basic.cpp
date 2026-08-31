@@ -15482,8 +15482,8 @@ void MPPeer::FireMissile(int weapon, const math::Position3& position,
     }
 }
 
-// ea: 0x0072F250 (DecodeAnimMatrix; ignores pakId/pakFile in the release body)
 struct PakFile;
+// ea: 0x0072F250 (DecodeAnimMatrix; ignores pakId/pakFile in the release body)
 void DecodeAnimMatrix(const char* name, unsigned char* data, int size,
                       TPakId pakId, PakFile* pakFile)
 {
