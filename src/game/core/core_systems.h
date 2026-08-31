@@ -290,7 +290,7 @@ struct BitSet {
     // ea: 0x005EFF30
     BitSet() { memset(mBits, 0, sizeof(mBits)); }
     // ea: 0x005EAEE0
-    // ea: 0x004AE780
+    // alias-ea: 0x004AE780
     BitSet(EInitializer) {}  // ??0?$BitSet@$0FEA@@@QAE@W4EInitializer@0@@Z (g.o 0x4AE780)
 
     // ea: 0x005EAD00
@@ -314,7 +314,7 @@ struct BitSet {
         int m_cur_val;           // +0x0C
 
         // ea: 0x005EAF70 (BitSet<256>::iterator)
-        // ea: 0x004ACF80
+        // alias-ea: 0x004ACF80
         iterator()
             : m_src(nullptr), m_cur_word((unsigned int)-1), m_word_idx(-1),
               m_cur_val(-1) {}
@@ -328,13 +328,13 @@ struct BitSet {
             operator++();
         }
         // ea: 0x005EAF90
-        // ea: 0x004AE5A0
+        // alias-ea: 0x004AE5A0
         bool compare(const iterator& rhs)  // ?compare@iterator@?$BitSet@$0FEA@@@QAE_NABV12@@Z (g.o 0x4AE5A0)
         {
             return m_cur_val == rhs.m_cur_val && m_word_idx == rhs.m_word_idx;
         }
         // ea: 0x005EF120
-        // ea: 0x004B1400
+        // alias-ea: 0x004B1400
         bool operator!=(const iterator& rhs)  // ??9iterator@?$BitSet@$0FEA@@@QAE_NABV01@@Z (g.o 0x4B1400)
         {
             return m_cur_val != rhs.m_cur_val || m_word_idx != rhs.m_word_idx;
@@ -376,14 +376,14 @@ struct BitSet {
     };
 
     // ea: 0x005EF070
-    // ea: 0x004B2630
+    // alias-ea: 0x004B2630
     iterator begin() const  // ?begin@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B2630)
     {
         iterator it(this);
         return it;
     }
     // ea: 0x005EF0B0
-    // ea: 0x004B0EC0
+    // alias-ea: 0x004B0EC0
     iterator end() const  // ?end@?$BitSet@$0FEA@@@QBE?AViterator@1@XZ (g.o 0x4B0EC0)
     {
         iterator it;
@@ -728,7 +728,7 @@ typename reserved_dlist<T>::iterator reserved_dlist<T>::erase(iterator& i)
 
 template <int N>
 // ea: 0x005EEFD0
-// ea: 0x004AE790
+// alias-ea: 0x004AE790
 void BitSet<N>::Clear()
 {
     for (int i = GetNumWords() - 1; i >= 0; --i)
