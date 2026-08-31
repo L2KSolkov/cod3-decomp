@@ -124,7 +124,7 @@ public:
 
     // ?to_lower@?$ae_fixed_string@$0CA@E@@QAEXXZ (g.o 0x4ACE50)
     // ea: 0x004ACE50
-    // ea: 0x007BF990
+    // alias-ea: 0x007BF990
     void to_lower() {
         _strlwr((char*)mBuff);
     }

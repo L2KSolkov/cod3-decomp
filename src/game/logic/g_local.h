@@ -4286,7 +4286,7 @@ public:
     int get_available_slots() const;
     const T& operator[](int i) const;  // ??A?$phys_static_array@...@@QBEABU...@@H@Z
     // ea: 0x004AC8E0
-    // ea: 0x004AC970
+    // alias-ea: 0x004AC970
     const int get_count() const { return m_alloc_count; }  // ?get_count@...@@QBE?BHXZ
     void remove_all() { m_alloc_count = 0; }  // ?remove_all@...@@QAEXXZ (g.o 0x4B1230)
     ~phys_static_array();  // ??1?$phys_static_array@Uproxy_obj_t@@$0BAA@@@QAE@XZ (g.o 0x4B1210)
