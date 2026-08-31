@@ -1225,6 +1225,8 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
 
         const float phase = powf(age, 0.65f) * 3.14159265358979323846f;
         const float impulse = sinf(phase) * event.amplitude;
+        if (impulse <= 0.0f)
+            continue;
         const float yaw = atan2f(event.dir[1], event.dir[0])
             * 57.29577951308232f;
         const float lateral = cosf(yaw * 0.0174532925199433f) * impulse;
