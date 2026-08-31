@@ -6,6 +6,14 @@
 
 #include "bd/bd_types.h"
 
+bdSAckChunk::bdGapAckBlock::bdGapAckBlock()
+    : m_start(0), m_end(0) {
+}
+
+bdSAckChunk::bdGapAckBlock::bdGapAckBlock(unsigned int start, unsigned int end)
+    : m_start(start), m_end(end) {
+}
+
 // ============================================================================
 // getCumulativeAck â€” ea: 0x8AD670
 // ea: 0x008AD670

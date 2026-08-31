@@ -828,7 +828,8 @@ inline void bdListRelease(bdReference<T>& value) {
 }
 
 template <typename T>
-struct bdLinkedList {
+class bdLinkedList {
+public:
     struct Node {
         T      m_value;   // +0x00
         Node*  m_next;    // +sizeof(T)
@@ -961,18 +962,6 @@ struct bdQueue {
     }
 };
 static_assert(sizeof(bdQueue<char>) == 0x0C, "bdQueue size mismatch");
-
-// ============================================================================
-// bdGapAckBlock - SACK gap block value (8 bytes; list Node adds links at +8)
-// ============================================================================
-struct bdGapAckBlock {
-    unsigned int m_start;   // +0x00 (16-bit value on the wire)
-    unsigned int m_end;     // +0x04
-
-    bdGapAckBlock() : m_start(0), m_end(0) {}
-    bdGapAckBlock(unsigned int start, unsigned int end) : m_start(start), m_end(end) {}
-};
-static_assert(sizeof(bdGapAckBlock) == 0x08, "bdGapAckBlock size mismatch");
 
 // ============================================================================
 // bdChunk â€” packet chunk base (12 bytes)
@@ -1318,6 +1307,17 @@ static_assert(offsetof(bdDataChunk, m_sequenceNumber) == 0x16, "bdDataChunk::m_s
 // ============================================================================
 class bdSAckChunk : public bdChunk {
 public:
+    // The release ABI defines the gap value as a nested class. Keep the
+    // compatibility alias below so existing users retain the short name.
+    class bdGapAckBlock {
+    public:
+        unsigned int m_start;   // +0x00 (16-bit value on the wire)
+        unsigned int m_end;     // +0x04
+
+        bdGapAckBlock();
+        bdGapAckBlock(unsigned int start, unsigned int end);
+    };
+
     enum bdSAckFlags {
         BD_SACK_ACK = 0,
         BD_SACK_NACK = 1,
@@ -1351,6 +1351,9 @@ static_assert(offsetof(bdSAckChunk, m_flags) == 0x10, "bdSAckChunk::m_flags offs
 static_assert(offsetof(bdSAckChunk, m_cumulativeAck) == 0x14, "bdSAckChunk::m_cumulativeAck offset mismatch");
 static_assert(offsetof(bdSAckChunk, m_gapList) == 0x18, "bdSAckChunk::m_gapList offset mismatch");
 static_assert(offsetof(bdSAckChunk, m_windowCredit) == 0x24, "bdSAckChunk::m_windowCredit offset mismatch");
+
+using bdGapAckBlock = bdSAckChunk::bdGapAckBlock;
+static_assert(sizeof(bdGapAckBlock) == 0x08, "bdGapAckBlock size mismatch");
 
 // ============================================================================
 // bdSequenceNumber - RFC1982 serial-number arithmetic (4 bytes)
