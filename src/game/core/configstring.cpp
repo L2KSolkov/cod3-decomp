@@ -236,13 +236,15 @@ struct TypeCallbackSearch {
     }
 
     // ea: 0x004DF460
-    bool operator()(const ConfigString* cfgstring)
-    {
-        if (strncmp(cfgstring->mName.mStr, mType, mTypeLength) == 0)
-            mCallback(cfgstring->mName.mStr + mTypeLength + 1, cfgstring);
-        return false;
-    }
+    bool operator()(const ConfigString* cfgstring);
 };
+
+bool TypeCallbackSearch::operator()(const ConfigString* cfgstring)
+{
+    if (strncmp(cfgstring->mName.mStr, mType, mTypeLength) == 0)
+        mCallback(cfgstring->mName.mStr + mTypeLength + 1, cfgstring);
+    return false;
+}
 
 // ?InplaceAssetBankSet_PredicateSearch_ConfigString@@YAXPAX...
 void InplaceAssetBankSet_PredicateSearch_ConfigString(
@@ -265,11 +267,8 @@ void InplaceAssetBankSet_PredicateSearch_ConfigString(
             continue;
         for (unsigned int node = 0; node < bank->mPtrs.mSize; ++node) {
             const ConfigString* value = bank->mPtrs.mList[node];
-            if (value != nullptr && value->mName.mStr != nullptr
-                && strncmp(value->mName.mStr, search.mType,
-                           search.mTypeLength) == 0)
-                search.mCallback(value->mName.mStr + search.mTypeLength + 1,
-                                 value);
+            if (value != nullptr && value->mName.mStr != nullptr)
+                search(value);
         }
     }
     result->mValue = nullptr;
