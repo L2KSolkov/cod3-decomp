@@ -426,6 +426,8 @@ bool bdSession::startConnect(bdReference<bdConnection>& connection,
     bdListAddRef(createAddr);
     connection = connectionStore != NULL ? connectionStore->create(createAddr, secID)
                                          : bdReference<bdConnection>();
+    if (connectionStore == NULL)
+        bdListRelease(createAddr);
     if (connection.m_ptr == NULL) {
         bdMessageProxy proxy(".\\bdSession\\bdSession.cpp",
                              "bool __thiscall bdSession::startConnect(class bdReference<class bdConnection> &,const class bdReference<class bdCommonAddr>,const XNKID &,const char *const )",
