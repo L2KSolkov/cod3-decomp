@@ -417,17 +417,21 @@ bool bdSession::startConnect(bdReference<bdConnection>& connection,
                              "bool __thiscall bdSession::startConnect(class bdReference<class bdConnection> &,const class bdReference<class bdCommonAddr>,const XNKID &,const char *const )",
                              0x1FCu, "dw/warn/");
         proxy.log("bdPeer/session", "%s connection already exists.", connectionDesc);
+        bdListRelease(addr);
         return false;
     }
     bdConnectionStore* connectionStore =
         bdSingleton<bdNetImpl>::getInstance()->getConnectionStore();
-    connection = connectionStore != NULL ? connectionStore->create(addr, secID)
+    bdReference<bdCommonAddr> createAddr(addr.m_ptr);
+    bdListAddRef(createAddr);
+    connection = connectionStore != NULL ? connectionStore->create(createAddr, secID)
                                          : bdReference<bdConnection>();
     if (connection.m_ptr == NULL) {
         bdMessageProxy proxy(".\\bdSession\\bdSession.cpp",
                              "bool __thiscall bdSession::startConnect(class bdReference<class bdConnection> &,const class bdReference<class bdCommonAddr>,const XNKID &,const char *const )",
                              0x1F7u, "dw/warn/");
         proxy.log("bdPeer/session", "Failed to create %s connection.", connectionDesc);
+        bdListRelease(addr);
         return false;
     }
     connecting = connection.m_ptr->connect();
@@ -441,7 +445,12 @@ bool bdSession::startConnect(bdReference<bdConnection>& connection,
                              "bool __thiscall bdSession::startConnect(class bdReference<class bdConnection> &,const class bdReference<class bdCommonAddr>,const XNKID &,const char *const )",
                              0x1F1u, "dw/warn/");
         proxy.log("bdPeer/session", "Failed to initialize %s connection.", connectionDesc);
+        bdReference<bdConnection> removeConnection(connection.m_ptr);
+        bdListAddRef(removeConnection);
+        if (connectionStore != NULL)
+            connectionStore->remove(removeConnection);
     }
+    bdListRelease(addr);
     return connecting;
 }
 
@@ -459,7 +468,11 @@ bool bdSession::connectToLocalHost(const XNKID& secID) {
 // ============================================================================
 bool bdSession::connectToRemoteHost(bdReference<bdCommonAddr> hostAddr,
                                     const XNKID& secID) {
-    return startConnect(m_hostConnection, hostAddr, secID, "remote host");
+    bdReference<bdCommonAddr> connectAddr(hostAddr.m_ptr);
+    bdListAddRef(connectAddr);
+    bool started = startConnect(m_hostConnection, connectAddr, secID, "remote host");
+    bdListRelease(hostAddr);
+    return started;
 }
 
 // ============================================================================
@@ -477,8 +490,10 @@ bool bdSession::connectToLocalPeer(const XNKID& secID) {
 bool bdSession::join(bdReference<bdCommonAddr> hostAddr, const XNKID& secID,
                      const XNKEY& secKey, bdBitBuffer* const userData) {
     bool ok = readyToConnect();
-    if (!ok)
+    if (!ok) {
+        bdListRelease(hostAddr);
         return false;
+    }
 
     if (hostAddr.m_ptr->isLoopback()) {
         ok = connectToLocalHost(secID);
@@ -489,7 +504,9 @@ bool bdSession::join(bdReference<bdCommonAddr> hostAddr, const XNKID& secID,
             setStatus(BD_SESSION_CONNECTING_TO_PEERS);
         }
     } else {
-        ok = connectToRemoteHost(hostAddr, secID);
+        bdReference<bdCommonAddr> remoteAddr(hostAddr.m_ptr);
+        bdListAddRef(remoteAddr);
+        ok = connectToRemoteHost(remoteAddr, secID);
         ok = ok && connectToLocalPeer(secID);
         ok = ok && createJoinRequest(userData);
         if (ok) {
@@ -510,6 +527,7 @@ bool bdSession::join(bdReference<bdCommonAddr> hostAddr, const XNKID& secID,
     } else {
         cleanup();
     }
+    bdListRelease(hostAddr);
     return ok;
 }
 
@@ -633,20 +651,28 @@ void bdSession::cleanup() {
 // bdSession::accept - ea: 0x8B5500 (dispatch interceptor)
 // ============================================================================
 bool bdSession::accept(bdReceivedMessage& message) {
-    unsigned char type = message.getMessage().m_ptr->getType();
+    bdReference<bdMessage> messageRef = message.getMessage();
+    unsigned char type = messageRef.m_ptr != NULL ? messageRef.m_ptr->getType() : 0;
+    bool accepted = false;
     switch (type) {
     case BD_SESSION_JOIN_REQ:
         handleJoinRequest(message);
-        return true;
+        accepted = true;
+        break;
     case BD_SESSION_JOIN_REPLY:
         handleJoinReply(message);
-        return true;
+        accepted = true;
+        break;
     case BD_SESSION_CONSISTENCY_MESSAGE:
         handleConsistencyMessage(message);
-        return true;
+        accepted = true;
+        break;
     default:
-        return false;
+        accepted = false;
+        break;
     }
+    bdListRelease(messageRef);
+    return accepted;
 }
 
 // ============================================================================
@@ -655,7 +681,9 @@ bool bdSession::accept(bdReceivedMessage& message) {
 void bdSession::onConnect(bdReference<bdConnection> connection) {
     if (m_status == BD_SESSION_CONNECTING_TO_PEERS) {
         unsigned int index = 0;
-        if (getPeerIndex(connection, index)) {
+        bdReference<bdConnection> peerForIndex(connection.m_ptr);
+        bdListAddRef(peerForIndex);
+        if (getPeerIndex(peerForIndex, index)) {
             // connected to the pending peer
         }
         if (m_pendingConnections.m_size == 0) {
@@ -678,6 +706,7 @@ void bdSession::onConnect(bdReference<bdConnection> connection) {
             m_sessionJoinRequest.m_ptr = NULL;
         }
     }
+    bdListRelease(connection);
 }
 
 // ============================================================================
@@ -714,6 +743,7 @@ void bdSession::onConnectFailed(bdReference<bdConnection> connection) {
         setStatus(BD_SESSION_NOT_CONNECTED);
         cleanup();
     }
+    bdListRelease(connection);
 }
 
 // ============================================================================
@@ -753,6 +783,7 @@ void bdSession::onDisconnect(bdReference<bdConnection> connection) {
 
     if (m_peers.m_size == 0) {
         setStatus(BD_SESSION_NOT_CONNECTED);
+        bdListRelease(connection);
         return;
     }
     if (m_role == BD_SESSION_HOST) {
@@ -760,6 +791,7 @@ void bdSession::onDisconnect(bdReference<bdConnection> connection) {
         sendConsistencyUpdates();
     }
     checkSessionConsistency();
+    bdListRelease(connection);
 }
 
 // ============================================================================
