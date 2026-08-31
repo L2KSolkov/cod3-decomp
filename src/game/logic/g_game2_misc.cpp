@@ -1213,8 +1213,7 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
         AnimIKPainEvent& event = ent->client->AnimIKPainEvents[eventIndex];
         if (event.time == 0)
             continue;
-        const float duration = event.duration > 0
-            ? static_cast<float>(event.duration) : painDurationMax;
+        const float duration = static_cast<float>(event.duration);
         const float age = static_cast<float>(level.time - event.time)
             / duration;
         if (age < 0.0f || age > 1.0f)
