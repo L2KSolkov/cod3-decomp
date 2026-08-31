@@ -1377,7 +1377,7 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
 
         float painDir4[4] = {
             aggregate.totalPainDir[0], aggregate.totalPainDir[1],
-            aggregate.totalPainDir[2], 0.0f
+            0.0f, 0.0f
         };
         const __m128 localDir4 = AnimIK_MultiplyRow(
             painDir4, inverseEntityAxis);
