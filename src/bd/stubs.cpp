@@ -157,6 +157,7 @@ const char* bdString::getBuffer() const
 namespace bdBytePacker {
 
 // 0x0089EC80 / 0x0089ED40 / 0x0089ECE0 / 0x0089EDA0 (bdCore)
+// ea: 0x0089EC80
 bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
                      unsigned int* newOffset, const void* value,
                      unsigned int valueSize)
@@ -177,6 +178,7 @@ bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
     return false;
 }
 
+// ea: 0x0089ECE0
 bool appendBuffer(void* dest, unsigned int destSize, unsigned int offset,
                   unsigned int* newOffset, const unsigned char* src,
                   unsigned int size)
@@ -197,6 +199,7 @@ bool appendBuffer(void* dest, unsigned int destSize, unsigned int offset,
     return false;
 }
 
+// ea: 0x0089ED40
 bool removeBasicType(const unsigned char* src, unsigned int srcSize,
                      unsigned int offset, unsigned int* newOffset,
                      void* value, unsigned int valueSize)
@@ -217,6 +220,7 @@ bool removeBasicType(const unsigned char* src, unsigned int srcSize,
     return false;
 }
 
+// ea: 0x0089EDA0
 bool removeBuffer(const unsigned char* src, unsigned int srcSize,
                   unsigned int offset, unsigned int* newOffset, unsigned char* dest,
                   unsigned int size)
@@ -237,7 +241,46 @@ bool removeBuffer(const unsigned char* src, unsigned int srcSize,
     return false;
 }
 
+// ea: 0x0089EE00
+bool skipBytes(const void* src, unsigned int srcSize, unsigned int offset,
+               unsigned int* newOffset, unsigned int size)
+{
+    (void)src;
+    *newOffset = offset;
+    if (offset >= srcSize)
+    {
+        while (g_assertFalse)
+            ;
+    }
+    else if (srcSize - offset >= size)
+    {
+        *newOffset = offset + size;
+        return true;
+    }
+    return false;
+}
+
+// ea: 0x0089EE40
+bool rewindBytes(const void* src, unsigned int srcSize, unsigned int offset,
+                 unsigned int* newOffset, unsigned int size)
+{
+    (void)src;
+    *newOffset = offset;
+    if (offset >= srcSize)
+    {
+        while (g_assertFalse)
+            ;
+    }
+    else if (offset >= size)
+    {
+        *newOffset = offset - size;
+        return true;
+    }
+    return false;
+}
+
 // 0x0089EEF0 / 0x0089F000 (bdCore)
+// ea: 0x0089EEF0
 bool appendEncodedUInt16(void* dest, unsigned int destSize,
                          unsigned int offset, unsigned int* newOffset,
                          unsigned short value)
@@ -255,6 +298,7 @@ bool appendEncodedUInt16(void* dest, unsigned int destSize,
     return false;
 }
 
+// ea: 0x0089EFD0
 bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize,
                          unsigned int offset, unsigned int* newOffset,
                          unsigned short* value)
