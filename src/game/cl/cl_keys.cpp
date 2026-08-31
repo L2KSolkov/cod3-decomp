@@ -140,6 +140,7 @@ void KeyInfoEntry::SetBinding(const char* boundCmdName)
 void KeyInfoEntry::Init()
 {
     mState = 0;
+    mBoundCmdName = nullptr;
 }
 
 // ea: 0x11C320
