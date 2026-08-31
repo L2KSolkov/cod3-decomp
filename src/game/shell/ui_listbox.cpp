@@ -1383,18 +1383,18 @@ UIListBox::~UIListBox()
         mSelectedRowOriginalColor.mElements = nullptr;
         mSelectedRowOriginalColor.mCapacity = 0;
     }
-    for (int i = 0; i < mDataRows.mSize; ++i)
-        mDataRows.mElements[i].~UIListBoxDataRow();
     if (mDataRows.mElements != nullptr)
     {
+        for (int i = 0; i < mDataRows.mSize; ++i)
+            mDataRows.mElements[i].~UIListBoxDataRow();
         tlMemFree(mDataRows.mElements);
         mDataRows.mElements = nullptr;
         mDataRows.mCapacity = 0;
     }
-    for (int i = 0; i < mItemRows.mSize; ++i)
-        mItemRows.mElements[i].~UIListBoxRow();
     if (mItemRows.mElements != nullptr)
     {
+        for (int i = 0; i < mItemRows.mSize; ++i)
+            mItemRows.mElements[i].~UIListBoxRow();
         tlMemFree(mItemRows.mElements);
         mItemRows.mElements = nullptr;
         mItemRows.mCapacity = 0;
