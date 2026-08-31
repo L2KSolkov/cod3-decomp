@@ -917,3 +917,5 @@ ida_ea	name	gate	result	session	date	source_ref	detail
 0x005776A0	?Update@IGOTimerWidget@@UAEXM@Z	V4	PASS	ida-manual-hud-widgets-20260830	2026-08-30	IDA:0x005776A0	Release timer update sequencing and output formatting match source.
 0x005789A0	?Update@IGOJeepMapWidget@@UAEXM@Z	V3	PASS	ida-manual-hud-widgets-20260830	2026-08-30	src/game/shell/igo_widgets.cpp:3889-3963	Source matches player/map coordinate conversion, four UV clamps, and icon UV submission.
 0x005789A0	?Update@IGOJeepMapWidget@@UAEXM@Z	V4	PASS	ida-manual-hud-widgets-20260830	2026-08-30	IDA:0x005789A0	Release UV calculations and null/player guards match source.
+0x0056EB10	?Me@InGameOptionsMenu@@SAPAV1@H@Z	V3	PASS	shell-options-manual-20260831	2026-08-31	c3_bin/codmp_xboxr.xbe.c:1129859-1129863;src/game/shell/options.cpp:480-483	Source forwards version to g_femanager.GetIGMS and returns menu slot 8, matching release.
+0x0056EB10	?Me@InGameOptionsMenu@@SAPAV1@H@Z	V4	PASS	shell-options-manual-20260831	2026-08-31	c3_bin/codmp_xboxr.xbe.c:1129859-1129863	Release returns FEManager::GetIGMS(&g_femanager, version)->menus[8]; source matches the accessor chain.
