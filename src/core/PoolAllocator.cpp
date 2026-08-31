@@ -180,7 +180,7 @@ PoolAllocator::BlockPool::~BlockPool() {
 // PoolAllocator::BlockPool::Pop
 // ea: 0x7BD670
 // ============================================================================
-PoolAllocator::BlockPool::Block* PoolAllocator::BlockPool::Pop() {
+void* PoolAllocator::BlockPool::Pop() {
     reserved_slist<Block>::slist_node* head = mBlockList.m_head;
     if (!head) {
         return nullptr;
@@ -216,11 +216,12 @@ PoolAllocator::BlockPool::Block* PoolAllocator::BlockPool::Pop() {
 // PoolAllocator::BlockPool::Push
 // ea: 0x7BD700
 // ============================================================================
-void PoolAllocator::BlockPool::Push(Block* ptr) {
+void PoolAllocator::BlockPool::Push(void* ptr) {
+    Block* block = (Block*)ptr;
     // Validate pointer is within this pool's block range
     const unsigned int alignedHeader = (mAlignment + 3u) & ~(mAlignment - 1u);
-    if ((char*)ptr < mBlockPtr
-        || (char*)ptr > (mBlockPtr + mCapacity * (mEntrySize + alignedHeader))) {
+    if ((char*)block < mBlockPtr
+        || (char*)block > (mBlockPtr + mCapacity * (mEntrySize + alignedHeader))) {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PoolAllocator.cpp";
         AeAssert::gCurrentLine = 157;
@@ -232,7 +233,7 @@ void PoolAllocator::BlockPool::Push(Block* ptr) {
     }
 
     // Fill with 0xEF to catch use-after-free
-    memset(ptr, 0xEF, mEntrySize);
+    memset(block, 0xEF, mEntrySize);
 
     unsigned int newRemaining = mNumRemaining + 1;
     mNumRemaining = newRemaining;
@@ -248,7 +249,7 @@ void PoolAllocator::BlockPool::Push(Block* ptr) {
     }
 
     // slist_node is at offset 4 within the block
-    reserved_slist<Block>::slist_node* node = (reserved_slist<Block>::slist_node*)((char*)ptr + 4);
+    reserved_slist<Block>::slist_node* node = (reserved_slist<Block>::slist_node*)((char*)block + 4);
     node->m_next = mBlockList.m_head;
     mBlockList.m_head = node;
 }
@@ -363,7 +364,7 @@ void* PoolAllocator::Allocate(unsigned int size, bool forceHeapAlloc) {
 
                 BlockPool* pool = mPoolArray.m_elements[i];
                 if (pool->GetNumRemaining() > 0) {
-                    void* result = (void*)pool->Pop();
+                    void* result = pool->Pop();
                     if (result) {
                         return result;
                     }
@@ -411,7 +412,7 @@ void PoolAllocator::Release(void* ptr) {
         BlockPool* pool = mPoolArray.m_elements[i];
 
         if (cptr >= pool->mBlockPtr && cptr <= pool->mBlockEnd) {
-            pool->Push((BlockPool::Block*)cptr);
+            pool->Push(cptr);
             return;
         }
     }

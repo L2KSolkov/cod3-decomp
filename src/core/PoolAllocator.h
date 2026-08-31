@@ -89,10 +89,10 @@ public:
         void ReportAllocations() const;                // ea: 0x7BD440
 
         // Pop a free block from the free list. Returns nullptr if empty.
-        Block* Pop();
+        void* Pop();
 
         // Push a block back onto the free list.
-        void Push(Block* ptr);
+        void Push(void* ptr);
 
         // Construction / destruction
         BlockPool(
