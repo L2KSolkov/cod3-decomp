@@ -34,6 +34,7 @@ bdNetStartParams::bdNetStartParams()
     m_localAddresses.m_size = 0;
 }
 
+// ea: 0x00778070
 bdNetStartParams::~bdNetStartParams() {
     for (unsigned int i = 0; i < m_localAddresses.m_size; ++i)
         m_localAddresses.m_data[i].~bdInetAddr();
