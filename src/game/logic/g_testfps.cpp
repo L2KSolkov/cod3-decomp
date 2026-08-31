@@ -21,18 +21,20 @@ void* TestFPS::operator new(unsigned int size, void* p)
 // ============================================================================
 // StreamZone / ZoneCellDesc local views (streamer.o; TestFPS.cpp usage)
 // ============================================================================
-struct BoundingBoxLocal {
+class BoundingBox {
+public:
     math::Position3 vmin;  // +0x00
     math::Position3 vmax;  // +0x10
 };
-static_assert(sizeof(BoundingBoxLocal) == 0x20, "BoundingBoxLocal size mismatch");
+static_assert(sizeof(BoundingBox) == 0x20, "BoundingBox size mismatch");
 
 struct ZoneCellDescLocal {
-    BoundingBoxLocal mAabb;  // +0x00
+    BoundingBox mAabb;  // +0x00
     unsigned int mCellId;    // +0x20
 };
 
-struct StreamZoneLocal {
+class StreamZone {
+public:
     InplaceVector<ZoneCellDescLocal*> mCells;  // +0x00
 };
 
@@ -58,7 +60,7 @@ extern trGlobals_t tr;  // defined by render.o
 // ============================================================================
 // GetCellBBox - ea: 0x4F6DB0
 // ============================================================================
-BoundingBoxLocal GetCellBBox(int cellNum, const StreamZoneLocal* zone)
+BoundingBox GetCellBBox(int cellNum, const StreamZone* zone)
 {
     if (zone == nullptr)
     {
@@ -69,7 +71,7 @@ BoundingBoxLocal GetCellBBox(int cellNum, const StreamZoneLocal* zone)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    BoundingBoxLocal result;
+    BoundingBox result;
     result.vmin.v = _mm_set1_ps(FLT_MAX);
     result.vmax.v = _mm_set1_ps(-FLT_MAX);
     for (unsigned int v4 = 0; v4 < zone->mCells.mSize; ++v4)
@@ -77,7 +79,7 @@ BoundingBoxLocal GetCellBBox(int cellNum, const StreamZoneLocal* zone)
         ZoneCellDescLocal* desc = zone->mCells.mList[v4];
         if (desc->mCellId == (unsigned int)cellNum)
         {
-            memcpy(&result, desc, sizeof(BoundingBoxLocal));
+            memcpy(&result, desc, sizeof(BoundingBox));
             return result;
         }
     }
@@ -104,7 +106,7 @@ void TestFPS::NextPosition()
     int numCells = tr.world->bspTree->mCells.mSize;
     Entity* Player = EntityManager::sInst->GetPlayer(currCl);
     mPlayerHandle.mVal = Player->mHandle.mHandle.mVal;
-    const StreamZoneLocal* zone = (const StreamZoneLocal*)
+    const StreamZone* zone = (const StreamZone*)
         StreamZoneManager_GetCellZone(StreamZoneManager::sInst, mCellIndex);
     if (zone == nullptr)
     {
@@ -115,7 +117,7 @@ void TestFPS::NextPosition()
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    BoundingBoxLocal bbox = GetCellBBox(mCellIndex, zone);
+    BoundingBox bbox = GetCellBBox(mCellIndex, zone);
     int infoNode = *(int*)((char*)zone + 36);
     if (infoNode == 0)
     {
@@ -152,7 +154,7 @@ void TestFPS::NextPosition()
             math::Position3 probe = pos;
             probe.v.m128_f32[2] = pos.v.m128_f32[2] - 25.0f;
             if (mCellX >= 0
-                && CheckForFloor(&probe, &trace,
+                && CheckForFloor(probe, trace,
                                  bbox.vmin.v.m128_f32[2])
                 && R_CellForPoint(&trace.endpos) == mCellIndex)
             {
@@ -188,7 +190,7 @@ void TestFPS::NextPosition()
             p2.v.m128_f32[0] = px;
             p2.v.m128_f32[1] = py;
             p2.v.m128_f32[2] = bbox.vmin.v.m128_f32[2];
-            if (CheckForFloor(&p2, &trace, bbox.vmin.v.m128_f32[2])
+            if (CheckForFloor(p2, trace, bbox.vmin.v.m128_f32[2])
                 && R_CellForPoint(&trace.endpos) == mCellIndex)
             {
                 mCurrentPosition.x = trace.endpos.v.m128_f32[0];
@@ -209,7 +211,7 @@ void TestFPS::NextPosition()
             ++mCellIndex;
         if (mCellIndex < numCells)
         {
-            const StreamZoneLocal* CellZone = (const StreamZoneLocal*)
+            const StreamZone* CellZone = (const StreamZone*)
                 StreamZoneManager_GetCellZone(StreamZoneManager::sInst,
                                               mCellIndex);
             if (CellZone == nullptr)
@@ -229,7 +231,7 @@ void TestFPS::NextPosition()
                     && AeAssert::Assert("old cod assert"))
                     __debugbreak();
             }
-            BoundingBoxLocal nb = GetCellBBox(mCellIndex, CellZone);
+            BoundingBox nb = GetCellBBox(mCellIndex, CellZone);
             mCurrentPosition.x = (nb.vmin.v.m128_f32[0]
                                   + nb.vmax.v.m128_f32[0]) * 0.5f;
             mCurrentPosition.y = (nb.vmin.v.m128_f32[1]
@@ -382,33 +384,33 @@ void TestFPS::Test()
 // Trace straight down from position to zMin; step down 25 units until a
 // solid (non-decal) surface is hit.
 // ============================================================================
-bool TestFPS::CheckForFloor(const math::Position3* position, trace_t* trace,
+bool TestFPS::CheckForFloor(const math::Position3& position, trace_t& trace,
                             float zMin)
 {
-    math::Position3 start = *position;
-    math::Position3 end = *position;
+    math::Position3 start = position;
+    math::Position3 end = position;
     end.v.m128_f32[2] = zMin;
     math::Position3 zero;
     zero.v = _mm_setzero_ps();
-    memset(trace, 0, sizeof(trace_t));
+    memset(&trace, 0, sizeof(trace_t));
     DbLinkedHandle<EntityHandleDb, Entity> playerHandle;
     playerHandle.mHandle.mVal = mPlayerHandle.mVal;
     collision_context_t context(playerHandle, 17);
     for (;;)
     {
-        g_Trace(trace, start, zero, zero, end, context);
-        if ((trace->fraction >= 1.0f || (trace->surfaceFlags & 0x84) == 0)
-            && trace->allsolid == 0)
+        g_Trace(&trace, start, zero, zero, end, context);
+        if ((trace.fraction >= 1.0f || (trace.surfaceFlags & 0x84) == 0)
+            && trace.allsolid == 0)
             break;
         float z = start.v.m128_f32[2];
-        if (trace->allsolid == 0)
-            z = trace->endpos.v.m128_f32[2];
+        if (trace.allsolid == 0)
+            z = trace.endpos.v.m128_f32[2];
         start.v.m128_f32[2] = z - 25.0f;
         if (zMin > start.v.m128_f32[2])
             return false;
-        memset(trace, 0, sizeof(trace_t));
+        memset(&trace, 0, sizeof(trace_t));
     }
-    return trace->fraction < 1.0f;
+    return trace.fraction < 1.0f;
 }
 
 extern cvar_t* sv_mapname;  // ?sv_mapname@@3PAUcvar_t@@A
