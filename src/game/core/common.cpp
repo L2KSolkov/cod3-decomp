@@ -1783,29 +1783,35 @@ int Com_EventLoop()
         switch (v1)
         {
         case 1u:  // SE_KEY
-            ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1673);
+            if (v4)
+                ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1673);
             CL_KeyEvent(key, down, ev);
             break;
         case 2u:  // SE_CHAR
-            ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1677);
+            if (v4)
+                ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1677);
             CL_CharEvent(key);
             break;
         case 3u:  // SE_MOUSE
-            ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1681);
+            if (v4)
+                ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1681);
             CL_MouseEvent(key, down, (int)ev);
             break;
         case 4u:  // SE_JOYSTICK
-            ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1691);
+            if (v4)
+                ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1691);
             CL_GamepadEvent(key, down, (int)ev);
             break;
         case 5u:  // SE_CONSOLE
-            ASSERT("ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1695);
+            if (!v4)
+                ASSERT("ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1695);
             Cbuf_AddText(v4);
             mem_heap_free(v4);
             Cbuf_AddText("\n");
             break;
         case 6u:  // SE_PACKET
-            ASSERT("ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1701);
+            if (!v4)
+                ASSERT("ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1701);
             memcpy(&evFrom, v4, sizeof(netadr_t));
             buf.cursize = (int)v3 - 20;
             if ((int)(v3 - 20) <= buf.maxsize)
@@ -1833,7 +1839,8 @@ int Com_EventLoop()
             }
             break;
         default:
-            ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1666);
+            if (v4)
+                ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1666);
             Com_Error((errorParm_t)0, "Com_EventLoop: bad event type %i", v1);
             break;
         }
