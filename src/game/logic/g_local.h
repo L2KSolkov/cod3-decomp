@@ -67,28 +67,28 @@ public:
     int mSize;      // +0x08
 
     // ea: 0x004ADC90
-    // ea: 0x004ADE70
-    // ea: 0x004ADF10
+    // alias-ea: 0x004ADE70
+    // alias-ea: 0x004ADF10
     ae_vector() : mElements(nullptr), mCapacity(0), mSize(0) {}
     // ea: 0x004B2C30
-    // ea: 0x004B2D90
-    // ea: 0x004B2F50
+    // alias-ea: 0x004B2D90
+    // alias-ea: 0x004B2F50
     ~ae_vector() { destroy_all(); }
     // ea: 0x004AE7F0
-    // ea: 0x004AE850
-    // ea: 0x004AE8C0
+    // alias-ea: 0x004AE850
+    // alias-ea: 0x004AE8C0
     T* begin() { return mElements; }
     // ea: 0x004AE670
-    // ea: 0x004AE860
-    // ea: 0x004AE8D0
+    // alias-ea: 0x004AE860
+    // alias-ea: 0x004AE8D0
     T* end() { return &mElements[mSize]; }
     // ea: 0x004ADCA0
-    // ea: 0x004ADE80
-    // ea: 0x004ADF20
+    // alias-ea: 0x004ADE80
+    // alias-ea: 0x004ADF20
     int size() const { return mSize; }              // ?size@?$ae_vector@...@@QBEHXZ
     // ea: 0x004ADCB0
-    // ea: 0x004ADE90
-    // ea: 0x004ADF30
+    // alias-ea: 0x004ADE90
+    // alias-ea: 0x004ADF30
     T& operator[](int iIndex) { return mElements[iIndex]; }  // ??A?$ae_vector@...@@QAEAA...@@H@Z
     void pop_back();                                // ?pop_back@?$ae_vector@...@@QAEXXZ
     void reserve(int iCapacity);
@@ -129,8 +129,8 @@ struct DroneAEMap {
 
 template <typename T>
 // ea: 0x004AE680
-// ea: 0x004AE700
-// ea: 0x004AE750
+// alias-ea: 0x004AE700
+// alias-ea: 0x004AE750
 T* ae_vector<T>::construct_array(int iCapacity, int iSize)
 {
     (void)iSize;
@@ -139,8 +139,8 @@ T* ae_vector<T>::construct_array(int iCapacity, int iSize)
 
 template <typename T>
 // ea: 0x004AE800
-// ea: 0x004AE870
-// ea: 0x004AE8F0
+// alias-ea: 0x004AE870
+// alias-ea: 0x004AE8F0
 T* ae_vector<T>::construct_array(int iNumber)
 {
     return (T*)tlMemAlloc(sizeof(T) * iNumber, 8u, 0);
@@ -148,8 +148,8 @@ T* ae_vector<T>::construct_array(int iNumber)
 
 template <typename T>
 // ea: 0x004B19B0
-// ea: 0x004B19E0
-// ea: 0x004B1A10
+// alias-ea: 0x004B19E0
+// alias-ea: 0x004B1A10
 void ae_vector<T>::destroy_all()
 {
     if (mElements != nullptr)
@@ -182,8 +182,8 @@ void ae_vector<T>::reserve(int iCapacity)
 
 template <typename T>
 // ea: 0x004B2CE0
-// ea: 0x004B2DC0
-// ea: 0x004B2F80
+// alias-ea: 0x004B2DC0
+// alias-ea: 0x004B2F80
 void ae_vector<T>::push_back(const T& iElement)
 {
     if (mSize >= mCapacity)
@@ -216,8 +216,8 @@ void ae_vector<T>::pop_back()
 
 template <typename T>
 // ea: 0x004B3220
-// ea: 0x004B32D0
-// ea: 0x004B3420
+// alias-ea: 0x004B32D0
+// alias-ea: 0x004B3420
 void ae_vector<T>::resize(int iNewSize)
 {
     if (iNewSize > mCapacity)
