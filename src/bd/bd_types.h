@@ -509,6 +509,11 @@ static_assert(sizeof(bdArray<char>) == 0x0C, "bdArray size mismatch");
 // ============================================================================
 class bdByteBuffer : public bdReferencable {
 public:
+    static void* operator new(size_t size) { return bdMemory::allocate((unsigned int)size); }
+    static void* operator new(size_t, void* ptr) noexcept { return ptr; }
+    static void operator delete(void* ptr, void*) noexcept { (void)ptr; }
+    static void operator delete(void* ptr) { bdMemory::deallocate(ptr); }
+
     unsigned int m_size;      // +0x08
     uint8_t*     m_data;      // +0x0C
     uint8_t*     m_readPtr;   // +0x10
@@ -532,6 +537,11 @@ static_assert(offsetof(bdByteBuffer, m_data) == 0x0C, "bdByteBuffer::m_data offs
 struct bdString;  // full definition in bd/bdNet.h
 class bdBitBuffer : public bdReferencable {
 public:
+    static void* operator new(size_t size) { return bdMemory::allocate((unsigned int)size); }
+    static void* operator new(size_t, void* ptr) noexcept { return ptr; }
+    static void operator delete(void* ptr, void*) noexcept { (void)ptr; }
+    static void operator delete(void* ptr) { bdMemory::deallocate(ptr); }
+
     bdFastArray<uint8_t> m_data;           // +0x08
     unsigned int  m_writePosition;         // +0x14
     unsigned int  m_maxWritePosition;      // +0x18
@@ -640,6 +650,11 @@ static_assert(offsetof(bdBitBuffer, m_readPosition) == 0x1C, "bdBitBuffer::m_rea
 // ============================================================================
 class bdMessage : public bdReferencable {
 public:
+    static void* operator new(size_t size) { return bdMemory::allocate((unsigned int)size); }
+    static void* operator new(size_t, void* ptr) noexcept { return ptr; }
+    static void operator delete(void* ptr, void*) noexcept { (void)ptr; }
+    static void operator delete(void* ptr) { bdMemory::deallocate(ptr); }
+
     uint8_t        m_type;                // +0x08
     uint8_t        _pad09[3];             // +0x09
     bdReference<bdBitBuffer> m_payload;   // +0x0C
