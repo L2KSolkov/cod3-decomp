@@ -21,6 +21,7 @@ extern const char defaultFileName[];
 
 // ============================================================================
 // bdGameInfo::getTitleID â€” ea: 0x8AE8D0
+// ea: 0x008AE8D0
 // ============================================================================
 unsigned int bdGameInfo::getTitleID() const {
     if (this->m_titleId == 666) {
@@ -34,6 +35,7 @@ unsigned int bdGameInfo::getTitleID() const {
 
 // ============================================================================
 // bdGameInfo::getSecurityID â€” ea: 0x8AE920
+// ea: 0x008AE920
 // ============================================================================
 const XNKID& bdGameInfo::getSecurityID() const {
     return this->m_secID;
@@ -41,6 +43,7 @@ const XNKID& bdGameInfo::getSecurityID() const {
 
 // ============================================================================
 // bdGameInfo::getSecurityKey â€” ea: 0x8AE930
+// ea: 0x008AE930
 // ============================================================================
 const XNKEY& bdGameInfo::getSecurityKey() const {
     return this->m_secKey;
@@ -48,6 +51,7 @@ const XNKEY& bdGameInfo::getSecurityKey() const {
 
 // ============================================================================
 // bdGameInfo::setTitleID â€” ea: 0x8AE940
+// ea: 0x008AE940
 // ============================================================================
 unsigned int bdGameInfo::setTitleID(unsigned int titleId) {
     this->m_titleId = titleId;
@@ -56,6 +60,7 @@ unsigned int bdGameInfo::setTitleID(unsigned int titleId) {
 
 // ============================================================================
 // bdGameInfo::setSecurityID â€” ea: 0x8AE950
+// ea: 0x008AE950
 // ============================================================================
 void bdGameInfo::setSecurityID(const XNKID& secID) {
     memcpy(this->m_secID.ab, secID.ab, sizeof(XNKID));
@@ -63,6 +68,7 @@ void bdGameInfo::setSecurityID(const XNKID& secID) {
 
 // ============================================================================
 // bdGameInfo::setSecurityKey â€” ea: 0x8AE970
+// ea: 0x008AE970
 // ============================================================================
 void bdGameInfo::setSecurityKey(const XNKEY& secKey) {
     memcpy(this->m_secKey.ab, secKey.ab, sizeof(XNKEY));
@@ -70,6 +76,7 @@ void bdGameInfo::setSecurityKey(const XNKEY& secKey) {
 
 // ============================================================================
 // bdGameInfo::bdGameInfo (default) â€” ea: 0x8AEA00
+// ea: 0x008AEA00
 // ============================================================================
 bdGameInfo::bdGameInfo()
     : m_titleId(666) {
@@ -78,9 +85,10 @@ bdGameInfo::bdGameInfo()
 
 // ============================================================================
 // bdGameInfo::bdGameInfo (full) â€” ea: 0x8AEA20
+// ea: 0x008AEA20
 // ============================================================================
 bdGameInfo::bdGameInfo(unsigned int titleId, const XNKID& secID, const XNKEY& secKey,
-                       const bdReference<bdCommonAddr>& hostAddr)
+                       bdReference<bdCommonAddr> hostAddr)
     : m_titleId(titleId),
       m_secID(secID),
       m_secKey(secKey) {
@@ -91,6 +99,7 @@ bdGameInfo::bdGameInfo(unsigned int titleId, const XNKID& secID, const XNKEY& se
 
 // ============================================================================
 // bdGameInfo::~bdGameInfo â€” ea: 0x8AEA90
+// ea: 0x008AEA90
 // ============================================================================
 bdGameInfo::~bdGameInfo() {
     if (this->m_hostAddr.m_ptr != NULL && this->m_hostAddr.m_ptr->releaseRef() == 0) {
@@ -101,6 +110,7 @@ bdGameInfo::~bdGameInfo() {
 
 // ============================================================================
 // bdGameInfo::getHostAddr â€” ea: 0x8AEB10
+// ea: 0x008AEB10
 // ============================================================================
 bdReference<bdCommonAddr> bdGameInfo::getHostAddr() const {
     if (this->m_hostAddr.m_ptr == NULL) {
@@ -118,8 +128,9 @@ bdReference<bdCommonAddr> bdGameInfo::getHostAddr() const {
 
 // ============================================================================
 // bdGameInfo::setHostAddr â€” ea: 0x8AEB70
+// ea: 0x008AEB70
 // ============================================================================
-void bdGameInfo::setHostAddr(const bdReference<bdCommonAddr>& hostAddr) {
+void bdGameInfo::setHostAddr(bdReference<bdCommonAddr> hostAddr) {
     if (hostAddr.m_ptr != this->m_hostAddr.m_ptr) {
         if (this->m_hostAddr.m_ptr != NULL && this->m_hostAddr.m_ptr->releaseRef() == 0)
             delete this->m_hostAddr.m_ptr;
@@ -127,10 +138,13 @@ void bdGameInfo::setHostAddr(const bdReference<bdCommonAddr>& hostAddr) {
         if (hostAddr.m_ptr != NULL)
             hostAddr.m_ptr->addRef();
     }
+    if (hostAddr.m_ptr != NULL && hostAddr.m_ptr->releaseRef() == 0)
+        delete hostAddr.m_ptr;
 }
 
 // ============================================================================
 // bdGameInfo::serialize â€” ea: 0x8AEC00
+// ea: 0x008AEC00
 // ============================================================================
 void bdGameInfo::serialize(bdBitBuffer& buffer) const {
     if (this->m_titleId == 666) {
@@ -159,8 +173,9 @@ void bdGameInfo::serialize(bdBitBuffer& buffer) const {
 
 // ============================================================================
 // bdGameInfo::deserialize â€” ea: 0x8AED10
+// ea: 0x008AED10
 // ============================================================================
-bool bdGameInfo::deserialize(const bdReference<bdCommonAddr>& hostAddr, bdBitBuffer& buffer) {
+bool bdGameInfo::deserialize(bdReference<bdCommonAddr> hostAddr, bdBitBuffer& buffer) {
     bool ok = false;
     if (buffer.readDataType(bdBitBuffer::BD_BB_UNSIGNED_INTEGER32_TYPE)
         && buffer.readBits(&this->m_titleId, 0x20u)) {
@@ -175,6 +190,8 @@ bool bdGameInfo::deserialize(const bdReference<bdCommonAddr>& hostAddr, bdBitBuf
                     if (v7 != NULL)
                         v7->addRef();
                     if (v7->deserialize(hostAddr, v27)) {
+                        if (v7 != NULL)
+                            v7->addRef();
                         this->setHostAddr(bdReference<bdCommonAddr>(v7));
                         ok = true;
                     }
@@ -190,11 +207,14 @@ bool bdGameInfo::deserialize(const bdReference<bdCommonAddr>& hostAddr, bdBitBuf
                              0x89u, "dw/err/");
         proxy.log("discovery/gameinfo", "Deserialization failed");
     }
+    if (hostAddr.m_ptr != NULL && hostAddr.m_ptr->releaseRef() == 0)
+        delete hostAddr.m_ptr;
     return ok;
 }
 
 // ============================================================================
 // bdGameInfoFactoryImpl::create â€” ea: 0x8AEF60
+// ea: 0x008AEF60
 // ============================================================================
 bdGameInfo* bdGameInfoFactoryImpl::create() const {
     do {
@@ -211,6 +231,7 @@ bdGameInfo* bdGameInfoFactoryImpl::create() const {
 
 // ============================================================================
 // bdGameInfoFactoryImpl::setClass â€” ea: 0x8AEFB0
+// ea: 0x008AEFB0
 // ============================================================================
 void bdGameInfoFactoryImpl::setClass(bdCreatorBase<bdGameInfo>* creator) {
     if (this->m_creator != NULL) {
@@ -233,6 +254,7 @@ bdGameInfoFactoryImpl::bdGameInfoFactoryImpl()
 
 // ============================================================================
 // bdGameInfoFactoryImpl::~bdGameInfoFactoryImpl â€” ea: 0x8AF010
+// ea: 0x008AF010
 // ============================================================================
 bdGameInfoFactoryImpl::~bdGameInfoFactoryImpl() {
     if (this->m_creator != NULL)

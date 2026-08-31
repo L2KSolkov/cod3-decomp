@@ -37,7 +37,7 @@ public:
 
     bdGameInfo();
     bdGameInfo(unsigned int titleId, const XNKID& secID, const XNKEY& secKey,
-               const bdReference<bdCommonAddr>& hostAddr);
+               bdReference<bdCommonAddr> hostAddr);
     virtual ~bdGameInfo();
 
     unsigned int getTitleID() const;
@@ -47,9 +47,9 @@ public:
     void setSecurityID(const XNKID& secID);
     void setSecurityKey(const XNKEY& secKey);
     bdReference<bdCommonAddr> getHostAddr() const;
-    void setHostAddr(const bdReference<bdCommonAddr>& hostAddr);
+    void setHostAddr(bdReference<bdCommonAddr> hostAddr);
     virtual void serialize(bdBitBuffer& buffer) const;
-    bool deserialize(const bdReference<bdCommonAddr>& hostAddr, bdBitBuffer& buffer);
+    bool deserialize(bdReference<bdCommonAddr> hostAddr, bdBitBuffer& buffer);
 };
 static_assert(sizeof(bdGameInfo) == 0x28, "bdGameInfo size mismatch");
 
