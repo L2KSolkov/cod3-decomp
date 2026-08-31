@@ -1,0 +1,3 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x0082A760	?nflGetVersion@@YAIXZ	V3	PASS	nfl-version-manual-20260831	2026-08-31	c3_bin/codmp_xboxr.xbe.c:1568145-1568149;src/filesystem/nfl.cpp:1892-1897	Source returns the address bits of the literal D3DX string, matching the release EAX result and the map's unsigned-int decoration.
+0x0082A760	?nflGetVersion@@YAIXZ	V4	PASS	nfl-version-manual-20260831	2026-08-31	c3_bin/codmp_xboxr.xbe.c:1568145-1568149;c3_bin/codmp_xboxr.map:19275;src/filesystem/nfl.cpp:1892-1897	Release body returns the D3DX literal; source preserves the same 32-bit return ABI despite the decompiler's const-char-pointer presentation.

@@ -1889,6 +1889,7 @@ nflMediaAlignments* nflGetMediaAlignments(nflMediaID media, nflMediaAlignments* 
     alignments->transferSizeAlignment = driver->buffer->sizeAlignment;
     return alignments;
 }
+// ea: 0x0082A760
 // IDA's release decoration is YAIXZ (unsigned int), while the body returns
 // the address of the D3DX version string in EAX.
 unsigned int nflGetVersion() {
