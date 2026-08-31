@@ -26,13 +26,13 @@ bool IsIgnored();
 bool Assert(const char* fmt, ...);
 }
 
-class AnimCacheHeap : public ae_heap_base {
+class AnimCacheHeap {
 public:
     AnimCacheHeap();
-    ~AnimCacheHeap();
-    void* Malloc(unsigned int size, unsigned int alignment);
-    void Free(void* ptr);
-    bool CheckFree(void* ptr);
+    virtual ~AnimCacheHeap();
+    virtual void* Malloc(unsigned int size, unsigned int alignment);
+    virtual void Free(void* ptr);
+    virtual bool CheckFree(void* ptr);
 };
 static_assert(sizeof(AnimCacheHeap) == 4, "AnimCacheHeap size mismatch");
 
@@ -40,33 +40,9 @@ extern "C" void* nalAnimationCache_MemAlloc(unsigned int size,
                                                unsigned int formal);
 extern "C" void nalAnimationCache_MemFree(void* ptr, unsigned int size);
 
-class AnimCacheHeapVtableAdapter {
-public:
-    virtual ~AnimCacheHeapVtableAdapter() {}
-    virtual void* Malloc(unsigned int size, unsigned int alignment)
-    {
-        return reinterpret_cast<AnimCacheHeap*>(this)->Malloc(size, alignment);
-    }
-    virtual void Free(void* ptr)
-    {
-        reinterpret_cast<AnimCacheHeap*>(this)->Free(ptr);
-    }
-    virtual bool CheckFree(void* ptr)
-    {
-        return reinterpret_cast<AnimCacheHeap*>(this)->CheckFree(ptr);
-    }
-    virtual mem_heap* GetHeapPointer()
-    {
-        return nullptr;
-    }
-};
-static AnimCacheHeapVtableAdapter s_animCacheHeapVtableAdapter;
-
 // ea: 0x004DF390
 AnimCacheHeap::AnimCacheHeap()
 {
-    __vftable = *reinterpret_cast<ae_heap_base_vtbl**>(
-        &s_animCacheHeapVtableAdapter);
 }
 
 // ea: 0x004E32B0
