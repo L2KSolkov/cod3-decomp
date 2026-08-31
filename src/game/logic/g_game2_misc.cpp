@@ -838,6 +838,8 @@ static ANIMIK_SPINE_ADJUST_BONES spineAdjustBones[5] = {
      {1.0f, 1.0f, 1.0f}},
 };
 
+static const float groundedFootRange[2] = {6.3f, 12.0f};
+
 // game2.o dynamic initializers at 0xA63040/0xA63260.
 tlFixedString AnimIK::BoneNames[25] = {
     tlFixedString("bip01 pelvis"), tlFixedString("bip01 spine"),
@@ -1958,6 +1960,10 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
     {
         nalMatrix4x4* foot = footMatrices[i];
         ent->client->mFootStepsThisZ[i] = foot->z[2];
+        float groundedness =
+            (groundedFootRange[1] - foot->z[2])
+            / (groundedFootRange[1] - groundedFootRange[0]);
+        groundedness = max(0.0f, min(1.0f, groundedness));
         const math::Position3 footPos(foot->w[0], foot->w[1], foot->w[2]);
         math::Position3 start(footPos.v.m128_f32[0],
                              footPos.v.m128_f32[1],
@@ -2035,6 +2041,8 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
                 sentient->mLastTerrainMappingTraceZ[i] = 0.0f;
             }
         }
+        if (groundedness >= 0.99f)
+            sentient->mLastTerrainMappingGroundedOffset[i] = targetOffset;
         const float blend = min(1.0f, terrainFrameTime * 8.0f);
         float& offset = sentient->mLastTerrainMappingFootOffsetZ[i];
         offset += (targetOffset - offset) * blend;
