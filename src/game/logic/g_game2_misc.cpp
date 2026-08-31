@@ -1407,9 +1407,33 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
     {
         const float gunnerPitch =
             vehicle->scr_vehicle->current.mGunnerAngles.v.m128_f32[0];
-        RotateBone(2, math::Dir3(gunnerPitch * 0.3f, 0.0f, 0.0f));
-        RotateBone(3, math::Dir3(gunnerPitch * 0.3f, 0.0f, 0.0f));
-        RotateBone(4, math::Dir3(gunnerPitch * 0.7f, 0.0f, 0.0f));
+        const float normalized = max(-1.0f,
+                                    min(1.0f, gunnerPitch * 0.033333335f));
+        float sine;
+        float cosine;
+        FastSinCos(normalized * 1.5707964f, &sine, &cosine);
+        (void)cosine;
+        const float pelvisScale = gunnerPitch <= 0.0f ? 1.0f : 0.2f;
+        const float pelvisSine = max(0.0f, min(1.0f, sine));
+        nalGenericBoneHandle pelvisHandle{nullptr, 0};
+        nalGenericSkeleton_GetBoneHandle(skeleton, &pelvisHandle,
+                                         &BoneNames[0]);
+        if (pelvisHandle.Skeleton != nullptr)
+        {
+            nalPositionOrientation pelvis =
+                nalGenericPose_GetModelPositionOrientation(pose,
+                                                           &pelvisHandle);
+            pelvis.pos.v.m128_f32[0] += -2.0f - pelvisSine * 4.0f;
+            pelvis.pos.v.m128_f32[2] += pelvisScale * sine * 4.0f - 2.0f;
+            static_cast<nalGeneric::nalGenericPose*>(pose)->SetPositionOrientation(
+                pelvisHandle, pelvis);
+        }
+        const float gunnerScale = gunnerPitch <= 0.0f ? 1.0f : 0.5f;
+        const float gunnerRotation = gunnerScale * gunnerPitch * 0.3f;
+        RotateBone(2, math::Dir3(gunnerRotation, 0.0f, 0.0f));
+        RotateBone(3, math::Dir3(gunnerRotation, 0.0f, 0.0f));
+        RotateBone(4, math::Dir3(gunnerScale * gunnerPitch * 0.7f,
+                                 0.0f, 0.0f));
     }
     else
     {
