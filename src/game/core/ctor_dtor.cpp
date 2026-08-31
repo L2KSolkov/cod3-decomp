@@ -243,7 +243,7 @@ void* EntityNotifySet::operator new(size_t size, bool forceHeapAlloc)
 }
 
 // ea: 0x005E95A0
-// ea: 0x004B4000
+// alias-ea: 0x004B4000
 void EntityNotifySet::operator delete(void* ptr)
 {
     EntityNotifySet::sAllocator->Release(ptr);
@@ -331,20 +331,20 @@ public:
     T data;  // +0x0C
 
     // ea: 0x004B1CD0
-    // ea: 0x004B2850
-    // ea: 0x004B2980
+    // alias-ea: 0x004B2850
+    // alias-ea: 0x004B2980
     WaitTilOutputInst1(const T& d) : WaitTilOutput(), data(d)
     {
         dListNodeFiller1 = nullptr;
         dListNodeFiller2 = nullptr;
     }
     // ea: 0x004B1DE0
-    // ea: 0x004B2930
-    // ea: 0x004B2A60
+    // alias-ea: 0x004B2930
+    // alias-ea: 0x004B2A60
     virtual int GetSize() { return 1; }           // ?GetSize@...@@UAEHXZ
     // ea: 0x004B1D40
-    // ea: 0x004B2880
-    // ea: 0x004B29B0
+    // alias-ea: 0x004B2880
+    // alias-ea: 0x004B29B0
     virtual void AssignData(WaitTilOutput* sv)    // ?AssignData@...@@UAEXPAVWaitTilOutput@@@Z
     {
         if (sv->GetSize() > GetSize())
@@ -359,8 +359,8 @@ public:
 
 template <typename T>
 // ea: 0x004B1F90
-// ea: 0x004B2970
-// ea: 0x004B2AA0
+// alias-ea: 0x004B2970
+// alias-ea: 0x004B2AA0
 WaitTilOutputInst1<T>::~WaitTilOutputInst1()
 {
 }
@@ -372,7 +372,7 @@ public:
     T2 data2;  // +0x10
 
     // ea: 0x004B1DF0
-    // ea: 0x004B2AB0
+    // alias-ea: 0x004B2AB0
     WaitTilOutputInst2(const T1& d1, const T2& d2)
         : WaitTilOutput(), data1(d1), data2(d2)
     {
@@ -380,10 +380,10 @@ public:
         dListNodeFiller2 = nullptr;
     }
     // ea: 0x004B1F50
-    // ea: 0x004B2BA0
+    // alias-ea: 0x004B2BA0
     virtual int GetSize() { return 2; }           // ?GetSize@...@@UAEHXZ
     // ea: 0x004B1E70
-    // ea: 0x004B2AE0
+    // alias-ea: 0x004B2AE0
     virtual void AssignData(WaitTilOutput* sv)    // ?AssignData@...@@UAEXPAVWaitTilOutput@@@Z
     {
         if (sv->GetSize() > GetSize())
