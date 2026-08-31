@@ -4261,6 +4261,7 @@ scr_data_t::~scr_data_t()
 }
 
 // level_locals_t::Clear (g.o 0x4AFD40)
+// ea: 0x004AFD40
 void level_locals_t::Clear()
 {
     clients = nullptr;
@@ -4343,6 +4344,7 @@ PlayerState::PlayerState()
 }
 
 // PlayerState::Clear (g.o 0x4AF3C0)
+// ea: 0x004AF3C0
 void PlayerState::Clear(bool clearWeapons)
 {
     origin.v = _mm_setzero_ps();
@@ -4475,6 +4477,7 @@ void PlayerState::Clear(bool clearWeapons)
 }
 
 // clientPersistent_t::Clear (g.o 0x4AF940)
+// ea: 0x004AF940
 void clientPersistent_t::Clear()
 {
     connected = CON_DISCONNECTED;

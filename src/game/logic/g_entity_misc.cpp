@@ -2635,6 +2635,7 @@ void (*dietable[8])(Entity* self, Entity* inflictor, Entity* attacker,
                     const float* dir, hitLocation_t hitLoc);
 void (*controllertable[4])(Entity* ent, int* partBits);
 
+// ea: 0x004AFA70
 void Client::Clear(bool clearPersistentAlso, bool clearWeapons)
 {
     this->ps.Clear(clearWeapons);
