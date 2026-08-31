@@ -796,6 +796,12 @@ BitSet<N> BitSet<N>::operator~() const
 struct SimpleCollisionDesc {
     math::Position3 coord;   // +0x00
     math::Position3 normal;  // +0x10
+    // ea: 0x004E2450
+    SimpleCollisionDesc()
+    {
+        coord.v = _mm_setzero_ps();
+        normal.v = _mm_setzero_ps();
+    }
 };
 static_assert(sizeof(SimpleCollisionDesc) == 0x20,
               "SimpleCollisionDesc size mismatch");
@@ -807,6 +813,12 @@ static_assert(sizeof(SimpleCollisionDesc) == 0x20,
 struct CollisionDesc {
     SimpleCollisionDesc simple;  // +0x00
     ECollisionMaterial material; // +0x20
+    // ea: 0x004E2470
+    CollisionDesc()
+        : simple()
+    {
+        material = kCollisionMaterialInvalid;
+    }
 };
 static_assert(sizeof(CollisionDesc) == 0x30, "CollisionDesc size mismatch");
 
