@@ -2680,6 +2680,7 @@ bool rb_vehicle::is_player_vehicle() const
     return (m_flags & 0x80u) != 0;
 }
 
+// ea: 0x004E2610
 DbLinkedHandle<EntityHandleDb, Entity> DObj::GetHandle() const
 {
     DbLinkedHandle<EntityHandleDb, Entity> result;
