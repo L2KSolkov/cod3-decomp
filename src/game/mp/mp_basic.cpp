@@ -13356,7 +13356,6 @@ MPProfileMainMenu::~MPProfileMainMenu()
         mem_heap_free(mSaveSlots[i]);
         mSaveSlots[i] = nullptr;
     }
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x00754C00

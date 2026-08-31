@@ -2195,7 +2195,6 @@ ProfileEditMenu::~ProfileEditMenu()
     if (mHelpBar != nullptr)
         delete mHelpBar;
     mHelpBar = nullptr;
-    FEMenu::~FEMenu();
 }
 
 // ============================================================================
@@ -2357,7 +2356,6 @@ MemCardCheckMenu::MemCardCheckMenu(FEMenuSystem* s)
 // ea: 0x00592430
 MemCardCheckMenu::~MemCardCheckMenu()
 {
-    FEMenu::~FEMenu();
 }
 
 MemCardCheckMenu* MemCardCheckMenu_ctor(void* mem, FEMenuSystem* s)

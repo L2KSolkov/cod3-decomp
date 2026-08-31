@@ -789,7 +789,6 @@ DialogMenuSystem::~DialogMenuSystem()
     }
     mem_heap_free(menus);
     menus = nullptr;
-    FEMenuSystem::~FEMenuSystem();
 }
 
 // ea: 0x0057F0B0

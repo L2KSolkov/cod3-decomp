@@ -389,7 +389,6 @@ MPMainMenuXBox::~MPMainMenuXBox()
     memset(m_pText.m_elements, 0, sizeof(m_pText.m_elements));
     memset(m_pImages.m_elements, 0, sizeof(m_pImages.m_elements));
     mListBox.~UIListBox();
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x778B60

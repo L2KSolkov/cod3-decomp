@@ -161,7 +161,6 @@ FESplitScreenMenu::~FESplitScreenMenu()
 {
     mem_heap_free(mSplitScreenTextEntries.m_elements);
     mem_heap_free(mMainTextEntries.m_elements);
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x00793100
@@ -1455,7 +1454,6 @@ OptionsGameplayMenu::~OptionsGameplayMenu()
     if (mOnOffMenu != nullptr)
         delete mOnOffMenu;
     mOnOffMenu = nullptr;
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x005734A0
@@ -1816,7 +1814,6 @@ OptionsControlsMenu::~OptionsControlsMenu()
     if (mOnOffMenu != nullptr)
         delete mOnOffMenu;
     mOnOffMenu = nullptr;
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x005737D0
@@ -2265,7 +2262,6 @@ OptionsSoundMenu::~OptionsSoundMenu()
     if (mOnOffMenu != nullptr)
         delete mOnOffMenu;
     mOnOffMenu = nullptr;
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x00573B80
@@ -2608,7 +2604,6 @@ OptionsStickMenu::~OptionsStickMenu()
     if (mHelpBar != nullptr)
         delete mHelpBar;
     mHelpBar = nullptr;
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x00573D80
@@ -2944,7 +2939,6 @@ OptionsButtonMenu::~OptionsButtonMenu()
     if (mHelpBar != nullptr)
         delete mHelpBar;
     mHelpBar = nullptr;
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x00574060
@@ -3192,7 +3186,6 @@ GammaScreenMenu::~GammaScreenMenu()
     if (mHelpBar != nullptr)
         delete mHelpBar;
     mHelpBar = nullptr;
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x005742A0

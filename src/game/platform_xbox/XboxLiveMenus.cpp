@@ -270,7 +270,6 @@ XboxLiveOptionsMenu::~XboxLiveOptionsMenu()
     memset(m_pOldSelectedTextColor.m_elements, 0,
            sizeof(m_pOldSelectedTextColor.m_elements));
     m_ListBox.~UIListBox();
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x721E10
@@ -819,7 +818,6 @@ InGameLiveOptionsMenu::InGameLiveOptionsMenu(FEMenuSystem* s)
 // ea: 0x7220C0
 InGameLiveOptionsMenu::~InGameLiveOptionsMenu()
 {
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x722390

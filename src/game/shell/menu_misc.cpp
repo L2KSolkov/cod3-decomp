@@ -99,7 +99,6 @@ ControllerDisconnectedMenu::~ControllerDisconnectedMenu()
 {
     if (text != nullptr)
         delete text;
-    FEMenu::~FEMenu();
 }
 
 // ea: 0x005B7BD0

@@ -315,7 +315,6 @@ FrontEndMenuSystem::~FrontEndMenuSystem()
     g_femanager.menuMovieRunning = false;
     if (yButtonText != nullptr)
         delete yButtonText;
-    FEMenuSystem::~FEMenuSystem();
 }
 
 // ea: 0x005721C0
@@ -564,7 +563,6 @@ InGameMenuSystem::InGameMenuSystem(int client)
 // ea: 0x005B8CD0
 InGameMenuSystem::~InGameMenuSystem()
 {
-    FEMenuSystem::~FEMenuSystem();
 }
 
 // ea: 0x00572FD0
