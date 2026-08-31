@@ -1366,6 +1366,7 @@ void AnimIK::ApplyVehicleSteering(Entity* ent)
 {
     Client* client = ent->client;
     if ((client->ps.eFlags & 0x100000) == 0
+        || (client->ps.vehType == 2 && client->ps.vehPos == 0)
         || !IsPlayerFullySeatedInVehicle(ent))
         return;
     Entity* vehicle = *client->ps.mViewLockedEntity;
