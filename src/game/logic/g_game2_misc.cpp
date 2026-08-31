@@ -1522,6 +1522,14 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
     sentient->mLastTerrainMappingFootOffsetZTime = level.time;
     if (elapsedMs <= 0)
         return;
+    if (!sentient->mEnableTerrainMappingIK
+        && fabsf(sentient->mLastTerrainMappingFootOffsetZ[0]) < 1.0f
+        && fabsf(sentient->mLastTerrainMappingFootOffsetZ[1]) < 1.0f)
+    {
+        sentient->mLastTerrainMappingPelvisZ = -9999.0f;
+        sentient->mLastTerrainMappingOriginZ = -9999.0f;
+        return;
+    }
     if (elapsedMs > 300)
     {
         sentient->mLastTerrainMappingFootOffsetZ[0] = 0.0f;
@@ -1532,14 +1540,6 @@ void AnimIK::ApplyTerrainMapping(Entity* ent, nalMatrix4x4& leftFootMat,
     {
         sentient->mLastTerrainMappingFootOffsetZ[0] = 0.0f;
         sentient->mLastTerrainMappingFootOffsetZ[1] = 0.0f;
-        return;
-    }
-    if (!sentient->mEnableTerrainMappingIK
-        && fabsf(sentient->mLastTerrainMappingFootOffsetZ[0]) < 1.0f
-        && fabsf(sentient->mLastTerrainMappingFootOffsetZ[1]) < 1.0f)
-    {
-        sentient->mLastTerrainMappingPelvisZ = -9999.0f;
-        sentient->mLastTerrainMappingOriginZ = -9999.0f;
         return;
     }
     if (!ent->has_zone_collision())
