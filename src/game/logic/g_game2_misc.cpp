@@ -1248,6 +1248,12 @@ void AnimIK::ApplyPainFlinch(Entity* ent)
 void AnimIK::ApplyTorsoRotations(Entity* ent)
 {
     Client* client = ent->client;
+    if ((ent->s.eFlags & 0x100000) != 0
+        && (client->mVehicleAnimMoving || client->ps.vehPos != 2))
+    {
+        client->mLastTorsoIKLegsYaw = client->ps.legsYaw;
+        return;
+    }
     float pitch = (client->ps.pm_flags & 1) != 0
         ? 0.0f : AngleNormalize180(client->ps.viewangles[0]);
     float yaw = AngleNormalize180(client->mStepViewYaw
