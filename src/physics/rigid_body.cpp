@@ -59,6 +59,16 @@ const math::Dir3& rigid_body::get_a_vel() const
     return m_a_vel;
 }
 
+// ea: 0x006F0DC0
+const math::Mat43& rigid_body::get_col_mat() const
+{
+    if ((m_flags & 0x50) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+                     "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+    return m_col_mat;
+}
+
 // ============================================================================
 // SSE constants (rdata COMDATs; referenced across the physics lib)
 // ============================================================================
