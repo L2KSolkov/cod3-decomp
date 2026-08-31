@@ -23,6 +23,7 @@ bool removeBuffer(const unsigned char* src, unsigned int srcSize, unsigned int o
 
 // ============================================================================
 // bdInitChunk::getInitTag â€” ea: 0x8AAD80
+// ea: 0x008AAD80
 // ============================================================================
 unsigned int bdInitChunk::getInitTag() const {
     return this->m_initTag;
@@ -30,6 +31,7 @@ unsigned int bdInitChunk::getInitTag() const {
 
 // ============================================================================
 // bdInitChunk::getFlags â€” ea: 0x8AAD90
+// ea: 0x008AAD90
 // ============================================================================
 bdInitChunk::bdInitChunkFlags bdInitChunk::getFlags() const {
     return this->m_flags;
@@ -37,6 +39,7 @@ bdInitChunk::bdInitChunkFlags bdInitChunk::getFlags() const {
 
 // ============================================================================
 // bdInitChunk::getWindowCredit â€” ea: 0x8AADA0
+// ea: 0x008AADA0
 // ============================================================================
 int bdInitChunk::getWindowCredit() const {
     return this->m_windowCredit;
@@ -44,6 +47,7 @@ int bdInitChunk::getWindowCredit() const {
 
 // ============================================================================
 // bdInitChunk::getSerializedSize â€” ea: 0x8AADB0
+// ea: 0x008AADB0
 // ============================================================================
 unsigned int bdInitChunk::getSerializedSize() {
     return 8;
@@ -73,6 +77,7 @@ bdInitChunk::bdInitChunk(unsigned int initTag, int windowCredit)
 
 // ============================================================================
 // bdInitChunk::~bdInitChunk â€” ea: 0x8AAE20
+// ea: 0x008AAE20
 // ============================================================================
 bdInitChunk::~bdInitChunk() {
     if (this->m_cookie.m_ptr != NULL && this->m_cookie.m_ptr->releaseRef() == 0) {
@@ -83,6 +88,7 @@ bdInitChunk::~bdInitChunk() {
 
 // ============================================================================
 // bdInitChunk::serialize â€” ea: 0x8AAEC0
+// ea: 0x008AAEC0
 // ============================================================================
 unsigned int bdInitChunk::serialize(unsigned char* data, unsigned int size) {
     unsigned int v3 = size;
@@ -106,6 +112,7 @@ unsigned int bdInitChunk::serialize(unsigned char* data, unsigned int size) {
 
 // ============================================================================
 // bdInitChunk::deserialize â€” ea: 0x8AAF60
+// ea: 0x008AAF60
 // ============================================================================
 bool bdInitChunk::deserialize(const unsigned char* data, unsigned int size,
                               unsigned int* offset) {

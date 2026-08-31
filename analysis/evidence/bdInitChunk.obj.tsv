@@ -1,0 +1,13 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008AAD80	?getInitTag@bdInitChunk@@QBEIXZ	V3	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682190-1682195;src/bd/bdInitChunk.cpp:24-26	Release returns m_initTag; source returns the same field.
+0x008AAD80	?getInitTag@bdInitChunk@@QBEIXZ	V4	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682190-1682195;src/bd/bdInitChunk.cpp:24-26	Equivalent const unsigned-tag accessor.
+0x008AAD90	?getFlags@bdInitChunk@@QBE?AW4bdInitChunkFlags@1@XZ	V3	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682196-1682201;src/bd/bdInitChunk.cpp:31-33	Release returns m_flags; source returns the same enum field.
+0x008AAD90	?getFlags@bdInitChunk@@QBE?AW4bdInitChunkFlags@1@XZ	V4	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682196-1682201;src/bd/bdInitChunk.cpp:31-33	Equivalent const enum accessor.
+0x008AADA0	?getWindowCredit@bdInitChunk@@QBEHXZ	V3	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682202-1682207;src/bd/bdInitChunk.cpp:38-40	Release returns m_windowCredit; source returns the same field.
+0x008AADA0	?getWindowCredit@bdInitChunk@@QBEHXZ	V4	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682202-1682207;src/bd/bdInitChunk.cpp:38-40	Equivalent const signed-credit accessor.
+0x008AADB0	?getSerializedSize@bdInitChunk@@UAEIXZ	V3	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682208-1682213;src/bd/bdInitChunk.cpp:45-47	Release returns fixed serialized size 8; source returns 8.
+0x008AADB0	?getSerializedSize@bdInitChunk@@UAEIXZ	V4	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682208-1682213;src/bd/bdInitChunk.cpp:45-47	Equivalent fixed-size return.
+0x008AAE20	??1bdInitChunk@@UAE@XZ	V3	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682243-1682273;src/bd/bdInitChunk.cpp:74-80	Release releases the cookie reference before base teardown; source follows the same ownership path.
+0x008AAE20	??1bdInitChunk@@UAE@XZ	V4	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682243-1682273;src/bd/bdInitChunk.cpp:74-80	Equivalent cookie release and nulling behavior.
+0x008AAEC0	?serialize@bdInitChunk@@UAEIPAEI@Z	V3	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682275-1682306;src/bd/bdInitChunk.cpp:83-101	Release enforces the minimum buffer size, serializes the base header, flags, reserved bytes, and init tag; source matches those branches.
+0x008AAEC0	?serialize@bdInitChunk@@UAEIPAEI@Z	V4	PASS	bdinit-manual-20260830	2026-08-30	c3_bin/codmp_xboxr.xbe.c:1682275-1682306;src/bd/bdInitChunk.cpp:83-101	Equivalent size guard, append order, and returned offset.
