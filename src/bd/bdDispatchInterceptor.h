@@ -13,7 +13,7 @@ class bdDispatchInterceptor {
 public:
     bdDispatchInterceptor();                                     // @0x9ED130
     virtual ~bdDispatchInterceptor();                            // @0x9ED140
-    virtual bool accept(bdReceivedMessage& message) = 0;         // purecall slot (+4)
+    virtual bool accept(const bdReceivedMessage& message) = 0;   // purecall slot (+4)
 };
 
 static_assert(sizeof(bdDispatchInterceptor) == 0x4,

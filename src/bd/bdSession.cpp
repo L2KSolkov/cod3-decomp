@@ -650,7 +650,7 @@ void bdSession::cleanup() {
 // ============================================================================
 // bdSession::accept - ea: 0x8B5500 (dispatch interceptor)
 // ============================================================================
-bool bdSession::accept(bdReceivedMessage& message) {
+bool bdSession::accept(const bdReceivedMessage& message) {
     bdReference<bdMessage> messageRef = message.getMessage();
     unsigned char type = messageRef.m_ptr != NULL ? messageRef.m_ptr->getType() : 0;
     bool accepted = false;

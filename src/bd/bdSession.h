@@ -110,7 +110,7 @@ public:
 
 protected:
     // bdDispatchInterceptor
-    virtual bool accept(bdReceivedMessage& message);
+    virtual bool accept(const bdReceivedMessage& message);
 
     // bdConnectionListener
     virtual void onConnect(bdReference<bdConnection> connection);
