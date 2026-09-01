@@ -101,7 +101,9 @@ struct animscripted_t {
     float           fEndPitch;  // +0x5C
     float           fEndRoll;   // +0x60
     float           fOrientLerp;// +0x64
+    unsigned char   _releaseTail[8]; // +0x68 (IDA size 0x70; reserved bytes)
 };
+static_assert(sizeof(animscripted_t) == 0x70, "animscripted_t size mismatch");
 struct proximity_data_t;
 struct actor_s;
 struct sentient_s;
