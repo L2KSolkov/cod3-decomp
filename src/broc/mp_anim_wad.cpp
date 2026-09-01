@@ -20,6 +20,7 @@ public:
 
     unsigned int mVal;
 };
+static_assert(sizeof(BroAnim) == 0x4, "BroAnim size mismatch");
 
 namespace Broc {
 class AnimRef {
