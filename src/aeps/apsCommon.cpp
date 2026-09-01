@@ -27,6 +27,7 @@
 #include "apsColorRectangleRenderer.h"
 #include "apsSimpleMeshRenderer.h"
 #include "apsShrimpRenderer.h"
+#include "core/mem_heap.h"
 
 #include <math.h>
 #include <new>
@@ -52,12 +53,6 @@ class TlSystemCallbacks {
 public:
     static void* MemAlloc(unsigned int size, unsigned int align, unsigned int flags);
     static void MemFree(void* ptr);
-};
-
-struct mem_heap {
-    unsigned char _pad[0x474];
-    void* start;
-    void* end;
 };
 
 class ae_heap {

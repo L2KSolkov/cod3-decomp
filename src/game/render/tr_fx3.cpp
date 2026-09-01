@@ -12,6 +12,7 @@
 #include "aeps/apsMemory.h"
 #include "aeps/apsCommon.h"
 #include "aeps/apsDebug.h"
+#include "core/mem_heap.h"
 
 #include <stdint.h>
 
@@ -277,11 +278,6 @@ class ae_heap {
 public:
     void** __vftable;
     struct mem_heap* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ
-};
-struct mem_heap {
-    uint8_t _pad[0x484];
-    unsigned int size;      // +0x484
-    unsigned int used_byte; // +0x488
 };
 extern void* gApsHeap;      // ?gApsHeap@@3PAVae_heap@@A (common.cpp)
 

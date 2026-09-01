@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <mutex>
 #include <unordered_map>
+#include "core/mem_heap.h"
 
 #ifdef _WIN32
   #include <malloc.h>
@@ -32,41 +33,14 @@
 // Types
 // ============================================================================
 
-struct malloc_chunk {
-    unsigned int prev_foot;  // size of previous chunk
-    unsigned int head;       // size + flags
-    malloc_chunk* fd;       // forward link
-    malloc_chunk* bk;       // backward link
-};
-static_assert(sizeof(malloc_chunk) == 0x10, "malloc_chunk size mismatch");
-
-struct malloc_state {
-    unsigned int   max_fast;
-    malloc_chunk*  fastbins[10];
-    malloc_chunk*  top;
-    malloc_chunk*  last_remainder;
-    malloc_chunk*  bins[256];
-    unsigned int   binmap[4];
-    unsigned int   trim_threshold;
-    unsigned int   top_pad;
-    unsigned int   mmap_threshold;
-    int            n_mmaps;
-    int            n_mmaps_max;
-    int            max_n_mmaps;
-    unsigned int   pagesize;          // +0x45C
-    unsigned int   mmapped_mem;
-    unsigned int   sbrked_mem;
-    unsigned int   max_sbrked_mem;
-    unsigned int   max_mmapped_mem;
-    unsigned int   max_total_mem;
-};
-
 enum mem_heap_type {
     MEM_HEAP_DEFAULT = 0,
     MEM_HEAP_DEBUG   = 1,
     MEM_HEAP_COMBINE = 2,
 };
 
+/* shared mem_heap layout is declared in core/mem_heap.h */
+/*
 struct mem_heap {
     malloc_state av;              // +0x000 (1140 bytes)
     void*        start;           // +0x474
@@ -93,6 +67,7 @@ static_assert(offsetof(mem_heap, reserve) == 0x490, "mem_heap::reserve offset mi
 static_assert(offsetof(mem_heap, total_allocs) == 0x494, "mem_heap::total_allocs offset mismatch");
 static_assert(offsetof(mem_heap, total_frees) == 0x498, "mem_heap::total_frees offset mismatch");
 static_assert(sizeof(mem_heap) == 0x49C, "mem_heap layout mismatch");
+*/
 
 // ============================================================================
 // Globals

@@ -376,20 +376,6 @@ void WriteVertex(nglMeshIterator<cdscratch_vertex, I>& it, float x, float y,
     it.vertex->TexCoord_y = v;
 }
 
-// mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
-struct mem_heap {
-    char*  start;      // +0x00
-    char*  end;        // +0x04
-    uint8_t _pad8[0x484 - 0x08];
-    unsigned int size;      // +0x484
-    unsigned int used_byte; // +0x488
-    unsigned int high_used_byte;  // +0x48C
-    mem_heap* reserve;      // +0x490
-    int total_allocs;       // +0x494
-    int total_frees;        // +0x498
-};
-static_assert(sizeof(mem_heap) == 0x49C, "mem_heap size mismatch");
-
 template <typename T, int N>
 struct ae_array {
     T   m_elements[N];  // +0x00
