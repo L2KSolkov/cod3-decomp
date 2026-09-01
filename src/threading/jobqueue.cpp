@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
+#include "jobqueue.h"
 
 // External
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
@@ -27,22 +28,6 @@ public:
     }
     operator T*() { return Value; }
 };
-
-// ============================================================================
-// Types — 56-byte batch descriptor (verified against IDA)
-// ============================================================================
-struct jqBatch {
-    void*    Func;          // +0x00 — function to execute
-    void*    Data;          // +0x04 — user data
-    uint32_t Priority;      // +0x08 — 0=low, 1=med, 2=high
-    uint32_t GroupID;       // +0x0C — batch group (-1 = none)
-    int32_t  Handle;        // +0x10 — batch handle (index into pool)
-    int32_t  Next;          // +0x14 — next in free/queue list
-    // +0x18 ... +0x38 — padding (56 bytes total)
-    uint8_t  _pad[32];
-};
-// NOTE: sizeof(jqBatch) is 56 on 32-bit Xbox, varies on 64-bit due to pointer padding
-// static_assert(sizeof(jqBatch) == 56, "");  // 32-bit only
 
 struct jqWorker {
     uint8_t  _jqWorkerBase[8];   // release _jqWorker base
@@ -266,7 +251,7 @@ int jqAddBatch(const jqBatch& data) {
     // Copy data
     memcpy(batch, &data, sizeof(jqBatch));
 
-    uint32_t priority = batch->Priority;
+    uint32_t priority = static_cast<uint32_t>(batch->Priority);
     batch->Handle = idx;
 
     if (priority > 2) {

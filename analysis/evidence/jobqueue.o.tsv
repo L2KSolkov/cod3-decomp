@@ -1,0 +1,2 @@
+ida_ea	name	gate	result	session	date	source_ref	detail
+0x008350A0	?jqAddBatch@@YAHABUjqBatch@@@Z	V4	PASS	ida-manual-jobqueue-batch-layout-20260831	2026-08-31	IDA:type_inspect:jqBatch;src/threading/jobqueue.h:10-26;src/threading/jobqueue.cpp:1-281	Release jqBatch is the 0x38-byte descriptor with Input/Output/Scratch/Static pointers, four size fields, Handle at +0x20, Module at +0x24, Priority at +0x28, GroupID at +0x2C, and Next at +0x30; jobqueue.cpp now uses that shared definition and copies/enqueues the matching fields.
