@@ -11,6 +11,7 @@ struct drawSurf_s {
     unsigned int sort;      // +0x00
     surfaceType_t* surface; // +0x04
 };
+static_assert(sizeof(drawSurf_s) == 0x8, "drawSurf_s release layout");
 
 // ============================================================================
 // shortsort (file-static) - ea: 0x006C1CD0
