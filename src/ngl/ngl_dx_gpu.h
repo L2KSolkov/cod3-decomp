@@ -143,6 +143,8 @@ struct nglMeshSectionTableEntry {
     unsigned int    Flags;     // +0x00
     nglMeshSection* Section;   // +0x04
 };
+static_assert(sizeof(nglMeshSectionTableEntry) == 0x8,
+              "nglMeshSectionTableEntry release layout");
 
 struct nglMesh {
     tlFixedString* Name;                     // +0x00
