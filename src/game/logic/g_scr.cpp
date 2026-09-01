@@ -253,6 +253,7 @@ class BrocDtorBase {
 public:
     virtual void Destroy(void* inst);  // ?Destroy@BrocDtorBase@@UAEXPAX@Z
 };
+static_assert(sizeof(BrocDtorBase) == 0x4, "BrocDtorBase release layout");
 
 // mp_util_wad.xboxd BrocDtor specializations.  IDA shows each constructor
 // selecting its typed vtable and each Destroy deleting the supplied object.
@@ -392,6 +393,7 @@ private:
     static PoolAllocator* sAllocator;  // ?sAllocator@AeThreadState@@0PAVPoolAllocator@@A @ 0x132A0D4
     friend struct AeThreadStateAllocAccess;
 };
+static_assert(sizeof(AeThreadState) == 0x14, "AeThreadState release layout");
 
 struct AeThreadStateAllocAccess {
     static PoolAllocator* Get() { return AeThreadState::sAllocator; }
@@ -465,6 +467,8 @@ struct AeThreadWaitState : AeThreadState {
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C1FE0
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7BB0
 };
+static_assert(sizeof(AeThreadWaitState) == 0x18,
+              "AeThreadWaitState release layout");
 
 struct AeThreadWaitFramesState : AeThreadState {
     int mFramesRemaining;  // +0x14
@@ -475,6 +479,8 @@ struct AeThreadWaitFramesState : AeThreadState {
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C2060
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7BE0
 };
+static_assert(sizeof(AeThreadWaitFramesState) == 0x18,
+              "AeThreadWaitFramesState release layout");
 
 struct AeThreadPakNotifyState : AeThreadState {
     enum ePakState : int {
@@ -491,6 +497,8 @@ struct AeThreadPakNotifyState : AeThreadState {
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7B00
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5C7B50
 };
+static_assert(sizeof(AeThreadPakNotifyState) == 0x1C,
+              "AeThreadPakNotifyState release layout");
 
 // EndOnScriptNode (scr.o / AeThread.cpp; IDA type 5678)
 class EndOnScriptNode {
@@ -510,6 +518,8 @@ private:
     static PoolAllocator* sAllocator;  // ?sAllocator@EndOnScriptNode@@0PAVPoolAllocator@@A
     friend struct AeThreadEntityNotifyState;
 };
+static_assert(sizeof(EndOnScriptNode) == 0xC,
+              "EndOnScriptNode release layout");
 
 // scr.o reserved_dlist specializations (IDA: 0x005EA8B0-0x005EA950).
 // These symbols are emitted here because g_scr.cpp uses local layout views
@@ -1151,6 +1161,8 @@ struct AeThreadEntityNotifyState : AeThreadState {
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF580
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF680
 };
+static_assert(sizeof(AeThreadEntityNotifyState) == 0x20,
+              "AeThreadEntityNotifyState release layout");
 
 struct AeThreadEntityNotifyTimeoutState : AeThreadState {
     DbLinkedHandle<EntityHandleDb, Entity> mEnt;  // +0x14
@@ -1165,6 +1177,8 @@ struct AeThreadEntityNotifyTimeoutState : AeThreadState {
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF780
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF8B0
 };
+static_assert(sizeof(AeThreadEntityNotifyTimeoutState) == 0x20,
+              "AeThreadEntityNotifyTimeoutState release layout");
 
 struct AeThreadEntityNotifyMatchState : AeThreadState {
     DbLinkedHandle<EntityHandleDb, Entity> mEnt;  // +0x14
@@ -1182,6 +1196,8 @@ struct AeThreadEntityNotifyMatchState : AeThreadState {
     void GetCondText(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DF9E0
     void GetDebugTxt(ae_fixed_string<64, unsigned char>& str) override;  // 0x5DFB40
 };
+static_assert(sizeof(AeThreadEntityNotifyMatchState) == 0x40,
+              "AeThreadEntityNotifyMatchState release layout");
 
 // AeThread execution core decls (batch 17)
 void AeThread_ProcessState(AeThread* self);   // ?ProcessState@AeThread@@QAEXXZ (0x5C8EE0)
@@ -2210,8 +2226,11 @@ public:
 // ae_heap wrapper view (streamer.o 0x684DD0; definition in pakmanager.cpp)
 struct mem_heap;
 struct ae_heap {
-    void** __vftable;                 // +0x00
-    void* Malloc(unsigned int size, int alignment);  // ?Malloc@ae_heap@@QAEPAXIH@Z
+    virtual ~ae_heap();
+    virtual void* Malloc(unsigned int size, unsigned int alignment);
+    virtual void Free(void* ptr);
+    virtual bool CheckFree(void* ptr);
+    virtual mem_heap* GetHeapPointer();
 };
 struct ae_heap_wrapper {
     void* __vftable;   // +0x00
