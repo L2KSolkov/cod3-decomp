@@ -8903,7 +8903,11 @@ struct GdbFileSet {
         float f;
         const char* s;
     };
+    InplaceString mName;  // +0x00
+    InplaceTree<unsigned int, unsigned int> mLayout;  // +0x04
+    InplaceTree<InplaceString, InplaceVector<Value> const*> mRecords;  // +0x0C
 };
+static_assert(sizeof(GdbFileSet) == 0x14, "GdbFileSet size mismatch");
 
 class GdbFile {
 public:
