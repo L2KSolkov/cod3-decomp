@@ -37,11 +37,21 @@ static_assert(sizeof(ae_heap_base) == 4, "ae_heap_base size mismatch");
 // ae_heap_wrapper — heap wrapper (8 bytes)
 // Size: 0x08 (8 bytes) — verified against IDA
 // ============================================================================
-struct ae_heap_wrapper : ae_heap_base {
+class ae_heap_wrapper : public ae_heap_base {
+public:
     mem_heap* mHeap;  // +0x04
 
+    // ?ae_heap_wrapper@ae_heap_wrapper@@QAE@PAUmem_heap@@@Z (streamer.o 0x684D70)
+    explicit ae_heap_wrapper(mem_heap* heap);
+    virtual ~ae_heap_wrapper();
+    // ?Malloc@ae_heap_wrapper@@UAEPAXII@Z (streamer.o 0x684D90)
+    virtual void* Malloc(unsigned int size, unsigned int align);
+    // ?Free@ae_heap_wrapper@@UAEXPAX@Z (streamer.o 0x684DB0)
+    virtual void Free(void* ptr);
     // ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z (streamer.o 0x684DD0)
-    bool CheckFree(void* ptr);
+    virtual bool CheckFree(void* ptr);
+    // ?GetHeapPointer@ae_heap_wrapper@@UAEPAUmem_heap@@XZ (streamer.o 0x684DF0)
+    virtual mem_heap* GetHeapPointer();
 };
 static_assert(sizeof(ae_heap_wrapper) == 8, "ae_heap_wrapper size mismatch");
 

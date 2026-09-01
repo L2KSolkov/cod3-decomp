@@ -14206,51 +14206,37 @@ void PakFile::UnloadSerialized()
 
 ae_sized_array<ae_heap_base*, 32> gPakHeaps;  // ?gPakHeaps@@3V?$ae_sized_array@PAVae_heap_base@@$0CA@@@A
 
-// ae_heap_wrapper bridge vtable (core.o funcs not yet ported; GetHeapPointer
-// at slot 4 per the binary's ??_7ae_heap_wrapper@@6B@ @ 0xD0A290)
-static void* __fastcall Wrapper_VecDtor(void* self, int flags)
+// ea: 0x684D70
+ae_heap_wrapper::ae_heap_wrapper(mem_heap* heap)
+    : mHeap(heap)
 {
-    (void)flags;
-    mem_heap_free(self);
-    return self;
 }
-static void* __fastcall Wrapper_Malloc(void* self, unsigned int size,
-                                       unsigned int align)
+
+// ea: 0x684E30
+ae_heap_wrapper::~ae_heap_wrapper() = default;
+
+// ea: 0x684D90
+void* ae_heap_wrapper::Malloc(unsigned int size, unsigned int alignment)
 {
-    return mem_heap_malloc(*(mem_heap**)((char*)self + 4), (int)align, size);
+    return MemAlloc(size, alignment, mHeap);
 }
-static void __fastcall Wrapper_Free(void* self, void* ptr)
+
+// ea: 0x684DB0
+void ae_heap_wrapper::Free(void* ptr)
 {
-    mem_heap_free(*(mem_heap**)((char*)self + 4), ptr);
+    MemFree(ptr, mHeap);
 }
-static bool __fastcall Wrapper_CheckFree(void* self, void* ptr)
-{
-    // ae_heap_base::MemCheckFree semantics (0x7BBF40)
-    mem_heap* heap = *(mem_heap**)((char*)self + 4);
-    if (ptr < heap->start || ptr >= heap->end)
-        return false;
-    mem_heap_free(heap, ptr);
-    return true;
-}
-static mem_heap* __fastcall Wrapper_GetHeapPointer(void* self)
-{
-    return *(mem_heap**)((char*)self + 4);
-}
-static void* s_ae_heap_wrapper_vftable[5] = {
-    (void*)Wrapper_VecDtor,
-    (void*)Wrapper_Malloc,
-    (void*)Wrapper_Free,
-    (void*)Wrapper_CheckFree,
-    (void*)Wrapper_GetHeapPointer,
-};
 
 // ea: 0x684DD0
 bool ae_heap_wrapper::CheckFree(void* ptr)
 {
-    if (ptr < mHeap->start || ptr >= mHeap->end)
-        return false;
-    mem_heap_free(mHeap, ptr);
-    return true;
+    return MemCheckFree(ptr, mHeap);
+}
+
+// ea: 0x684DF0
+mem_heap* ae_heap_wrapper::GetHeapPointer()
+{
+    return mHeap;
 }
 
 // ea: 0x66E930
@@ -14316,8 +14302,7 @@ void PakFile::CreateHeaps()
         void* v26 = mem_heap_malloc(8u);
         if (v26 != nullptr)
         {
-            *(void***)v26 = s_ae_heap_wrapper_vftable;
-            *(mem_heap**)((char*)v26 + 4) = mHeapList.m_elements[k];
+            new (v26) ae_heap_wrapper(mHeapList.m_elements[k]);
         }
         if (gPakHeaps.m_size >= 32)
         {
@@ -14345,8 +14330,7 @@ void PakFile::CreateHeaps()
             void* v34 = mem_heap_malloc(8u);
             if (v34 != nullptr)
             {
-                *(void***)v34 = s_ae_heap_wrapper_vftable;
-                *(mem_heap**)((char*)v34 + 4) = v32->mHeapList.m_elements[m];
+                new (v34) ae_heap_wrapper(v32->mHeapList.m_elements[m]);
             }
             if (gPakHeaps.m_size >= 32)
             {
@@ -14738,9 +14722,7 @@ void PakFile::DestroyHeaps()
                     }
                     ae_heap_wrapper* w =
                         (ae_heap_wrapper*)gPakHeaps.m_elements[v4];
-                    void** wvt = *(void***)w;
-                    mem_heap* hp =
-                        ((mem_heap* (__fastcall*)(void*))wvt[4])(w);
+                    mem_heap* hp = w->GetHeapPointer();
                     if (hp == v3)
                         break;
                     if (++v4 >= (unsigned int)gPakHeaps.m_size)
@@ -14760,9 +14742,8 @@ void PakFile::DestroyHeaps()
                     gPakHeaps.m_size = m_size - 1;
                 if (v6 != nullptr)
                 {
-                    // scalar-deleting dtor through vtable (ae_heap_base)
-                    void** v6vt = *(void***)v6;
-                    ((void* (__fastcall*)(void*, int))v6vt[0])(v6, 1);
+                    v6->~ae_heap_wrapper();
+                    mem_heap_free(v6);
                 }
             }
 heap_not_registered:
