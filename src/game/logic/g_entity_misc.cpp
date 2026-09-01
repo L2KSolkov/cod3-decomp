@@ -276,8 +276,9 @@ void render_brush()
 // ============================================================================
 class cdlBrush {
 public:
-    uint8_t _pad[0x60];  // opaque (cdlBrush); debug_brush stores the pointer
+    uint8_t _pad[0x40];  // opaque; IDA size is 0x40 (cdlConvex + cdl_array<cdlPlane>)
 };
+static_assert(sizeof(cdlBrush) == 0x40, "cdlBrush size mismatch");
 struct debug_brush {
     const cdlBrush* brush;      // +0x00
     math::Mat43        mat;     // +0x10
