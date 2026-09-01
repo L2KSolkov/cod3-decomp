@@ -29,8 +29,9 @@ void proximity_data_t::operator delete(void* ptr, TPakId pakID)
 // ============================================================================
 struct winding_t {
     int   numpoints;   // +0x00
-    float p[1][3];     // +0x04
+    float p[4][3];     // +0x04, release type size 0x34
 };
+static_assert(sizeof(winding_t) == 0x34, "winding_t release layout");
 
 int c_active_windings;   // ?c_active_windings@@3HA (game.o)
 int c_peak_windings;     // ?c_peak_windings@@3HA (game.o)
