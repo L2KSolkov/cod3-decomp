@@ -34,6 +34,7 @@ struct ai_funcs_s {
     void* pfnMoveAwayRequested;  // +0x24
     char  debugName[16];     // +0x28
 };
+static_assert(sizeof(ai_funcs_s) == 0x38, "ai_funcs_s size mismatch");
 const ai_funcs_s AIFuncTable[32] = {};  // ?AIFuncTable@@3QBUai_funcs_s@@B (mp_actors.o)
 
 struct apsStats {
