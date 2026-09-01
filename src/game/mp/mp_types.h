@@ -185,6 +185,8 @@ public:
     virtual unsigned int run(void* args);  // ?run@MPLevelLoader@@UAEIPAX@Z (mp.o 0x765DB0)
     bool m_stop;  // +0x04 (bdRunnable::m_stop)
 };
+static_assert(sizeof(MPLevelLoader) == 0x8,
+              "MPLevelLoader release layout");
 
 // ============================================================================
 // PlayerStats - stat table helpers (mp.o ePlayerStats.cpp)
@@ -407,6 +409,8 @@ private:
     ae_vector<sDroppedItem>& GetItemList(EDroppedItemTypes item);  // ?GetItemList@MPPlayerItems@@AAEAAV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@W4EDroppedItemTypes@@@Z (mp.o 0x72E020)
     short FindOldestItem(const ae_vector<sDroppedItem>& list);  // ?FindOldestItem@MPPlayerItems@@AAEFABV?$ae_vector@UsDroppedItem@MPPlayerItems@@@@@Z (mp.o 0x755300)
 };
+static_assert(sizeof(MPPlayerItems) == 0x30,
+              "MPPlayerItems release layout");
 
 // ============================================================================
 // MPLanDiscovery - LAN session discovery results
