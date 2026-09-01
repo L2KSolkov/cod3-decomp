@@ -153,9 +153,16 @@ void* tlMemAlloc(unsigned int size, unsigned int align, unsigned int flags);
 // ============================================================================
 class apsMemConfig {
 public:
+    using MemAllocFn = void* (*)(unsigned int, unsigned int, unsigned int);
+    using MemFreeFn = void (*)(void*);
+
+    MemAllocFn mOldMemAlloc;  // +0x00
+    MemFreeFn mOldMemFree;    // +0x04
+
     apsMemConfig(TPakId pakId);
     ~apsMemConfig();
 };
+static_assert(sizeof(apsMemConfig) == 0x8, "apsMemConfig release layout");
 
 apsMemConfig::apsMemConfig(TPakId pakId)
 {
