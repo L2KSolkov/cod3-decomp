@@ -452,6 +452,8 @@ struct XModelCollTri {
     math::Vector4 svec;   // barycentric s coordinate
     math::Vector4 tvec;   // barycentric t coordinate
 };
+static_assert(sizeof(XModelCollTri) == 0x30,
+              "XModelCollTri release layout");
 
 struct XModelCollSurf {
     math::Position3 mins;   // +0x00
