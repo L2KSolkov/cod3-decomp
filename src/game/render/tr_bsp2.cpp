@@ -141,6 +141,8 @@ struct trDebugString_t {
     char szText[96];    // +0x20
     int twoD;           // +0x80
 };
+static_assert(sizeof(trDebugString_t) == 0x84,
+              "trDebugString_t release layout");
 struct trDebugLine_t {
     float start[3];   // +0x00
     float end[3];     // +0x0C
