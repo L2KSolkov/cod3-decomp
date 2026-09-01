@@ -213,6 +213,7 @@ struct animEventList_t {
     int column;
     int sheet;
 };
+static_assert(sizeof(animEventList_t) == 0xC, "animEventList_t release layout");
 animEventList_t animEvents[25] = {
     {1, 0, 10}, {2, 0, 10}, {0, 3, -1}, {2, 3, -1},
     {11, 0, 10}, {12, 0, 10}, {3, 0, 10}, {37, 0, -1},
