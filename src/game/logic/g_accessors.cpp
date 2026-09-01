@@ -4261,7 +4261,7 @@ static scr_data_t::__unnamed s_force_scr_unnamed_emit;
 scr_data_t::scr_data_t()
 {
     new (_pad8) __unnamed();
-    new (_pad8 + 0x5B8) scr_animscript_t();
+    new (&debris) scr_animscript_t();
     for (int i = 0; i < 16; ++i)
         actorCorpseInfo[i].mEntity.mHandle.mVal = 0;
 }
@@ -4269,7 +4269,7 @@ scr_data_t::scr_data_t()
 // ea: 0x004B23C0
 scr_data_t::~scr_data_t()
 {
-    ((scr_animscript_t*)(_pad8 + 0x5B8))->~scr_animscript_t();
+    debris.~scr_animscript_t();
     ((__unnamed*)_pad8)->~__unnamed();
 }
 

@@ -4225,7 +4225,7 @@ skip_fill:
         AnimTree* generic = Scr_GetAnimTreeByName("generic_human");
         if (generic == nullptr)
             G_Error("Could not find animation tree '%s'", "generic_human");
-        g_scr_data.generic_human_tree = generic;
+        g_scr_data.generic_human.tree = generic;
         for (int i = 0; i < 16; ++i)
             g_scr_data.actorCorpseInfo[i].mEntity.mHandle.mVal = 0;
     }

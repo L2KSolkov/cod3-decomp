@@ -2103,7 +2103,7 @@ void GScr_LoadScripts(bool restart)
     AnimTree* AnimTreeByName = Scr_GetAnimTreeByName("generic_human");
     if (AnimTreeByName == nullptr)
         G_Error("Could not find animation tree '%s'", "generic_human");
-    g_scr_data.generic_human_tree = AnimTreeByName;
+    g_scr_data.generic_human.tree = AnimTreeByName;
 }
 
 // ea: 0x0045BFF0

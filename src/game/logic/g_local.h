@@ -1590,25 +1590,37 @@ struct corpseInfo_t {
     corpseInfo_t();  // ??0corpseInfo_t@@QAE@XZ (g.o 0x4B0B50)
 };
 static_assert(sizeof(corpseInfo_t) == 0x1C, "corpseInfo_t size mismatch");
+struct scr_classStruct_t {
+    uint16_t id;          // +0x00
+    uint16_t _pad02;      // +0x02
+    const char* name;     // +0x04
+};
+static_assert(sizeof(scr_classStruct_t) == 0x8,
+              "scr_classStruct_t release layout");
 struct scr_data_t {
     int          levelscript;             // +0x000
     int          scripted_init;           // +0x004
-    uint8_t      _pad8[0x60C - 0x8];      // generic_human/anim/classMap
+    struct {
+        AnimTree* tree;                    // +0x008
+        scr_anim_s root;                   // +0x00C
+    } generic_human;
+    uint8_t      _pad8[0x5D0];             // anim data, +0x010..+0x5DF
 
     struct __unnamed {
         uint8_t data[0x5B8];
         __unnamed();   // ??0__unnamed@scr_data_t@@QAE@XZ (g.o 0x4B05A0)
         ~__unnamed();  // ??1__unnamed@scr_data_t@@QAE@XZ (g.o 0x4B08A0)
     };
+    scr_animscript_t debris;               // +0x5E0
+    scr_classStruct_t classMap[4];        // +0x5EC
     corpseInfo_t actorCorpseInfo[16];     // +0x60C (0x1C0 bytes)
-    uint8_t      _pad7CC[0x7D4 - 0x7CC];
-    AnimTree*    generic_human_tree;      // +0x7D4
 
     scr_data_t();  // ??0scr_data_t@@QAE@XZ (g.o 0x4B2340)
     ~scr_data_t();  // ??1scr_data_t@@QAE@XZ (g.o 0x4B23C0)
 };
 static_assert(offsetof(scr_data_t, actorCorpseInfo) == 0x60C,
               "scr_data_t::actorCorpseInfo offset mismatch");
+static_assert(sizeof(scr_data_t) == 0x7CC, "scr_data_t release layout");
 extern scr_data_t g_scr_data;  // 0xEE58D0
 extern const math::Position3 actorMaxs;  // 0xF99330
 extern const math::Position3 actorMins;  // 0xF99330-relative (mp_actors.o)
