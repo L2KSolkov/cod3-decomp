@@ -28,6 +28,8 @@ static_assert(sizeof(CBlob) == 0x8, "CBlob size mismatch");
 struct ITitlePlayersListItem {
     void** vftable;  // +0x00 (interface base, vtable only)
 };
+static_assert(sizeof(ITitlePlayersListItem) == 0x4,
+              "ITitlePlayersListItem release layout");
 
 struct LivePlayer : ITitlePlayersListItem {
     XUID xuid;                        // +0x04
@@ -143,6 +145,7 @@ extern void* g_voicechatMode;     // _XHV_PROCESSING_MODE*
 struct ITitleXHV {
     void** vftable;  // +0x00 (interface base, vtable only)
 };
+static_assert(sizeof(ITitleXHV) == 0x4, "ITitleXHV release layout");
 
 class LiveWrapper : public ITitleXHV {
 public:
