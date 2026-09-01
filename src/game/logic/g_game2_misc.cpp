@@ -3602,10 +3602,17 @@ void TestFPS::GetFilename(char* filename)
 // ============================================================================
 // SplineMgr - spline asset bank (0x184, IDA verified)
 // ============================================================================
+class SplineGroup;
+class PtrFixupTable;
 struct SplineGroupFile {
-    void* mTree;      // +0x00 InplaceTree<uint,uint>
-    void** mPtrs;     // +0x04 InplaceVector<SplineGroup*>
+    FourCC mFileId;       // +0x00
+    float mVersion;       // +0x04
+    InplaceTree<unsigned int, unsigned int> mTree;  // +0x08
+    InplaceVector<SplineGroup const*> mPtrs;        // +0x10
+    PtrFixupTable* mPtrFixupTable;                  // +0x18
 };
+static_assert(sizeof(SplineGroupFile) == 0x1C,
+              "SplineGroupFile layout mismatch");
 
 struct SplineNodeInfo {
     InplaceString mAnim;
