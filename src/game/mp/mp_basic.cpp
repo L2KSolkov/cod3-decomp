@@ -9624,14 +9624,23 @@ void MPUIInterface::PlatformStart()
 {
     WSAData wsaData;
     struct XNetStartupParams {
-        unsigned int cfgSizeOfStruct;
-        unsigned int cfgIpFragMaxSimultaneous;
-        unsigned int cfgSockDefaultSendBufsizeInK;
+        unsigned char cfgSizeOfStruct;
+        unsigned char cfgFlags;
+        unsigned char cfgPrivatePoolSizeInPages;
+        unsigned char cfgEnetReceiveQueueLength;
+        unsigned char cfgIpFragMaxSimultaneous;
+        unsigned char cfgIpFragMaxPacketDiv256;
+        unsigned char cfgSockMaxSockets;
+        unsigned char cfgSockDefaultRecvBufsizeInK;
+        unsigned char cfgSockDefaultSendBufsizeInK;
+        unsigned char cfgKeyRegMax;
+        unsigned char cfgSecRegMax;
+        unsigned char cfgQosDataLimitDiv4;
     };
-    XNetStartupParams xnsp;
+    static_assert(sizeof(XNetStartupParams) == 0xC,
+                  "XNetStartupParams release layout");
+    XNetStartupParams xnsp = {};
     xnsp.cfgSizeOfStruct = 12;
-    xnsp.cfgIpFragMaxSimultaneous = 0;
-    xnsp.cfgSockDefaultSendBufsizeInK = 0;
     if (XNetStartup(&xnsp) != 0)
     {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
