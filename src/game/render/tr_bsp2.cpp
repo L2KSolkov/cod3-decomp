@@ -147,6 +147,7 @@ struct trDebugLine_t {
     float color[4];   // +0x18
     int depthTest;    // +0x28
 };
+static_assert(sizeof(trDebugLine_t) == 0x2C, "trDebugLine_t release layout");
 struct trDebug_t {
     uint8_t _pad0[0x18];
     int numStrings;          // +0x18
