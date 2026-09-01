@@ -13,6 +13,21 @@ extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
 extern bool  _tlAssert(const char* file, int line, const char* expr, const char* msg);
 
+template <class T>
+class jqPtr {
+public:
+    T* Value;
+
+    jqPtr() : Value(nullptr) {}
+    explicit jqPtr(T* value) : Value(value) {}
+    T*& Ptr() { return Value; }
+    const jqPtr<T>& operator=(T* value) {
+        Value = value;
+        return *this;
+    }
+    operator T*() { return Value; }
+};
+
 // ============================================================================
 // Types — 56-byte batch descriptor (verified against IDA)
 // ============================================================================
@@ -30,42 +45,37 @@ struct jqBatch {
 // static_assert(sizeof(jqBatch) == 56, "");  // 32-bit only
 
 struct jqWorker {
+    uint8_t  _jqWorkerBase[8];   // release _jqWorker base
     jqBatch* LocalBatchPool;       // +0x00
     uint32_t LocalBatchPoolSize;   // +0x04
     uint32_t LocalBatchPoolCount;  // +0x08
-    // +0x0C ... +0x14 — padding (20 bytes total)
-    uint8_t  _pad[8];
 };
+static_assert(sizeof(jqWorker) == 0x14, "jqWorker release layout");
 
 struct jqBatchGroup {
-    int32_t Next;            // +0x00 — next in free list
-    int32_t BatchCount;      // +0x04 — active batches in group
-    int32_t NDependencies;   // +0x08 — unresolved dependencies
+    int32_t  BatchCount;       // +0x00
+    int32_t  NDependencies;    // +0x04
+    int32_t  Dependencies[4];  // +0x08
+    int32_t  Next;             // +0x18
+    int32_t  Pad;              // +0x1C
 };
-
-struct jqBatchGroupPool {
-    jqBatchGroup* Value;     // +0x00
-    int32_t Size;            // +0x04
-    int32_t Head;            // +0x08
-};
+static_assert(sizeof(jqBatchGroup) == 0x20,
+              "jqBatchGroup release layout");
 
 struct jqBatchPool {
-    jqBatch* Value;          // +0x00
-    int32_t  Size;           // +0x04
-    int32_t  Head;           // +0x08
+    jqPtr<jqBatch>      BatchPool;          // +0x00
+    int32_t             BatchPoolSize;     // +0x04
+    jqPtr<jqBatchGroup> BatchGroupPool;    // +0x08
+    int32_t             BatchGroupPoolSize;// +0x0C
+    int32_t             BatchGroupPoolHead;// +0x10
+    int32_t             BatchPoolHead;     // +0x14
+    int32_t             BatchPoolCount;    // +0x18
+    int32_t             BatchQueueHead[3]; // +0x1C
+    int32_t             BatchQueueTail[3]; // +0x28
+    int32_t             BatchQueueCount[3];// +0x34
 };
-
-struct jqPoolState {
-    jqBatchPool      BatchPool;
-    int32_t          BatchPoolSize;
-    int32_t          BatchPoolHead;
-    int32_t          BatchPoolCount;
-    int32_t          BatchQueueHead[3];  // priority queues
-    int32_t          BatchQueueTail[3];
-    int32_t          BatchQueueCount[3];
-    jqBatchGroupPool BatchGroupPool;
-    int32_t          BatchGroupPoolHead;
-};
+static_assert(sizeof(jqBatchPool) == 0x40,
+              "jqBatchPool release layout");
 
 // Forward declarations (interdependencies)
 void jqStop();
@@ -73,7 +83,7 @@ void _jqStop();
 void _jqStart(int nWorkers);
 void _jqAddBatch(jqBatch* batch);
 void jqFlush(int groupID);
-static jqPoolState jqPool = {};
+static jqBatchPool jqPool = {};
 static jqWorker*   jqWorkers = nullptr;
 static int         jqNWorkers = 0;
 static int         jqBatchPoolMutex = 0;
@@ -91,27 +101,6 @@ void jqLockMutex(int /*mutex*/) {}
 
 // ea: 0x00834E70
 void jqUnlockMutex(int /*mutex*/) {}
-
-template <class T>
-class jqPtr {
-public:
-    T* Value;
-
-    // ea: 0x00835410 / 0x00835440
-    explicit jqPtr(T* value) : Value(value) {}
-
-    // ea: 0x008353F0 / 0x00835400
-    T*& Ptr() { return Value; }
-
-    // ea: 0x00835420 / 0x00835450
-    const jqPtr<T>& operator=(T* value) {
-        Value = value;
-        return *this;
-    }
-
-    // ea: 0x00835430 / 0x00835460
-    operator T*() { return Value; }
-};
 
 template class jqPtr<jqBatch>;
 template class jqPtr<jqBatchGroup>;
@@ -226,7 +215,7 @@ void jqSetBatchPoolSize(int size) {
     }
 
     // Initialize free list
-    jqPool.BatchPool.Size = size;
+    jqPool.BatchPoolSize = size;
     for (int i = 0; i < size - 1; ++i)
         jqPool.BatchPool.Value[i].Next = i + 1;
     if (size > 0)
@@ -333,25 +322,25 @@ void jqSetBatchGroupPoolSize(int size) {  // ea: 0x8351F0
             jqPool.BatchGroupPool.Value[i].Next = i + 1;
         if (size > 0)
             jqPool.BatchGroupPool.Value[size - 1].Next = -1;
-        jqPool.BatchGroupPool.Head = 0;
+        jqPool.BatchGroupPoolHead = 0;
     } else {
         jqPool.BatchGroupPool.Value = nullptr;
-        jqPool.BatchGroupPool.Head = -1;
+        jqPool.BatchGroupPoolHead = -1;
     }
-    jqPool.BatchGroupPool.Size = size;
+    jqPool.BatchGroupPoolSize = size;
 }
 
 int jqCreateBatchGroup() {  // ea: 0x835320
     if (!jqPool.BatchPoolSize) return -1;
 
-    int idx = jqPool.BatchGroupPool.Head;
+    int idx = jqPool.BatchGroupPoolHead;
     if (idx == -1) {
         _tlAssert("source/jobqueue.cpp", 0xE9, "", "");
         __debugbreak();
     }
 
     jqBatchGroup* g = &jqPool.BatchGroupPool.Value[idx];
-    jqPool.BatchGroupPool.Head = g->Next;
+    jqPool.BatchGroupPoolHead = g->Next;
     g->BatchCount = 0;
     g->NDependencies = 0;
 
@@ -359,13 +348,13 @@ int jqCreateBatchGroup() {  // ea: 0x835320
 }
 
 void jqDestroyBatchGroup(int id) {  // ea: 0x835390
-    if (id < 0 || id >= jqPool.BatchGroupPool.Size) return;
+    if (id < 0 || id >= jqPool.BatchGroupPoolSize) return;
 
     jqBatchGroup* g = &jqPool.BatchGroupPool.Value[id];
     g->BatchCount = 0;
     g->NDependencies = 0;
-    g->Next = jqPool.BatchGroupPool.Head;
-    jqPool.BatchGroupPool.Head = id;
+    g->Next = jqPool.BatchGroupPoolHead;
+    jqPool.BatchGroupPoolHead = id;
 }
 
 void jqAddBatchGroupDependency(int groupFrom, int groupTo) {  // ea: 0x835280
