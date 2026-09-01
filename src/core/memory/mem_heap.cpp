@@ -491,6 +491,9 @@ class ae_heap_base {
 public:
     ae_heap_base();
     virtual ~ae_heap_base();
+    virtual void* Malloc(unsigned int size, unsigned int align) = 0;
+    virtual void Free(void* ptr) = 0;
+    virtual bool CheckFree(void* ptr) = 0;
     virtual mem_heap* GetHeapPointer();
 protected:
     void* MemAlloc(unsigned size, unsigned align, mem_heap* heap);
