@@ -1708,6 +1708,9 @@ V TinyInplaceAssetBankSet<Bank>::Find(TPakId pakId, K key, AeType<V>,
 }
 class XModelBank : public InplaceAssetBank<XModel, InplaceTree<InplaceString, unsigned int>> {};
 class XModelPartsBank : public InplaceAssetBank<XModelParts, InplaceTree<InplaceString, unsigned int>> {};
+static_assert(sizeof(XModelBank) == 0x1C, "XModelBank release layout");
+static_assert(sizeof(XModelPartsBank) == 0x1C,
+              "XModelPartsBank release layout");
 template IVPointer<XModel>
 TinyInplaceAssetBankSet<XModelBank>::Find<char*, IVPointer<XModel>>(
     TPakId, char*, AeType<IVPointer<XModel>>, TPakId*) const;
