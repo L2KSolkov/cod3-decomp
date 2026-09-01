@@ -942,6 +942,8 @@ struct ANIMIK_SPINE_ADJUST_BONES {
     float maxRotate[3];
     float weight[3];
 };
+static_assert(sizeof(ANIMIK_SPINE_ADJUST_BONES) == 0x38,
+              "ANIMIK_SPINE_ADJUST_BONES size mismatch");
 
 static ANIMIK_SPINE_ADJUST_BONES spineAdjustBones[5] = {
     {tlFixedString("bip01 pelvis"), {25.0f, 40.0f, 25.0f},
@@ -3619,6 +3621,8 @@ struct SplineNodeInfo {
     unsigned int mEvent;
     InplaceString mNodeId;
 };
+static_assert(sizeof(SplineNodeInfo) == 0x0C,
+              "SplineNodeInfo size mismatch");
 class SplinePathData {
 public:
     unsigned int mNumDronesOnPath;
