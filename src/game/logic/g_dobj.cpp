@@ -60,17 +60,17 @@ void UpdateAnims(int msec)
     cdl_proftimer_dobj_anim.start();
     float deltaT = msec * 0.001f;
     TaskFunctor1_Anim ftorA;
-    ftorA.__vftable = nullptr;
+    *(void**)&ftorA = nullptr;
     ftorA.fn = nullptr;
     ftorA.deltaT = deltaT;
     TaskHandler_Update(AnimationUpdateTask_sHandler(), deltaT, &ftorA);
     TaskFunctor1_XAnim ftorX1;
-    ftorX1.__vftable = nullptr;
+    *(void**)&ftorX1 = nullptr;
     ftorX1.fn = (void*)0x1;  // UpdateServerTime slot
     ftorX1.deltaT = deltaT;
     TaskHandler_Update(XAnimUpdateTask_sHandler(), deltaT, &ftorX1);
     TaskFunctor1_XAnim ftorX2;
-    ftorX2.__vftable = nullptr;
+    *(void**)&ftorX2 = nullptr;
     ftorX2.fn = (void*)0x2;  // CalcAnim1 slot
     ftorX2.deltaT = deltaT;
     TaskHandler_Update(XAnimUpdateTask_sHandler(), deltaT, &ftorX2);
@@ -90,12 +90,12 @@ void UpdateAnims(int msec)
     }
     AnimQueue_ExecuteMatrixQueue();
     TaskFunctor1_Anim ftorA2;
-    ftorA2.__vftable = nullptr;
+    *(void**)&ftorA2 = nullptr;
     ftorA2.fn = (void*)0x3;  // ApplyPose slot
     ftorA2.deltaT = deltaT;
     TaskHandler_Update(AnimationUpdateTask_sHandler(), deltaT, &ftorA2);
     TaskFunctor1_XAnim ftorX3;
-    ftorX3.__vftable = nullptr;
+    *(void**)&ftorX3 = nullptr;
     ftorX3.fn = (void*)0x4;  // CalcAnim2 slot
     ftorX3.deltaT = deltaT;
     TaskHandler_Update(XAnimUpdateTask_sHandler(), deltaT, &ftorX3);

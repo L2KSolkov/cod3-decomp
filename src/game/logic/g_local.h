@@ -4758,9 +4758,9 @@ struct TaskHandler {
 };
 static_assert(sizeof(TaskHandler) == 0x30, "TaskHandler size mismatch");
 struct TaskFunctor {
-    void* __vftable;
     virtual ~TaskFunctor();  // ??1TaskFunctor@@UAE@XZ (g.o 0x4A5320)
 };
+static_assert(sizeof(TaskFunctor) == 0x4, "TaskFunctor release layout");
 struct TaskFunctor1_Anim : TaskFunctor {
     void* fn;
     float deltaT;
