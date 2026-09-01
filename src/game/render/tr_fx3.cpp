@@ -276,8 +276,11 @@ void Cmd_PFXReport_f()
 
 class ae_heap {
 public:
-    void** __vftable;
-    struct mem_heap* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ
+    virtual ~ae_heap();
+    virtual void* Malloc(unsigned int size, unsigned int alignment);
+    virtual void Free(void* ptr);
+    virtual bool CheckFree(void* ptr);
+    virtual mem_heap* GetHeapPointer();
 };
 extern void* gApsHeap;      // ?gApsHeap@@3PAVae_heap@@A (common.cpp)
 

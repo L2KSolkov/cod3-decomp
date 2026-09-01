@@ -57,10 +57,11 @@ public:
 
 class ae_heap {
 public:
-    void** __vftable;
-    void* Malloc(unsigned int size, unsigned int alignment);
-    void Free(void* ptr);
-    mem_heap* GetHeapPointer();
+    virtual ~ae_heap();
+    virtual void* Malloc(unsigned int size, unsigned int alignment);
+    virtual void Free(void* ptr);
+    virtual bool CheckFree(void* ptr);
+    virtual mem_heap* GetHeapPointer();
 };
 
 extern void* gApsHeap;

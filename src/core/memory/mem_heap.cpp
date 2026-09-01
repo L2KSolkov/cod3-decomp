@@ -500,6 +500,7 @@ protected:
 
 // ea: 0x004B4E10
 ae_heap_base::ae_heap_base() {}
+// ea: 0x007BBE20
 ae_heap_base::~ae_heap_base() {}
 
 // ea: 0x004B4E20
@@ -508,25 +509,32 @@ mem_heap* ae_heap_base::GetHeapPointer() { return nullptr; }
 class ae_heap : public ae_heap_base {
     mem_heap mHeap;
 public:
-    ae_heap(unsigned size) { memset(&mHeap, 0, sizeof(mHeap)); }
-    ~ae_heap();
+    ae_heap(unsigned int size);
+    virtual ~ae_heap();
+    virtual void* Malloc(unsigned int size, unsigned int alignment);
+    virtual void Free(void* ptr);
+    virtual bool CheckFree(void* ptr);
+    virtual mem_heap* GetHeapPointer();
 };
 
+// ea: 0x007BBE90
 ae_heap::~ae_heap() {
     mem_heap_free(mHeap.start);
 }
 
+// ea: 0x007BBEE0
 void* ae_heap_base::MemAlloc(unsigned size, unsigned align, mem_heap* heap) {
     if (size + heap->used_byte <= heap->size)
         return mem_heap_malloc(heap, static_cast<int>(align), size);
     return nullptr;
 }
 
+// ea: 0x007BBF20
 void ae_heap_base::MemFree(void* ptr, mem_heap* heap) {
-    if (!heap) heap = &s_heap_default;
     mem_heap_free(heap, ptr);
 }
 
+// ea: 0x007BBF40
 bool ae_heap_base::MemCheckFree(void* ptr, mem_heap* heap) {
     if (ptr < heap->start || ptr >= heap->end)
         return false;

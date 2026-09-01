@@ -11,6 +11,7 @@
 #include "bd/bdTiming/bdShortTimer.h"
 #include "bd/bdSessionInfo.h"
 #include "core/tlFixedString.h"
+#include "core/mem_heap.h"
 
 #include <stdio.h>
 #include <math.h>
@@ -320,9 +321,13 @@ extern MPPeer* gMPPeer;  // ?gMPPeer@@3PAVMPPeer@@A @ 0xF93F68
 // ae_heap minimal view (core.o; ctor ported, Malloc/Free unported)
 class ae_heap {
 public:
-    ae_heap(unsigned int s);  // ?0ae_heap@@QAE@I@Z (n.o 0x7BBE40)
-    void* Malloc(unsigned int size, unsigned int align);
-    void Free(void* p);
+    mem_heap mHeap;
+    ae_heap(unsigned int s);
+    virtual ~ae_heap();
+    virtual void* Malloc(unsigned int size, unsigned int align);
+    virtual void Free(void* p);
+    virtual bool CheckFree(void* p);
+    virtual mem_heap* GetHeapPointer();
 };
 
 // AAR vote menu classes (shell.o VoteOn* methods unported)

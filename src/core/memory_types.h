@@ -17,9 +17,17 @@ struct mem_heap;
 // ae_heap_base — heap interface base (4 bytes, vtable only)
 // Size: 0x04 (4 bytes) — verified against IDA
 // ============================================================================
-struct ae_heap_base {
-    struct ae_heap_base_vtbl* __vftable;  // +0x00
+class ae_heap_base {
+public:
+    ae_heap_base();
+    virtual ~ae_heap_base();
+    virtual mem_heap* GetHeapPointer();
 
+protected:
+    // ?MemAlloc@ae_heap_base@@IAEPAXIIPAUmem_heap@@@Z (ae_heap.o 0x7BBEE0)
+    void* MemAlloc(unsigned int size, unsigned int align, mem_heap* heap);
+    // ?MemFree@ae_heap_base@@IAEXPAXPAUmem_heap@@@Z (ae_heap.o 0x7BBF20)
+    void MemFree(void* ptr, mem_heap* heap);
     // ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z (ae_heap.o 0x7BBF40)
     bool MemCheckFree(void* ptr, mem_heap* heap);
 };
